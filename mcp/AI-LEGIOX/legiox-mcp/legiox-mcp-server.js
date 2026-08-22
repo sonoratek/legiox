@@ -31,7 +31,7 @@ const AGENT_INDEX_JSON_MAX_BYTES = Number(process.env.LEGIOX_AGENT_INDEX_MAX_BYT
 const COHORTS_PATH = path.join(LEGIOX_ROOT, 'LEGIOX-COHORTS.json');
 const COHORTS_DIR = path.join(LEGIOX_ROOT, 'cohorts');
 const SYNC_COHORTS_INDEX_SCRIPT = path.join(LEGIOX_ROOT, 'scripts', 'sync-legiox-cohorts-index.mjs');
-const AI_CONTEXT_ROOT = path.resolve(LEGIOX_ROOT, '..', 'AI-CONTEXT');
+const AI_CONTEXT_ROOT = path.resolve(RINGDOM_ROOT, 'AI-CONTEXT');
 const TRUTH_LENS_ROOT = path.join(LEGIOX_ROOT, 'legiox-truth-lens');
 const GENERATOR_PROMPTS_DIR = path.join(LEGIOX_ROOT, 'generator-prompts');
 const { runLegioxCreateNodus } = require('./engine/nodus-creator');
@@ -318,7 +318,7 @@ const LEGIOX_TOOLS = {
       required: ['query']
     },
     handler: async (args) => {
-      const searchRoot = typeof args.path === 'string' ? args.path.trim() : LEGIOX_ROOT;
+      const searchRoot = typeof args.path === 'string' ? args.path.trim() : (LEGIOX_PLUGIN_MODE ? RINGDOM_ROOT : LEGIOX_ROOT);
       const query = typeof args.query === 'string' ? args.query.trim() : '';
       if (!query) {
         throw new Error('Missing required query');
