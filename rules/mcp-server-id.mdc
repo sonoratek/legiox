@@ -1,0 +1,8 @@
+---
+description: Correct LegioX MCP server identifier for CallMcpTool
+alwaysApply: true
+---
+
+MCP mcp.json key `legiox-mcp` is not the CallMcpTool `server` value.
+Use runtime id `project-0-<workspace>-legiox-mcp` from mcps/*/SERVER_METADATA.json.
+Read tool schema JSON before every MCP call.

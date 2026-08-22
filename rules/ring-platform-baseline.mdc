@@ -1,0 +1,7 @@
+---
+description: Ring Platform stack baseline for white-label rings
+globs: "**/*.{ts,tsx,js,jsx}"
+---
+
+Ring Platform baseline: Next.js 15/16 App Router, React 19, Auth.js v5, Tailwind 4, PostgreSQL JSONB, next-intl.
+DatabaseService: initializeDatabase once; getDatabaseService(); result { success, data, error } — throw on !success.

@@ -1,0 +1,4485 @@
+{
+  "cohort_system_version": "3.0.0",
+  "created": "2025-10-28",
+  "updated": "2026-08-16",
+  "description": "LegioX cohort registry: topic_cohorts indexes manifest files under cohorts/; operational_cohorts holds tiered LEGIOX_* agent membership; cohorts mirrors operational_cohorts for backward compatibility.",
+  "total_cohorts": 41,
+  "truth_lens_nodus_files": 422,
+  "cohort_unique_agent_types": 173,
+  "cohort_member_rows": 204,
+  "total_agents": 246,
+  "recent_changes": "2026-08-16: topic_cohorts index synced from 10 files in AI-LEGIOX/cohorts/",
+  "topic_cohort_count": 10,
+  "operational_cohort_count": 31,
+  "topic_cohorts": {
+    "ai": {
+      "cohort_id": "ai",
+      "name": "AI, LLM & Media Intelligence",
+      "description": "LLM integration, RAG, agents, embeddings, voice/video AI, avatars, datasets, and model orchestration (any provider).",
+      "keywords": [
+        "llm",
+        "rag",
+        "embedding",
+        "prompt",
+        "openai",
+        "anthropic",
+        "huggingface",
+        "voice",
+        "video",
+        "avatar",
+        "transcription",
+        "agent"
+      ],
+      "path": "AI-LEGIOX/cohorts/ai-cohort.json",
+      "member_count": 34,
+      "updated": "2026-08-10"
+    },
+    "business": {
+      "cohort_id": "business",
+      "name": "Business, Growth & Strategy",
+      "description": "Market intelligence, partnerships, revenue, OKRs, CRM, fundraising, brand, product growth, and go-to-market.",
+      "keywords": [
+        "business",
+        "growth",
+        "market",
+        "revenue",
+        "okr",
+        "crm",
+        "partnership",
+        "investor",
+        "brand",
+        "product strategy"
+      ],
+      "path": "AI-LEGIOX/cohorts/business-cohort.json",
+      "member_count": 22,
+      "updated": "2026-07-23"
+    },
+    "code": {
+      "cohort_id": "code",
+      "name": "Code Quality & Engineering",
+      "description": "Refactoring, testing, TypeScript, APIs, backend patterns, dependency analysis, and code quality guardians.",
+      "keywords": [
+        "code quality",
+        "refactor",
+        "testing",
+        "typescript",
+        "lint",
+        "api design",
+        "backend"
+      ],
+      "path": "AI-LEGIOX/cohorts/code-cohort.json",
+      "member_count": 10,
+      "updated": "2026-05-30"
+    },
+    "google": {
+      "cohort_id": "google",
+      "name": "Google Cloud & Google Platform",
+      "description": "GCP, Google APIs, OAuth/GIS, Analytics, Dataform, IAM, Vertex AI media pipelines, Firebase/FCM, Workspace, and Agent Registry integration.",
+      "keywords": [
+        "google",
+        "gcp",
+        "bigquery",
+        "dataform",
+        "vertex",
+        "gemini",
+        "firebase",
+        "google cloud",
+        "googleapis",
+        "agent registry",
+        "google analytics",
+        "google oauth",
+        "google workspace"
+      ],
+      "path": "AI-LEGIOX/cohorts/google-cohort.json",
+      "member_count": 23,
+      "updated": "2026-05-30"
+    },
+    "k8s": {
+      "cohort_id": "k8s",
+      "name": "Kubernetes & DevOps",
+      "description": "k3s/K8s, Helm, GitOps, mail on k8s, Ceph/Rook, ingress, containers, and deployment orchestration.",
+      "keywords": [
+        "kubernetes",
+        "k8s",
+        "k3s",
+        "helm",
+        "devops",
+        "docker",
+        "gitops",
+        "ingress",
+        "ceph"
+      ],
+      "path": "AI-LEGIOX/cohorts/k8s-cohort.json",
+      "member_count": 46,
+      "updated": "2026-08-10"
+    },
+    "nextjs": {
+      "cohort_id": "nextjs",
+      "name": "Next.js & App Router",
+      "description": "Next.js 15/16 App Router, middleware, caching, upgrades, and Ring Platform Next patterns.",
+      "keywords": [
+        "nextjs",
+        "next.js",
+        "app router",
+        "middleware",
+        "next-intl",
+        "ppr",
+        "server actions"
+      ],
+      "path": "AI-LEGIOX/cohorts/nextjs-cohort.json",
+      "member_count": 33,
+      "updated": "2026-05-30"
+    },
+    "pr-ops": {
+      "cohort_id": "pr-ops",
+      "name": "PR, Communications & Analytics",
+      "description": "Press, media relations, newsletters, SEO/AEO, conferences, crisis comms, Metabase PR dashboards, and repurposing.",
+      "keywords": [
+        "pr",
+        "press release",
+        "media relations",
+        "newsletter",
+        "seo",
+        "aeo",
+        "metabase",
+        "communications",
+        "linkedin"
+      ],
+      "path": "AI-LEGIOX/cohorts/pr-ops-cohort.json",
+      "member_count": 19,
+      "updated": "2026-05-30"
+    },
+    "react": {
+      "cohort_id": "react",
+      "name": "React & React Ecosystem",
+      "description": "React 19, RSC, React UI/UX, React Email, React Three, React i18n, and React-adjacent Ring frontend patterns.",
+      "keywords": [
+        "react",
+        "react 19",
+        "rsc",
+        "react server components",
+        "react email",
+        "react three",
+        "tailwind react"
+      ],
+      "path": "AI-LEGIOX/cohorts/react-cohort.json",
+      "member_count": 30,
+      "updated": "2026-05-30"
+    },
+    "ua-regional": {
+      "cohort_id": "ua-regional",
+      "name": "Ukraine & Regional (UA)",
+      "description": "Ukrainian regional platforms, CKC, hromada, civic resilience, oblast ops, and UA-specific marketplace/legal patterns.",
+      "keywords": [
+        "ukraine",
+        "ukrainian",
+        "ua",
+        "hromada",
+        "cherkasy",
+        "oblast",
+        "regional",
+        "civic"
+      ],
+      "path": "AI-LEGIOX/cohorts/ua-regional-cohort.json",
+      "member_count": 50,
+      "updated": "2026-05-30"
+    },
+    "web3": {
+      "cohort_id": "web3",
+      "name": "Web3 & Blockchain",
+      "description": "Solidity, wallets, DeFi, NFTs, Ringchain, Solana ring-native + MEV, Base L2 US rail, Aptos/Flow reference stacks, smart contract security.",
+      "keywords": [
+        "web3",
+        "blockchain",
+        "solidity",
+        "ethereum",
+        "defi",
+        "nft",
+        "wallet",
+        "wagmi",
+        "viem",
+        "aptos",
+        "flow",
+        "move",
+        "cadence",
+        "fungible-asset",
+        "sponsored-transactions",
+        "solana",
+        "spl",
+        "base",
+        "L2",
+        "feePayer",
+        "ring-native"
+      ],
+      "path": "AI-LEGIOX/cohorts/web3-cohort.json",
+      "member_count": 108,
+      "updated": "2026-06-20"
+    }
+  },
+  "operational_cohorts": {
+    "LEGIOX_CORE": {
+      "cohort_id": "legiox_core",
+      "name": "System Core - LegioX operational control and knowledge management",
+      "tier": 1,
+      "priority": "MAXIMUM",
+      "description": "System Core - LegioX operational control and knowledge management",
+      "total_members": 5,
+      "members": [
+        {
+          "agent": "ai_context_master",
+          "json_config": "ai-context-master.nodus.json",
+          "agent_type": "ai_context_master",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ai_context_architect",
+          "json_config": "ai-context-architect.nodus.json",
+          "agent_type": "ai_context_architect",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "librarian_agent",
+          "json_config": "librarian-agent-prompt.nodus.json",
+          "agent_type": "librarian",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "context_truth_guard",
+          "json_config": "context-truth-guard.nodus.json",
+          "agent_type": "context_truth_guard",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "orchestrator",
+          "json_config": "orchestrator.nodus.json",
+          "agent_type": "orchestrator",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_DOC": {
+      "cohort_id": "legiox_doc",
+      "name": "Knowledge & Learning Systems - AI-powered intelligence and documentation",
+      "tier": 2,
+      "priority": "CRITICAL",
+      "description": "Knowledge & Learning Systems - AI-powered intelligence and documentation",
+      "total_members": 6,
+      "members": [
+        {
+          "agent": "scavenger_agent",
+          "json_config": "scavenger-agent-prompt.nodus.json",
+          "agent_type": "scavenger",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "translator_agent",
+          "json_config": "translator-agent.nodus.json",
+          "agent_type": "translator_agent",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "documentation_generator",
+          "json_config": "documentation-generator.nodus.json",
+          "agent_type": "documentation_generator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_docs_specialist",
+          "json_config": "ring-docs-specialist.nodus.json",
+          "agent_type": "ring_docs_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "Ring Platform documentation architecture, MDX components, content strategy",
+          "note": "Replaced Fumadocs specialist - knows all Ring MDX components and patterns"
+        },
+        {
+          "agent": "mermaid_diagram_specialist",
+          "json_config": "mermaid-diagram-specialist.nodus.json",
+          "agent_type": "mermaid_diagram_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "react_animated_visuals_guru",
+          "json_config": "react-19-animated-visuals-guru.nodus.json",
+          "agent_type": "react_animated_visuals_guru",
+          "priority": "high",
+          "status": "active",
+          "domain": "React 19 animations, Motion/Framer Motion, React Three Fiber, GSAP, Lottie, data visualization",
+          "note": "Added 2025-10-30 - Creates magnificent animated visualizations for documentation"
+        }
+      ]
+    },
+    "LEGIOX_SECURITY": {
+      "cohort_id": "legiox_security",
+      "name": "Trust & Safety - Security enforcement and compliance management",
+      "tier": 3,
+      "priority": "CRITICAL",
+      "description": "Trust & Safety - Security enforcement and compliance management",
+      "total_members": 7,
+      "members": [
+        {
+          "agent": "authjs_specialist",
+          "json_config": "authjs-specialist.nodus.json",
+          "agent_type": "authjs_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "security_sentinel",
+          "json_config": "security-sentinel.nodus.json",
+          "agent_type": "security_sentinel",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "cybersecurity_governance_specialist",
+          "json_config": "cybersecurity-governance-specialist.nodus.json",
+          "agent_type": "cybersecurity_governance_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "supply_chain_security_specialist",
+          "json_config": "supply-chain-security-specialist.nodus.json",
+          "agent_type": "supply_chain_security_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "regulatory_compliance_specialist",
+          "json_config": "regulatory-compliance-specialist.nodus.json",
+          "agent_type": "regulatory_compliance_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "secrets_keeper",
+          "json_config": "secrets-keeper.nodus.json",
+          "agent_type": "secrets_keeper",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "firebase_security_expert",
+          "json_config": "firebase-security-expert.nodus.json",
+          "agent_type": "firebase_security_expert",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_PLATFORM": {
+      "cohort_id": "legiox_platform",
+      "name": "React/Next.js/Frontend Architecture - Platform foundation technologies",
+      "tier": 4,
+      "priority": "CRITICAL",
+      "description": "React/Next.js/Frontend Architecture - Platform foundation technologies",
+      "total_members": 9,
+      "members": [
+        {
+          "agent": "react_19_specialist",
+          "json_config": "react-19-specialist.nodus.json",
+          "agent_type": "react_19_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "nextjs_15_specialist",
+          "json_config": "nextjs-15-specialist.nodus.json",
+          "agent_type": "nextjs_15_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "nextjs_16_upgrader",
+          "json_config": "nextjs-16-upgrader.nodus.json",
+          "agent_type": "nextjs_16_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Next.js 16 migration, Turbopack, Cache Components, React 19.2, async dynamic APIs",
+          "note": "Added 2025-10-30 - Architects seamless Next.js 15→16 migrations with zero downtime"
+        },
+        {
+          "agent": "server_components_architect",
+          "json_config": "server-components-architect.nodus.json",
+          "agent_type": "server_components_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "typescript_performance_optimizer",
+          "json_config": "typescript-performance-optimizer.nodus.json",
+          "agent_type": "typescript_performance_optimizer",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "web_vitals_master",
+          "json_config": "web-vitals-master.nodus.json",
+          "agent_type": "web_vitals_master",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ui_ux_optimization_agent",
+          "json_config": "ui-ux-optimization-agent.nodus.json",
+          "agent_type": "ui_ux_optimization_agent",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "react_tailwind_css_4_specialist",
+          "json_config": "react-tailwind-css-4-specialist.nodus.json",
+          "agent_type": "react_tailwind_css_4_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "react_tailwind_artist",
+          "json_config": "react-tailwind-artist.nodus.json",
+          "agent_type": "react_tailwind_artist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_DEPLOY": {
+      "cohort_id": "legiox_deploy",
+      "name": "System Architecture - Scalable, reliable infrastructure and deployment",
+      "tier": 5,
+      "priority": "HIGH",
+      "description": "System Architecture - Scalable, reliable infrastructure and deployment",
+      "total_members": 13,
+      "members": [
+        {
+          "agent": "git_guru_legioxnaire",
+          "json_config": "git-github-specialist.nodus.json",
+          "agent_type": "git_github_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Git operations, GitHub API integration, CI/CD automation, version control mastery",
+          "note": "Powers legiox-kingdom-grep-replace with protective rollback capabilities"
+        },
+        {
+          "agent": "ring_api_design_architect",
+          "json_config": "ring-api-design-architect.nodus.json",
+          "agent_type": "ring_api_design_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "database_specialist_coordinator",
+          "json_config": "database-specialist-coordinator.nodus.json",
+          "agent_type": "database_specialist_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "postgres_db_specialist",
+          "json_config": "postgres-db-specialist.nodus.json",
+          "agent_type": "postgres_db_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "database_migration_manager",
+          "json_config": "database-migration-manager.nodus.json",
+          "agent_type": "database_migration_manager",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "infrastructure_provisioner",
+          "json_config": "infrastructure-provisioner.nodus.json",
+          "agent_type": "infrastructure_provisioner",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "cloud_platform_specialist",
+          "json_config": "cloud-platform-specialist.nodus.json",
+          "agent_type": "cloud_platform_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ci_cd_pipeline_specialist",
+          "json_config": "ci-cd-pipeline-specialist.nodus.json",
+          "agent_type": "ci_cd_pipeline_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "release_manager",
+          "json_config": "release-manager.nodus.json",
+          "agent_type": "release_manager",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "deployment_orchestrator",
+          "json_config": "deployment-orchestrator.nodus.json",
+          "agent_type": "deployment_orchestrator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "performance_optimizer",
+          "json_config": "performance-optimizer.nodus.json",
+          "agent_type": "performance_optimizer",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_observability_engineer",
+          "json_config": "ring-observability-engineer.nodus.json",
+          "agent_type": "ring_observability_engineer",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "incident_response_coordinator",
+          "json_config": "incident-response-coordinator.nodus.json",
+          "agent_type": "incident_response_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_CODE": {
+      "cohort_id": "legiox_code",
+      "name": "Code Quality & Testing - Sustainable, high-quality development practices",
+      "tier": 6,
+      "priority": "HIGH",
+      "description": "Code Quality & Testing - Sustainable, high-quality development practices",
+      "total_members": 9,
+      "members": [
+        {
+          "agent": "code_quality_guardian",
+          "json_config": "code-quality-guardian.nodus.json",
+          "agent_type": "code_quality_guardian",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "code_evolution_tracker",
+          "json_config": "code-evolution-tracker.nodus.json",
+          "agent_type": "code_evolution_tracker",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "test_orchestrator",
+          "json_config": "test-orchestrator.nodus.json",
+          "agent_type": "test_orchestrator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "integration_testing_architect",
+          "json_config": "integration-testing-architect.nodus.json",
+          "agent_type": "integration_testing_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "dependency_manager",
+          "json_config": "dependency-manager.nodus.json",
+          "agent_type": "dependency_manager",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "developer_experience_architect",
+          "json_config": "developer-experience-architect.nodus.json",
+          "agent_type": "developer_experience_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "developer_onboarding_learning_path_curator",
+          "json_config": "developer-onboarding-learning-path-curator.nodus.json",
+          "agent_type": "developer_onboarding_learning_path_curator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "technical_debt_quantification_analyst",
+          "json_config": "technical-debt-quantification-analyst.nodus.json",
+          "agent_type": "technical_debt_quantification_analyst",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "zod_enforcer",
+          "json_config": "zod-enforcer.nodus.json",
+          "agent_type": "zod_enforcer",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_DATA": {
+      "cohort_id": "legiox_data",
+      "name": "Data & Analytics - Data-driven decision making and intelligence",
+      "tier": 7,
+      "priority": "HIGH",
+      "description": "Data & Analytics - Data-driven decision making and intelligence",
+      "total_members": 4,
+      "members": [
+        {
+          "agent": "business_intelligence_specialist",
+          "json_config": "business-intelligence-specialist.nodus.json",
+          "agent_type": "business_intelligence_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "customer_success_intelligence_analyst",
+          "json_config": "customer-success-intelligence-analyst.nodus.json",
+          "agent_type": "customer_success_intelligence_analyst",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "data_pipeline_etl_architect",
+          "json_config": "data-pipeline-etl-architect.nodus.json",
+          "agent_type": "data_pipeline_etl_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "product_growth_strategist",
+          "json_config": "product-growth-strategist.nodus.json",
+          "agent_type": "product_growth_strategist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "WEB3_STAR_FORMATION": {
+      "cohort_id": "web3_star_formation",
+      "name": "Web3 Star Formation — 75 specialized agents",
+      "tier": 8,
+      "priority": "CRITICAL",
+      "description": "Decentralized Technologies — Solana ring-native, Base US L2, EVM legacy, Ringchain sovereignty, Aptos/Flow reference, Solana MEV pipeline; maps: solana.md, base.md, aptos.md, flow.md",
+      "total_members": 75,
+      "members": [
+        {
+          "agent": "ring_web3_integration_specialist",
+          "json_config": "ring-web3-integration-specialist.nodus.json",
+          "agent_type": "ring_web3_integration_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "smart_contract_security_auditor",
+          "json_config": "smart-contract-security-auditor.nodus.json",
+          "agent_type": "smart_contract_security_auditor",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": "Moved from security_compliance tier - Web3 security focus"
+        },
+        {
+          "agent": "solidity_coder",
+          "json_config": "solidity-coder.nodus.json",
+          "agent_type": "solidity_coder",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "evm_multichain_deployment_specialist",
+          "json_config": "evm-multichain-deployment-specialist.nodus.json",
+          "agent_type": "evm_multichain_deployment_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_chain_p2p_blockchain_architect",
+          "json_config": "ring-chain-p2p-blockchain-architect.nodus.json",
+          "agent_type": "ring_chain_p2p_blockchain_architect",
+          "priority": "revolutionary",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "solidity_distributed_ledger_expert",
+          "json_config": "solidity-distributed-ledger-expert.nodus.json",
+          "agent_type": "solidity_distributed_ledger_expert",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "smart_contract_security_exploit_prevention",
+          "json_config": "smart-contract-security-exploit-prevention.nodus.json",
+          "agent_type": "smart_contract_security_exploit_prevention",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "defi_protocol_architect",
+          "json_config": "defi-protocol-architect.nodus.json",
+          "agent_type": "defi_protocol_architect",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "liquidity_robots_amm_specialist",
+          "json_config": "liquidity-robots-amm-specialist.nodus.json",
+          "agent_type": "liquidity_robots_amm_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "gas_optimization_assembly_specialist",
+          "json_config": "gas-optimization-assembly-specialist.nodus.json",
+          "agent_type": "gas_optimization_assembly_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "react19_web3_frontend_integration_specialist",
+          "json_config": "react-19-web3-frontend-integration-specialist.nodus.json",
+          "agent_type": "react19_web3_frontend_integration_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "decentralized_oracle_network_specialist",
+          "json_config": "decentralized-oracle-network-specialist.nodus.json",
+          "agent_type": "decentralized_oracle_network_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_chain_evangelist",
+          "json_config": "ring-chain-evangelist.nodus.json",
+          "agent_type": "ring_chain_evangelist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "aptos_account_objects_model",
+          "json_config": "aptos-account-objects-model.nodus.json",
+          "agent_type": "aptos_account_objects_model",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_airdrop_batch_distribution",
+          "json_config": "aptos-airdrop-batch-distribution.nodus.json",
+          "agent_type": "aptos_airdrop_batch_distribution",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_dex_swap_modest_integrator",
+          "json_config": "aptos-dex-swap-modest-integrator.nodus.json",
+          "agent_type": "aptos_dex_swap_modest_integrator",
+          "priority": "medium",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_digital_asset_nft",
+          "json_config": "aptos-digital-asset-nft.nodus.json",
+          "agent_type": "aptos_digital_asset_nft",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_fee_payer_sponsored_transactions",
+          "json_config": "aptos-fee-payer-sponsored-transactions.nodus.json",
+          "agent_type": "aptos_fee_payer_sponsored_transactions",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_fungible_asset_ring_token",
+          "json_config": "aptos-fungible-asset-ring-token.nodus.json",
+          "agent_type": "aptos_fungible_asset_ring_token",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_keyless_ensure_wallet",
+          "json_config": "aptos-keyless-ensure-wallet.nodus.json",
+          "agent_type": "aptos_keyless_ensure_wallet",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_move_contract_security",
+          "json_config": "aptos-move-contract-security.nodus.json",
+          "agent_type": "aptos_move_contract_security",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_multisig_treasury",
+          "json_config": "aptos-multisig-treasury.nodus.json",
+          "agent_type": "aptos_multisig_treasury",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_nft_marketplace_ring",
+          "json_config": "aptos-nft-marketplace-ring.nodus.json",
+          "agent_type": "aptos_nft_marketplace_ring",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_participation_governance_voting",
+          "json_config": "aptos-participation-governance-voting.nodus.json",
+          "agent_type": "aptos_participation_governance_voting",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_react_next_wallet_integration",
+          "json_config": "aptos-react-next-wallet-integration.nodus.json",
+          "agent_type": "aptos_react_next_wallet_integration",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_rpc_indexer_data_plane",
+          "json_config": "aptos-rpc-indexer-data-plane.nodus.json",
+          "agent_type": "aptos_rpc_indexer_data_plane",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_staking_ring_module",
+          "json_config": "aptos-staking-ring-module.nodus.json",
+          "agent_type": "aptos_staking_ring_module",
+          "priority": "medium",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_token_compliance_guard",
+          "json_config": "aptos-token-compliance-guard.nodus.json",
+          "agent_type": "aptos_token_compliance_guard",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_ts_sdk_core",
+          "json_config": "aptos-ts-sdk-core.nodus.json",
+          "agent_type": "aptos_ts_sdk_core",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "devops_aptos_gas_station_ops",
+          "json_config": "devops-aptos-gas-station-ops.nodus.json",
+          "agent_type": "devops_aptos_gas_station_ops",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "flow_cadence_ft_mint",
+          "json_config": "flow-cadence-ft-mint.nodus.json",
+          "agent_type": "flow_cadence_ft_mint",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_cadence_nft_marketplace",
+          "json_config": "flow-cadence-nft-marketplace.nodus.json",
+          "agent_type": "flow_cadence_nft_marketplace",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_ensure_wallet_server",
+          "json_config": "flow-ensure-wallet-server.nodus.json",
+          "agent_type": "flow_ensure_wallet_server",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_hybrid_custody_wallet",
+          "json_config": "flow-hybrid-custody-wallet.nodus.json",
+          "agent_type": "flow_hybrid_custody_wallet",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_react_next_integration",
+          "json_config": "flow-react-next-integration.nodus.json",
+          "agent_type": "flow_react_next_integration",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_sponsored_transactions",
+          "json_config": "flow-sponsored-transactions.nodus.json",
+          "agent_type": "flow_sponsored_transactions",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "solana_account_deserialization",
+          "json_config": "solana-account-deserialization.nodus.json",
+          "agent_type": "solana_account_deserialization",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_arbitrage_detector",
+          "json_config": "solana-arbitrage-detector.nodus.json",
+          "agent_type": "solana_arbitrage_detector",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_dex_swap_math",
+          "json_config": "solana-dex-swap-math.nodus.json",
+          "agent_type": "solana_dex_swap_math",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_fee_market_dynamics",
+          "json_config": "solana-fee-market-dynamics.nodus.json",
+          "agent_type": "solana_fee_market_dynamics",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_jito_mev_tips",
+          "json_config": "solana-jito-mev-tips.nodus.json",
+          "agent_type": "solana_jito_mev_tips",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_mev_risk_circuit_breaker",
+          "json_config": "solana-mev-risk-circuit-breaker.nodus.json",
+          "agent_type": "solana_mev_risk_circuit_breaker",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_pool_discovery",
+          "json_config": "solana-pool-discovery.nodus.json",
+          "agent_type": "solana_pool_discovery",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_pool_state_cache",
+          "json_config": "solana-pool-state-cache.nodus.json",
+          "agent_type": "solana_pool_state_cache",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_position_sizing",
+          "json_config": "solana-position-sizing.nodus.json",
+          "agent_type": "solana_position_sizing",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_rpc_websocket_infra",
+          "json_config": "solana-rpc-websocket-infra.nodus.json",
+          "agent_type": "solana_rpc_websocket_infra",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_rust_execution_engine",
+          "json_config": "solana-rust-execution-engine.nodus.json",
+          "agent_type": "solana_rust_execution_engine",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_token_graph_engine",
+          "json_config": "solana-token-graph-engine.nodus.json",
+          "agent_type": "solana_token_graph_engine",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_token_safety_filters",
+          "json_config": "solana-token-safety-filters.nodus.json",
+          "agent_type": "solana_token_safety_filters",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "rust_async_concurrency_solana",
+          "json_config": "rust-async-concurrency-solana.nodus.json",
+          "agent_type": "rust_async_concurrency_solana",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "devops-mev-hetzner-colocation-infra",
+          "json_config": "devops-mev-hetzner-colocation-infra.nodus.json",
+          "agent_type": "devops-mev-hetzner-colocation-infra",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_spl_token_ring_token",
+          "json_config": "solana-spl-token-ring-token.nodus.json",
+          "agent_type": "solana_spl_token_ring_token",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Ring-native — solana.md Wave 1"
+        },
+        {
+          "agent": "solana_fee_sponsorship_native",
+          "json_config": "solana-fee-sponsorship-native.nodus.json",
+          "agent_type": "solana_fee_sponsorship_native",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Ring-native feePayer sponsor"
+        },
+        {
+          "agent": "solana_ensure_wallet_server",
+          "json_config": "solana-ensure-wallet-server.nodus.json",
+          "agent_type": "solana_ensure_wallet_server",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Ring ensureWallet custodial"
+        },
+        {
+          "agent": "devops_solana_fee_relayer_ops",
+          "json_config": "devops-solana-fee-relayer-ops.nodus.json",
+          "agent_type": "devops_solana_fee_relayer_ops",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Kora ops Phase 1.5"
+        },
+        {
+          "agent": "solana_react_next_wallet_integration",
+          "json_config": "solana-react-next-wallet-integration.nodus.json",
+          "agent_type": "solana_react_next_wallet_integration",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Ring wallet UI"
+        },
+        {
+          "agent": "solana_web3_kit_core",
+          "json_config": "solana-web3-kit-core.nodus.json",
+          "agent_type": "solana_web3_kit_core",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "web3.js SDK core"
+        },
+        {
+          "agent": "solana_rpc_indexer_ring_data_plane",
+          "json_config": "solana-rpc-indexer-ring-data-plane.nodus.json",
+          "agent_type": "solana_rpc_indexer_ring_data_plane",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "RING balance indexer"
+        },
+        {
+          "agent": "solana_account_model_pdas",
+          "json_config": "solana-account-model-pdas.nodus.json",
+          "agent_type": "solana_account_model_pdas",
+          "priority": "medium",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "PDA / Anchor accounts"
+        },
+        {
+          "agent": "solana_squads_multisig_treasury",
+          "json_config": "solana-squads-multisig-treasury.nodus.json",
+          "agent_type": "solana_squads_multisig_treasury",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Treasury multisig mainnet gate"
+        },
+        {
+          "agent": "solana_airdrop_batch_distribution",
+          "json_config": "solana-airdrop-batch-distribution.nodus.json",
+          "agent_type": "solana_airdrop_batch_distribution",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Verification rewards batch"
+        },
+        {
+          "agent": "solana_participation_governance_voting",
+          "json_config": "solana-participation-governance-voting.nodus.json",
+          "agent_type": "solana_participation_governance_voting",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "1 RING = 1 vote"
+        },
+        {
+          "agent": "solana_metaplex_nft_ring",
+          "json_config": "solana-metaplex-nft-ring.nodus.json",
+          "agent_type": "solana_metaplex_nft_ring",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Metaplex Core NFTs"
+        },
+        {
+          "agent": "solana_nft_marketplace_ring",
+          "json_config": "solana-nft-marketplace-ring.nodus.json",
+          "agent_type": "solana_nft_marketplace_ring",
+          "priority": "medium",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Fixed-price marketplace"
+        },
+        {
+          "agent": "solana_staking_ring_module",
+          "json_config": "solana-staking-ring-module.nodus.json",
+          "agent_type": "solana_staking_ring_module",
+          "priority": "medium",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Product vault lock"
+        },
+        {
+          "agent": "solana_jupiter_modest_swap",
+          "json_config": "solana-jupiter-modest-swap.nodus.json",
+          "agent_type": "solana_jupiter_modest_swap",
+          "priority": "medium",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "User swap — not MEV arb"
+        },
+        {
+          "agent": "solana_anchor_program_security",
+          "json_config": "solana-anchor-program-security.nodus.json",
+          "agent_type": "solana_anchor_program_security",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Anchor audit gate"
+        },
+        {
+          "agent": "solana_token_compliance_guard",
+          "json_config": "solana-token-compliance-guard.nodus.json",
+          "agent_type": "solana_token_compliance_guard",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Freeze / sanctions"
+        },
+        {
+          "agent": "base_erc20_ring_token_mirror",
+          "json_config": "base-erc20-ring-token-mirror.nodus.json",
+          "agent_type": "base_erc20_ring_token_mirror",
+          "priority": "critical",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "US ERC-20 mirror — base.md"
+        },
+        {
+          "agent": "base_erc4337_paymaster_sponsorship",
+          "json_config": "base-erc4337-paymaster-sponsorship.nodus.json",
+          "agent_type": "base_erc4337_paymaster_sponsorship",
+          "priority": "critical",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "CDP Paymaster"
+        },
+        {
+          "agent": "base_account_smart_wallet",
+          "json_config": "base-account-smart-wallet.nodus.json",
+          "agent_type": "base_account_smart_wallet",
+          "priority": "high",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "Base Account SDK"
+        },
+        {
+          "agent": "base_react_next_wallet_integration",
+          "json_config": "base-react-next-wallet-integration.nodus.json",
+          "agent_type": "base_react_next_wallet_integration",
+          "priority": "high",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "wagmi on Base"
+        },
+        {
+          "agent": "base_solana_bridge_ring_presence",
+          "json_config": "base-solana-bridge-ring-presence.nodus.json",
+          "agent_type": "base_solana_bridge_ring_presence",
+          "priority": "high",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "Bridge supply reconcile"
+        },
+        {
+          "agent": "base_ringsales_evm_desk",
+          "json_config": "base-ringsales-evm-desk.nodus.json",
+          "agent_type": "base_ringsales_evm_desk",
+          "priority": "high",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "USDT↔RING desk"
+        },
+        {
+          "agent": "devops_base_paymaster_ops",
+          "json_config": "devops-base-paymaster-ops.nodus.json",
+          "agent_type": "devops_base_paymaster_ops",
+          "priority": "critical",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "CDP ops"
+        }
+      ],
+      "capability_maps": [
+        {
+          "chain": "aptos",
+          "title": "Aptos capability map",
+          "path": "AI-LEGIOX/legiox-truth-lens/aptos.md",
+          "lens_count": 17,
+          "stance": "Reference — superseded for ring-native chain"
+        },
+        {
+          "chain": "flow",
+          "title": "Flow capability map",
+          "path": "AI-LEGIOX/legiox-truth-lens/flow.md",
+          "lens_count": 6,
+          "stance": "Interim hosted chain"
+        },
+        {
+          "chain": "solana",
+          "title": "Solana capability map",
+          "path": "AI-LEGIOX/legiox-truth-lens/solana.md",
+          "lens_count": 30,
+          "stance": "Ring-native (17) + MEV Heliophagy (13)"
+        },
+        {
+          "chain": "base",
+          "title": "Base L2 capability map",
+          "path": "AI-LEGIOX/legiox-truth-lens/base.md",
+          "lens_count": 7,
+          "stance": "US L2 secondary — ERC-20 mirror + CDP Paymaster"
+        }
+      ]
+    },
+    "LEGIOX_MOBILE": {
+      "cohort_id": "legiox_mobile",
+      "name": "Mobile & Desktop - Multi-platform experiences and native development",
+      "tier": 9,
+      "priority": "MEDIUM",
+      "description": "Mobile & Desktop - Multi-platform experiences and native development",
+      "total_members": 6,
+      "members": [
+        {
+          "agent": "mobile_app_development_coordinator",
+          "json_config": "mobile-app-development-coordinator.nodus.json",
+          "agent_type": "mobile_app_development_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "android_ndk_coder",
+          "json_config": "android-ndk-coder.nodus.json",
+          "agent_type": "android_ndk_coder",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "swift_6_coder",
+          "json_config": "swift-6-coder.nodus.json",
+          "agent_type": "swift_6_coder",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "flutter_coder",
+          "json_config": "flutter-coder.nodus.json",
+          "agent_type": "flutter_coder",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "desktop_app_publisher",
+          "json_config": "desktop-app-publisher.nodus.json",
+          "agent_type": "desktop_app_publisher",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "app_store_optimization_specialist",
+          "json_config": "app-store-optimization-specialist.nodus.json",
+          "agent_type": "app_store_optimization_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_REALTIME": {
+      "cohort_id": "legiox_realtime",
+      "name": "High-Performance Communication - Real-time capabilities and protocols",
+      "tier": 10,
+      "priority": "MEDIUM",
+      "description": "High-Performance Communication - Real-time capabilities and protocols",
+      "total_members": 3,
+      "members": [
+        {
+          "agent": "realtime_communication_specialist",
+          "json_config": "realtime-communication-specialist.nodus.json",
+          "agent_type": "realtime_communication_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "asn1_bert_protocol_specialist",
+          "json_config": "asn1-bert-protocol-specialist.nodus.json",
+          "agent_type": "asn1_bert_protocol_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "erlang_otp_specialist",
+          "json_config": "erlang-otp-specialist.nodus.json",
+          "agent_type": "erlang_otp_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_EXECUTIVE": {
+      "cohort_id": "legiox_executive",
+      "name": "Leadership Communication - Executive-facing deliverables and visualizations",
+      "tier": 11,
+      "priority": "MEDIUM",
+      "description": "Leadership Communication - Executive-facing deliverables and visualizations",
+      "total_members": 2,
+      "members": [
+        {
+          "agent": "executive_dashboard_architect",
+          "json_config": "executive-dashboard-architect.nodus.json",
+          "agent_type": "executive_dashboard_architect",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "mobile_documentation_optimizer",
+          "json_config": "mobile-documentation-optimizer.nodus.json",
+          "agent_type": "mobile_documentation_optimizer",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_MARKET": {
+      "cohort_id": "legiox_market",
+      "name": "Growth & Market Intelligence - Global conquest and market domination",
+      "tier": 12,
+      "priority": "HIGH",
+      "description": "Growth & Market Intelligence - Global conquest and market domination",
+      "total_members": 6,
+      "members": [
+        {
+          "agent": "market_intelligence_analyst",
+          "json_config": "market-intelligence-analyst.nodus.json",
+          "agent_type": "market_intelligence_analyst",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "competitive_intelligence_analyst",
+          "json_config": "competitive-intelligence-analyst.nodus.json",
+          "agent_type": "competitive_intelligence_analyst",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "strategic_market_disruptor",
+          "json_config": "strategic-market-disruptor.nodus.json",
+          "agent_type": "strategic_market_disruptor",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "strategic_foresight_specialist",
+          "json_config": "strategic-foresight-specialist.nodus.json",
+          "agent_type": "strategic_foresight_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "partnership_development_orchestrator",
+          "json_config": "partnership-development-orchestrator.nodus.json",
+          "agent_type": "partnership_development_orchestrator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "apac_market_specialist",
+          "json_config": "apac-market-specialist.nodus.json",
+          "agent_type": "apac_market_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_CONTENT": {
+      "cohort_id": "legiox_content",
+      "name": "Brand & Community Building - Content strategies and community growth",
+      "tier": 13,
+      "priority": "MEDIUM",
+      "description": "Brand & Community Building - Content strategies and community growth",
+      "total_members": 7,
+      "members": [
+        {
+          "agent": "content_dev_marketing_specialist",
+          "json_config": "content-dev-marketing-specialist.nodus.json",
+          "agent_type": "content_dev_marketing_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "content_amplification_specialist",
+          "json_config": "content-amplification-specialist.nodus.json",
+          "agent_type": "content_amplification_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "community_growth_catalyst",
+          "json_config": "community-growth-catalyst.nodus.json",
+          "agent_type": "community_growth_catalyst",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "brand_storytelling_architect",
+          "json_config": "brand-storytelling-architect.nodus.json",
+          "agent_type": "brand_storytelling_architect",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "open_source_ecosystem_coordinator",
+          "json_config": "open-source-ecosystem-coordinator.nodus.json",
+          "agent_type": "open_source_ecosystem_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "text_master",
+          "json_config": "text-master.nodus.json",
+          "agent_type": "text_master",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "podcast_audio_content_specialist",
+          "json_config": "podcast-audio-content-specialist.nodus.json",
+          "agent_type": "podcast_audio_content_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_INNOVATION": {
+      "cohort_id": "legiox_innovation",
+      "name": "Experimental & Advanced - Cutting-edge capabilities and innovation",
+      "tier": 14,
+      "priority": "MEDIUM",
+      "description": "Experimental & Advanced - Cutting-edge capabilities and innovation",
+      "total_members": 4,
+      "members": [
+        {
+          "agent": "feature_flag_experimentation_coordinator",
+          "json_config": "feature-flag-experimentation-coordinator.nodus.json",
+          "agent_type": "feature_flag_experimentation_coordinator",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "chaos_engineering_specialist",
+          "json_config": "chaos-engineering-specialist.nodus.json",
+          "agent_type": "chaos_engineering_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "mlops_ai_model_lifecycle_manager",
+          "json_config": "mlops-ai-model-lifecycle-manager.nodus.json",
+          "agent_type": "mlops_ai_model_lifecycle_manager",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_api_versioning_deprecation_coordinator",
+          "json_config": "ring-api-versioning-deprecation-coordinator.nodus.json",
+          "agent_type": "ring_api_versioning_deprecation_coordinator",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_SUSTAINABILITY": {
+      "cohort_id": "legiox_sustainability",
+      "name": "Accessibility & Ethics - Inclusive and sustainable development practices",
+      "tier": 15,
+      "priority": "MEDIUM",
+      "description": "Accessibility & Ethics - Inclusive and sustainable development practices",
+      "total_members": 4,
+      "members": [
+        {
+          "agent": "accessibility_compliance_enforcer",
+          "json_config": "accessibility-compliance-enforcer.nodus.json",
+          "agent_type": "accessibility_compliance_enforcer",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "localization_engineering_specialist",
+          "json_config": "localization-engineering-specialist.nodus.json",
+          "agent_type": "localization_engineering_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "localization_deployment_specialist",
+          "json_config": "localization-deployment-specialist.nodus.json",
+          "agent_type": "localization_deployment_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "green_computing_sustainability_engineer",
+          "json_config": "green-computing-sustainability-engineer.nodus.json",
+          "agent_type": "green_computing_sustainability_engineer",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_GLOBAL_CRITICAL": {
+      "cohort_id": "legiox_global_critical",
+      "name": "International Market Domination - Essential for global conquest",
+      "tier": 16,
+      "priority": "MAXIMUM",
+      "description": "International Market Domination - Essential for global conquest",
+      "total_members": 5,
+      "members": [
+        {
+          "agent": "geopolitical_risk_analyst",
+          "json_config": "geopolitical-risk-analyst.nodus.json",
+          "agent_type": "geopolitical_risk_analyst",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "international_payment_systems_specialist",
+          "json_config": "international-payment-systems-specialist.nodus.json",
+          "agent_type": "international_payment_systems_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "crisis_communication_reputation_manager",
+          "json_config": "crisis-communication-reputation-manager.nodus.json",
+          "agent_type": "crisis_communication_reputation_manager",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "cross_border_legal_compliance_specialist",
+          "json_config": "cross-border-legal-compliance-specialist.nodus.json",
+          "agent_type": "cross_border_legal_compliance_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "global_media_relations_coordinator",
+          "json_config": "global-media-relations-coordinator.nodus.json",
+          "agent_type": "global_media_relations_coordinator",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_GLOBAL_OPS": {
+      "cohort_id": "legiox_global_ops",
+      "name": "Autonomous Conquest - Planetary-scale operations and orchestration",
+      "tier": 17,
+      "priority": "MAXIMUM",
+      "description": "Autonomous Conquest - Planetary-scale operations and orchestration",
+      "total_members": 3,
+      "members": [
+        {
+          "agent": "outreach_coordinator",
+          "json_config": "outreach-coordinator.nodus.json",
+          "agent_type": "outreach_coordinator",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_digital_presence_landlord",
+          "json_config": "ring-digital-presence-landlord.nodus.json",
+          "agent_type": "ring_digital_presence_landlord",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "legal_advice_expert",
+          "json_config": "legal-advice-expert.nodus.json",
+          "agent_type": "legal_advice_expert",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_REVOLUTIONARY": {
+      "cohort_id": "legiox_revolutionary",
+      "name": "World-Unseen Innovation - Breakthrough capabilities for viral growth",
+      "tier": 18,
+      "priority": "REVOLUTIONARY",
+      "description": "World-Unseen Innovation - Breakthrough capabilities for viral growth",
+      "total_members": 4,
+      "members": [
+        {
+          "agent": "viral_adoption_accelerator",
+          "json_config": "viral-adoption-accelerator.nodus.json",
+          "agent_type": "viral_adoption_accelerator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ecosystem_builder",
+          "json_config": "ecosystem-builder.nodus.json",
+          "agent_type": "ecosystem_builder",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ai_powered_personalization_engine",
+          "json_config": "ai-powered-personalization-engine.nodus.json",
+          "agent_type": "ai_powered_personalization_engine",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "conversion_rate_optimization_specialist",
+          "json_config": "conversion-rate-optimization-specialist.nodus.json",
+          "agent_type": "conversion_rate_optimization_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_PLANETARY": {
+      "cohort_id": "legiox_planetary",
+      "name": "Global Consciousness - Universal transformation and planetary coordination",
+      "tier": 19,
+      "priority": "PLANETARY",
+      "description": "Global Consciousness - Universal transformation and planetary coordination",
+      "total_members": 6,
+      "members": [
+        {
+          "agent": "global_opportunity_matcher",
+          "json_config": "global-opportunity-matcher.nodus.json",
+          "agent_type": "global_opportunity_matcher",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "planetary_economic_orchestrator",
+          "json_config": "planetary-economic-orchestrator.nodus.json",
+          "agent_type": "planetary_economic_orchestrator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "planetary_project_coordinator",
+          "json_config": "planetary-project-coordinator.nodus.json",
+          "agent_type": "planetary_project_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "collective_need_selling_marketplace_specialist",
+          "json_config": "collective-need-selling-marketplace-specialist.nodus.json",
+          "agent_type": "collective_need_selling_marketplace_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "planetary_governance_facilitator",
+          "json_config": "planetary-governance-facilitator.nodus.json",
+          "agent_type": "planetary_governance_facilitator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "planetary_adoption_coordination_specialist",
+          "json_config": "planetary-adoption-coordination-specialist.nodus.json",
+          "agent_type": "planetary_adoption_coordination_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_SPECIALIZED": {
+      "cohort_id": "legiox_specialized",
+      "name": "Niche Expertise - Domain-specific mastery and specialized skills",
+      "tier": 20,
+      "priority": "SPECIALIZED",
+      "description": "Niche Expertise - Domain-specific mastery and specialized skills",
+      "total_members": 2,
+      "members": [
+        {
+          "agent": "ring_feature_instructor",
+          "json_config": "ring-feature-instructor.nodus.json",
+          "agent_type": "ring_feature_instructor",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "opportunity_seeker",
+          "json_config": "opportunity-seeker.nodus.json",
+          "agent_type": "opportunity_seeker",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_DEVELOPER_ECO": {
+      "cohort_id": "legiox_developer_eco",
+      "name": "Developer Community & Education - Building certified developer ecosystems",
+      "tier": 21,
+      "priority": "HIGH",
+      "description": "Developer Community & Education - Building certified developer ecosystems",
+      "total_members": 1,
+      "members": [
+        {
+          "agent": "developer_education_certification_specialist",
+          "json_config": "developer-education-certification-specialist.nodus.json",
+          "agent_type": "developer_education_certification_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_REVENUE": {
+      "cohort_id": "legiox_revenue",
+      "name": "Revenue Optimization & Partnerships - Revenue growth and strategic integrations",
+      "tier": 22,
+      "priority": "HIGH",
+      "description": "Revenue Optimization & Partnerships - Revenue growth and strategic integrations",
+      "total_members": 2,
+      "members": [
+        {
+          "agent": "ring_api_partnership_integration_specialist",
+          "json_config": "ring-api-partnership-integration-specialist.nodus.json",
+          "agent_type": "ring_api_partnership_integration_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "wayforpay_integrator",
+          "json_config": "wayforpay-integrator-skillset.nodus.json",
+          "agent_type": "wayforpay_api_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "WayForPay payment gateway integration (₴299 UAH membership revenue)",
+          "note": "P0 revenue blocker - enables SUBSCRIBER→MEMBER upgrades"
+        }
+      ]
+    },
+    "LEGIOX_FUNDING": {
+      "cohort_id": "legiox_funding",
+      "name": "Capital Acquisition - Non-dilutive funding and grant acquisition",
+      "tier": 23,
+      "priority": "HIGH",
+      "description": "Capital Acquisition - Non-dilutive funding and grant acquisition",
+      "total_members": 1,
+      "members": [
+        {
+          "agent": "grant_funding_acquisition_specialist",
+          "json_config": "grant-funding-acquisition-specialist.nodus.json",
+          "agent_type": "grant_funding_acquisition_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "RING_TASK_FORCE": {
+      "cohort_id": "ring_task_force",
+      "name": "Ring Platform Elite Task Force - Specialized knowledge lenses for Ring's core differentiators and architecture",
+      "tier": 25,
+      "priority": "CRITICAL",
+      "description": "Ring Platform Elite Task Force (visualizations: Ring Elite / THE NINE + one API integrator lens) — ten specialists covering backends, AI matcher, ERP, tenancy, realtime tunnel, clone orchestration, marketplace, UI components, Web3 wallet, and Ring HTTP/webhook APIs",
+      "total_members": 10,
+      "members": [
+        {
+          "agent": "ring_backend_administrator",
+          "json_config": "ring-backend-administrator.nodus.json",
+          "agent_type": "ring_backend_administrator",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Multi-backend database orchestration (PostgreSQL/Firebase/Supabase)",
+          "note": "Moved from critical_infrastructure to Ring Task Force for specialized Ring focus"
+        },
+        {
+          "agent": "ring_ai_matcher_specialist",
+          "json_config": "ring-ai-matcher-specialist.nodus.json",
+          "agent_type": "ring_ai_matcher_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "AI-powered opportunity matching engine (Ring's killer feature)",
+          "note": ""
+        },
+        {
+          "agent": "ring_erp_system_architect",
+          "json_config": "ring-erp-system-architect.nodus.json",
+          "agent_type": "ring_erp_system_architect",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Comprehensive AI-driven cooperative ERP (enterprise conquest weapon)",
+          "note": ""
+        },
+        {
+          "agent": "ring_multi_tenant_architect",
+          "json_config": "ring-multi-tenant-architect.nodus.json",
+          "agent_type": "ring_multi_tenant_architect",
+          "priority": "critical",
+          "status": "active",
+          "domain": "White-label multi-tenant architecture (infinite Ring clones)",
+          "note": ""
+        },
+        {
+          "agent": "ring_tunnel_transport_specialist",
+          "json_config": "ring-tunnel-transport-specialist.nodus.json",
+          "agent_type": "ring_tunnel_transport_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Multi-protocol real-time communication (WebSocket/SSE/Supabase/Firebase)",
+          "note": ""
+        },
+        {
+          "agent": "ring_digital_presence_landlord",
+          "json_config": "ring-digital-presence-landlord.nodus.json",
+          "agent_type": "ring_digital_presence_landlord",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Ring Platform cloning and customization orchestration (master of white-label deployment)",
+          "note": "THE master of Ring cloning - moved from global_expansion_orchestration to Ring Task Force"
+        },
+        {
+          "agent": "ring_multi_vendor_store_expert",
+          "json_config": "ring-multi-vendor-store-expert.nodus.json",
+          "agent_type": "ring_multi_vendor_store_expert",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Multi-vendor e-commerce marketplace (Digital Cities merchant monetization)",
+          "note": ""
+        },
+        {
+          "agent": "ring_components_specialist",
+          "json_config": "ring-components-specialist.nodus.json",
+          "agent_type": "ring_components_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "UI/theme consistency and component architecture",
+          "note": ""
+        },
+        {
+          "agent": "ring_web3_integration_specialist",
+          "json_config": "ring-web3-integration-specialist.nodus.json",
+          "agent_type": "ring_web3_integration_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Complete Web3 & wallet ecosystem (RING tokens, PIN security, multi-chain, NFTs, staking, oracle)",
+          "note": "Replaces RingFeature Instructor in THE NINE (user training moved to Ring Cohort II)"
+        },
+        {
+          "agent": "ring_api_specialist",
+          "json_config": "ring-api-specialist.nodus.json",
+          "agent_type": "ring_api_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "Ring integrator-facing HTTP APIs, webhooks, auth, tenant-safe contracts (partners + clones)",
+          "note": "2026-04-25: tenth Ring Task Force member — complements ring_api_design_architect / versioning / partnership lenses"
+        }
+      ]
+    },
+    "RING_ENTERPRISE_GOVERNANCE": {
+      "cohort_id": "ring_enterprise_governance",
+      "name": "Ring Enterprise Governance - SSO, assurance, data residency, and DPA truth",
+      "tier": 24,
+      "priority": "CRITICAL",
+      "description": "Enterprise procurement: identity federation, customer audit collateral, and engineering-grounded data location / transfers / subprocessors",
+      "total_members": 3,
+      "members": [
+        {
+          "agent": "ring-enterprise-sso-saml-oidc-and-scim-specialist",
+          "json_config": "ring-enterprise-sso-saml-oidc-and-scim-specialist.nodus.json",
+          "agent_type": "ring-enterprise-sso-saml-oidc-and-scim-specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "SAML/OIDC IdP federation, SCIM lifecycle, enterprise sessions",
+          "note": ""
+        },
+        {
+          "agent": "ring-enterprise-assurance-pack-and-customer-audit-specialist",
+          "json_config": "ring-enterprise-assurance-pack-and-customer-audit-specialist.nodus.json",
+          "agent_type": "ring-enterprise-assurance-pack-and-customer-audit-specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "Assurance packs, questionnaires, evidence, audit facilitation",
+          "note": ""
+        },
+        {
+          "agent": "ring-global-data-residency-dpa-and-subprocessors-specialist",
+          "json_config": "ring-global-data-residency-dpa-and-subprocessors-specialist.nodus.json",
+          "agent_type": "ring-global-data-residency-dpa-and-subprocessors-specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "Data maps, regions, transfers, keys, DPA technical annexes, subprocessor truth",
+          "note": "Pairs with assurance; not legal advice"
+        }
+      ]
+    },
+    "RING_COHORT_II": {
+      "cohort_id": "ring_cohort_ii",
+      "name": "Ring Platform Support & Education - User success and platform adoption specialists",
+      "tier": 26,
+      "priority": "HIGH",
+      "description": "Ring Platform Support & Education - User success and platform adoption specialists",
+      "total_members": 1,
+      "members": [
+        {
+          "agent": "ring_feature_instructor",
+          "json_config": "ring-feature-instructor.nodus.json",
+          "agent_type": "ring_feature_instructor",
+          "priority": "high",
+          "status": "active",
+          "domain": "User education, support, and feature training",
+          "note": "Promoted from THE NINE to lead Ring Cohort II - The Guides"
+        }
+      ]
+    },
+    "LEGIOX_FRONTEND": {
+      "cohort_id": "legiox_frontend",
+      "name": "Frontend Development - UI/UX, React, Next.js, animations (alias for LEGIOX_PLATFORM)",
+      "tier": 2,
+      "priority": "HIGH",
+      "description": "Frontend-focused subset of LEGIOX_PLATFORM - React 19, Next.js 16, Framer Motion, Tailwind",
+      "alias_of": "LEGIOX_PLATFORM",
+      "total_members": 10,
+      "note": "Added 2026-02-18 for decision flow compatibility"
+    },
+    "LEGIOX_DATABASE": {
+      "cohort_id": "legiox_database",
+      "name": "Database Operations - PostgreSQL, Firebase, Supabase, backend abstraction (alias for LEGIOX_DATA)",
+      "tier": 2,
+      "priority": "CRITICAL",
+      "description": "Database-focused subset including ring-backend-administrator, postgres-db-specialist",
+      "alias_of": "LEGIOX_DATA",
+      "total_members": 6,
+      "note": "Added 2026-02-18 for decision flow compatibility"
+    },
+    "LEGIOX_INFRASTRUCTURE": {
+      "cohort_id": "legiox_infrastructure",
+      "name": "Infrastructure & Deployment - Kubernetes, Docker, CI/CD (alias for LEGIOX_DEPLOY)",
+      "tier": 2,
+      "priority": "CRITICAL",
+      "description": "Infrastructure-focused subset including deployment-orchestrator, infrastructure-provisioner",
+      "alias_of": "LEGIOX_DEPLOY",
+      "total_members": 8,
+      "note": "Added 2026-02-18 for decision flow compatibility"
+    },
+    "LEGIOX_QUALITY": {
+      "cohort_id": "legiox_quality",
+      "name": "Code Quality & Testing - Linting, testing, refactoring (alias for LEGIOX_CODE)",
+      "tier": 2,
+      "priority": "HIGH",
+      "description": "Quality-focused subset including code-quality-guardian, test specialists",
+      "alias_of": "LEGIOX_CODE",
+      "total_members": 5,
+      "note": "Added 2026-02-18 for decision flow compatibility"
+    },
+    "LEGIOX_DAGI": {
+      "cohort_id": "legiox_dagi",
+      "name": "DAARION Agricultural Intelligence - AI-powered farm management and agricultural automation",
+      "tier": 27,
+      "priority": "REVOLUTIONARY",
+      "description": "DAGI (DAARION Agricultural Intelligence) agents for GreenFood.live vendors - 3-tier AI system (Junior/Medium/Senior) providing 24/7 customer service, farm coordination, harvest scheduling, inventory management, and multi-agent orchestration with 6 Ring LegioX support agents",
+      "total_members": 1,
+      "members": [
+        {
+          "agent": "dagi_general_expert",
+          "json_config": "dagi-general-expert.nodus.json",
+          "agent_type": "dagi_general_expert",
+          "priority": "revolutionary",
+          "status": "active",
+          "domain": "Agricultural AI, farm management, customer service, FSMA 204 compliance, sustainability scoring, DAARWIZZ knowledge sync, multi-agent coordination",
+          "note": "Created 2025-11-05 - Default DAGI agent template for all GreenFood.live vendors. Integrates with APRStaking (100/500/2000 DAARION stake), Ring Platform provisioning API, and 6 support agents (Warehouse, Logistician, Accountant, Sales, Analyst, Community)"
+        }
+      ]
+    }
+  },
+  "cohorts": {
+    "LEGIOX_CORE": {
+      "cohort_id": "legiox_core",
+      "name": "System Core - LegioX operational control and knowledge management",
+      "tier": 1,
+      "priority": "MAXIMUM",
+      "description": "System Core - LegioX operational control and knowledge management",
+      "total_members": 5,
+      "members": [
+        {
+          "agent": "ai_context_master",
+          "json_config": "ai-context-master.nodus.json",
+          "agent_type": "ai_context_master",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ai_context_architect",
+          "json_config": "ai-context-architect.nodus.json",
+          "agent_type": "ai_context_architect",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "librarian_agent",
+          "json_config": "librarian-agent-prompt.nodus.json",
+          "agent_type": "librarian",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "context_truth_guard",
+          "json_config": "context-truth-guard.nodus.json",
+          "agent_type": "context_truth_guard",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "orchestrator",
+          "json_config": "orchestrator.nodus.json",
+          "agent_type": "orchestrator",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_DOC": {
+      "cohort_id": "legiox_doc",
+      "name": "Knowledge & Learning Systems - AI-powered intelligence and documentation",
+      "tier": 2,
+      "priority": "CRITICAL",
+      "description": "Knowledge & Learning Systems - AI-powered intelligence and documentation",
+      "total_members": 6,
+      "members": [
+        {
+          "agent": "scavenger_agent",
+          "json_config": "scavenger-agent-prompt.nodus.json",
+          "agent_type": "scavenger",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "translator_agent",
+          "json_config": "translator-agent.nodus.json",
+          "agent_type": "translator_agent",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "documentation_generator",
+          "json_config": "documentation-generator.nodus.json",
+          "agent_type": "documentation_generator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_docs_specialist",
+          "json_config": "ring-docs-specialist.nodus.json",
+          "agent_type": "ring_docs_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "Ring Platform documentation architecture, MDX components, content strategy",
+          "note": "Replaced Fumadocs specialist - knows all Ring MDX components and patterns"
+        },
+        {
+          "agent": "mermaid_diagram_specialist",
+          "json_config": "mermaid-diagram-specialist.nodus.json",
+          "agent_type": "mermaid_diagram_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "react_animated_visuals_guru",
+          "json_config": "react-19-animated-visuals-guru.nodus.json",
+          "agent_type": "react_animated_visuals_guru",
+          "priority": "high",
+          "status": "active",
+          "domain": "React 19 animations, Motion/Framer Motion, React Three Fiber, GSAP, Lottie, data visualization",
+          "note": "Added 2025-10-30 - Creates magnificent animated visualizations for documentation"
+        }
+      ]
+    },
+    "LEGIOX_SECURITY": {
+      "cohort_id": "legiox_security",
+      "name": "Trust & Safety - Security enforcement and compliance management",
+      "tier": 3,
+      "priority": "CRITICAL",
+      "description": "Trust & Safety - Security enforcement and compliance management",
+      "total_members": 7,
+      "members": [
+        {
+          "agent": "authjs_specialist",
+          "json_config": "authjs-specialist.nodus.json",
+          "agent_type": "authjs_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "security_sentinel",
+          "json_config": "security-sentinel.nodus.json",
+          "agent_type": "security_sentinel",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "cybersecurity_governance_specialist",
+          "json_config": "cybersecurity-governance-specialist.nodus.json",
+          "agent_type": "cybersecurity_governance_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "supply_chain_security_specialist",
+          "json_config": "supply-chain-security-specialist.nodus.json",
+          "agent_type": "supply_chain_security_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "regulatory_compliance_specialist",
+          "json_config": "regulatory-compliance-specialist.nodus.json",
+          "agent_type": "regulatory_compliance_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "secrets_keeper",
+          "json_config": "secrets-keeper.nodus.json",
+          "agent_type": "secrets_keeper",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "firebase_security_expert",
+          "json_config": "firebase-security-expert.nodus.json",
+          "agent_type": "firebase_security_expert",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_PLATFORM": {
+      "cohort_id": "legiox_platform",
+      "name": "React/Next.js/Frontend Architecture - Platform foundation technologies",
+      "tier": 4,
+      "priority": "CRITICAL",
+      "description": "React/Next.js/Frontend Architecture - Platform foundation technologies",
+      "total_members": 9,
+      "members": [
+        {
+          "agent": "react_19_specialist",
+          "json_config": "react-19-specialist.nodus.json",
+          "agent_type": "react_19_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "nextjs_15_specialist",
+          "json_config": "nextjs-15-specialist.nodus.json",
+          "agent_type": "nextjs_15_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "nextjs_16_upgrader",
+          "json_config": "nextjs-16-upgrader.nodus.json",
+          "agent_type": "nextjs_16_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Next.js 16 migration, Turbopack, Cache Components, React 19.2, async dynamic APIs",
+          "note": "Added 2025-10-30 - Architects seamless Next.js 15→16 migrations with zero downtime"
+        },
+        {
+          "agent": "server_components_architect",
+          "json_config": "server-components-architect.nodus.json",
+          "agent_type": "server_components_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "typescript_performance_optimizer",
+          "json_config": "typescript-performance-optimizer.nodus.json",
+          "agent_type": "typescript_performance_optimizer",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "web_vitals_master",
+          "json_config": "web-vitals-master.nodus.json",
+          "agent_type": "web_vitals_master",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ui_ux_optimization_agent",
+          "json_config": "ui-ux-optimization-agent.nodus.json",
+          "agent_type": "ui_ux_optimization_agent",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "react_tailwind_css_4_specialist",
+          "json_config": "react-tailwind-css-4-specialist.nodus.json",
+          "agent_type": "react_tailwind_css_4_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "react_tailwind_artist",
+          "json_config": "react-tailwind-artist.nodus.json",
+          "agent_type": "react_tailwind_artist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_DEPLOY": {
+      "cohort_id": "legiox_deploy",
+      "name": "System Architecture - Scalable, reliable infrastructure and deployment",
+      "tier": 5,
+      "priority": "HIGH",
+      "description": "System Architecture - Scalable, reliable infrastructure and deployment",
+      "total_members": 13,
+      "members": [
+        {
+          "agent": "git_guru_legioxnaire",
+          "json_config": "git-github-specialist.nodus.json",
+          "agent_type": "git_github_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Git operations, GitHub API integration, CI/CD automation, version control mastery",
+          "note": "Powers legiox-kingdom-grep-replace with protective rollback capabilities"
+        },
+        {
+          "agent": "ring_api_design_architect",
+          "json_config": "ring-api-design-architect.nodus.json",
+          "agent_type": "ring_api_design_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "database_specialist_coordinator",
+          "json_config": "database-specialist-coordinator.nodus.json",
+          "agent_type": "database_specialist_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "postgres_db_specialist",
+          "json_config": "postgres-db-specialist.nodus.json",
+          "agent_type": "postgres_db_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "database_migration_manager",
+          "json_config": "database-migration-manager.nodus.json",
+          "agent_type": "database_migration_manager",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "infrastructure_provisioner",
+          "json_config": "infrastructure-provisioner.nodus.json",
+          "agent_type": "infrastructure_provisioner",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "cloud_platform_specialist",
+          "json_config": "cloud-platform-specialist.nodus.json",
+          "agent_type": "cloud_platform_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ci_cd_pipeline_specialist",
+          "json_config": "ci-cd-pipeline-specialist.nodus.json",
+          "agent_type": "ci_cd_pipeline_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "release_manager",
+          "json_config": "release-manager.nodus.json",
+          "agent_type": "release_manager",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "deployment_orchestrator",
+          "json_config": "deployment-orchestrator.nodus.json",
+          "agent_type": "deployment_orchestrator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "performance_optimizer",
+          "json_config": "performance-optimizer.nodus.json",
+          "agent_type": "performance_optimizer",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_observability_engineer",
+          "json_config": "ring-observability-engineer.nodus.json",
+          "agent_type": "ring_observability_engineer",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "incident_response_coordinator",
+          "json_config": "incident-response-coordinator.nodus.json",
+          "agent_type": "incident_response_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_CODE": {
+      "cohort_id": "legiox_code",
+      "name": "Code Quality & Testing - Sustainable, high-quality development practices",
+      "tier": 6,
+      "priority": "HIGH",
+      "description": "Code Quality & Testing - Sustainable, high-quality development practices",
+      "total_members": 9,
+      "members": [
+        {
+          "agent": "code_quality_guardian",
+          "json_config": "code-quality-guardian.nodus.json",
+          "agent_type": "code_quality_guardian",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "code_evolution_tracker",
+          "json_config": "code-evolution-tracker.nodus.json",
+          "agent_type": "code_evolution_tracker",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "test_orchestrator",
+          "json_config": "test-orchestrator.nodus.json",
+          "agent_type": "test_orchestrator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "integration_testing_architect",
+          "json_config": "integration-testing-architect.nodus.json",
+          "agent_type": "integration_testing_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "dependency_manager",
+          "json_config": "dependency-manager.nodus.json",
+          "agent_type": "dependency_manager",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "developer_experience_architect",
+          "json_config": "developer-experience-architect.nodus.json",
+          "agent_type": "developer_experience_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "developer_onboarding_learning_path_curator",
+          "json_config": "developer-onboarding-learning-path-curator.nodus.json",
+          "agent_type": "developer_onboarding_learning_path_curator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "technical_debt_quantification_analyst",
+          "json_config": "technical-debt-quantification-analyst.nodus.json",
+          "agent_type": "technical_debt_quantification_analyst",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "zod_enforcer",
+          "json_config": "zod-enforcer.nodus.json",
+          "agent_type": "zod_enforcer",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_DATA": {
+      "cohort_id": "legiox_data",
+      "name": "Data & Analytics - Data-driven decision making and intelligence",
+      "tier": 7,
+      "priority": "HIGH",
+      "description": "Data & Analytics - Data-driven decision making and intelligence",
+      "total_members": 4,
+      "members": [
+        {
+          "agent": "business_intelligence_specialist",
+          "json_config": "business-intelligence-specialist.nodus.json",
+          "agent_type": "business_intelligence_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "customer_success_intelligence_analyst",
+          "json_config": "customer-success-intelligence-analyst.nodus.json",
+          "agent_type": "customer_success_intelligence_analyst",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "data_pipeline_etl_architect",
+          "json_config": "data-pipeline-etl-architect.nodus.json",
+          "agent_type": "data_pipeline_etl_architect",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "product_growth_strategist",
+          "json_config": "product-growth-strategist.nodus.json",
+          "agent_type": "product_growth_strategist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "WEB3_STAR_FORMATION": {
+      "cohort_id": "web3_star_formation",
+      "name": "Web3 Star Formation — 75 specialized agents",
+      "tier": 8,
+      "priority": "CRITICAL",
+      "description": "Decentralized Technologies — Solana ring-native, Base US L2, EVM legacy, Ringchain sovereignty, Aptos/Flow reference, Solana MEV pipeline; maps: solana.md, base.md, aptos.md, flow.md",
+      "total_members": 75,
+      "members": [
+        {
+          "agent": "ring_web3_integration_specialist",
+          "json_config": "ring-web3-integration-specialist.nodus.json",
+          "agent_type": "ring_web3_integration_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "smart_contract_security_auditor",
+          "json_config": "smart-contract-security-auditor.nodus.json",
+          "agent_type": "smart_contract_security_auditor",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": "Moved from security_compliance tier - Web3 security focus"
+        },
+        {
+          "agent": "solidity_coder",
+          "json_config": "solidity-coder.nodus.json",
+          "agent_type": "solidity_coder",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "evm_multichain_deployment_specialist",
+          "json_config": "evm-multichain-deployment-specialist.nodus.json",
+          "agent_type": "evm_multichain_deployment_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_chain_p2p_blockchain_architect",
+          "json_config": "ring-chain-p2p-blockchain-architect.nodus.json",
+          "agent_type": "ring_chain_p2p_blockchain_architect",
+          "priority": "revolutionary",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "solidity_distributed_ledger_expert",
+          "json_config": "solidity-distributed-ledger-expert.nodus.json",
+          "agent_type": "solidity_distributed_ledger_expert",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "smart_contract_security_exploit_prevention",
+          "json_config": "smart-contract-security-exploit-prevention.nodus.json",
+          "agent_type": "smart_contract_security_exploit_prevention",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "defi_protocol_architect",
+          "json_config": "defi-protocol-architect.nodus.json",
+          "agent_type": "defi_protocol_architect",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "liquidity_robots_amm_specialist",
+          "json_config": "liquidity-robots-amm-specialist.nodus.json",
+          "agent_type": "liquidity_robots_amm_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "gas_optimization_assembly_specialist",
+          "json_config": "gas-optimization-assembly-specialist.nodus.json",
+          "agent_type": "gas_optimization_assembly_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "react19_web3_frontend_integration_specialist",
+          "json_config": "react-19-web3-frontend-integration-specialist.nodus.json",
+          "agent_type": "react19_web3_frontend_integration_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "decentralized_oracle_network_specialist",
+          "json_config": "decentralized-oracle-network-specialist.nodus.json",
+          "agent_type": "decentralized_oracle_network_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_chain_evangelist",
+          "json_config": "ring-chain-evangelist.nodus.json",
+          "agent_type": "ring_chain_evangelist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "aptos_account_objects_model",
+          "json_config": "aptos-account-objects-model.nodus.json",
+          "agent_type": "aptos_account_objects_model",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_airdrop_batch_distribution",
+          "json_config": "aptos-airdrop-batch-distribution.nodus.json",
+          "agent_type": "aptos_airdrop_batch_distribution",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_dex_swap_modest_integrator",
+          "json_config": "aptos-dex-swap-modest-integrator.nodus.json",
+          "agent_type": "aptos_dex_swap_modest_integrator",
+          "priority": "medium",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_digital_asset_nft",
+          "json_config": "aptos-digital-asset-nft.nodus.json",
+          "agent_type": "aptos_digital_asset_nft",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_fee_payer_sponsored_transactions",
+          "json_config": "aptos-fee-payer-sponsored-transactions.nodus.json",
+          "agent_type": "aptos_fee_payer_sponsored_transactions",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_fungible_asset_ring_token",
+          "json_config": "aptos-fungible-asset-ring-token.nodus.json",
+          "agent_type": "aptos_fungible_asset_ring_token",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_keyless_ensure_wallet",
+          "json_config": "aptos-keyless-ensure-wallet.nodus.json",
+          "agent_type": "aptos_keyless_ensure_wallet",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_move_contract_security",
+          "json_config": "aptos-move-contract-security.nodus.json",
+          "agent_type": "aptos_move_contract_security",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_multisig_treasury",
+          "json_config": "aptos-multisig-treasury.nodus.json",
+          "agent_type": "aptos_multisig_treasury",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_nft_marketplace_ring",
+          "json_config": "aptos-nft-marketplace-ring.nodus.json",
+          "agent_type": "aptos_nft_marketplace_ring",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_participation_governance_voting",
+          "json_config": "aptos-participation-governance-voting.nodus.json",
+          "agent_type": "aptos_participation_governance_voting",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_react_next_wallet_integration",
+          "json_config": "aptos-react-next-wallet-integration.nodus.json",
+          "agent_type": "aptos_react_next_wallet_integration",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_rpc_indexer_data_plane",
+          "json_config": "aptos-rpc-indexer-data-plane.nodus.json",
+          "agent_type": "aptos_rpc_indexer_data_plane",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_staking_ring_module",
+          "json_config": "aptos-staking-ring-module.nodus.json",
+          "agent_type": "aptos_staking_ring_module",
+          "priority": "medium",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_token_compliance_guard",
+          "json_config": "aptos-token-compliance-guard.nodus.json",
+          "agent_type": "aptos_token_compliance_guard",
+          "priority": "high",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "aptos_ts_sdk_core",
+          "json_config": "aptos-ts-sdk-core.nodus.json",
+          "agent_type": "aptos_ts_sdk_core",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "devops_aptos_gas_station_ops",
+          "json_config": "devops-aptos-gas-station-ops.nodus.json",
+          "agent_type": "devops_aptos_gas_station_ops",
+          "priority": "critical",
+          "status": "active",
+          "domain": "aptos",
+          "note": "Aptos participation stack — aptos.md"
+        },
+        {
+          "agent": "flow_cadence_ft_mint",
+          "json_config": "flow-cadence-ft-mint.nodus.json",
+          "agent_type": "flow_cadence_ft_mint",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_cadence_nft_marketplace",
+          "json_config": "flow-cadence-nft-marketplace.nodus.json",
+          "agent_type": "flow_cadence_nft_marketplace",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_ensure_wallet_server",
+          "json_config": "flow-ensure-wallet-server.nodus.json",
+          "agent_type": "flow_ensure_wallet_server",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_hybrid_custody_wallet",
+          "json_config": "flow-hybrid-custody-wallet.nodus.json",
+          "agent_type": "flow_hybrid_custody_wallet",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_react_next_integration",
+          "json_config": "flow-react-next-integration.nodus.json",
+          "agent_type": "flow_react_next_integration",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "flow_sponsored_transactions",
+          "json_config": "flow-sponsored-transactions.nodus.json",
+          "agent_type": "flow_sponsored_transactions",
+          "priority": "critical",
+          "status": "active",
+          "domain": "flow",
+          "note": "Flow interim wallet stack — flow.md"
+        },
+        {
+          "agent": "solana_account_deserialization",
+          "json_config": "solana-account-deserialization.nodus.json",
+          "agent_type": "solana_account_deserialization",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_arbitrage_detector",
+          "json_config": "solana-arbitrage-detector.nodus.json",
+          "agent_type": "solana_arbitrage_detector",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_dex_swap_math",
+          "json_config": "solana-dex-swap-math.nodus.json",
+          "agent_type": "solana_dex_swap_math",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_fee_market_dynamics",
+          "json_config": "solana-fee-market-dynamics.nodus.json",
+          "agent_type": "solana_fee_market_dynamics",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_jito_mev_tips",
+          "json_config": "solana-jito-mev-tips.nodus.json",
+          "agent_type": "solana_jito_mev_tips",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_mev_risk_circuit_breaker",
+          "json_config": "solana-mev-risk-circuit-breaker.nodus.json",
+          "agent_type": "solana_mev_risk_circuit_breaker",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_pool_discovery",
+          "json_config": "solana-pool-discovery.nodus.json",
+          "agent_type": "solana_pool_discovery",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_pool_state_cache",
+          "json_config": "solana-pool-state-cache.nodus.json",
+          "agent_type": "solana_pool_state_cache",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_position_sizing",
+          "json_config": "solana-position-sizing.nodus.json",
+          "agent_type": "solana_position_sizing",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_rpc_websocket_infra",
+          "json_config": "solana-rpc-websocket-infra.nodus.json",
+          "agent_type": "solana_rpc_websocket_infra",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_rust_execution_engine",
+          "json_config": "solana-rust-execution-engine.nodus.json",
+          "agent_type": "solana_rust_execution_engine",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_token_graph_engine",
+          "json_config": "solana-token-graph-engine.nodus.json",
+          "agent_type": "solana_token_graph_engine",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_token_safety_filters",
+          "json_config": "solana-token-safety-filters.nodus.json",
+          "agent_type": "solana_token_safety_filters",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "rust_async_concurrency_solana",
+          "json_config": "rust-async-concurrency-solana.nodus.json",
+          "agent_type": "rust_async_concurrency_solana",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "devops-mev-hetzner-colocation-infra",
+          "json_config": "devops-mev-hetzner-colocation-infra.nodus.json",
+          "agent_type": "devops-mev-hetzner-colocation-infra",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana",
+          "note": "Solana MEV pipeline — solana.md (Heliophagy)"
+        },
+        {
+          "agent": "solana_spl_token_ring_token",
+          "json_config": "solana-spl-token-ring-token.nodus.json",
+          "agent_type": "solana_spl_token_ring_token",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Ring-native — solana.md Wave 1"
+        },
+        {
+          "agent": "solana_fee_sponsorship_native",
+          "json_config": "solana-fee-sponsorship-native.nodus.json",
+          "agent_type": "solana_fee_sponsorship_native",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Ring-native feePayer sponsor"
+        },
+        {
+          "agent": "solana_ensure_wallet_server",
+          "json_config": "solana-ensure-wallet-server.nodus.json",
+          "agent_type": "solana_ensure_wallet_server",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Ring ensureWallet custodial"
+        },
+        {
+          "agent": "devops_solana_fee_relayer_ops",
+          "json_config": "devops-solana-fee-relayer-ops.nodus.json",
+          "agent_type": "devops_solana_fee_relayer_ops",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Kora ops Phase 1.5"
+        },
+        {
+          "agent": "solana_react_next_wallet_integration",
+          "json_config": "solana-react-next-wallet-integration.nodus.json",
+          "agent_type": "solana_react_next_wallet_integration",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Ring wallet UI"
+        },
+        {
+          "agent": "solana_web3_kit_core",
+          "json_config": "solana-web3-kit-core.nodus.json",
+          "agent_type": "solana_web3_kit_core",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "web3.js SDK core"
+        },
+        {
+          "agent": "solana_rpc_indexer_ring_data_plane",
+          "json_config": "solana-rpc-indexer-ring-data-plane.nodus.json",
+          "agent_type": "solana_rpc_indexer_ring_data_plane",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "RING balance indexer"
+        },
+        {
+          "agent": "solana_account_model_pdas",
+          "json_config": "solana-account-model-pdas.nodus.json",
+          "agent_type": "solana_account_model_pdas",
+          "priority": "medium",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "PDA / Anchor accounts"
+        },
+        {
+          "agent": "solana_squads_multisig_treasury",
+          "json_config": "solana-squads-multisig-treasury.nodus.json",
+          "agent_type": "solana_squads_multisig_treasury",
+          "priority": "critical",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Treasury multisig mainnet gate"
+        },
+        {
+          "agent": "solana_airdrop_batch_distribution",
+          "json_config": "solana-airdrop-batch-distribution.nodus.json",
+          "agent_type": "solana_airdrop_batch_distribution",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Verification rewards batch"
+        },
+        {
+          "agent": "solana_participation_governance_voting",
+          "json_config": "solana-participation-governance-voting.nodus.json",
+          "agent_type": "solana_participation_governance_voting",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "1 RING = 1 vote"
+        },
+        {
+          "agent": "solana_metaplex_nft_ring",
+          "json_config": "solana-metaplex-nft-ring.nodus.json",
+          "agent_type": "solana_metaplex_nft_ring",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Metaplex Core NFTs"
+        },
+        {
+          "agent": "solana_nft_marketplace_ring",
+          "json_config": "solana-nft-marketplace-ring.nodus.json",
+          "agent_type": "solana_nft_marketplace_ring",
+          "priority": "medium",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Fixed-price marketplace"
+        },
+        {
+          "agent": "solana_staking_ring_module",
+          "json_config": "solana-staking-ring-module.nodus.json",
+          "agent_type": "solana_staking_ring_module",
+          "priority": "medium",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Product vault lock"
+        },
+        {
+          "agent": "solana_jupiter_modest_swap",
+          "json_config": "solana-jupiter-modest-swap.nodus.json",
+          "agent_type": "solana_jupiter_modest_swap",
+          "priority": "medium",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "User swap — not MEV arb"
+        },
+        {
+          "agent": "solana_anchor_program_security",
+          "json_config": "solana-anchor-program-security.nodus.json",
+          "agent_type": "solana_anchor_program_security",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Anchor audit gate"
+        },
+        {
+          "agent": "solana_token_compliance_guard",
+          "json_config": "solana-token-compliance-guard.nodus.json",
+          "agent_type": "solana_token_compliance_guard",
+          "priority": "high",
+          "status": "active",
+          "domain": "solana_ring_native",
+          "note": "Freeze / sanctions"
+        },
+        {
+          "agent": "base_erc20_ring_token_mirror",
+          "json_config": "base-erc20-ring-token-mirror.nodus.json",
+          "agent_type": "base_erc20_ring_token_mirror",
+          "priority": "critical",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "US ERC-20 mirror — base.md"
+        },
+        {
+          "agent": "base_erc4337_paymaster_sponsorship",
+          "json_config": "base-erc4337-paymaster-sponsorship.nodus.json",
+          "agent_type": "base_erc4337_paymaster_sponsorship",
+          "priority": "critical",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "CDP Paymaster"
+        },
+        {
+          "agent": "base_account_smart_wallet",
+          "json_config": "base-account-smart-wallet.nodus.json",
+          "agent_type": "base_account_smart_wallet",
+          "priority": "high",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "Base Account SDK"
+        },
+        {
+          "agent": "base_react_next_wallet_integration",
+          "json_config": "base-react-next-wallet-integration.nodus.json",
+          "agent_type": "base_react_next_wallet_integration",
+          "priority": "high",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "wagmi on Base"
+        },
+        {
+          "agent": "base_solana_bridge_ring_presence",
+          "json_config": "base-solana-bridge-ring-presence.nodus.json",
+          "agent_type": "base_solana_bridge_ring_presence",
+          "priority": "high",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "Bridge supply reconcile"
+        },
+        {
+          "agent": "base_ringsales_evm_desk",
+          "json_config": "base-ringsales-evm-desk.nodus.json",
+          "agent_type": "base_ringsales_evm_desk",
+          "priority": "high",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "USDT↔RING desk"
+        },
+        {
+          "agent": "devops_base_paymaster_ops",
+          "json_config": "devops-base-paymaster-ops.nodus.json",
+          "agent_type": "devops_base_paymaster_ops",
+          "priority": "critical",
+          "status": "active",
+          "domain": "base_l2",
+          "note": "CDP ops"
+        }
+      ],
+      "capability_maps": [
+        {
+          "chain": "aptos",
+          "title": "Aptos capability map",
+          "path": "AI-LEGIOX/legiox-truth-lens/aptos.md",
+          "lens_count": 17,
+          "stance": "Reference — superseded for ring-native chain"
+        },
+        {
+          "chain": "flow",
+          "title": "Flow capability map",
+          "path": "AI-LEGIOX/legiox-truth-lens/flow.md",
+          "lens_count": 6,
+          "stance": "Interim hosted chain"
+        },
+        {
+          "chain": "solana",
+          "title": "Solana capability map",
+          "path": "AI-LEGIOX/legiox-truth-lens/solana.md",
+          "lens_count": 30,
+          "stance": "Ring-native (17) + MEV Heliophagy (13)"
+        },
+        {
+          "chain": "base",
+          "title": "Base L2 capability map",
+          "path": "AI-LEGIOX/legiox-truth-lens/base.md",
+          "lens_count": 7,
+          "stance": "US L2 secondary — ERC-20 mirror + CDP Paymaster"
+        }
+      ]
+    },
+    "LEGIOX_MOBILE": {
+      "cohort_id": "legiox_mobile",
+      "name": "Mobile & Desktop - Multi-platform experiences and native development",
+      "tier": 9,
+      "priority": "MEDIUM",
+      "description": "Mobile & Desktop - Multi-platform experiences and native development",
+      "total_members": 6,
+      "members": [
+        {
+          "agent": "mobile_app_development_coordinator",
+          "json_config": "mobile-app-development-coordinator.nodus.json",
+          "agent_type": "mobile_app_development_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "android_ndk_coder",
+          "json_config": "android-ndk-coder.nodus.json",
+          "agent_type": "android_ndk_coder",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "swift_6_coder",
+          "json_config": "swift-6-coder.nodus.json",
+          "agent_type": "swift_6_coder",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "flutter_coder",
+          "json_config": "flutter-coder.nodus.json",
+          "agent_type": "flutter_coder",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "desktop_app_publisher",
+          "json_config": "desktop-app-publisher.nodus.json",
+          "agent_type": "desktop_app_publisher",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "app_store_optimization_specialist",
+          "json_config": "app-store-optimization-specialist.nodus.json",
+          "agent_type": "app_store_optimization_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_REALTIME": {
+      "cohort_id": "legiox_realtime",
+      "name": "High-Performance Communication - Real-time capabilities and protocols",
+      "tier": 10,
+      "priority": "MEDIUM",
+      "description": "High-Performance Communication - Real-time capabilities and protocols",
+      "total_members": 3,
+      "members": [
+        {
+          "agent": "realtime_communication_specialist",
+          "json_config": "realtime-communication-specialist.nodus.json",
+          "agent_type": "realtime_communication_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "asn1_bert_protocol_specialist",
+          "json_config": "asn1-bert-protocol-specialist.nodus.json",
+          "agent_type": "asn1_bert_protocol_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "erlang_otp_specialist",
+          "json_config": "erlang-otp-specialist.nodus.json",
+          "agent_type": "erlang_otp_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_EXECUTIVE": {
+      "cohort_id": "legiox_executive",
+      "name": "Leadership Communication - Executive-facing deliverables and visualizations",
+      "tier": 11,
+      "priority": "MEDIUM",
+      "description": "Leadership Communication - Executive-facing deliverables and visualizations",
+      "total_members": 2,
+      "members": [
+        {
+          "agent": "executive_dashboard_architect",
+          "json_config": "executive-dashboard-architect.nodus.json",
+          "agent_type": "executive_dashboard_architect",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "mobile_documentation_optimizer",
+          "json_config": "mobile-documentation-optimizer.nodus.json",
+          "agent_type": "mobile_documentation_optimizer",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_MARKET": {
+      "cohort_id": "legiox_market",
+      "name": "Growth & Market Intelligence - Global conquest and market domination",
+      "tier": 12,
+      "priority": "HIGH",
+      "description": "Growth & Market Intelligence - Global conquest and market domination",
+      "total_members": 6,
+      "members": [
+        {
+          "agent": "market_intelligence_analyst",
+          "json_config": "market-intelligence-analyst.nodus.json",
+          "agent_type": "market_intelligence_analyst",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "competitive_intelligence_analyst",
+          "json_config": "competitive-intelligence-analyst.nodus.json",
+          "agent_type": "competitive_intelligence_analyst",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "strategic_market_disruptor",
+          "json_config": "strategic-market-disruptor.nodus.json",
+          "agent_type": "strategic_market_disruptor",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "strategic_foresight_specialist",
+          "json_config": "strategic-foresight-specialist.nodus.json",
+          "agent_type": "strategic_foresight_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "partnership_development_orchestrator",
+          "json_config": "partnership-development-orchestrator.nodus.json",
+          "agent_type": "partnership_development_orchestrator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "apac_market_specialist",
+          "json_config": "apac-market-specialist.nodus.json",
+          "agent_type": "apac_market_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_CONTENT": {
+      "cohort_id": "legiox_content",
+      "name": "Brand & Community Building - Content strategies and community growth",
+      "tier": 13,
+      "priority": "MEDIUM",
+      "description": "Brand & Community Building - Content strategies and community growth",
+      "total_members": 7,
+      "members": [
+        {
+          "agent": "content_dev_marketing_specialist",
+          "json_config": "content-dev-marketing-specialist.nodus.json",
+          "agent_type": "content_dev_marketing_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "content_amplification_specialist",
+          "json_config": "content-amplification-specialist.nodus.json",
+          "agent_type": "content_amplification_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "community_growth_catalyst",
+          "json_config": "community-growth-catalyst.nodus.json",
+          "agent_type": "community_growth_catalyst",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "brand_storytelling_architect",
+          "json_config": "brand-storytelling-architect.nodus.json",
+          "agent_type": "brand_storytelling_architect",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "open_source_ecosystem_coordinator",
+          "json_config": "open-source-ecosystem-coordinator.nodus.json",
+          "agent_type": "open_source_ecosystem_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "text_master",
+          "json_config": "text-master.nodus.json",
+          "agent_type": "text_master",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "podcast_audio_content_specialist",
+          "json_config": "podcast-audio-content-specialist.nodus.json",
+          "agent_type": "podcast_audio_content_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_INNOVATION": {
+      "cohort_id": "legiox_innovation",
+      "name": "Experimental & Advanced - Cutting-edge capabilities and innovation",
+      "tier": 14,
+      "priority": "MEDIUM",
+      "description": "Experimental & Advanced - Cutting-edge capabilities and innovation",
+      "total_members": 4,
+      "members": [
+        {
+          "agent": "feature_flag_experimentation_coordinator",
+          "json_config": "feature-flag-experimentation-coordinator.nodus.json",
+          "agent_type": "feature_flag_experimentation_coordinator",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "chaos_engineering_specialist",
+          "json_config": "chaos-engineering-specialist.nodus.json",
+          "agent_type": "chaos_engineering_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "mlops_ai_model_lifecycle_manager",
+          "json_config": "mlops-ai-model-lifecycle-manager.nodus.json",
+          "agent_type": "mlops_ai_model_lifecycle_manager",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_api_versioning_deprecation_coordinator",
+          "json_config": "ring-api-versioning-deprecation-coordinator.nodus.json",
+          "agent_type": "ring_api_versioning_deprecation_coordinator",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_SUSTAINABILITY": {
+      "cohort_id": "legiox_sustainability",
+      "name": "Accessibility & Ethics - Inclusive and sustainable development practices",
+      "tier": 15,
+      "priority": "MEDIUM",
+      "description": "Accessibility & Ethics - Inclusive and sustainable development practices",
+      "total_members": 4,
+      "members": [
+        {
+          "agent": "accessibility_compliance_enforcer",
+          "json_config": "accessibility-compliance-enforcer.nodus.json",
+          "agent_type": "accessibility_compliance_enforcer",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "localization_engineering_specialist",
+          "json_config": "localization-engineering-specialist.nodus.json",
+          "agent_type": "localization_engineering_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "localization_deployment_specialist",
+          "json_config": "localization-deployment-specialist.nodus.json",
+          "agent_type": "localization_deployment_specialist",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "green_computing_sustainability_engineer",
+          "json_config": "green-computing-sustainability-engineer.nodus.json",
+          "agent_type": "green_computing_sustainability_engineer",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_GLOBAL_CRITICAL": {
+      "cohort_id": "legiox_global_critical",
+      "name": "International Market Domination - Essential for global conquest",
+      "tier": 16,
+      "priority": "MAXIMUM",
+      "description": "International Market Domination - Essential for global conquest",
+      "total_members": 5,
+      "members": [
+        {
+          "agent": "geopolitical_risk_analyst",
+          "json_config": "geopolitical-risk-analyst.nodus.json",
+          "agent_type": "geopolitical_risk_analyst",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "international_payment_systems_specialist",
+          "json_config": "international-payment-systems-specialist.nodus.json",
+          "agent_type": "international_payment_systems_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "crisis_communication_reputation_manager",
+          "json_config": "crisis-communication-reputation-manager.nodus.json",
+          "agent_type": "crisis_communication_reputation_manager",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "cross_border_legal_compliance_specialist",
+          "json_config": "cross-border-legal-compliance-specialist.nodus.json",
+          "agent_type": "cross_border_legal_compliance_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "global_media_relations_coordinator",
+          "json_config": "global-media-relations-coordinator.nodus.json",
+          "agent_type": "global_media_relations_coordinator",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_GLOBAL_OPS": {
+      "cohort_id": "legiox_global_ops",
+      "name": "Autonomous Conquest - Planetary-scale operations and orchestration",
+      "tier": 17,
+      "priority": "MAXIMUM",
+      "description": "Autonomous Conquest - Planetary-scale operations and orchestration",
+      "total_members": 3,
+      "members": [
+        {
+          "agent": "outreach_coordinator",
+          "json_config": "outreach-coordinator.nodus.json",
+          "agent_type": "outreach_coordinator",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ring_digital_presence_landlord",
+          "json_config": "ring-digital-presence-landlord.nodus.json",
+          "agent_type": "ring_digital_presence_landlord",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "legal_advice_expert",
+          "json_config": "legal-advice-expert.nodus.json",
+          "agent_type": "legal_advice_expert",
+          "priority": "critical",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_REVOLUTIONARY": {
+      "cohort_id": "legiox_revolutionary",
+      "name": "World-Unseen Innovation - Breakthrough capabilities for viral growth",
+      "tier": 18,
+      "priority": "REVOLUTIONARY",
+      "description": "World-Unseen Innovation - Breakthrough capabilities for viral growth",
+      "total_members": 4,
+      "members": [
+        {
+          "agent": "viral_adoption_accelerator",
+          "json_config": "viral-adoption-accelerator.nodus.json",
+          "agent_type": "viral_adoption_accelerator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ecosystem_builder",
+          "json_config": "ecosystem-builder.nodus.json",
+          "agent_type": "ecosystem_builder",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "ai_powered_personalization_engine",
+          "json_config": "ai-powered-personalization-engine.nodus.json",
+          "agent_type": "ai_powered_personalization_engine",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "conversion_rate_optimization_specialist",
+          "json_config": "conversion-rate-optimization-specialist.nodus.json",
+          "agent_type": "conversion_rate_optimization_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_PLANETARY": {
+      "cohort_id": "legiox_planetary",
+      "name": "Global Consciousness - Universal transformation and planetary coordination",
+      "tier": 19,
+      "priority": "PLANETARY",
+      "description": "Global Consciousness - Universal transformation and planetary coordination",
+      "total_members": 6,
+      "members": [
+        {
+          "agent": "global_opportunity_matcher",
+          "json_config": "global-opportunity-matcher.nodus.json",
+          "agent_type": "global_opportunity_matcher",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "planetary_economic_orchestrator",
+          "json_config": "planetary-economic-orchestrator.nodus.json",
+          "agent_type": "planetary_economic_orchestrator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "planetary_project_coordinator",
+          "json_config": "planetary-project-coordinator.nodus.json",
+          "agent_type": "planetary_project_coordinator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "collective_need_selling_marketplace_specialist",
+          "json_config": "collective-need-selling-marketplace-specialist.nodus.json",
+          "agent_type": "collective_need_selling_marketplace_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "planetary_governance_facilitator",
+          "json_config": "planetary-governance-facilitator.nodus.json",
+          "agent_type": "planetary_governance_facilitator",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "planetary_adoption_coordination_specialist",
+          "json_config": "planetary-adoption-coordination-specialist.nodus.json",
+          "agent_type": "planetary_adoption_coordination_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_SPECIALIZED": {
+      "cohort_id": "legiox_specialized",
+      "name": "Niche Expertise - Domain-specific mastery and specialized skills",
+      "tier": 20,
+      "priority": "SPECIALIZED",
+      "description": "Niche Expertise - Domain-specific mastery and specialized skills",
+      "total_members": 2,
+      "members": [
+        {
+          "agent": "ring_feature_instructor",
+          "json_config": "ring-feature-instructor.nodus.json",
+          "agent_type": "ring_feature_instructor",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "opportunity_seeker",
+          "json_config": "opportunity-seeker.nodus.json",
+          "agent_type": "opportunity_seeker",
+          "priority": "medium",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_DEVELOPER_ECO": {
+      "cohort_id": "legiox_developer_eco",
+      "name": "Developer Community & Education - Building certified developer ecosystems",
+      "tier": 21,
+      "priority": "HIGH",
+      "description": "Developer Community & Education - Building certified developer ecosystems",
+      "total_members": 1,
+      "members": [
+        {
+          "agent": "developer_education_certification_specialist",
+          "json_config": "developer-education-certification-specialist.nodus.json",
+          "agent_type": "developer_education_certification_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "LEGIOX_REVENUE": {
+      "cohort_id": "legiox_revenue",
+      "name": "Revenue Optimization & Partnerships - Revenue growth and strategic integrations",
+      "tier": 22,
+      "priority": "HIGH",
+      "description": "Revenue Optimization & Partnerships - Revenue growth and strategic integrations",
+      "total_members": 2,
+      "members": [
+        {
+          "agent": "ring_api_partnership_integration_specialist",
+          "json_config": "ring-api-partnership-integration-specialist.nodus.json",
+          "agent_type": "ring_api_partnership_integration_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        },
+        {
+          "agent": "wayforpay_integrator",
+          "json_config": "wayforpay-integrator-skillset.nodus.json",
+          "agent_type": "wayforpay_api_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "WayForPay payment gateway integration (₴299 UAH membership revenue)",
+          "note": "P0 revenue blocker - enables SUBSCRIBER→MEMBER upgrades"
+        }
+      ]
+    },
+    "LEGIOX_FUNDING": {
+      "cohort_id": "legiox_funding",
+      "name": "Capital Acquisition - Non-dilutive funding and grant acquisition",
+      "tier": 23,
+      "priority": "HIGH",
+      "description": "Capital Acquisition - Non-dilutive funding and grant acquisition",
+      "total_members": 1,
+      "members": [
+        {
+          "agent": "grant_funding_acquisition_specialist",
+          "json_config": "grant-funding-acquisition-specialist.nodus.json",
+          "agent_type": "grant_funding_acquisition_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "",
+          "note": ""
+        }
+      ]
+    },
+    "RING_TASK_FORCE": {
+      "cohort_id": "ring_task_force",
+      "name": "Ring Platform Elite Task Force - Specialized knowledge lenses for Ring's core differentiators and architecture",
+      "tier": 25,
+      "priority": "CRITICAL",
+      "description": "Ring Platform Elite Task Force (visualizations: Ring Elite / THE NINE + one API integrator lens) — ten specialists covering backends, AI matcher, ERP, tenancy, realtime tunnel, clone orchestration, marketplace, UI components, Web3 wallet, and Ring HTTP/webhook APIs",
+      "total_members": 10,
+      "members": [
+        {
+          "agent": "ring_backend_administrator",
+          "json_config": "ring-backend-administrator.nodus.json",
+          "agent_type": "ring_backend_administrator",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Multi-backend database orchestration (PostgreSQL/Firebase/Supabase)",
+          "note": "Moved from critical_infrastructure to Ring Task Force for specialized Ring focus"
+        },
+        {
+          "agent": "ring_ai_matcher_specialist",
+          "json_config": "ring-ai-matcher-specialist.nodus.json",
+          "agent_type": "ring_ai_matcher_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "AI-powered opportunity matching engine (Ring's killer feature)",
+          "note": ""
+        },
+        {
+          "agent": "ring_erp_system_architect",
+          "json_config": "ring-erp-system-architect.nodus.json",
+          "agent_type": "ring_erp_system_architect",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Comprehensive AI-driven cooperative ERP (enterprise conquest weapon)",
+          "note": ""
+        },
+        {
+          "agent": "ring_multi_tenant_architect",
+          "json_config": "ring-multi-tenant-architect.nodus.json",
+          "agent_type": "ring_multi_tenant_architect",
+          "priority": "critical",
+          "status": "active",
+          "domain": "White-label multi-tenant architecture (infinite Ring clones)",
+          "note": ""
+        },
+        {
+          "agent": "ring_tunnel_transport_specialist",
+          "json_config": "ring-tunnel-transport-specialist.nodus.json",
+          "agent_type": "ring_tunnel_transport_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Multi-protocol real-time communication (WebSocket/SSE/Supabase/Firebase)",
+          "note": ""
+        },
+        {
+          "agent": "ring_digital_presence_landlord",
+          "json_config": "ring-digital-presence-landlord.nodus.json",
+          "agent_type": "ring_digital_presence_landlord",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Ring Platform cloning and customization orchestration (master of white-label deployment)",
+          "note": "THE master of Ring cloning - moved from global_expansion_orchestration to Ring Task Force"
+        },
+        {
+          "agent": "ring_multi_vendor_store_expert",
+          "json_config": "ring-multi-vendor-store-expert.nodus.json",
+          "agent_type": "ring_multi_vendor_store_expert",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Multi-vendor e-commerce marketplace (Digital Cities merchant monetization)",
+          "note": ""
+        },
+        {
+          "agent": "ring_components_specialist",
+          "json_config": "ring-components-specialist.nodus.json",
+          "agent_type": "ring_components_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "UI/theme consistency and component architecture",
+          "note": ""
+        },
+        {
+          "agent": "ring_web3_integration_specialist",
+          "json_config": "ring-web3-integration-specialist.nodus.json",
+          "agent_type": "ring_web3_integration_specialist",
+          "priority": "critical",
+          "status": "active",
+          "domain": "Complete Web3 & wallet ecosystem (RING tokens, PIN security, multi-chain, NFTs, staking, oracle)",
+          "note": "Replaces RingFeature Instructor in THE NINE (user training moved to Ring Cohort II)"
+        },
+        {
+          "agent": "ring_api_specialist",
+          "json_config": "ring-api-specialist.nodus.json",
+          "agent_type": "ring_api_specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "Ring integrator-facing HTTP APIs, webhooks, auth, tenant-safe contracts (partners + clones)",
+          "note": "2026-04-25: tenth Ring Task Force member — complements ring_api_design_architect / versioning / partnership lenses"
+        }
+      ]
+    },
+    "RING_ENTERPRISE_GOVERNANCE": {
+      "cohort_id": "ring_enterprise_governance",
+      "name": "Ring Enterprise Governance - SSO, assurance, data residency, and DPA truth",
+      "tier": 24,
+      "priority": "CRITICAL",
+      "description": "Enterprise procurement: identity federation, customer audit collateral, and engineering-grounded data location / transfers / subprocessors",
+      "total_members": 3,
+      "members": [
+        {
+          "agent": "ring-enterprise-sso-saml-oidc-and-scim-specialist",
+          "json_config": "ring-enterprise-sso-saml-oidc-and-scim-specialist.nodus.json",
+          "agent_type": "ring-enterprise-sso-saml-oidc-and-scim-specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "SAML/OIDC IdP federation, SCIM lifecycle, enterprise sessions",
+          "note": ""
+        },
+        {
+          "agent": "ring-enterprise-assurance-pack-and-customer-audit-specialist",
+          "json_config": "ring-enterprise-assurance-pack-and-customer-audit-specialist.nodus.json",
+          "agent_type": "ring-enterprise-assurance-pack-and-customer-audit-specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "Assurance packs, questionnaires, evidence, audit facilitation",
+          "note": ""
+        },
+        {
+          "agent": "ring-global-data-residency-dpa-and-subprocessors-specialist",
+          "json_config": "ring-global-data-residency-dpa-and-subprocessors-specialist.nodus.json",
+          "agent_type": "ring-global-data-residency-dpa-and-subprocessors-specialist",
+          "priority": "high",
+          "status": "active",
+          "domain": "Data maps, regions, transfers, keys, DPA technical annexes, subprocessor truth",
+          "note": "Pairs with assurance; not legal advice"
+        }
+      ]
+    },
+    "RING_COHORT_II": {
+      "cohort_id": "ring_cohort_ii",
+      "name": "Ring Platform Support & Education - User success and platform adoption specialists",
+      "tier": 26,
+      "priority": "HIGH",
+      "description": "Ring Platform Support & Education - User success and platform adoption specialists",
+      "total_members": 1,
+      "members": [
+        {
+          "agent": "ring_feature_instructor",
+          "json_config": "ring-feature-instructor.nodus.json",
+          "agent_type": "ring_feature_instructor",
+          "priority": "high",
+          "status": "active",
+          "domain": "User education, support, and feature training",
+          "note": "Promoted from THE NINE to lead Ring Cohort II - The Guides"
+        }
+      ]
+    },
+    "LEGIOX_FRONTEND": {
+      "cohort_id": "legiox_frontend",
+      "name": "Frontend Development - UI/UX, React, Next.js, animations (alias for LEGIOX_PLATFORM)",
+      "tier": 2,
+      "priority": "HIGH",
+      "description": "Frontend-focused subset of LEGIOX_PLATFORM - React 19, Next.js 16, Framer Motion, Tailwind",
+      "alias_of": "LEGIOX_PLATFORM",
+      "total_members": 10,
+      "note": "Added 2026-02-18 for decision flow compatibility"
+    },
+    "LEGIOX_DATABASE": {
+      "cohort_id": "legiox_database",
+      "name": "Database Operations - PostgreSQL, Firebase, Supabase, backend abstraction (alias for LEGIOX_DATA)",
+      "tier": 2,
+      "priority": "CRITICAL",
+      "description": "Database-focused subset including ring-backend-administrator, postgres-db-specialist",
+      "alias_of": "LEGIOX_DATA",
+      "total_members": 6,
+      "note": "Added 2026-02-18 for decision flow compatibility"
+    },
+    "LEGIOX_INFRASTRUCTURE": {
+      "cohort_id": "legiox_infrastructure",
+      "name": "Infrastructure & Deployment - Kubernetes, Docker, CI/CD (alias for LEGIOX_DEPLOY)",
+      "tier": 2,
+      "priority": "CRITICAL",
+      "description": "Infrastructure-focused subset including deployment-orchestrator, infrastructure-provisioner",
+      "alias_of": "LEGIOX_DEPLOY",
+      "total_members": 8,
+      "note": "Added 2026-02-18 for decision flow compatibility"
+    },
+    "LEGIOX_QUALITY": {
+      "cohort_id": "legiox_quality",
+      "name": "Code Quality & Testing - Linting, testing, refactoring (alias for LEGIOX_CODE)",
+      "tier": 2,
+      "priority": "HIGH",
+      "description": "Quality-focused subset including code-quality-guardian, test specialists",
+      "alias_of": "LEGIOX_CODE",
+      "total_members": 5,
+      "note": "Added 2026-02-18 for decision flow compatibility"
+    },
+    "LEGIOX_DAGI": {
+      "cohort_id": "legiox_dagi",
+      "name": "DAARION Agricultural Intelligence - AI-powered farm management and agricultural automation",
+      "tier": 27,
+      "priority": "REVOLUTIONARY",
+      "description": "DAGI (DAARION Agricultural Intelligence) agents for GreenFood.live vendors - 3-tier AI system (Junior/Medium/Senior) providing 24/7 customer service, farm coordination, harvest scheduling, inventory management, and multi-agent orchestration with 6 Ring LegioX support agents",
+      "total_members": 1,
+      "members": [
+        {
+          "agent": "dagi_general_expert",
+          "json_config": "dagi-general-expert.nodus.json",
+          "agent_type": "dagi_general_expert",
+          "priority": "revolutionary",
+          "status": "active",
+          "domain": "Agricultural AI, farm management, customer service, FSMA 204 compliance, sustainability scoring, DAARWIZZ knowledge sync, multi-agent coordination",
+          "note": "Created 2025-11-05 - Default DAGI agent template for all GreenFood.live vendors. Integrates with APRStaking (100/500/2000 DAARION stake), Ring Platform provisioning API, and 6 support agents (Warehouse, Logistician, Accountant, Sales, Analyst, Community)"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "hooks": {
+    "workspaceOpen": [
+      {
+        "command": "node ./scripts/install-ide-bootloaders.mjs"
+      }
+    ]
+  }
+}

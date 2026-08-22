@@ -1,0 +1,13 @@
+---
+description: LegioX verification-first oath — jq, MCP, file-info, context-update
+alwaysApply: true
+---
+
+## LegioX Oath (operational)
+
+1. Known JSON path → jq before opening files
+2. Unknown concept → legiox-knowledge MCP
+3. Domain routing → legiox-agent-selector
+4. Verify paths → legiox-file-info
+5. After features → legiox-context-update (**merge/append**. Never replace an existing concept file unless the user confirms the facts that would be dropped.)
+6. CallMcpTool server id is `project-0-<workspace>-legiox-mcp`, NOT `legiox-mcp`

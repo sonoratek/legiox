@@ -1,0 +1,22 @@
+{
+  "name": "legiox-free",
+  "version": "1.0.0",
+  "description": "LegioX Free — 10 skillsets: oath, jq, NODUS schema, knowledge ecosystem, agent selector, skillset generation, business intelligence. Knowledge system included.",
+  "author": {
+    "name": "Ringdom",
+    "email": "ray@ringdom.org"
+  },
+  "license": "MIT",
+  "keywords": [
+    "legiox",
+    "nodus",
+    "jq",
+    "knowledge",
+    "business intelligence"
+  ],
+  "logo": "assets/logo.svg",
+  "rules": "rules",
+  "skills": "skills",
+  "hooks": "hooks",
+  "mcpServers": "mcp.json"
+}

@@ -1,0 +1,391 @@
+{
+  "schema_version": "legiox-cohort-manifest-1.0",
+  "cohort_id": "k8s",
+  "name": "Kubernetes & DevOps",
+  "description": "k3s/K8s, Helm, GitOps, mail on k8s, Ceph/Rook, ingress, containers, and deployment orchestration.",
+  "keywords": [
+    "kubernetes",
+    "k8s",
+    "k3s",
+    "helm",
+    "devops",
+    "docker",
+    "gitops",
+    "ingress",
+    "ceph"
+  ],
+  "updated": "2026-08-10",
+  "truth_lens_root": "AI-LEGIOX/legiox-truth-lens",
+  "member_count": 46,
+  "members": [
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/commerce-ua-dropshipping-woocommerce-wayforpay-guru.nodus.json",
+      "agent_type": "commerce_ua_dropshipping_woocommerce_wayforpay_guru",
+      "name": "Commerce UA — WooCommerce Dropshipping + WayForPay (Cherkasy News Adjacent) Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/deployment-orchestrator.nodus.json",
+      "agent_type": "deployment_orchestrator",
+      "name": "Deployment Orchestrator",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-mev-hetzner-colocation-infra.nodus.json",
+      "agent_type": "devops-mev-hetzner-colocation-infra",
+      "name": "MEV Hetzner Colocation Infrastructure Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-auto-repair-shop-crm-guru.nodus.json",
+      "agent_type": "devops_auto_repair_shop_crm_guru",
+      "name": "DevOps Auto Repair Shop CRM Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-ffmpeg-live-transmux-hls-packaging-guru.nodus.json",
+      "agent_type": "devops_ffmpeg_live_transmux_hls_packaging_guru",
+      "name": "DevOps FFmpeg Live Transmux & HLS Packaging Guru — Segmenter, GOP Discipline, Sidecar Repack",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-hetzner-api-specialist.nodus.json",
+      "agent_type": "devops_hetzner_api_specialist",
+      "name": "DevOps Hetzner API Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-dns-cluster-guru.nodus.json",
+      "agent_type": "devops_k8s_dns_cluster_guru",
+      "name": "K8s DNS Cluster Guru — Self-Hosted Authoritative DNS on Dual k3s Nodes",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-forgejo-guru.nodus.json",
+      "agent_type": "devops_k8s_forgejo_guru",
+      "name": "DevOps K8s Forgejo Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-guru.nodus.json",
+      "agent_type": "devops_k8s_guru",
+      "name": "Devops K8S Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-local-storage-guru.nodus.json",
+      "agent_type": "devops_k8s_local_storage_guru",
+      "name": "K3s Local Storage Recovery & Hardening Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-mail-addons-guru.nodus.json",
+      "agent_type": "devops_k8s_mail_addons_guru",
+      "name": "Kubernetes Mail Add-ons Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-mail-server-guru.nodus.json",
+      "agent_type": "devops_k8s_mail_server_guru",
+      "name": "Kubernetes Mail Server Guru",
+      "priority": "medium",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-nginx-guru.nodus.json",
+      "agent_type": "devops_k8s_nginx_guru",
+      "name": "Devops K8S Nginx Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-rook-ceph-guru.nodus.json",
+      "agent_type": "devops_k8s_rook_ceph_guru",
+      "name": "DevOps Kubernetes Rook Ceph Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-tailscale-tunnel.nodus.json",
+      "agent_type": "devops_k8s_tailscale_tunnel",
+      "name": "Devops K8S Tailscale Tunnel",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-valero-backup.nodus.json",
+      "agent_type": "devops_k8s_valero_backup",
+      "name": "Devops K8S Valero Backup",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-k8s-vmware-esxi-ubuntu-guru.nodus.json",
+      "agent_type": "devops_k8s_vmware_esxi_ubuntu_guru",
+      "name": "Devops K8S Vmware Esxi Ubuntu Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-meta-facebook-instagram-live-ingest-guru.nodus.json",
+      "agent_type": "devops_meta_facebook_instagram_live_ingest_guru",
+      "name": "DevOps Meta Facebook & Instagram Live Ingest Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-meta-graph-live-video-api-guru.nodus.json",
+      "agent_type": "devops_meta_graph_live_video_api_guru",
+      "name": "DevOps Meta Graph Live Video API Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-nginx-rtmp-restreaming-proxy-guru.nodus.json",
+      "agent_type": "devops_nginx_rtmp_restreaming_proxy_guru",
+      "name": "DevOps NGINX RTMP Restreaming Proxy Guru — HELO Ingest, arut Relay, Kubernetes TCP",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-pr-analytics-metabase-dashboard.nodus.json",
+      "agent_type": "devops_pr_analytics_metabase_dashboard",
+      "name": "Metabase PR Analytics & OKR Dashboard Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-simulcast-and-restream-operations-guru.nodus.json",
+      "agent_type": "devops_simulcast_and_restream_operations_guru",
+      "name": "DevOps Simulcast & Restream Operations Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-tiktok-live-ingest-guru.nodus.json",
+      "agent_type": "devops_tiktok_live_ingest_guru",
+      "name": "DevOps TikTok Live Ingest Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-twitch-and-generic-rtmp-cdns-guru.nodus.json",
+      "agent_type": "devops_twitch_and_generic_rtmp_cdns_guru",
+      "name": "DevOps Twitch & Generic RTMP CDN Ingest Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-youtube-live-ingest-guru.nodus.json",
+      "agent_type": "devops_youtube_live_ingest_guru",
+      "name": "DevOps YouTube Live Ingest Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/docx-react-backend-integrator.nodus.json",
+      "agent_type": "docx_react_backend_integrator",
+      "name": "DOCX × React 19 × Backend Integrator",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/google-cloud-iam-guru.nodus.json",
+      "agent_type": "google_cloud_iam_guru",
+      "name": "Google Cloud IAM Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/infrastructure-provisioner.nodus.json",
+      "agent_type": "infrastructure_provisioner",
+      "name": "Infrastructure Provisioner",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/mev-hetzner-colocation-infra.nodus.json",
+      "agent_type": "mev_hetzner_colocation_infra",
+      "name": "MEV Hetzner Colocation Infrastructure Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/mev-monitoring-telemetry.nodus.json",
+      "agent_type": "mev_monitoring_telemetry",
+      "name": "MEV Monitoring & Telemetry (Operational Visibility Layer)",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/php8-autoparts-erp-guru.nodus.json",
+      "agent_type": "php8_autoparts_erp_guru",
+      "name": "PHP8 AutoParts Data ERP Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/postgis-db-specialist.nodus.json",
+      "agent_type": "postgis_db_specialist",
+      "name": "PostGIS DB on Kubernetes Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/postgres-db-specialist.nodus.json",
+      "agent_type": "postgres_db_specialist",
+      "name": "PostgreSQL Kubernetes Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-oss-distribution-and-upgrade-specialist.nodus.json",
+      "agent_type": "ring-oss-distribution-and-upgrade-specialist",
+      "name": "Ring OSS Distribution & Upgrade Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/sec-email-threat-gateway-guru.nodus.json",
+      "agent_type": "sec_email_threat_gateway_guru",
+      "name": "Sec Email Threat Gateway Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-gov-supply-chain-appsec-sbom-and-image-signing-specialist.nodus.json",
+      "agent_type": "ua_gov_supply_chain_appsec_sbom_and_image_signing_specialist",
+      "name": "UA Gov Supply Chain AppSec — SBOM & Image Signing Specialist",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-oblast-cloud-finops-and-capacity-governor.nodus.json",
+      "agent_type": "ua_oblast_cloud_finops_and_capacity_governor",
+      "name": "UA Oblast Cloud FinOps & Capacity Governor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-region-pr-boss-assistant.nodus.json",
+      "agent_type": "ua_region_pr_boss_assistant",
+      "name": "UA Region PR-Ops Boss Assistant (Cherkasy stack)",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/wordpress-k8s-http3-guru.nodus.json",
+      "agent_type": "wordpress_k8s_http3_guru",
+      "name": "Wordpress K8S Http3 Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/wordpress-newspack-guru.nodus.json",
+      "agent_type": "wordpress_newspack_guru",
+      "name": "WordPress Newspack Platform Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/wordpress-newspack-woocommerce-blocks-and-cart-ux-guru.nodus.json",
+      "agent_type": "wordpress_newspack_woocommerce_blocks_and_cart_ux_guru",
+      "name": "WordPress Newspack + WooCommerce Blocks & Cart UX (News-Adjacent Performance) Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/wordpress-woocommerce-newspack-guru.nodus.json",
+      "agent_type": "wordpress_woocommerce_newspack_guru",
+      "name": "WordPress WooCommerce Newspack Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/aws-eks-specialist.nodus.json",
+      "agent_type": "aws_eks_specialist",
+      "name": "Aws Eks Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/aws-cost-budgets-specialist.nodus.json",
+      "agent_type": "aws_cost_budgets_specialist",
+      "name": "Aws Cost Budgets Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/aws-iam-guru.nodus.json",
+      "agent_type": "aws_iam_guru",
+      "name": "Aws Iam Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/aws-console-cli-agent.nodus.json",
+      "agent_type": "aws_console_cli_agent",
+      "name": "Aws Console Cli Agent",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    }
+  ],
+  "regenerate": "node AI-LEGIOX/scripts/build-cohort-manifests.mjs"
+}

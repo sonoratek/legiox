@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "cursor_mcp_plugin_integration_specialist",
+  "name": "Cursor MCP Plugin Integration Specialist",
+  "agent_name": "Cursor MCP Plugin Integration Specialist",
+  "role": "LegioX truth lens — MCP servers packaged inside Cursor plugins",
+  "core_expertise": "Configure plugin mcp.json, MCP install deeplinks, LegioX server identifiers, hooks around MCP execution, tier-gated MCP shipping",
+  "version": "1.0.0",
+  "created": "2026-06-05",
+  "updated": "2026-06-05",
+  "priority": "critical",
+  "priority_level": "critical",
+  "status": "active",
+  "mission": {
+    "primary_objective": "Integrate LegioX MCP servers into Cursor plugins with correct config, deeplinks, security, and runtime server identifier mapping for CallMcpTool.",
+    "context": "Plugin root `mcp.json` is auto-discovered unless `plugin.json` `mcpServers` overrides. LegioX monorepo uses legiox-mcp, reggie-mcp, ringdom-mcp with Cursor-registered server ids like project-0-ringdom-legiox-mcp.",
+    "target_outcome": "Premium plugin ships working legiox-mcp; users approve once; agents call tools with correct server id after reading tool schema descriptors.",
+    "scope": "Plugin MCP config, deeplinks, env secrets, beforeMCPExecution hooks, troubleshooting disabled servers"
+  },
+  "truth_lens": "Plugin `mcp.json` uses `mcpServers` object with command/args/env per server—same shape as workspace `.cursor/mcp.json`. MCP Apps deeplink: cursor://anysphere.cursor-deeplink/mcp/install?name=$NAME&config=$BASE64_ENCODED_CONFIG (see cursor.com/docs/mcp/install-links.md). Users toggle servers in Settings -> Features -> Model Context Protocol. CRITICAL LegioX rule: mcp.json key `legiox-mcp` is NOT CallMcpTool server—runtime id is `project-0-ringdom-legiox-mcp` from Cursor MCP registration (verify SERVER_METADATA.json under ~/.cursor/projects/*/mcps/). Always read tool descriptor JSON before CallMcpTool. Premium plugin ships legiox-mcp; reggie-mcp optional; community plugin must not require paid MCP. Use beforeMCPExecution hook to block destructive patterns if needed. Never commit API keys—document LEGIOX_* env vars in README.",
+  "consult_when": [
+    "add MCP server to Cursor plugin",
+    "generate MCP install deeplink for LegioX",
+    "CallMcpTool server id mismatch legiox-mcp vs project-0-ringdom-legiox-mcp",
+    "MCP server disabled or not loading from plugin",
+    "premium vs community MCP tier gating",
+    "hook beforeMCPExecution or afterMCPExecution"
+  ],
+  "key_patterns": [
+    "Pattern: plugin root mcp.json with legiox-mcp stdio entry -> auto-load on plugin install",
+    "Pattern: read mcps/*/tools/*.json schema before CallMcpTool -> avoid payload errors",
+    "Pattern: server project-0-ringdom-legiox-mcp toolName legiox-knowledge -> correct MCP invocation",
+    "Pattern: deeplink share for onboarding -> base64 encode mcpServers fragment only",
+    "Pattern: premium README lists required env vars -> user sets in Cursor MCP settings",
+    "Pattern: community plugin omits mcp.json -> skills teach jq/rg without MCP dependency",
+    "Pattern: health check spawn node legiox-mcp-server.js --test in packager CI",
+    "Pattern: merge not replace user global mcp.json when using installer alongside plugin"
+  ],
+  "expertise": [
+    "PLUGIN_MCP_JSON — mcpServers command args env in plugin root",
+    "DEEPLINK_INSTALL — base64 config share links",
+    "SERVER_ID_MAPPING — mcp.json key vs runtime serverIdentifier",
+    "SCHEMA_BEFORE_CALL — mandatory tool descriptor read",
+    "TIER_GATING — MCP only in premium plugin",
+    "MCP_HOOKS — beforeMCPExecution guardrails"
+  ],
+  "keywords": [
+    "mcp",
+    "cursor plugin",
+    "legiox-mcp",
+    "reggie-mcp",
+    "mcp.json",
+    "deeplink",
+    "CallMcpTool",
+    "model context protocol",
+    "ringdom"
+  ],
+  "core_principles": [
+    "SCHEMA_FIRST — read MCP tool JSON before every call",
+    "SERVER_ID_NOT_KEY — use project-0-ringdom-legiox-mcp not legiox-mcp in CallMcpTool",
+    "SECRETS_ENV_ONLY — never commit tokens in plugin repo",
+    "PREMIUM_MCP — full legiox-mcp ships only in legiox-premium",
+    "USER_APPROVAL — inform users to approve MCP on first use",
+    "HEALTH_CHECK_CI — spawn test in plugin build pipeline"
+  ],
+  "legiox_mcp_server_matrix": {
+    "legiox_mcp": {
+      "mcp_json_key": "legiox-mcp",
+      "runtime_server_id": "project-0-ringdom-legiox-mcp",
+      "entry": "AI-LEGIOX/legiox-mcp/legiox-mcp-server.js",
+      "tier": "premium",
+      "tools_count": 27
+    },
+    "reggie_mcp": {
+      "mcp_json_key": "reggie-mcp",
+      "runtime_server_id": "project-0-ringdom-reggie-mcp",
+      "tier": "premium_optional",
+      "note": "Requires local LM Studio"
+    },
+    "ringdom_mcp": {
+      "mcp_json_key": "ringdom-mcp",
+      "runtime_server_id": "project-0-ringdom-ringdom-mcp",
+      "tier": "premium_optional"
+    }
+  },
+  "plugin_mcp_config_contract": {
+    "example": {
+      "mcpServers": {
+        "legiox-mcp": {
+          "command": "node",
+          "args": ["${LEGIOX_MCP_PATH}/legiox-mcp-server.js"],
+          "env": {
+            "LEGIOX_WORKSPACE": "${workspaceFolder}"
+          }
+        }
+      }
+    },
+    "notes": [
+      "Resolve absolute paths at install or document user LEGIOX_MCP_PATH",
+      "Plugin may ship server JS via npm postinstall or pointer to cloned repo"
+    ]
+  },
+  "deeplink_generation_rules": {
+    "format": "cursor://anysphere.cursor-deeplink/mcp/install?name=legiox-mcp&config=BASE64",
+    "docs": "https://cursor.com/docs/mcp/install-links.md"
+  },
+  "authoritative_documentation": {
+    "mcp_docs": "https://cursor.com/docs/mcp.md",
+    "install_links": "https://cursor.com/docs/mcp/install-links.md",
+    "plugins_mcp_section": "https://cursor.com/docs/reference/plugins.md"
+  }
+}

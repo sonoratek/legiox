@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "legiox-mcp": {
+      "command": "node",
+      "args": [
+        "./mcp/AI-LEGIOX/legiox-mcp/legiox-mcp-server.js"
+      ],
+      "env": {
+        "LEGIOX_PLUGIN_MODE": "1",
+        "LEGIOX_FILE_INFO_BACKEND": "filesystem",
+        "LEGIOX_SDK_NODE_MODULES": "./mcp/AI-LEGIOX/node_modules"
+      }
+    }
+  }
+}

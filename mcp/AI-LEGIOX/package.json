@@ -1,0 +1,8 @@
+{
+  "name": "@ringdom/legiox-mcp-free",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  }
+}

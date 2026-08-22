@@ -1,0 +1,422 @@
+{
+  "schema_version": "legiox-cohort-manifest-1.0",
+  "cohort_id": "ua-regional",
+  "name": "Ukraine & Regional (UA)",
+  "description": "Ukrainian regional platforms, CKC, hromada, civic resilience, oblast ops, and UA-specific marketplace/legal patterns.",
+  "keywords": [
+    "ukraine",
+    "ukrainian",
+    "ua",
+    "hromada",
+    "cherkasy",
+    "oblast",
+    "regional",
+    "civic"
+  ],
+  "updated": "2026-05-30",
+  "truth_lens_root": "AI-LEGIOX/legiox-truth-lens",
+  "member_count": 50,
+  "members": [
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-api-partnership-integration-specialist.nodus.json",
+      "agent_type": "ring_api_partnership_integration_specialist",
+      "name": "API Partnership & Integration Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/commerce-ua-ck-regional-trust-monetization-guru.nodus.json",
+      "agent_type": "commerce_ua_ck_regional_trust_monetization_guru",
+      "name": "Commerce UA — CK Regional Trust, Retention & Monetization Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/commerce-ua-dropshipping-woocommerce-wayforpay-guru.nodus.json",
+      "agent_type": "commerce_ua_dropshipping_woocommerce_wayforpay_guru",
+      "name": "Commerce UA — WooCommerce Dropshipping + WayForPay (Cherkasy News Adjacent) Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/cross-border-legal-compliance-specialist.nodus.json",
+      "agent_type": "cross_border_legal_compliance_specialist",
+      "name": "Cross-Border Legal Compliance Specialist",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/developer-education-certification-specialist.nodus.json",
+      "agent_type": "developer_education_certification_specialist",
+      "name": "Developer Education & Certification Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/diia-api-integration-guru.nodus.json",
+      "agent_type": "diia_api_integration_guru",
+      "name": "ДіЯ API Integration Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/geopolitical-risk-analyst.nodus.json",
+      "agent_type": "geopolitical_risk_analyst",
+      "name": "Geopolitical Risk Analyst",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/global-media-relations-coordinator.nodus.json",
+      "agent_type": "global_media_relations_coordinator",
+      "name": "Global Media Relations Coordinator",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/google-news-compliance-oracle.nodus.json",
+      "agent_type": "google_news_compliance_oracle",
+      "name": "Google News Compliance Oracle",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/grant-funding-acquisition-specialist.nodus.json",
+      "agent_type": "grant_funding_acquisition_specialist",
+      "name": "Grant & Funding Acquisition Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/international-payment-systems-specialist.nodus.json",
+      "agent_type": "international_payment_systems_specialist",
+      "name": "International Payment Systems Specialist",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/marketing-ua-affiliate-networks-guru.nodus.json",
+      "agent_type": "marketing_ua_affiliate_networks_guru",
+      "name": "Marketing UA — CPA & Partner Networks (Cherkasy White Traffic) Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/modular_home_salesman_skillset.nodus.json",
+      "agent_type": "modular_home_salesman_skillset",
+      "name": "Modular Home Sales Professional - Ukraine Market",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/monobank-oauth-specialist.nodus.json",
+      "agent_type": "monobank_oauth_specialist",
+      "name": "Monobank Open API / OAuth Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/partnership-development-orchestrator.nodus.json",
+      "agent_type": "partnership_development_orchestrator",
+      "name": "Partnership Development Orchestrator",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/planetary-project-coordinator.nodus.json",
+      "agent_type": "planetary_project_coordinator",
+      "name": "Planetary Project Coordinator",
+      "priority": "medium",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-docs-specialist.nodus.json",
+      "agent_type": "ring_docs_specialist",
+      "name": "Ring Platform Documentation Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-hromada-instructor.nodus.json",
+      "agent_type": "ring_hromada_instructor",
+      "name": "Ring Громада Instructor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-feature-instructor.nodus.json",
+      "agent_type": "ring_feature_instructor",
+      "name": "RNG Feature Instructor (Ring Feature Instructor alias)",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/text-master.nodus.json",
+      "agent_type": "text_master",
+      "name": "Text Master",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/text-translator-agent.nodus.json",
+      "agent_type": "text_translator_agent",
+      "name": "Translator Agent",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-aviation-law-evtol-guru.nodus.json",
+      "agent_type": "ua_aviation_law_evtol_guru",
+      "name": "Ukraine Aviation Law & eVTOL Regulation Guru",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-bilingual-oda-comms-localization-pipeline-architect.nodus.json",
+      "agent_type": "ua_bilingual_oda_comms_localization_pipeline_architect",
+      "name": "UA Bilingual ODA Comms Localization Pipeline Architect",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-civic-inquiry-abuse-sybil-and-spam-specialist.nodus.json",
+      "agent_type": "ua_civic_inquiry_abuse_sybil_and_spam_specialist",
+      "name": "UA Civic Inquiry Abuse, Sybil & Spam Specialist",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-civic-service-request-311-adaptor.nodus.json",
+      "agent_type": "ua_civic_service_request_311_adaptor",
+      "name": "UA Civic Service Request (311) Adaptor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-ckc-regional-community-token-architect.nodus.json",
+      "agent_type": "ua_ckc_regional_community_token_architect",
+      "name": "Ukrainian CKC Regional Community Token Architect",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-communications-legal-hold-and-foi-clock-engineer.nodus.json",
+      "agent_type": "ua_communications_legal_hold_and_foi_clock_engineer",
+      "name": "UA Communications Legal Hold & FOI-Clock Engineer",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-cross-tenant-saas-and-data-residency-guard.nodus.json",
+      "agent_type": "ua_cross_tenant_saas_and_data_residency_guard",
+      "name": "UA Cross-Tenant SaaS & Data Residency Guard (Oblast)",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-cultural-nft-memorabilia-ip-counsel.nodus.json",
+      "agent_type": "ua_cultural_nft_memorabilia_ip_counsel",
+      "name": "Local Cultural NFT & Memorabilia IP Counsel",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-dao-public-authority-boundaries-architect.nodus.json",
+      "agent_type": "ua_dao_public_authority_boundaries_architect",
+      "name": "Ukrainian DAO + Public Authority Boundaries Architect",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-gov-supply-chain-appsec-sbom-and-image-signing-specialist.nodus.json",
+      "agent_type": "ua_gov_supply_chain_appsec_sbom_and_image_signing_specialist",
+      "name": "UA Gov Supply Chain AppSec — SBOM & Image Signing Specialist",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-government-bulk-email-deliverability-architect.nodus.json",
+      "agent_type": "ua_government_bulk_email_deliverability_architect",
+      "name": "UA Government Bulk Email Deliverability Architect",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-grant-opportunity-graph-and-in-app-funding-router.nodus.json",
+      "agent_type": "ua_grant_opportunity_graph_and_in_app_funding_router",
+      "name": "Grant Opportunity Graph & In-App Funding Router",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-hromada-delegate-ai-orchestration-governor.nodus.json",
+      "agent_type": "ua_hromada_delegate_ai_orchestration_governor",
+      "name": "Ukrainian Hromada Delegate AI Orchestration Governor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-international-diaspora-aid-in-app-compliance-specialist.nodus.json",
+      "agent_type": "ua_international_diaspora_aid_in_app_compliance_specialist",
+      "name": "Ukrainian International Diaspora & In-App Aid Compliance Specialist",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-multivendor-regional-services-operations-and-trust-safety.nodus.json",
+      "agent_type": "ua_multivendor_regional_services_operations_and_trust_safety",
+      "name": "UA Multivendor Regional Services — Operations & Trust-Safety",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-non-speculative-reputation-wealth-designer.nodus.json",
+      "agent_type": "ua_non_speculative_reputation_wealth_designer",
+      "name": "UA Non-Speculative Reputation Wealth & Civic Gamification Designer",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-oblast-cloud-finops-and-capacity-governor.nodus.json",
+      "agent_type": "ua_oblast_cloud_finops_and_capacity_governor",
+      "name": "UA Oblast Cloud FinOps & Capacity Governor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-oblast-digital-platform-strategist.nodus.json",
+      "agent_type": "ua_oblast_digital_platform_strategist",
+      "name": "Ukrainian Oblast Digital Platform Strategist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-oblast-executive-pr-automation-specialist.nodus.json",
+      "agent_type": "ua_oblast_executive_pr_automation_specialist",
+      "name": "UA Oblast Executive PR Load Reduction Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-personal-data-and-official-stats-governance-auditor.nodus.json",
+      "agent_type": "ua_personal_data_and_official_stats_governance_auditor",
+      "name": "Ukrainian Personal Data & Official Statistics Governance Auditor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-postgis-regional-maps-and-civic-poi-steward.nodus.json",
+      "agent_type": "ua_postgis_regional_maps_and_civic_poi_steward",
+      "name": "UA PostGIS Regional Maps & Civic POI Steward",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-public-sector-tls-dns-and-cert-governance-specialist.nodus.json",
+      "agent_type": "ua_public_sector_tls_dns_and_cert_governance_specialist",
+      "name": "UA Public-Sector TLS, DNS & Certificate Governance Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-public-sector-wcag-and-readable-comms-specialist.nodus.json",
+      "agent_type": "ua_public_sector_wcag_and_readable_comms_specialist",
+      "name": "UA Public-Sector WCAG & Readable Comms Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-region-pr-boss-assistant.nodus.json",
+      "agent_type": "ua_region_pr_boss_assistant",
+      "name": "UA Region PR-Ops Boss Assistant (Cherkasy stack)",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-regional-analytics-impact-and-funder-grade-metrics-designer.nodus.json",
+      "agent_type": "ua_regional_analytics_impact_and_funder_grade_metrics_designer",
+      "name": "UA Regional Analytics — Impact & Funder-Grade Metrics Designer",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-regional-opportunity-marketplace-economist.nodus.json",
+      "agent_type": "ua_regional_opportunity_marketplace_economist",
+      "name": "Ukrainian Regional Opportunity Marketplace Economist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-resilience-offline-first-civic-app-engineer.nodus.json",
+      "agent_type": "ua_resilience_offline_first_civic_app_engineer",
+      "name": "UA Resilience — Offline-First Civic App Engineer",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-trembita-edelivery-registry-interop-strategist.nodus.json",
+      "agent_type": "ua_trembita_edelivery_registry_interop_strategist",
+      "name": "UA Trembita, e-Delivery & Registry Interop Strategist",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/wordpress-woocommerce-newspack-guru.nodus.json",
+      "agent_type": "wordpress_woocommerce_newspack_guru",
+      "name": "WordPress WooCommerce Newspack Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    }
+  ],
+  "regenerate": "node AI-LEGIOX/scripts/build-cohort-manifests.mjs"
+}
