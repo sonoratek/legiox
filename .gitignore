@@ -3,3 +3,4 @@
 .env
 .env.*
 checksums.json
+.npmrc
