@@ -1,6 +1,6 @@
 {
   "name": "@ringdom/legiox-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "LegioX MCP server (free tier) — knowledge ecosystem search (legiox-knowledge), agent-selector routing, merge/append context-update, skillset generation (legiox-create), and starter truth-lens resources over your AI-CONTEXT knowledge base.",
   "license": "MIT",
   "author": {
