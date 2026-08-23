@@ -27,9 +27,13 @@ const SDK_MODULES = process.env.LEGIOX_SDK_NODE_MODULES || path.resolve(process.
 const LICENSES_PATH = path.join(DATA_DIR, 'licenses.json');
 const AI_CONTEXT_CLASSES = ['concepts', 'implementations', 'patterns', 'workflows', 'troubleshooting', 'timeline', 'features', 'services', 'core'];
 
-const sessions = new Map(); // sessionId -> { child, transport, ns }
+const sessions = new Map(); // sessionId -> { child, transport, ns, lastActive }
+const SESSION_IDLE_MS = Number(process.env.LEGIOX_SESSION_IDLE_MS || 30 * 60 * 1000);
 
-function log(...args) { console.log(new Date().toISOString(), ...args); }
+function touchSession(sid) {
+  const s = sessions.get(sid);
+  if (s) s.lastActive = Date.now();
+}
 
 function cleanupSession(transport) {
   for (const [sid, s] of sessions) {
@@ -41,6 +45,19 @@ function cleanupSession(transport) {
     }
   }
 }
+
+// Idle sweep: close sessions that exceeded SESSION_IDLE_MS without traffic.
+setInterval(() => {
+  const now = Date.now();
+  for (const [sid, s] of [...sessions]) {
+    if (now - (s.lastActive || 0) > SESSION_IDLE_MS) {
+      log('session idle timeout', sid);
+      sessions.delete(sid);
+      try { s.child.kill(); } catch { /* noop */ }
+      try { s.transport.close(); } catch { /* noop */ }
+    }
+  }
+}, 60 * 1000).unref();
 
 function loadLicenses() {
   try { return JSON.parse(fs.readFileSync(LICENSES_PATH, 'utf8')); } catch { return {}; }
@@ -156,7 +173,7 @@ app.post('/mcp/v1/:namespace', async (req, res) => {
     await transport.handleRequest(req, res);
     const sid = transport.sessionId;
     if (sid) {
-      sessions.set(sid, { child, transport, ns });
+      sessions.set(sid, { child, transport, ns, lastActive: Date.now() });
       log('session started', sid, ns, 'plan', lic.plan);
     } else {
       child.kill();
