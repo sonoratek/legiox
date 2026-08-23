@@ -1,7 +1,7 @@
 {
   "name": "@ringdom/legiox-mcp",
   "version": "1.0.2",
-  "description": "LegioX MCP server — knowledge ecosystem search (legiox-knowledge), agent-selector routing, merge/append context-update, skillset generation (legiox-create), and truth-lens resources over your AI-CONTEXT knowledge base.",
+  "description": "LegioX MCP server (free tier) — knowledge ecosystem search (legiox-knowledge), agent-selector routing, merge/append context-update, skillset generation (legiox-create), and starter truth-lens resources over your AI-CONTEXT knowledge base.",
   "license": "MIT",
   "author": {
     "name": "Ringdom",
@@ -20,7 +20,9 @@
     "cohorts/",
     "AI-AGENT-INDEX.json",
     "LEGIOX-COHORTS.json",
-    "scripts/"
+    "scripts/",
+    "generator-prompts/",
+    "README.md"
   ],
   "engines": {
     "node": ">=18"

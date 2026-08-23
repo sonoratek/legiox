@@ -1,6 +1,6 @@
 # @ringdom/legiox-mcp
 
-LegioX MCP server — installable via npx, no local bundle required. Searches and mutates a **filesystem JSON knowledge base** (`AI-CONTEXT/`): concepts, implementations, patterns, workflows, troubleshooting. No Postgres, no SQLite, no cloud needed.
+LegioX MCP server — **free tier**. Installable via npx, no local bundle required. Searches and mutates a **filesystem JSON knowledge base** (`AI-CONTEXT/`): concepts, implementations, patterns, workflows, troubleshooting. No Postgres, no SQLite, no cloud needed.
 
 ## Quick start
 
@@ -41,9 +41,9 @@ Connect from any MCP client (Claude Desktop, Cursor, OpenCode, VS Code):
 | `legiox-kingdom-grep` / `legiox-codebase-grep` | Cross-scans over knowledge/code |
 | `legiox-agent-index-rebuilder` | Reindex after adding truth lenses |
 
-## Resources
+## Corpus
 
-`legiox-lens://<agent_type>` — every bundled truth lens is attachable as an @-menu resource.
+The free tier ships **starter content only**: `agent-schema.json`, `AGENT-NODUS-SCHEMA.md`, and two starter truth lenses (`react-19-specialist`, `cursor-mcp-plugin-integration-specialist`). The full premium truth-lens library (369+ lenses) is available via the hosted LegioX Pro offering.
 
 ## Publishing
 
