@@ -1,0 +1,18 @@
+services:
+  legiox-mcp:
+    image: ghcr.io/sonoratek/legiox-mcp:latest
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    # stdio MCP: keep stdin open, no TTY
+    stdin_open: true
+    tty: false
+    volumes:
+      # Mount your knowledge base: a directory containing AI-CONTEXT/
+      - ./knowledge:/knowledge
+    environment:
+      LEGIOX_PLUGIN_MODE: "1"
+      LEGIOX_FILE_INFO_BACKEND: filesystem
+      RINGDOM_ROOT: /knowledge
+    # Health: node legiox-mcp-server.js --test (stdio mode; run manually in CI)
+    # command: ["--test"]
