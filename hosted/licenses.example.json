@@ -1,0 +1,4 @@
+{
+  "license-key-1": { "namespace": "demo", "plan": "free", "expiresAt": "2027-01-01T00:00:00.000Z" },
+  "license-key-2": { "namespace": "emperor", "plan": "pro", "expiresAt": "2027-01-01T00:00:00.000Z" }
+}

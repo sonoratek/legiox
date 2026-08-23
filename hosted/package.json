@@ -1,0 +1,12 @@
+{
+  "name": "@ringdom/legiox-mcp-hosted",
+  "version": "1.0.3",
+  "description": "LegioX MCP hosted endpoint — Streamable HTTP with per-user namespaces (MCPaaS).",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "express": "^4.18.2"
+  },
+  "engines": { "node": ">=18" }
+}

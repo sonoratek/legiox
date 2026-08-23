@@ -4,3 +4,5 @@
 .env.*
 checksums.json
 .npmrc
+
+hosted/node_modules/
