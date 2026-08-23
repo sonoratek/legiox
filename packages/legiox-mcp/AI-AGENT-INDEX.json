@@ -105,7 +105,7 @@
       "tier": "specialist",
       "name": "React 19 Specialist 3.1",
       "source_file": "",
-      "source_dir": "/Users/insight/code/ringdom/AI-LEGIOX/legiox-truth-lens"
+      "source_dir": "legiox-truth-lens"
     },
     "cursor_mcp_plugin_integration_specialist": {
       "agent_id": "cursor_mcp_plugin_integration_specialist",
@@ -158,7 +158,7 @@
       "tier": "specialist",
       "name": "Cursor MCP Plugin Integration Specialist",
       "source_file": "",
-      "source_dir": "/Users/insight/code/ringdom/AI-LEGIOX/legiox-truth-lens"
+      "source_dir": "legiox-truth-lens"
     }
   },
   "by_id": {
@@ -587,7 +587,7 @@
     "ai_aws_bedrock_agentcore_guru": "ai-aws-bedrock-agentcore-guru.nodus.json",
     "aws_iam_guru": "aws-iam-guru.nodus.json"
   },
-  "agents_base_path": "/Users/insight/code/ringdom/AI-LEGIOX/legiox-truth-lens",
+  "agents_base_path": "legiox-truth-lens",
   "agents_count": 424,
   "total_agents": 372
 }

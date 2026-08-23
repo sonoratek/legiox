@@ -22,7 +22,7 @@ const RINGDOM_PG_HOST = process.env.RINGDOM_PG_HOST || process.env.PGHOST || '';
 const RINGDOM_PG_PORT = process.env.RINGDOM_PG_PORT || process.env.PGPORT || '5432';
 const RINGDOM_PG_DATABASE = process.env.RINGDOM_PG_DATABASE || process.env.POSTGRES_DB || 'ring_file_registry';
 const RINGDOM_PG_USER = process.env.RINGDOM_PG_USER || process.env.POSTGRES_USER || 'ring_user';
-const RINGDOM_PG_PASSWORD = process.env.RINGDOM_PG_PASSWORD || process.env.POSTGRES_PASSWORD || 'ring_password_2024';
+const RINGDOM_PG_PASSWORD = process.env.RINGDOM_PG_PASSWORD || process.env.POSTGRES_PASSWORD || '';
 const AGENT_INDEX_PATH = path.join(LEGIOX_ROOT, 'AI-AGENT-INDEX.json');
 /** AI-AGENT-INDEX.json grows with truth-lens count; must exceed file size or readSafeText returns empty and cross-check falsely fails. */
 const AGENT_INDEX_JSON_MAX_BYTES = Number(process.env.LEGIOX_AGENT_INDEX_MAX_BYTES) > 0

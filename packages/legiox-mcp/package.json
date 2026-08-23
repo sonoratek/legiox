@@ -3,12 +3,43 @@
   "version": "1.0.2",
   "description": "LegioX MCP server (free tier) — knowledge ecosystem search (legiox-knowledge), agent-selector routing, merge/append context-update, skillset generation (legiox-create), and starter truth-lens resources over your AI-CONTEXT knowledge base.",
   "license": "MIT",
-  "author": { "name": "Ringdom", "email": "ray@ringdom.org" },
-  "repository": { "type": "git", "url": "https://github.com/sonoratek/legiox" },
-  "bin": { "legiox-mcp": "./legiox-mcp/legiox-mcp-server.js" },
-  "files": ["legiox-mcp/", "legiox-truth-lens/", "cohorts/", "AI-AGENT-INDEX.json", "LEGIOX-COHORTS.json", "scripts/", "generator-prompts/", "README.md"],
-  "engines": { "node": ">=18" },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.26.0" },
-  "keywords": ["mcp", "legiox", "knowledge", "ai-context", "agent-selector", "nodus", "truth-lens", "skillset", "memory"],
-  "publishConfig": { "access": "public" }
+  "author": {
+    "name": "Ringdom",
+    "email": "ray@ringdom.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sonoratek/legiox"
+  },
+  "bin": {
+    "legiox-mcp": "./legiox-mcp/legiox-mcp-server.js"
+  },
+  "files": [
+    "legiox-mcp/",
+    "legiox-truth-lens/",
+    "AI-AGENT-INDEX.json",
+    "LEGIOX-COHORTS.json",
+    "assets/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  },
+  "keywords": [
+    "mcp",
+    "legiox",
+    "knowledge",
+    "ai-context",
+    "agent-selector",
+    "nodus",
+    "truth-lens",
+    "skillset",
+    "memory"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
