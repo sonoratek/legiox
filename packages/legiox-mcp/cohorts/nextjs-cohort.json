@@ -1,0 +1,285 @@
+{
+  "schema_version": "legiox-cohort-manifest-1.0",
+  "cohort_id": "nextjs",
+  "name": "Next.js & App Router",
+  "description": "Next.js 15/16 App Router, middleware, caching, upgrades, and Ring Platform Next patterns.",
+  "keywords": [
+    "nextjs",
+    "next.js",
+    "app router",
+    "middleware",
+    "next-intl",
+    "ppr",
+    "server actions"
+  ],
+  "updated": "2026-05-30",
+  "truth_lens_root": "AI-LEGIOX/legiox-truth-lens",
+  "member_count": 33,
+  "members": [
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/authjs-specialist.nodus.json",
+      "agent_type": "authjs_specialist",
+      "name": "Auth.js v5 Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/chaos-engineering-specialist.nodus.json",
+      "agent_type": "chaos_engineering_specialist",
+      "name": "Chaos Engineering Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ci-cd-pipeline-specialist.nodus.json",
+      "agent_type": "ci_cd_pipeline_specialist",
+      "name": "Ringdom CI/CD Pipeline Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/cursor-installer-engineer.nodus.json",
+      "agent_type": "cursor_installer_engineer",
+      "name": "LegioX Cursor Installer Engineer",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/dependency-manager.nodus.json",
+      "agent_type": "dependency_manager",
+      "name": "Dependency Manager",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/deployment-orchestrator.nodus.json",
+      "agent_type": "deployment_orchestrator",
+      "name": "Deployment Orchestrator",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/developer-onboarding-learning-path-curator.nodus.json",
+      "agent_type": "developer_onboarding_learning_path_curator",
+      "name": "Developer Onboarding & Learning Path Curator",
+      "priority": "medium",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/diia-api-integration-guru.nodus.json",
+      "agent_type": "diia_api_integration_guru",
+      "name": "ДіЯ API Integration Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/docx-react-backend-integrator.nodus.json",
+      "agent_type": "docx_react_backend_integrator",
+      "name": "DOCX × React 19 × Backend Integrator",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/fcm-specialist.nodus.json",
+      "agent_type": "fcm_specialist",
+      "name": "FCM Specialist — React 19 × Next.js 16 × PostgreSQL",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/git-github-specialist.nodus.json",
+      "agent_type": "git_github_specialist",
+      "name": "Git GuruTruth Lens",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/google_identity_services_specialist.nodus.json",
+      "agent_type": "google_identity_services_specialist",
+      "name": "Google Identity Services (GIS) Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/localization-engineering-specialist.nodus.json",
+      "agent_type": "localization_engineering_specialist",
+      "name": "Localization Engineering Specialist",
+      "priority": "medium",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/monobank-oauth-specialist.nodus.json",
+      "agent_type": "monobank_oauth_specialist",
+      "name": "Monobank Open API / OAuth Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/nextjs-15-specialist.nodus.json",
+      "agent_type": "nextjs_15_specialist",
+      "name": "Next.js 15 Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/nextjs-16-specialist.nodus.json",
+      "agent_type": "nextjs_16_specialist",
+      "name": "Next.js 16 App Router Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/nextjs-16-upgrader.nodus.json",
+      "agent_type": "nextjs_16_upgrader",
+      "name": "Next.js 16 / React 19 Upgrader Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-node-25-react19-specialist.nodus.json",
+      "agent_type": "ring_node_25_react19_specialist",
+      "name": "Node.js 25 + React 19 Ring Stack Specialist",
+      "priority": "medium",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/openai-realtime-voice.nodus.json",
+      "agent_type": "openai_realtime_voice",
+      "name": "OpenAI Realtime Voice Component Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/polygon-network-specialist.nodus.json",
+      "agent_type": "polygon_network_specialist",
+      "name": "Polygon Network Specialist",
+      "priority": "medium",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/react-19-webkit-compatibility-expert.nodus.json",
+      "agent_type": "react_19_webkit_compatibility_expert",
+      "name": "React 19 / Next.js 16 WebKit & Mobile Browser Compatibility Expert",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/react-email-login-specialist.nodus.json",
+      "agent_type": "react_email_login_specialist",
+      "name": "React Email Login Specialist — Own SMTP × react-email 5 × Next.js 16",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/react-threejs-specialist.nodus.json",
+      "agent_type": "react_threejs_specialist",
+      "name": "React Three.js Specialist — R3F + Drei + WebGPU + TSL",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/react_i18n_specialist.nodus.json",
+      "agent_type": "react_i18n_specialist",
+      "name": "React i18n Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-docs-specialist.nodus.json",
+      "agent_type": "ring_docs_specialist",
+      "name": "Ring Platform Documentation Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-hromada-instructor.nodus.json",
+      "agent_type": "ring_hromada_instructor",
+      "name": "Ring Громада Instructor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-oss-distribution-and-upgrade-specialist.nodus.json",
+      "agent_type": "ring-oss-distribution-and-upgrade-specialist",
+      "name": "Ring OSS Distribution & Upgrade Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/translator-agent.nodus.json",
+      "agent_type": "translator_agent",
+      "name": "LegioX Translator Agent",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-resilience-offline-first-civic-app-engineer.nodus.json",
+      "agent_type": "ua_resilience_offline_first_civic_app_engineer",
+      "name": "UA Resilience — Offline-First Civic App Engineer",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ui-ux-optimization-agent.nodus.json",
+      "agent_type": "ui_ux_optimization_agent",
+      "name": "UI/UX Optimization Agent",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/wayforpay-integrator-skillset.nodus.json",
+      "agent_type": "wayforpay_integrator_skillset",
+      "name": "WayForPay API Senior-level Integrator",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/web3-wagmi-specialist.nodus.json",
+      "agent_type": "web3_wagmi_specialist",
+      "name": "Wagmi Web3 React Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/zod-enforcer.nodus.json",
+      "agent_type": "zod_enforcer",
+      "name": "Ringdom ZOD EnforcerTruth Lens",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    }
+  ],
+  "regenerate": "node AI-LEGIOX/scripts/build-cohort-manifests.mjs"
+}

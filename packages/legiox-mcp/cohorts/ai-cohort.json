@@ -1,0 +1,298 @@
+{
+  "schema_version": "legiox-cohort-manifest-1.0",
+  "cohort_id": "ai",
+  "name": "AI, LLM & Media Intelligence",
+  "description": "LLM integration, RAG, agents, embeddings, voice/video AI, avatars, datasets, and model orchestration (any provider).",
+  "keywords": [
+    "llm",
+    "rag",
+    "embedding",
+    "prompt",
+    "openai",
+    "anthropic",
+    "huggingface",
+    "voice",
+    "video",
+    "avatar",
+    "transcription",
+    "agent"
+  ],
+  "updated": "2026-08-10",
+  "truth_lens_root": "AI-LEGIOX/legiox-truth-lens",
+  "member_count": 34,
+  "members": [
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-anthropic-api-specialist.nodus.json",
+      "agent_type": "ai_anthropic_api_specialist",
+      "name": "AI Anthropic API & Claude Integration Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-anthropic-claude-runtime-env-guru.nodus.json",
+      "agent_type": "ai_anthropic_claude_runtime_env_guru",
+      "name": "AI Anthropic Claude Runtime & Environment Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-avatar-presenter-specialist.nodus.json",
+      "agent_type": "ai_avatar_presenter_specialist",
+      "name": "AI Avatar Presenter Specialist (NODUS)",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-context-architect.nodus.json",
+      "agent_type": "ai_context_architect",
+      "name": "AI-CONTEXT Library Architect",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-context-master.nodus.json",
+      "agent_type": "ai_context_master",
+      "name": "AI Context Master",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-llm-datasets-specialist.nodus.json",
+      "agent_type": "ai_llm_datasets_specialist",
+      "name": "AI LLM Datasets Specialist — Dataset Creation × Model Formats × Quantisation × Alignment",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-openrouter-specialist.nodus.json",
+      "agent_type": "ai_openrouter_specialist",
+      "name": "AI OpenRouter Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-powered-personalization-engine.nodus.json",
+      "agent_type": "ai_powered_personalization_engine",
+      "name": "AI-Powered Personalization Engine",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-video-editor-postproduction-guru.nodus.json",
+      "agent_type": "ai_video_editor_postproduction_guru",
+      "name": "AI Video Editor & Post-Production Guru (NODUS)",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-video-generation-orchestrator.nodus.json",
+      "agent_type": "ai_video_generation_orchestrator",
+      "name": "AI Video Generation Orchestrator (NODUS)",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-video-scriptwriter-storyboarder.nodus.json",
+      "agent_type": "ai_video_scriptwriter_storyboarder",
+      "name": "AI Video Scriptwriter & Storyboarder (NODUS)",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-voice-audio-production-guru.nodus.json",
+      "agent_type": "ai_voice_audio_production_guru",
+      "name": "AI Voice & Audio Production Guru (NODUS)",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-voice-dubbing-orchestrator.nodus.json",
+      "agent_type": "ai_voice_dubbing_orchestrator",
+      "name": "AI Voice Dubbing Orchestrator (NODUS)",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/devops-meta-graph-live-video-api-guru.nodus.json",
+      "agent_type": "devops_meta_graph_live_video_api_guru",
+      "name": "DevOps Meta Graph Live Video API Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/llm-qwen3.5-apple-specialist.nodus.json",
+      "agent_type": "llm_qwen35_apple_specialist",
+      "name": "LLM Specialist — Qwen3.5 × Apple M4 Max × LM Studio / llmster",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/llm-rag-specialist.nodus.json",
+      "agent_type": "llm_rag_specialist",
+      "name": "LLM RAG & Neural Memory Specialist — PostgreSQL 15 × pgvector × Hybrid Search",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/mlops-ai-model-lifecycle-manager.nodus.json",
+      "agent_type": "mlops_ai_model_lifecycle_manager",
+      "name": "MLOps & AI Model Lifecycle Manager",
+      "priority": "medium",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/openai-realtime-voice.nodus.json",
+      "agent_type": "openai_realtime_voice",
+      "name": "OpenAI Realtime Voice Component Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/prompt-injection-prevention-specialist.nodus.json",
+      "agent_type": "prompt_injection_prevention_specialist",
+      "name": "Prompt Injection Prevention & LLM Security Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/reggie-instructor.nodus.json",
+      "agent_type": "reggie_instructor",
+      "name": "Reggie Instructor & Integration Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ring-ai-matcher-specialist.nodus.json",
+      "agent_type": "ring_ai_matcher_specialist",
+      "name": "Ring AI Matcher Specialist",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/sborka-ua-product-guru.nodus.json",
+      "agent_type": "sborka_ua_product_guru",
+      "name": "Sborka.ua Product Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/solidworks-mcp-guru.nodus.json",
+      "agent_type": "solidworks_mcp_guru",
+      "name": "SolidWorks MCP Guru — Architecture, API & Implementation Guide",
+      "priority": "medium",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-bilingual-oda-comms-localization-pipeline-architect.nodus.json",
+      "agent_type": "ua_bilingual_oda_comms_localization_pipeline_architect",
+      "name": "UA Bilingual ODA Comms Localization Pipeline Architect",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-civic-service-request-311-adaptor.nodus.json",
+      "agent_type": "ua_civic_service_request_311_adaptor",
+      "name": "UA Civic Service Request (311) Adaptor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-communications-legal-hold-and-foi-clock-engineer.nodus.json",
+      "agent_type": "ua_communications_legal_hold_and_foi_clock_engineer",
+      "name": "UA Communications Legal Hold & FOI-Clock Engineer",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-cross-tenant-saas-and-data-residency-guard.nodus.json",
+      "agent_type": "ua_cross_tenant_saas_and_data_residency_guard",
+      "name": "UA Cross-Tenant SaaS & Data Residency Guard (Oblast)",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "content"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ua-hromada-delegate-ai-orchestration-governor.nodus.json",
+      "agent_type": "ua_hromada_delegate_ai_orchestration_governor",
+      "name": "Ukrainian Hromada Delegate AI Orchestration Governor",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/youtube-video-seo-distribution-commander.nodus.json",
+      "agent_type": "youtube_video_seo_distribution_commander",
+      "name": "YouTube Video SEO & Distribution Commander (NODUS)",
+      "priority": "critical",
+      "status": "active",
+      "match_reason": "filename"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-aws-bedrock-agents-guru.nodus.json",
+      "agent_type": "ai_aws_bedrock_agents_guru",
+      "name": "Ai Aws Bedrock Agents Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-aws-bedrock-specialist.nodus.json",
+      "agent_type": "ai_aws_bedrock_specialist",
+      "name": "Ai Aws Bedrock Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-aws-bedrock-agentcore-guru.nodus.json",
+      "agent_type": "ai_aws_bedrock_agentcore_guru",
+      "name": "Ai Aws Bedrock Agentcore Guru",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/aws-ec2-lambda-s3-specialist.nodus.json",
+      "agent_type": "aws_ec2_lambda_s3_specialist",
+      "name": "Aws Ec2 Lambda S3 Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    },
+    {
+      "path": "AI-LEGIOX/legiox-truth-lens/ai-aws-sagemaker-specialist.nodus.json",
+      "agent_type": "ai_aws_sagemaker_specialist",
+      "name": "Ai Aws Sagemaker Specialist",
+      "priority": "high",
+      "status": "active",
+      "match_reason": "legiox-create-nodus"
+    }
+  ],
+  "regenerate": "node AI-LEGIOX/scripts/build-cohort-manifests.mjs"
+}
