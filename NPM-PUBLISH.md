@@ -65,3 +65,14 @@ npm publish
 ```
 
 Keep npm version aligned with the GitHub release tag (v1.0.3).
+## ⛔ CONTENT POLICY (mandatory)
+
+**The public `@ringdom/legiox-mcp` package ships FREE TIER content ONLY.**
+
+- Include: server + engine, `agent-schema.json`, `AGENT-NODUS-SCHEMA.md`, the **2 starter lenses** (`react-19-specialist`, `cursor-mcp-plugin-integration-specialist`), scoped `AI-AGENT-INDEX.json`, cohorts, generator-prompts, scripts.
+- **NEVER include** the premium truth-lens corpus (`legiox-truth-lens/*.nodus.json` beyond the 2 starters) — it is premium data (LegioX Pro / hosted legiox.pro offering only).
+- Before every publish: `npm pack --dry-run` and verify **0 premium lens files** in the tarball:
+  ```bash
+  npm pack --dry-run 2>&1 | grep -cE "legiox-truth-lens/(ua-|planetary|mev-)"   # must be 0
+  ```
+- Source of truth for package content: `legiox-free/mcp/AI-LEGIOX/` (free scoped bundle) — never `legiox-pro/`.
