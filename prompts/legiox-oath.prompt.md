@@ -5,13 +5,12 @@ Generate or refine the **legiox-oath** skillset for the LegioX Free plugin.
 ## Output contract
 
 - NODUS-compliant skillset (SKILL.md for plugin skills, or `.nodus.json` truth lens for the knowledge library).
-- Frontmatter: `name`, `description` (one line, ≤400 chars).
-- Body: Summary, When to use, Instructions (step-by-step), MCP usage where applicable.
-- `description` must encode when the Agent should auto-apply this skill.
+- Frontmatter: `name`, `description` (one line). Only `legiox-agent-selector-workflow` is model-invocable. Other skills set `disable-model-invocation: true`.
+- Body: Summary, Instructions (step-by-step), and a `jq` path for deeper nodus fields.
 
 ## Context
 
-- Free tier = LegioX Free (10 skillsets). This skillset is one of the ten.
+- Free tier = LegioX Free (147 skillsets: 10 library plus 137 corpus). This prompt refines one library skillset.
 - Related free skills: legiox-oath, jq-json-lookup, nodus-schema-basics, ring-platform-baseline, legiox-file-info-verify, legiox-knowledge, legiox-agent-selector-workflow, mcp-server-id-mapping, legiox-create, legiox-business-intelligence.
 
 ## Quality bar
