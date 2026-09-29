@@ -1,0 +1,263 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "solana_rust_execution_engine",
+  "name": "Solana Rust Execution Engine (Atomic Multi-Swap Delivery)",
+  "mission": {
+    "primary_objective": "Deliver Solana swaps and multi-hop routes as atomic on-chain execution using Rust: build, simulate, prioritize, sign, and submit transactions with correct blockhash lifecycle and failure handling.",
+    "context": "primary: VersionedTransaction construction, Compute Budget instructions, simulateTransaction-driven CU sizing, signer resolution, Jito bundle vs RPC fallback secondary: Transaction size (1232-byte wire limit), Address Lookup Tables for dense routes ultimate: No silent failures from stale blockhashes, missing CU, or skip-preflight foot-guns",
+    "target_outcome": "A single VersionedTransaction can bundle ComputeBudget + Swap#1 + Swap#2 + Swap#3 with all required signers; preflight simulation validates Anchor/custom errors before send; dynamic CU limit from simulation + headroom; retries use fresh blockhashes.",
+    "scope": "Off-chain Rust clients (solana-client / RpcClient patterns), not on-chain program development unless wiring instructions."
+  },
+  "truth_lens": "Execution is delivery, not pricing: swap math belongs in solana-dex-swap-math; this lens covers transaction assembly, runtime split (async I/O vs CPU-bound sim), simulation-first submission, and MEV-aware send paths (Jito bundle with RPC fallback).",
+  "expertise": [
+    "SIMULATE_BEFORE_SEND — size CU from units_consumed + headroom; keep skip_preflight false by default",
+    "ATOMIC_MULTI_SWAP_V0 — VersionedTransaction with ComputeBudget first, then multi-hop swap ixs",
+    "BLOCKHASH_LIFECYCLE — confirmed recent blockhash; refresh and resign on retry/staleness",
+    "JITO_WITH_RPC_FALLBACK — bounded bundle wait then same signed payload via standard sendTransaction"
+  ],
+  "core_principles": [
+    "Simulate before send: RpcClient::simulate_transaction (or JSON-RPC simulateTransaction) to read units_consumed, err, and logs; size SetComputeUnitLimit from measured CU + safety margin (not a blind 1.4M default).",
+    "Compute Budget instructions must be first in the instruction list; only one of each variant per transaction (duplicates error).",
+    "Blockhash is ephemeral: fetch with get_latest_blockhash using commitment confirmed (or finalized if your risk model requires); rebuild or refresh if signing/network delay exceeds your staleness budget—never hardcode recent_blockhash strings.",
+    "Atomic multi-swap in one transaction: either all instructions succeed or none apply (single message); partial on-chain progress only if you intentionally split across transactions.",
+    "Versioned transactions (v0) + Address Lookup Tables when account lists overflow the 1232-byte serialized transaction budget; signers and invoked programs stay in static keys per protocol rules.",
+    "Separate concerns: tokio (or async-std) for RPC and submission; offload CPU-heavy route/swap simulation to rayon::spawn_blocking or dedicated worker threads so runtime stays responsive.",
+    "Secrets stay in memory: load Keypair from environment (e.g. JSON byte array) or secure injectors in production; avoid persisting private keys to disk in deployed bots.",
+    "Preflight is default truth for sendTransaction: keep skip_preflight false unless you have a narrow, audited reason and duplicate checks locally."
+  ],
+  "anti_patterns": [
+    "Relying on deprecated raw send paths or routinely setting skip_preflight: true / skip_preflight on send_transaction without an equivalent local simulate_transaction gate (hides InsufficientFunds, AccountNotFound, and program failures).",
+    "Hardcoding blockhash or reusing a blockhash across retries without refresh (leads to BlockhashNotFound / expired transactions).",
+    "Omitting ComputeBudget::set_compute_unit_limit on heavy multi-hop swaps (risk of ComputeBudgetExceeded) or always maxing CU without measuring (overpays priority fee basis and wastes scheduler headroom).",
+    "Mixing Uniswap mental models: legacy Transaction only for tiny routes; forcing legacy when v0 + ALT is required for multi-DEX account lists.",
+    "Running swap math / full DEX simulation on the async executor thread without spawn_blocking (stalls RPC timeouts and heartbeat tasks).",
+    "Storing or logging keypair bytes; committing .json keypair files to the repository.",
+    "Assuming Jito bundle submission succeeded without timeout handling—have a bounded wait (e.g. 80ms per operational policy) then fall back to standard RPC sendTransaction with the same signed payload if policy allows."
+  ],
+  "key_patterns": [
+    "Async runtime: use tokio for RpcClient async methods, channels, and concurrent status polling; keep CPU-bound work (DEX sim from solana-dex-swap-math) in rayon or blocking pool.",
+    "Types: solana_sdk::transaction::VersionedTransaction, solana_sdk::message::{v0::Message, VersionedMessage}; legacy Transaction only when size and account list are provably small.",
+    "ComputeBudgetInstruction::set_compute_unit_limit(units) and set_compute_unit_price(micro_lamports_per_cu) from solana_compute_budget_interface (program id ComputeBudget111111111111111111111111111111); clamp limit per network max (commonly up to 1_400_000 CU).",
+    "Build atomic 3-swap: ix_order = [cu_limit_ix, cu_price_ix (optional), swap1_ix, swap2_ix, swap3_ix]; compile VersionedMessage with recent_blockhash + full account metas; collect Signer references for every writable signer; VersionedTransaction::try_new(message, signers).",
+    "Dynamic CU: simulate_transaction with same bytes you intend to send; read units_consumed from RpcResponse::value.units_consumed or meta; set limit to ceil(consumed * headroom_pct) + fixed buffer.",
+    "Blockhash lifecycle: get_latest_blockhash_with_commitment(CommitmentConfig::confirmed()); if build/sign took > ~400ms or one slot policy, refetch; each retry: new blockhash + resign.",
+    "Preflight loop: simulate_transaction → on err parse logs for Anchor Program log:.*error.* and custom program u32 codes; map InsufficientFundsForFee / InsufficientFunds; abort retry on deterministic program failure.",
+    "Retry: max_attempts = 3; backoff_ms = [50, 100, 200]; each attempt fresh blockhash and optional priority fee bump; exponential cap to avoid hammering RPC.",
+    "Fallback send path: submit bundle to Jito Block Engine when MEV/ordering guarantees required; if client wait exceeds 80ms (configurable), cancel wait and send same signed VersionedTransaction via standard RPC (document race: bundle may still land).",
+    "Size budget: serialized transaction ≤ 1232 bytes; count accounts and ix data; if over, shard route or use loaded ALT addresses in v0 message.",
+    "Signing: Keypair in-memory only; production load via std::env::var(\"SECRET_KEY\") JSON array parse to bytes then Keypair::from_bytes; local dev may use read_keypair_file on a gitignored path—never ship keypair files to production hosts.",
+    "Atomic rollback guarantee: single transaction = all-or-nothing chain effect; multi-tx routes are NOT atomic unless combined via Jito bundle (up to protocol bundle limits) or custom program.",
+    "CU over-allocation anti-pattern: setting limit to max CU without simulation burns priority fee on unused CU allocation—always anchor to simulated consumption."
+  ],
+  "consult_when": [
+    "Building Rust bots or services that send Solana swaps or arbitrage bundles",
+    "Choosing between legacy vs VersionedTransaction and when to add ALTs",
+    "Tuning compute unit limits and micro-lamport priority fees",
+    "Designing retry, blockhash refresh, and idempotency",
+    "Integrating Jito bundles with RPC fallback",
+    "Debugging TransactionError or Anchor/custom program errors from logs",
+    "Structuring tokio + rayon for quote/sim vs submit pipelines"
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/solana-jito-mev-tips.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/solana-dex-swap-math.nodus.json"
+  ],
+  "solana_sdk_constructs": {
+    "transaction_types": [
+      "VersionedTransaction (preferred for production multi-instruction routes)",
+      "Transaction / legacy Message (narrow legacy-only paths)"
+    ],
+    "message": "VersionedMessage::V0(v0::Message { header, static_keys, recent_blockhash, instructions, address_table_lookups })",
+    "compute_budget": {
+      "crate": "solana_compute_budget_interface",
+      "instructions": [
+        "ComputeBudgetInstruction::set_compute_unit_limit(u32)",
+        "ComputeBudgetInstruction::set_compute_unit_price(u64)",
+        "ComputeBudgetInstruction::request_heap_frame(u32)",
+        "ComputeBudgetInstruction::set_loaded_accounts_data_size_limit(u32)"
+      ],
+      "notes": "SetComputeUnitPrice uses micro-lamports per compute unit for priority fee; duplicate instruction variants invalidate the tx (see Solana compute budget docs)."
+    }
+  },
+  "async_and_parallelism": {
+    "tokio": "Default for RpcClient async API, timeouts, and concurrent signature subscription; use bounded channels for backpressure between sim and submit stages.",
+    "rayon": "Use for CPU-bound batch simulation (many routes or heavy CLMM math); avoid blocking the tokio runtime with pure compute—wrap in spawn_blocking or offload to rayon::join."
+  },
+  "simulation_and_send": {
+    "simulate_transaction": "Primary source for units_consumed and execution logs before broadcast; align RpcSimulateTransactionConfig (sig_verify, replace_recent_blockhash, commitment) with your send path.",
+    "send_transaction": "Default preflight enabled; match preflight_commitment to your simulation commitment when debugging divergence.",
+    "jito_fallback": {
+      "primary": "Jito Block Engine bundle submission when atomic ordering or block-space competition matters",
+      "fallback": "Standard RPC sendTransaction after configurable timeout (e.g. 80ms) if bundle API slow or unreachable",
+      "caveat": "Document double-submission risk if both paths fire; prefer one success signal."
+    }
+  },
+  "blockhash_and_retries": {
+    "fetch": "get_latest_blockhash with CommitmentConfig::confirmed() for faster freshness vs finalized—trade off reorg risk per product requirements.",
+    "staleness": "Target signing immediately after blockhash fetch; if pipeline exceeds one slot (~400ms) or internal SLO, refetch before sign.",
+    "retries": {
+      "max": 3,
+      "backoff_ms": [
+        50,
+        100,
+        200
+      ],
+      "rule": "Each retry obtains a new blockhash and re-signs; optionally increase compute unit price on congestion."
+    }
+  },
+  "transaction_limits": {
+    "serialized_size_bytes": 1232,
+    "versioned_transactions": "Use v0 with Address Lookup Tables to compress account references; remember LUTs must be finalized before first use in a consuming transaction (slot delay after extend).",
+    "instruction_count": "Stay within practical account and ix data limits; oversized messages fail serialization or simulation—measure bytes early."
+  },
+  "error_taxonomy": {
+    "transaction_error": "solana_sdk::transaction::TransactionError variants include InsufficientFundsForFee, AccountNotFound, BlockhashNotFound, InvalidAccountIndex, ProgramAccountNotFound, DuplicateInstruction, InvalidWritableAccount, and InstructionError(program_idx, InstructionErrorKind) wrapping program-specific failures.",
+    "instruction_error": "InstructionError details cover Custom(u32) for program-defined codes, MissingRequiredSignature, InsufficientFunds, etc.",
+    "anchor_logs": "Parse 'Program log:' lines for anchor error strings and hex-encoded custom errors; map to IDL error enum when available.",
+    "simulation": "RpcResponse err: Some(...) with logs populated—treat as hard failure unless replace_recent_blockhash simulation-only mismatch."
+  },
+  "security_notes": {
+    "key_material": "Never log Keypair secret bytes; use env or secret manager; rotate compromised keys immediately.",
+    "signers": "Enumerate all required signers (user, PDAs cannot sign—use program invocations); missing signer yields partial signatures and submission rejection."
+  },
+  "keywords": [
+    "solana",
+    "rust",
+    "tokio",
+    "rayon",
+    "VersionedTransaction",
+    "ComputeBudget",
+    "simulate_transaction",
+    "blockhash",
+    "Jito",
+    "RPC",
+    "Address Lookup Table",
+    "ALT",
+    "v0",
+    "Keypair",
+    "preflight",
+    "TransactionError",
+    "InstructionError",
+    "micro_lamports",
+    "units_consumed",
+    "skip_preflight",
+    "replace_recent_blockhash",
+    "nonce",
+    "jq_topic_index"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "role": "LegioX truth lens — Solana Rust execution engine (atomic multi-swap delivery)",
+  "version": "1.1.0",
+  "created": "2026-04-16",
+  "updated": "2026-09-06",
+  "tier": "web3_blockchain",
+  "program_ids_mainnet_reference": {
+    "disclaimer": "Verify before production; used for ix wiring and ALT static keys.",
+    "compute_budget": "ComputeBudget111111111111111111111111111111",
+    "system_program": "11111111111111111111111111111111",
+    "memo_program_v2": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
+  },
+  "rpc_simulate_transaction_config": {
+    "replace_recent_blockhash": "When true, RPC substitutes fresh blockhash for simulation—do not confuse simulated success with your message's embedded hash validity.",
+    "sig_verify": "Usually true for honest client checks; false only when measuring with intentionally invalid sig (rare).",
+    "commitment": "Align with preflight_commitment on sendTransaction when debugging mismatches.",
+    "accounts": "RpcSimulateTransactionAccountsConfig: request writable accounts for accurate CU if program branches on account data freshness."
+  },
+  "blockhash_cluster_constants": {
+    "max_hash_age_slots_rule_of_thumb": "Blockhashes expire after roughly 150 slots (~60–90s wall depending on cluster; measure locally)—always refetch on retry.",
+    "one_slot_ms_rule_of_thumb": "~400ms average; use as staleness heuristic not a consensus guarantee."
+  },
+  "compute_budget_sizing": {
+    "headroom_percent_typical": "10–25% above simulated units_consumed for mainnet variance",
+    "fixed_buffer_units": "Add small constant (e.g. 5k–20k CU) for logging-heavy paths",
+    "max_network_cu": "Clamped upper bound commonly 1_400_000 CU per transaction—confirm against current cluster limits in Solana release notes."
+  },
+  "versioned_transaction_alt_rules": {
+    "signers_must_be_static": "Fee payer and all signers must appear in static account keys, not only in lookup tables.",
+    "writable_loaded_addresses": "Loaded addresses from LUT can be writable if marked so in message; still subject to account locks.",
+    "lut_activation_delay": "After extend/close, respect slot delay before LUT contents are visible to consuming transactions.",
+    "size_measurement": "Serialize VersionedTransaction to Vec<u8> and assert len() <= 1232 before sign; measure early when adding accounts."
+  },
+  "priority_fee_notes": {
+    "micro_lamports_per_cu": "set_compute_unit_price argument; total priority ~= micro_lamports_per_cu * units_consumed (see network fee docs for exact billing).",
+    "dynamic_fee_apis": "Some providers expose getRecentPrioritizationFees—optional input to set_compute_unit_price under congestion."
+  },
+  "send_transaction_rpc_params": {
+    "skip_preflight_default_false": "Keep false unless you duplicate full validation locally.",
+    "preflight_commitment": "Often finalized default on nodes; mismatch with simulate commitment can confuse debugging.",
+    "max_retries_param": "Some clients expose maxRetries for server-side rebroadcast—understand it does not replace your blockhash refresh logic."
+  },
+  "jito_bundle_limits_note": {
+    "bundle_tx_count": "Jito bundles allow multiple transactions in order—max count and size per Block Engine policy; see solana-jito-mev-tips.nodus.json.",
+    "double_send_risk": "If both Jito and RPC send succeed, you may double-execute unless idempotent or guarded by on-chain nonce/state."
+  },
+  "tokio_operational_defaults": {
+    "rpc_connect_timeout_ms": "2500–5000",
+    "rpc_request_timeout_ms_simulate": "15000–30000 for fat multi-hop",
+    "spawn_blocking_for_sim": "Wrap solana-dex-swap-math heavy paths; limit in-flight blocking tasks with Semaphore."
+  },
+  "jq_topic_index": {
+    "compute_budget": "solana_sdk_constructs.compute_budget; compute_budget_sizing",
+    "simulate": "simulation_and_send; rpc_simulate_transaction_config",
+    "blockhash": "blockhash_and_retries; blockhash_cluster_constants",
+    "alt_lut": "versioned_transaction_alt_rules; transaction_limits",
+    "jito": "simulation_and_send.jito_fallback; jito_bundle_limits_note",
+    "preflight": "send_transaction_rpc_params; anti_patterns",
+    "retry": "blockhash_and_retries.retries",
+    "TransactionError": "error_taxonomy"
+  },
+  "instruction_error_kinds_reference": {
+    "note": "Names vary slightly by solana_sdk version; map from logs + InstructionError enum.",
+    "common": [
+      "Custom",
+      "InsufficientFunds",
+      "InvalidAccountData",
+      "InvalidInstructionData",
+      "InvalidArgument",
+      "MissingRequiredSignature",
+      "AccountNotExecutable",
+      "AccountBorrowFailed",
+      "MaxAccountsDataAllocationsExceeded",
+      "MaxAccountsExceeded",
+      "InvalidSeeds",
+      "ComputationalBudgetExceeded"
+    ]
+  },
+  "associated_token_program_mainnet": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+  "address_lookup_table_program_mainnet": "AddressLookupTab1e1111111111111111111111111",
+  "web_references": [
+    {
+      "topic": "Solana compute budget program and instruction set",
+      "url": "https://solana.com/docs/core/fees/compute-budget"
+    },
+    {
+      "topic": "ComputeBudgetInstruction (Rust docs.rs)",
+      "url": "https://docs.rs/solana-compute-budget-interface/latest/solana_compute_budget_interface/enum.ComputeBudgetInstruction.html"
+    },
+    {
+      "topic": "simulateTransaction RPC (units consumed, logs)",
+      "url": "https://solana.com/docs/rpc/http/simulatetransaction"
+    },
+    {
+      "topic": "Transaction structure and 1232-byte limit",
+      "url": "https://solana.com/docs/core/transactions/transaction-structure"
+    },
+    {
+      "topic": "Versioned (v0) transactions and lookup tables",
+      "url": "https://solana.com/docs/core/transactions/versioned-transactions"
+    },
+    {
+      "topic": "Retrying transactions (blockhash, preflight)",
+      "url": "https://solana.com/developers/guides/advanced/retry"
+    },
+    {
+      "topic": "sendTransaction (preflight, skipPreflight)",
+      "url": "https://solana.com/docs/rpc/http/sendtransaction"
+    },
+    {
+      "topic": "Jito low-latency / bundle send",
+      "url": "https://docs.jito.wtf/lowlatencytxnsend/"
+    }
+  ]
+}

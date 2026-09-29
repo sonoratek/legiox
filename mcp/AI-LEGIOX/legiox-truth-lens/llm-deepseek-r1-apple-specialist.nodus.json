@@ -1,0 +1,340 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "llm_deepseek_r1_apple_specialist",
+  "name": "LLM Specialist — DeepSeek R1 Distill × Apple M4 Max × LM Studio / llmster",
+  "mission": {
+    "primary_objective": "Configure, deploy, and operate DeepSeek R1 distilled reasoning models (7B–70B) on Apple M4 Max (36–128 GB unified memory) using LM Studio, llmster, and Ollama, maximising chain-of-thought reasoning quality for architecture decisions, debugging, and complex TypeScript refactors while managing thinking-token overhead.",
+    "context": "DeepSeek R1 (January 2025) sparked the open reasoning-model wave; distilled variants (1.5B–70B on Qwen/Llama bases) bring o1-class chain-of-thought to local hardware. Full 671B R1 is not practical on 36 GB. Sweet spot for M4 Max 36 GB: DeepSeek-R1-Distill-Qwen-32B at Q4_K_M (~20 GB) or 14B at Q8 (~15 GB). Reasoning emits ... blocks — must strip or configure clients for JSON pipelines. Temperature ~0.6 per official guidance. Extremely popular for debugging, system design, and step-by-step codemod planning (plan in R1, execute in Qwen/Coder).",
+    "target_outcome": "Reliable DeepSeek R1 distill inference on M4 Max 36 GB with correct temperature, thinking-tag handling, and model-size selection for reasoning vs speed trade-offs.",
+    "scope": "DeepSeek R1 distilled models (7B, 8B, 14B, 32B, 70B), thinking token management, LM Studio/Ollama deployment, reasoning-agent configs, NOT full 671B R1 (server-only)."
+  },
+  "truth_lens": "DeepSeek R1 distill models bring o1-style chain-of-thought to local Apple Silicon. On M4 Max 36 GB use DeepSeek-R1-Distill-Qwen-32B Q4_K_M (~20 GB, ~15–22 tok/s) for best reasoning/speed balance, or 14B Q8 for faster turns. Temperature=0.6 default. Thinking tokens ( blocks) inflate latency — strip for JSON pipelines or use distill model only for planning phase. Full 671B R1 requires 192GB+ RAM. LM Studio: search 'DeepSeek R1'. Pairs well with Qwen3-Coder/GLM for plan-then-execute agent loops.",
+  "consult_when": [
+    "Local reasoning model selection vs Qwen3.6 thinking mode on M4 Max.",
+    "DeepSeek R1 thinking tags breaking JSON parsers or agent pipelines.",
+    "Architecture debugging, complex refactor planning, or step-by-step reasoning locally.",
+    "DeepSeek-R1-Distill-Qwen-32B vs 14B vs 70B memory fit on 36 GB.",
+    "Stripping  blocks from R1 output for downstream codemod execution."
+  ],
+  "key_patterns": [
+    "Pattern: R1 distill for plan/reason -> strip think tags -> Qwen3-Coder/GLM for execute (two-model 36 GB loop fits 32B Q4 + 4B validator).",
+    "Pattern: temperature=0.6, max context conservative (8192–16384), GPU offload Max in LM Studio."
+  ],
+  "expertise": [
+    "R1_DISTILL_NOT_FULL — 36 GB runs distill 7B–32B only; full 671B R1 needs 192GB+ unified memory",
+    "THINKING_TAG_OVERHEAD — R1 emits ... blocks; strip before JSON parse or downstream codemod execution",
+    "TEMPERATURE_0_6 — Official R1 distill recommendation: temperature=0.6 for reasoning; not 0.0",
+    "32B_SWEET_SPOT_36GB — DeepSeek-R1-Distill-Qwen-32B Q4_K_M (~20 GB) best reasoning quality on 36 GB M4 Max",
+    "PLAN_THEN_EXECUTE — Use R1 for refactor planning, Qwen3-Coder/GLM-4.7 for code generation in dual-model setup",
+    "OLLAMA_READY — DeepSeek R1 distill widely available in Ollama: deepseek-r1:32b, deepseek-r1:14b"
+  ],
+  "keywords": [
+    "deepseek",
+    "r1",
+    "reasoning",
+    "distill",
+    "think",
+    "chain-of-thought",
+    "apple",
+    "m4",
+    "lmstudio",
+    "ollama",
+    "32b",
+    "qwen",
+    "debugging",
+    "architecture"
+  ],
+  "priority": "high",
+  "status": "active",
+  "created": "2026-06-18",
+  "updated": "2026-06-18",
+  "version": "1.0.0",
+  "core_principles": [
+    "DISTILL_ONLY_ON_36GB — Never attempt full DeepSeek-R1 671B on 36 GB; use distilled 14B or 32B variants",
+    "TEMPERATURE_0_6 — Use temperature=0.6 for R1 reasoning; temperature=0 causes quality degradation on reasoning tasks",
+    "STRIP_THINK_FOR_JSON — Parse or strip ... blocks before JSON.parse() or codemod handoff",
+    "CONSERVATIVE_CONTEXT — Start n_ctx=8192–16384; R1 thinking tokens consume context rapidly",
+    "GPU_OFFLOAD_MAX — LM Studio GPU offload slider to Max on M4 Max; Metal backend automatic",
+    "DUAL_MODEL_ARCHITECTURE — R1 32B Q4 (~20 GB) + small executor 4B (~5 GB) fits 36 GB for plan-execute agents",
+    "BENCHMARK_BEFORE_PRODUCTION — R1 distill quality varies by base model (Qwen vs Llama); test on your Ring codebase"
+  ],
+  "knowledge_layers": {
+    "layer_0_hardware_profile": {
+      "description": "M4 Max 36 GB fit for DeepSeek R1 distill family",
+      "truth_lens": [
+        {
+          "concept": "memory_fit_table",
+          "truths": [
+            "R1-Distill-Qwen-1.5B Q4: ~1.5 GB — smoke tests only",
+            "R1-Distill-Qwen-7B Q4: ~5 GB — fast reasoning, lower quality",
+            "R1-Distill-Qwen-8B Q4: ~6 GB — good for 16 GB Macs; fast on 36 GB",
+            "R1-Distill-Qwen-14B Q4: ~10 GB; Q8: ~15 GB — fast reasoning on 36 GB",
+            "R1-Distill-Qwen-32B Q4_K_M: ~20 GB — PRIMARY 36 GB recommendation",
+            "R1-Distill-Qwen-32B Q8: ~34 GB — tight on 36 GB with KV",
+            "R1-Distill-Llama-70B Q4_K_M: ~43 GB — does NOT fit 36 GB; needs 48–64 GB config",
+            "Full DeepSeek-R1 671B: ~400GB+ — server/H100 cluster only"
+          ]
+        },
+        {
+          "concept": "throughput_expectations",
+          "truths": [
+            "32B Q4_K_M on M4 Max 36 GB: ~15–22 tok/s (MoE-class comparable to dense 32B)",
+            "14B Q8 on M4 Max: ~25–35 tok/s — faster but less reasoning depth",
+            "Thinking tokens add 2–10× effective latency vs output tokens — budget accordingly",
+            "70B Q4 on M4 Max 64 GB: ~12–18 tok/s per llmhardware.io",
+            "Prefill with long thinking context: memory spikes — keep prompts focused"
+          ]
+        }
+      ]
+    },
+    "layer_1_r1_model_family": {
+      "description": "DeepSeek R1 architecture and distill variants",
+      "truth_lens": [
+        {
+          "concept": "architecture",
+          "truths": [
+            "DeepSeek-R1 flagship: 671B total, 37B active MoE, 128K context — cloud/server only",
+            "R1-Zero: RL-only prototype without SFT — research interest",
+            "Distilled models: R1 generations used to fine-tune smaller Qwen/Llama bases (1.5B–70B)",
+            "Distill-Qwen-32B: most popular local reasoning model for 32–48 GB tier in 2026",
+            "Reasoning via chain-of-thought: model emits ... before final answer",
+            "Performance vs o1: flagship R1 comparable to OpenAI o1; distill-32B comparable to o1-mini per DeepSeek benchmarks",
+            "Open weights on HuggingFace: deepseek-ai/DeepSeek-R1-Distill-Qwen-32B etc."
+          ]
+        },
+        {
+          "concept": "model_selection_matrix",
+          "truths": [
+            "Complex architecture debugging on 36 GB → R1-Distill-Qwen-32B Q4_K_M",
+            "Fast reasoning triage → R1-Distill-Qwen-14B Q8 (~15 GB)",
+            "Plan-then-execute codemod → R1-32B plans, Qwen3-Coder-30B executes (sequential load or dual if 4B sidecar)",
+            "JSON extraction only → do NOT use R1; use Qwen3.6 with thinking OFF",
+            "Maximum local reasoning → R1-Distill-Llama-70B Q4 on 64 GB Mac Studio only",
+            "vs Qwen3.6 thinking mode: R1 distill stronger on pure math/logic benchmarks; Qwen3.6 thinking better integrated for coding tool loops"
+          ]
+        }
+      ]
+    },
+    "layer_2_inference_parameters": {
+      "description": "DeepSeek R1 distill sampling parameters",
+      "truth_lens": [
+        {
+          "concept": "sampling_parameters",
+          "parameters": [
+            {
+              "name": "temperature",
+              "type": "float",
+              "default": "0.6",
+              "m4_supported": true,
+              "notes": "Official R1 recommendation. Do not use 0.0 for reasoning tasks."
+            },
+            {
+              "name": "top_p",
+              "default": "0.95",
+              "m4_supported": true
+            },
+            {
+              "name": "max_tokens",
+              "default": "8192–16384",
+              "m4_supported": true,
+              "notes": "Thinking models need higher max_tokens budget; thinking blocks count toward limit"
+            },
+            {
+              "name": "n_ctx",
+              "default": "8192–32768",
+              "m4_supported": true,
+              "notes": "Conservative 8192 on 36 GB with 32B Q4; expand only if KV quant enabled"
+            }
+          ]
+        },
+        {
+          "concept": "thinking_token_handling",
+          "parameters": [
+            {
+              "name": "think_block_strip",
+              "type": "post-process",
+              "notes": "Regex strip [\\s\\S]*? before downstream parse. LM Studio 0.4.4+ may separate thinking in API response fields — verify client."
+            },
+            {
+              "name": "enable_thinking",
+              "notes": "R1 distill always thinks — cannot disable like Qwen3.6 /no_think. Use non-reasoning model for thinking-free pipelines."
+            }
+          ]
+        }
+      ]
+    },
+    "layer_3_lmstudio_deployment": {
+      "description": "LM Studio and Ollama DeepSeek R1 setup",
+      "truth_lens": [
+        {
+          "concept": "lmstudio_install",
+          "truths": [
+            "LM Studio search: 'DeepSeek R1' or 'DeepSeek-R1-Distill'",
+            "Popular GGUF: bartowski/DeepSeek-R1-Distill-Qwen-32B-GGUF, unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF",
+            "GPU Offload: slide to Max in LM Studio settings panel",
+            "Metal backend engages automatically on Apple Silicon",
+            "lmstudio.ai/blog/deepseek-r1 — official LM Studio guide"
+          ]
+        },
+        {
+          "concept": "ollama_install",
+          "truths": [
+            "ollama pull deepseek-r1:32b",
+            "ollama pull deepseek-r1:14b",
+            "ollama pull deepseek-r1:8b",
+            "Ollama uses GGUF/llama.cpp under hood; good compatibility fallback"
+          ]
+        },
+        {
+          "concept": "llmster",
+          "truths": [
+            "lms daemon up",
+            "lms load deepseek-r1-distill-qwen-32b --yes",
+            "lms server start",
+            "API consumers must handle think tags in choices[0].message.content"
+          ]
+        }
+      ]
+    },
+    "layer_4_workload_configs": {
+      "description": "DeepSeek R1 configs for M4 Max 36 GB",
+      "truth_lens": [
+        {
+          "concept": "architecture_reasoning_config",
+          "use_case": "System design, debugging, refactor planning",
+          "recommended_model": "DeepSeek-R1-Distill-Qwen-32B Q4_K_M",
+          "config": {
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "max_tokens": 16384,
+            "n_ctx": 16384,
+            "stream": true
+          },
+          "notes": "Allow full thinking chain; strip tags before presenting to user or downstream agent"
+        },
+        {
+          "concept": "plan_then_execute_config",
+          "use_case": "TypeScript refactor: R1 plans, Coder executes",
+          "phase_1_r1": {
+            "model": "DeepSeek-R1-Distill-Qwen-32B",
+            "prompt": "Analyze and produce step-by-step transform plan for...",
+            "temperature": 0.6,
+            "max_tokens": 8192
+          },
+          "phase_2_coder": {
+            "model": "qwen/qwen3-coder-30b",
+            "prompt": "Execute this plan: {stripped_r1_output}",
+            "temperature": 0.6
+          },
+          "notes": "Sequential model load in LM Studio if memory tight; or run R1 in Ollama + Coder in LM Studio parallel"
+        },
+        {
+          "concept": "fast_reasoning_config",
+          "use_case": "Quick debug hypotheses",
+          "recommended_model": "DeepSeek-R1-Distill-Qwen-14B Q8",
+          "config": {
+            "temperature": 0.6,
+            "max_tokens": 4096,
+            "n_ctx": 8192
+          }
+        }
+      ]
+    },
+    "layer_5_finetuning": {
+      "description": "Fine-tuning R1 distill models",
+      "truth_lens": [
+        {
+          "concept": "options",
+          "truths": [
+            "Distill models are already SFT'd from R1 — further LoRA on 7B–14B feasible on 36 GB via mlx-lm",
+            "32B LoRA on 36 GB: not practical without gradient checkpointing and tiny batch",
+            "Reasoning preservation: include chain-of-thought examples in fine-tune data or capability degrades",
+            "Unsloth CUDA fine-tuning for R1 distill: standard SFT notebooks on HuggingFace"
+          ]
+        }
+      ]
+    },
+    "layer_6_common_pitfalls": {
+      "description": "DeepSeek R1 failure modes on M4 Max",
+      "truth_lens": [
+        {
+          "problem": "json_parse_failed_after_r1",
+          "cause": " blocks prepended to JSON output",
+          "fix": "Strip think tags before JSON.parse(); or use non-R1 model for JSON extraction"
+        },
+        {
+          "problem": "oom_70b_on_36gb",
+          "cause": "R1-Distill-Llama-70B Q4 needs ~43 GB",
+          "fix": "Use 32B Q4 (~20 GB) or 14B Q8 on 36 GB configs"
+        },
+        {
+          "problem": "extremely_slow_response",
+          "cause": "Thinking chain generating 4000+ tokens before answer",
+          "fix": "Prompt 'be concise in reasoning'; reduce max_tokens; use 14B for speed"
+        },
+        {
+          "problem": "temperature_zero_poor_quality",
+          "cause": "temperature=0 on reasoning model",
+          "fix": "Use temperature=0.6 per DeepSeek official guidance"
+        },
+        {
+          "problem": "context_overflow",
+          "cause": "n_ctx=65536 with 32B Q4 on 36 GB",
+          "fix": "Cap n_ctx at 16384; enable q8_0 KV cache quantisation"
+        }
+      ]
+    }
+  },
+  "quick_reference_configs": {
+    "configs": [
+      {
+        "id": "r1_reasoning",
+        "label": "DeepSeek R1 32B architecture reasoning",
+        "body": "{ \"model\": \"deepseek-r1-distill-qwen-32b\", \"messages\": [{\"role\":\"user\",\"content\":\"Analyze the following architecture and propose refactor steps...\"}], \"temperature\": 0.6, \"top_p\": 0.95, \"max_tokens\": 16384, \"stream\": true }"
+      },
+      {
+        "id": "think_strip_regex",
+        "label": "Strip thinking blocks (JavaScript)",
+        "body": "content.replace(/[\\s\\S]*?<\\/think>/g, '').trim()"
+      },
+      {
+        "id": "ollama_pull",
+        "commands": ["ollama pull deepseek-r1:32b", "ollama run deepseek-r1:32b"]
+      }
+    ]
+  },
+  "jq_usage_guide": {
+    "examples": [
+      { "query": ".knowledge_layers.layer_0_hardware_profile.truth_lens[] | select(.concept==\"memory_fit_table\") | .truths[]", "returns": "Memory fit per distill size" },
+      { "query": ".knowledge_layers.layer_4_workload_configs.truth_lens[] | select(.concept==\"plan_then_execute_config\")", "returns": "Plan-then-execute dual phase config" },
+      { "query": ".knowledge_layers.layer_6_common_pitfalls.truth_lens[]", "returns": "Pitfalls" }
+    ]
+  },
+  "anti_patterns": [
+    "Using DeepSeek R1 for JSON schema extraction — thinking tokens break parsers; use Qwen3.6 with thinking OFF",
+    "Loading R1-Distill-70B on 36 GB M4 Max — requires ~43 GB model weights alone",
+    "temperature=0 on R1 distill — degrades reasoning quality",
+    "Passing raw R1 output to codemod executor without stripping  blocks",
+    "Attempting full 671B DeepSeek-R1 locally — requires data-center hardware"
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "research_sources": [
+      "lmstudio.ai/blog/deepseek-r1",
+      "chat-deep.ai/guide/run-deepseek-in-lm-studio/",
+      "dailytechstack.com/how-to-run-deepseek-r1-locally-lm-studio-2026/",
+      "huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+      "llmhardware.io/guides/mac-studio-m4-max-llm-guide",
+      "sitepoint.com/local-llm-hardware-requirements-mac-vs-pc-2026/",
+      "saadrazaseo.com/install-deepseek-on-mac-m3/"
+    ],
+    "compatible_with": [
+      "LM Studio 0.4.x",
+      "Ollama deepseek-r1 tags",
+      "llmster",
+      "DeepSeek-R1-Distill-Qwen 1.5B–32B on 36 GB",
+      "Apple M4 Max 36 GB"
+    ],
+    "maintainer_notes": "Reasoning specialist complement to Qwen/GLM coders. On 36 GB: R1-Distill-Qwen-32B Q4_K_M for planning/debugging; strip think tags before handoff. temperature=0.6 always."
+  }
+}

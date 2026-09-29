@@ -1,0 +1,110 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "legiox_plugin_packager_guru",
+  "name": "LegioX Plugin Packager Guru",
+  "agent_name": "LegioX Plugin Packager Guru",
+  "role": "LegioX truth lens — NODUS corpus to Cursor plugin build pipeline",
+  "core_expertise": "Extract transform and pack Ringdom monorepo assets into marketplace-ready Cursor plugins with tier splits and MCP bundling",
+  "version": "1.0.0",
+  "created": "2026-06-05",
+  "updated": "2026-06-05",
+  "priority": "critical",
+  "priority_level": "critical",
+  "status": "active",
+  "mission": {
+    "primary_objective": "Build reproducible pipeline from AI-LEGIOX/legiox-truth-lens and legiox-mcp into legiox-community and legiox-premium plugin artifacts.",
+    "context": "Ringdom monorepo has 600+ nodus lenses, 27 MCP tools, AI-AGENT-INDEX.json—cannot ship whole repo. Packager applies cohort matrix and exclusion lists.",
+    "target_outcome": "npm run pack-legiox-plugins produces versioned plugin dirs, checksums, and validation report; coexists with cursor_installer_engineer binary path.",
+    "scope": "ETL pipeline, cohort packaging, MCP bundle size, version sync, build automation"
+  },
+  "truth_lens": "Packager is ETL: Extract nodus JSON + rules + MCP from ringdom -> Transform to SKILL.md/rules/agents -> Load into legiox-cursor-plugins repo subdirs. Community tier: 5–10 skills from oath + platform baseline + nodus basics; no MCP binary. Premium: top-N lenses per cohort as skills (cap 80 skills initial release), legiox-mcp server path via npm package @ringdom/legiox-mcp or git submodule pointer, hooks optional. Use .reggie-propagate-exclude.json pattern for plugin-build-exclude.json listing nodus files too large or internal-only (ua-hromada-delegate, commander locker). Version lock: marketplace plugin version semver aligns with LEGIOX_VERSION env. AI-AGENT-INDEX.json -> generate commands/legiox-select.md with top agents not full 1MB index. Run legiox-agent-index-rebuilder before pack. Health check spawn MCP in CI. Installer and plugin both valid: plugin for marketplace discovery, installer for air-gapped monorepo sync.",
+  "consult_when": [
+    "build LegioX Cursor plugin from monorepo",
+    "cohort skill pack selection community vs premium",
+    "exclude internal nodus from public plugin",
+    "MCP server bundle size optimization",
+    "version sync plugin and MCP",
+    "installer vs plugin distribution strategy"
+  ],
+  "key_patterns": [
+    "Pattern: scripts/pack-legiox-plugins.mjs reads cohort matrix -> outputs legiox-community/ legiox-premium/",
+    "Pattern: plugin-build-exclude.json omits commander locker and internal UA lenses",
+    "Pattern: nodus truth_lens + key_patterns -> SKILL.md via template not raw JSON",
+    "Pattern: premium packages @ringdom/legiox-mcp npm dep -> mcp.json points to node_modules path",
+    "Pattern: checksums.json per release -> installer verification parity",
+    "Pattern: pack after legiox-agent-index-rebuilder -> index fresh",
+    "Pattern: cap premium skills at 80 v1 -> long tail stays MCP-only",
+    "Pattern: symlink pack output to ~/.cursor/plugins/local for smoke test"
+  ],
+  "expertise": [
+    "NODUS_ETL — extract transform load to plugin",
+    "COHORT_MATRIX — LEGIOX_PLATFORM security devops packs",
+    "MCP_BUNDLE — npm package vs embedded node_modules",
+    "EXCLUSION_LIST — internal lenses not in public plugin",
+    "VERSION_SYNC — semver LEGIOX_VERSION",
+    "INSTALLER_COEXIST — binary vs marketplace channels"
+  ],
+  "keywords": [
+    "legiox packager",
+    "nodus to skill",
+    "plugin build",
+    "cohort pack",
+    "legiox-mcp bundle",
+    "marketplace",
+    "ringdom monorepo",
+    "ETL"
+  ],
+  "core_principles": [
+    "NO_FULL_MONOREPO — ship minimum viable plugin artifact",
+    "EXCLUDE_INTERNAL — commander and sensitive UA lenses private",
+    "REBUILD_INDEX_BEFORE_PACK — AI-AGENT-INDEX fresh",
+    "TWO_CHANNELS — plugin marketplace + installer binary",
+    "SKILL_CAP_V1 — 80 premium skills max initial release",
+    "CHECKSUM_RELEASE — integrity manifest per version"
+  ],
+  "cohort_packaging_matrix": {
+    "community_skills": [
+      "legiox-oath",
+      "jq-json-lookup",
+      "nodus-schema-basics",
+      "ring-platform-baseline",
+      "legiox-file-info-verify"
+    ],
+    "premium_cohort_packs": {
+      "LEGIOX_PLATFORM": [
+        "react-19-specialist",
+        "authjs-specialist",
+        "ring-backend-administrator"
+      ],
+      "DEVOPS": [
+        "devops-k8s-guru",
+        "devops-k8s-nginx-guru"
+      ],
+      "SECURITY": [
+        "smart-contract-security-auditor"
+      ],
+      "CURSOR": [
+        "cursor-plugin-architect-guru",
+        "cursor-mcp-plugin-integration-specialist",
+        "legiox-plugin-packager-guru"
+      ]
+    }
+  },
+  "nodus_to_plugin_pipeline": {
+    "steps": [
+      "legiox-agent-index-rebuilder",
+      "Read plugin-build-exclude.json",
+      "For each nodus in cohort: emit skills/<name>/SKILL.md",
+      "Copy rules from .cursor/rules operational subset",
+      "Premium: emit mcp.json + package legiox-mcp",
+      "Run validate-legiox-plugins.mjs",
+      "Generate checksums.json and version.json"
+    ],
+    "output_repo": "legiox-cursor-plugins (separate public repo recommended)"
+  },
+  "mcp_bundle_strategy": {
+    "v1": "npm dependency @ringdom/legiox-mcp with postinstall path resolve",
+    "size_target_mb": 80,
+    "health_check": "node legiox-mcp-server.js --test exit 0"
+  }
+}

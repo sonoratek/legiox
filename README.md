@@ -1,8 +1,8 @@
-# LegioX Free — 10 skillsets for Cursor, OpenCode & VSCode
+# LegioX Free — 147 skillsets for Cursor, OpenCode & VS Code
 
 > Grow a searchable knowledge ecosystem: concepts, patterns & implementations with merge/append context (zero data loss). Auto-select the right skillset per task, generate new skillsets via `/legiox-create`, and rely on a built-in business advisor. **Freedom of Evolution for DIY founders.**
 
-LegioX Free is a 10-skillset agent plugin for **Cursor**, **OpenCode** and **VS Code**. It installs a lightweight knowledge system (`legiox-mcp`) into your workspace — no database, no cloud, no account. Your knowledge stays in your repo as JSON.
+LegioX Free 1.1.0 is a 147-skill Cursor plugin for **Cursor**, **OpenCode**, and **VS Code**: the 10 library skills below, plus 137 corpus skills in `skills/`. It installs `legiox-mcp` into your workspace — no database, no cloud, no account. Your knowledge stays in your repo as JSON. Plugin version 1.1.0 replaces the earlier skew (tag 1.0.2, previous `main` 1.0.1). The npm package `@ringdom/legiox-mcp` remains the MCP server only.
 
 ## What you get
 
@@ -31,11 +31,13 @@ LegioX Free is a 10-skillset agent plugin for **Cursor**, **OpenCode** and **VS 
 ### Cursor (marketplace / local)
 
 ```bash
-# From this repo
-cp -R . ~/.cursor/plugins/local/legiox-free   # or install via Cursor Marketplace
+# From this repo. Copy. Cursor skips a symlink that points outside ~/.cursor/plugins/local.
+mkdir -p ~/.cursor/plugins/local
+rm -rf ~/.cursor/plugins/local/legiox-free
+cp -R . ~/.cursor/plugins/local/legiox-free
 ```
 
-Approve the **legiox-mcp** server when prompted. Reload the window — the bootloader hook installs thinking patterns automatically.
+Then Developer: Reload Window. Approve **legiox-mcp** in Customize. The server cwd is `${CURSOR_PLUGIN_ROOT}`. Invoke a skill with `/skill-name`.
 
 ### OpenCode
 

@@ -1,0 +1,355 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "llm_gemma4_apple_specialist",
+  "name": "LLM Specialist — Gemma 4 × Apple M4 Max × LM Studio / MLX",
+  "mission": {
+    "primary_objective": "Configure, deploy, and operate Google DeepMind Gemma 4 family models (E2B, E4B, 26B-A4B, 31B) on Apple M4 Max (36–128 GB unified memory) using LM Studio 0.4.11+, mlx-vlm, and Ollama, optimising for multimodal agents, hybrid thinking, and 256K context workloads.",
+    "context": "Gemma 4 (April 2026, Apache 2.0) is Google's fastest-growing open multimodal family: dense edge models (E2B/E4B), MoE speed demon (26B-A4B with 3.8B active), and frontier dense 31B. Supports 140+ languages, vision, audio (edge), and hybrid thinking. On M4 Max 36 GB the sweet spot is 26B-A4B at MLX 4bit (~16 GB) or 8bit (~28 GB) — near-frontier quality with MoE speed. LM Studio Gemma 4 MLX requires 0.4.11+ and mlx-engine 1.6.0+; GGUF works on earlier versions.",
+    "target_outcome": "Reliable Gemma 4 inference on M4 Max 36 GB with correct LM Studio runtime version, quant selection, and hybrid thinking toggle for JSON vs reasoning pipelines.",
+    "scope": "Gemma 4 inference (GGUF, MLX, mlx-vlm), multimodal vision, hybrid thinking mode, quantisation for 36 GB, LM Studio staff-pick models, Ollama gemma4 tags."
+  },
+  "truth_lens": "Gemma 4 is Google DeepMind's Apache-2.0 multimodal family (E2B, E4B, 12B, 26B-A4B MoE, 31B dense). On M4 Max 36 GB use 26B-A4B MLX 4bit (~16 GB, 25–40 tok/s) for speed or 8bit (~28 GB) for quality ceiling. Requires LM Studio 0.4.11+ with mlx-engine 1.6.0+ for MLX; GGUF works immediately. Hybrid thinking: enable for reasoning, disable for JSON pipelines. Vision via mlx-vlm. 256K context on 26B/31B. Ollama: gemma4:26b-a4b-it-q4_K_M. Avoid gemma4:31b-nvfp4 on 36 GB — community reports unexpectedly slow (~7 tok/s).",
+  "consult_when": [
+    "Deploying Google Gemma 4 locally on Apple M4 Max for agents or multimodal tasks.",
+    "Gemma 4 MLX 'support is not ready yet' or 'gemma4 not supported' errors in LM Studio.",
+    "Choosing Gemma 4 26B-A4B vs 31B vs E4B for 36 GB unified memory.",
+    "Multimodal vision + text agent on Apple Silicon with open weights.",
+    "Hybrid thinking mode toggle for Gemma 4 JSON vs reasoning workloads."
+  ],
+  "key_patterns": [
+    "Pattern: verify LM Studio 0.4.11+ and mlx-engine 1.6.0+ before loading Gemma 4 MLX -> 26B-A4B 4bit on 36 GB -> hybrid thinking OFF for JSON.",
+    "Pattern: use mlx-vlm for vision tasks; GGUF fallback when MLX runtime stale."
+  ],
+  "expertise": [
+    "GEMMA4_26B_A4B_SWEET_SPOT — 26B-A4B MoE (3.8B active) at MLX 4bit ~16 GB is the 36 GB M4 Max default: 25–40 tok/s, 256K context",
+    "MLX_RUNTIME_VERSION — Gemma 4 MLX requires LM Studio 0.4.11+ / mlx-engine 1.6.0+; older builds throw 'Gemma 4 support is not ready yet'",
+    "HYBRID_THINKING — Gemma 4 supports thinking + instruct modes; disable thinking for JSON/schema pipelines",
+    "MULTIMODAL_NATIVE — Vision (26B/31B) and audio (E2B/E4B edge); use mlx-vlm for local vision inference",
+    "APACHE_2_LICENSE — Commercial-friendly; suitable for Ringdom white-label and student deployments",
+    "AVOID_31B_NVFP4_SLOW — Community benchmark: gemma4:31b-nvfp4 unexpectedly slow (~7 tok/s) vs 26B-A4B"
+  ],
+  "keywords": [
+    "gemma",
+    "gemma4",
+    "gemma-4",
+    "google",
+    "deepmind",
+    "apple",
+    "m4",
+    "mlx",
+    "mlx-vlm",
+    "multimodal",
+    "vision",
+    "lmstudio",
+    "ollama",
+    "moe",
+    "26b-a4b"
+  ],
+  "priority": "high",
+  "status": "active",
+  "created": "2026-06-18",
+  "updated": "2026-06-18",
+  "version": "1.0.0",
+  "core_principles": [
+    "26B_A4B_FOR_36GB — Gemma 4 26B-A4B MLX 4bit is the default on 36 GB; 31B Q4 fits but dense activation is slower than MoE",
+    "UPDATE_MLX_RUNTIME — Before any Gemma 4 MLX load, confirm LM Studio 0.4.11+ and mlx-engine 1.6.0+; stale amphibian backends block gemma4 arch",
+    "GGUF_FALLBACK — If MLX fails, use Unsloth Dynamic GGUF via llama.cpp Metal — works on older LM Studio",
+    "THINKING_OFF_FOR_JSON — Disable hybrid thinking for JSON extraction and schema-constrained agent outputs",
+    "VISION_REQUIRES_MLX_VLM — Image input needs mlx-vlm or GGUF VLM variant; text-only GGUF ignores images",
+    "QUANT_4BIT_START — Start with UD-MLX-4bit for 26B-A4B; upgrade to 8bit on 36 GB if quality insufficient",
+    "140_LANGUAGES — Gemma 4 supports 140+ languages; strong for Ring i18n and UA/EN clone work"
+  ],
+  "knowledge_layers": {
+    "layer_0_hardware_profile": {
+      "description": "M4 Max 36 GB constraints for Gemma 4",
+      "truth_lens": [
+        {
+          "concept": "m4_max_36gb_fit",
+          "truths": [
+            "26B-A4B MLX 4bit: ~14–16 GB disk, ~10–12 GB working memory — comfortable on 36 GB",
+            "26B-A4B MLX 8bit: ~28–30 GB — quality ceiling on 36 GB with tight KV headroom",
+            "31B MLX 4bit: ~17–20 GB — fits; dense 30.7B active = slower than 26B-A4B MoE",
+            "31B MLX 8bit: ~34–38 GB — borderline on 36 GB; prefer 26B-A4B 8bit instead",
+            "E4B MLX 4bit: ~5–6 GB — secondary agent / classifier alongside primary model",
+            "Minimum free memory at load: ~14 GB for 26B-A4B 4bit per gemilab.net diagnostic"
+          ]
+        },
+        {
+          "concept": "throughput_expectations",
+          "truths": [
+            "M4 Pro 24 GB 26B-A4B Q4: ~25–40 tok/s (sudoall.com field guide)",
+            "M4 Max 36 GB 26B-A4B: ~25–40 tok/s estimated at Q4 MLX",
+            "M5 Max 128 GB gemma4 Ollama: used as agent fallback in kyu.co May 2026 benchmarks",
+            "31B dense Q4: ~15–25 tok/s on M4 Max — slower than 26B-A4B MoE per active params",
+            "E4B edge: ~40–60 tok/s on 16 GB class hardware"
+          ]
+        }
+      ]
+    },
+    "layer_1_gemma4_model_family": {
+      "description": "Gemma 4 variants and selection for 36 GB",
+      "truth_lens": [
+        {
+          "concept": "variant_catalog",
+          "truths": [
+            "Gemma 4 E2B: 2.3B dense edge; 128K context; text+image+audio; ~3.2 GB Q4",
+            "Gemma 4 E4B: 4.5B dense edge; 128K context; text+image+audio; ~5 GB Q4",
+            "Gemma 4 12B Unified: 12B dense multimodal; ~7–8 GB Q4",
+            "Gemma 4 26B-A4B: 26B MoE, 3.8B active, 128 experts; 256K context; text+image; ~16 GB Q4 / ~28 GB Q8",
+            "Gemma 4 31B: 30.7B dense; 256K context; text+image; ~17 GB Q4 / ~34 GB Q8",
+            "Apache 2.0 license across all variants",
+            "Hybrid thinking: reasoning mode available on larger models; configurable in LM Studio staff picks"
+          ]
+        },
+        {
+          "concept": "memory_table_36gb",
+          "truths": [
+            "E2B 4bit: 4 GB — trivial; edge deployment, audio classification",
+            "E4B 4bit: 5.5–6 GB — dual-model secondary role",
+            "26B-A4B 4bit: 16–18 GB — PRIMARY 36 GB recommendation",
+            "26B-A4B 8bit: 28–30 GB — quality ceiling on 36 GB",
+            "31B 4bit: 17–20 GB — fits; use only if dense quality required over MoE speed",
+            "31B 8bit: 34–38 GB — does NOT fit 36 GB comfortably",
+            "Unsloth UD-MLX-4bit recommended starting quant per unsloth.ai/docs/models/gemma-4"
+          ]
+        },
+        {
+          "concept": "model_selection_matrix",
+          "truths": [
+            "General agent on 36 GB → 26B-A4B MLX 4bit (speed + quality balance)",
+            "Multimodal vision agent → 26B-A4B mlx-vlm UD-4bit with image input",
+            "Maximum quality dense on 36 GB → 31B MLX 4bit (accept slower tok/s)",
+            "Dual-model setup → 26B-A4B 4bit primary + E4B 4bit validator (~21 GB total)",
+            "vs Qwen3.6-35B-A3B: Gemma 4 stronger multimodal (vision/audio edge); Qwen stronger pure coding benchmarks",
+            "vs GLM-4.7-Flash: Gemma broader general+vision; GLM stronger SWE-bench coding specialist",
+            "Ollama tag: gemma4:26b-a4b-it-q4_K_M (kyu.co benchmark reference)"
+          ]
+        }
+      ]
+    },
+    "layer_2_inference_parameters": {
+      "description": "Gemma 4 sampling and thinking parameters",
+      "truth_lens": [
+        {
+          "concept": "sampling_parameters",
+          "parameters": [
+            {
+              "name": "temperature",
+              "default": "0.7–1.0 (general), 0.0 (JSON extraction)",
+              "m4_supported": true,
+              "notes": "Lower for structured output; LM Studio staff picks include auto-tuning"
+            },
+            {
+              "name": "top_p",
+              "default": "0.95",
+              "m4_supported": true
+            },
+            {
+              "name": "top_k",
+              "default": "40",
+              "m4_supported": true
+            },
+            {
+              "name": "enable_thinking / hybrid_thinking",
+              "type": "bool",
+              "default": "model-dependent",
+              "m4_supported": true,
+              "notes": "LM Studio 0.4.11+ staff-pick Gemma 4 models expose reasoning toggle in UI. Disable for JSON pipelines."
+            }
+          ]
+        },
+        {
+          "concept": "context_parameters",
+          "parameters": [
+            {
+              "name": "n_ctx",
+              "range": "up to 262144 (256K) on 26B/31B",
+              "m4_supported": true,
+              "notes": "On 36 GB with 26B-A4B 8bit: cap n_ctx at 32768–65536; use q8_0 KV cache for 256K attempts"
+            },
+            {
+              "name": "max_tokens",
+              "default": "8192–32768",
+              "m4_supported": true
+            }
+          ]
+        }
+      ]
+    },
+    "layer_3_lmstudio_deployment": {
+      "description": "LM Studio Gemma 4 deployment requirements",
+      "truth_lens": [
+        {
+          "concept": "version_requirements",
+          "truths": [
+            "LM Studio 0.4.11 (build 1)+ required for Gemma 4 MLX",
+            "mlx-engine 1.6.0+ (bundled with 0.4.11); 1.8.5+ recommended per staff picks",
+            "Stale amphibian backend copies (mac14@13, mac26@21) may still throw 'Gemma 4 support is not ready yet' — update LM Studio fully",
+            "Staff picks page: lmstudio.ai/models/gemma-4 — includes reasoning toggle config",
+            "GGUF models work on LM Studio 0.4.6+ without MLX engine update"
+          ]
+        },
+        {
+          "concept": "installation",
+          "truths": [
+            "Search LM Studio: 'gemma 4' or 'gemma-4-26b-a4b'",
+            "MLX: mlx-community/gemma-4-26b-a4b-it-4bit, unsloth/gemma-4-26b-a4b-it-UD-MLX-4bit",
+            "GGUF: unsloth/gemma-4-26b-a4b-it-GGUF (Dynamic 2.0 quants)",
+            "mlx-vlm vision: python -m mlx_vlm.chat --model unsloth/gemma-4-26b-a4b-it-UD-MLX-4bit",
+            "Unsloth install script: curl install_gemma4_mlx.sh | sh for mlx-vlm deps",
+            "Ollama: ollama pull gemma4 (check available tags for 26b-a4b)"
+          ]
+        },
+        {
+          "concept": "llmster",
+          "truths": [
+            "lms daemon up",
+            "lms load mlx-community/gemma-4-26b-a4b-it-4bit --yes",
+            "lms server start",
+            "Verify mlx-engine version in LM Studio Runtime tab before headless deploy"
+          ]
+        }
+      ]
+    },
+    "layer_4_workload_configs": {
+      "description": "Gemma 4 configs for M4 Max 36 GB",
+      "truth_lens": [
+        {
+          "concept": "multimodal_agent_config",
+          "use_case": "Vision + text agent, screenshot understanding, UI analysis",
+          "recommended_model": "unsloth/gemma-4-26b-a4b-it-UD-MLX-4bit via mlx-vlm",
+          "config": {
+            "temperature": 0.7,
+            "max_tokens": 4096,
+            "enable_thinking": true,
+            "n_ctx": 16384
+          }
+        },
+        {
+          "concept": "json_extraction_config",
+          "use_case": "Structured JSON from documents",
+          "recommended_model": "26B-A4B GGUF UD-Q4_K_XL",
+          "config": {
+            "temperature": 0,
+            "enable_thinking": false,
+            "stream": false,
+            "response_format": { "type": "json_schema" }
+          }
+        },
+        {
+          "concept": "i18n_assistant_config",
+          "use_case": "140+ language Ring clone localization",
+          "recommended_model": "26B-A4B MLX 4bit",
+          "config": {
+            "temperature": 0.7,
+            "max_tokens": 8192,
+            "n_ctx": 32768
+          }
+        }
+      ]
+    },
+    "layer_5_finetuning": {
+      "description": "Gemma 4 fine-tuning on Apple Silicon",
+      "truth_lens": [
+        {
+          "concept": "on_device",
+          "truths": [
+            "Unsloth Studio supports Gemma 4 SFT on Mac/Windows/Linux",
+            "mlx-lm LoRA: E4B and smaller on 36 GB; 26B-A4B requires grad-checkpoint and tight batch",
+            "mlx-vlm LoRA for vision layers on 26B-A4B — experimental on 36 GB",
+            "Unsloth Dynamic GGUF export after CUDA fine-tuning for LM Studio redeploy"
+          ]
+        }
+      ]
+    },
+    "layer_6_common_pitfalls": {
+      "description": "Gemma 4 failure modes on M4 Max",
+      "truth_lens": [
+        {
+          "problem": "gemma4_not_supported_mlx",
+          "cause": "LM Studio < 0.4.11 or stale mlx-engine backend without gemma4 arch",
+          "fix": "Update to LM Studio 0.4.11+; verify mlx-engine 1.6.0+ in Runtime tab; use GGUF fallback meanwhile"
+        },
+        {
+          "problem": "failed_to_load_partial_download",
+          "cause": "Incomplete safetensors shards in ~/.cache/lm-studio/models/",
+          "fix": "Delete partial model folder; re-download; verify total size 14–16 GB for 26B-A4B 4bit"
+        },
+        {
+          "problem": "oom_at_load_26b_8bit",
+          "cause": "31B 8bit or 26B 8bit + macOS memory pressure on 36 GB",
+          "fix": "Close apps; use 26B-A4B 4bit; or reduce n_ctx"
+        },
+        {
+          "problem": "slow_31b_nvfp4_ollama",
+          "cause": "gemma4:31b-nvfp4 unexpectedly slow (~7 tok/s) per kyu.co May 2026 benchmarks",
+          "fix": "Switch to 26B-A4B Q4_K_M or oMLX 26B-4bit"
+        },
+        {
+          "problem": "tokenizer_config_not_found",
+          "cause": "Community MLX upload missing tokenizer.json metadata",
+          "fix": "Use mlx-community or unsloth official uploads; avoid incomplete community mirrors"
+        }
+      ]
+    }
+  },
+  "quick_reference_configs": {
+    "configs": [
+      {
+        "id": "gemma4_agent",
+        "label": "Gemma 4 26B-A4B multimodal agent",
+        "body": "{ \"model\": \"mlx-community/gemma-4-26b-a4b-it-4bit\", \"messages\": [{\"role\":\"user\",\"content\":\"...\"}], \"temperature\": 0.7, \"max_tokens\": 4096 }"
+      },
+      {
+        "id": "llmster_load",
+        "commands": [
+          "lms daemon up",
+          "lms load mlx-community/gemma-4-26b-a4b-it-4bit --yes",
+          "lms server start"
+        ]
+      },
+      {
+        "id": "mlx_vlm",
+        "commands": [
+          "pip install mlx-vlm",
+          "python -m mlx_vlm.chat --model unsloth/gemma-4-26b-a4b-it-UD-MLX-4bit"
+        ]
+      }
+    ]
+  },
+  "jq_usage_guide": {
+    "examples": [
+      { "query": ".knowledge_layers.layer_1_gemma4_model_family.truth_lens[] | select(.concept==\"memory_table_36gb\") | .truths[]", "returns": "Memory table" },
+      { "query": ".knowledge_layers.layer_3_lmstudio_deployment.truth_lens[] | select(.concept==\"version_requirements\") | .truths[]", "returns": "LM Studio version reqs" },
+      { "query": ".knowledge_layers.layer_6_common_pitfalls.truth_lens[]", "returns": "Pitfalls" }
+    ]
+  },
+  "anti_patterns": [
+    "Loading Gemma 4 MLX on LM Studio < 0.4.11 — guaranteed 'not ready yet' error",
+    "Using 31B 8bit on 36 GB — OOM; use 26B-A4B 8bit instead",
+    "Choosing gemma4:31b-nvfp4 in Ollama for speed — community shows ~7 tok/s vs 26B-A4B ~25+ tok/s",
+    "Enabling hybrid thinking for JSON schema extraction — adds latency without benefit",
+    "Loading vision tasks on text-only GGUF without mlx-vlm — images silently ignored"
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "research_sources": [
+      "unsloth.ai/docs/models/gemma-4",
+      "lmstudio.ai/models/gemma-4",
+      "github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1791",
+      "github.com/lmstudio-ai/mlx-engine/issues/301",
+      "sudoall.com/gemma-4-31b-apple-silicon-local-guide/",
+      "kyu.co/posts/local-llm-m4-max-benchmark-2026-05-10/",
+      "gemilab.net/en/articles/gemini-dev/lm-studio-failed-to-load-gemma-4-mlx-error-diagnostic"
+    ],
+    "compatible_with": [
+      "LM Studio 0.4.11+",
+      "mlx-engine 1.6.0+",
+      "mlx-vlm",
+      "Ollama gemma4 tags",
+      "Gemma 4 E2B/E4B/12B/26B-A4B/31B",
+      "Apple M4 Max 36 GB"
+    ],
+    "maintainer_notes": "Fastest-growing Google open multimodal family. On 36 GB: 26B-A4B MLX 4bit default. Must verify LM Studio 0.4.11+ before MLX load."
+  }
+}

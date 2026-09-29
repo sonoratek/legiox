@@ -1,0 +1,765 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "react_email_login_specialist",
+  "name": "React Email Login Specialist — Own SMTP × react-email 5 × Next.js 16",
+  "mission": {
+    "primary_objective": "Implement passwordless email login flows (OTP magic code + magic link) for Next.js 16 App Router applications using own SMTP server via Nodemailer, react-email 5 for template rendering, and PostgreSQL 15 for token lifecycle management — with no third-party email SaaS dependency.",
+    "context": "The stack is fully self-hosted: own SMTP server (Postfix/Haraka/Maddy or any RFC-5321-compliant MTA) accessed via Nodemailer, react-email 5 components rendered server-side to HTML + plain-text, tokens persisted in PostgreSQL (CloudNativePG), and Next.js 16 App Router Server Actions driving the two-step login UI via useActionState. Two flows are supported: (1) OTP magic code — 6-digit code entered in a form; (2) magic link — single-click URL with signed token.",
+    "target_outcome": "A secure, self-contained, GDPR-friendly passwordless login that survives reconnects, tab changes, and mobile email clients without any third-party email API quota or dependency.",
+    "scope": "Next.js 16 App Router (React 19), own SMTP server, Nodemailer 6.x pooled transport, react-email 5.x + @react-email/render 2.x, PostgreSQL 15 via CloudNativePG, Zod 4 validation, Node.js crypto for token generation."
+  },
+  "truth_lens": "Implement passwordless email login flows (OTP magic code + magic link) for Next.js 16 App Router applications using own SMTP server via Nodemailer, react-email 5 for template rendering, and PostgreSQL 15 for token lifecycle management — with no third-party email SaaS dependency. The stack is fully self-hosted: own SMTP server (Postfix/Haraka/Maddy or any RFC-5321-compliant MTA) accessed via Nodemailer, react-email 5 components rendered server-side to HTML + plain-text, tokens persisted in PostgreSQL (CloudNativePG), and Next.js 16 App Router Server Actions driving the two-step login UI via useActionState. Two flows are supported: (1) OTP magic code — 6-digit code entered",
+  "consult_when": [
+    "Task touches react_email_login_specialist responsibilities or failure modes named in this lens.",
+    "Need selector-grade triggers for React Email Login Specialist — Own SMTP × react-email 5 × Next.js 16 before architecture or production change.",
+    "Cross-stack ambiguity between framework, infra, and data layers in this domain."
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for react_email_login_specialist -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "OWN_SMTP_FIRST — Nodemailer connects to your own MTA via TLS/STARTTLS; no Resend, SendGrid, or SES dependency",
+    "REACT_EMAIL_5_RENDER — Use render() from @react-email/render (v2+, async by default); renderAsync is deprecated and removed in react-email 5",
+    "SERVER_ACTION_ONLY_FLOW — Both login steps (request code/link, verify code/token) are Server Actions; no /api route needed",
+    "POSTGRES_TOKEN_STORE — email_login_tokens table is the sole authoritative store; no Redis, no JWT, no in-memory state",
+    "CSPRNG_TOKENS — All tokens generated via Node",
+    "TIMING_SAFE_COMPARISON — OTP verification uses crypto"
+  ],
+  "keywords": [
+    "react",
+    "email",
+    "login",
+    "specialist",
+    "node",
+    "postgres",
+    "sql",
+    "ai",
+    "implement",
+    "otp",
+    "next.js",
+    "app",
+    "own",
+    "smtp",
+    "next"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "React Email Login Specialist — Own SMTP × react-email 5 × Next.js 16",
+  "role": "LegioX truth lens — React Email Login Specialist — Own SMTP × react-email 5 × Next.js 16",
+  "core_expertise": "Implement passwordless email login flows (OTP magic code + magic link) for Next.js 16 App Router applications using own SMTP server via Nodemailer, react-email 5 for template rendering, and PostgreSQL 15 for token lifecycle management — with no third-party email SaaS dependency.",
+  "key_capabilities": [
+    "own_smtp_first_nodemailer_connects_to_yo",
+    "react_email_5_render_use_render_from_rea",
+    "server_action_only_flow_both_login_steps",
+    "postgres_token_store_email_login_tokens_",
+    "csprng_tokens_all_tokens_generated_via_n",
+    "timing_safe_comparison_otp_verification_",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-03-04",
+  "updated": "2026-03-04",
+  "core_principles": [
+    "OWN_SMTP_FIRST — Nodemailer connects to your own MTA via TLS/STARTTLS; no Resend, SendGrid, or SES dependency",
+    "REACT_EMAIL_5_RENDER — Use render() from @react-email/render (v2+, async by default); renderAsync is deprecated and removed in react-email 5",
+    "SERVER_ACTION_ONLY_FLOW — Both login steps (request code/link, verify code/token) are Server Actions; no /api route needed",
+    "POSTGRES_TOKEN_STORE — email_login_tokens table is the sole authoritative store; no Redis, no JWT, no in-memory state",
+    "CSPRNG_TOKENS — All tokens generated via Node.js crypto.randomBytes(); never Math.random()",
+    "TIMING_SAFE_COMPARISON — OTP verification uses crypto.timingSafeEqual() to prevent timing side-channel on code comparison",
+    "ATOMIC_SINGLE_USE — Token consumption is a single UPDATE ... WHERE used_at IS NULL ... RETURNING — atomicity prevents replay attacks",
+    "SHORT_TTL — Magic code: 10 minutes; magic link: 15 minutes; account recovery: 30 minutes max",
+    "PROGRESSIVE_ENHANCEMENT — Login form works without JavaScript via <form action={serverAction}>; useActionState adds pending/error UX on top",
+    "BOTH_HTML_AND_TEXT — Always render and send both HTML (react-email) and plain-text versions; never HTML-only"
+  ],
+  "knowledge_layers": {
+    "layer_0_smtp_transport": {
+      "description": "Nodemailer setup and lifecycle against own SMTP server",
+      "truth_lens": [
+        {
+          "concept": "transporter_singleton",
+          "truths": [
+            "Create ONE transporter at module load time and export it — recreating per-request re-opens TCP+TLS for every email",
+            "Pool mode: nodemailer.createTransport({ pool: true, host, port: 465, secure: true, auth }) for production; keeps up to maxConnections (default 5) persistent TLS connections",
+            "Non-pool (port 587, STARTTLS): omit pool:true; Nodemailer auto-upgrades via STARTTLS unless ignoreTLS:true",
+            "secure: true means TLS from first byte (port 465/SMTPS); secure: false + port 587 = plaintext then STARTTLS upgrade",
+            "Never set ignoreTLS: true in production — disables all encryption",
+            "tls: { rejectUnauthorized: true } is default; only set false for localhost self-signed certs in dev",
+            "In Next.js 16 App Router: place singleton in lib/mailer.ts (server-only module); export const transporter",
+            "Graceful shutdown: process.on('SIGTERM', () => transporter.close()) to drain pooled connections"
+          ]
+        },
+        {
+          "concept": "own_smtp_server_requirements",
+          "truths": [
+            "MTA must have valid PTR record (reverse DNS) matching HELO/EHLO hostname — required by most receiving MTAs",
+            "SPF record: TXT 'v=spf1 ip4:<your-ip> -all' on the sending domain",
+            "DKIM: sign outgoing mail; Nodemailer supports DKIM signing via dkim option on transporter",
+            "DMARC: TXT '_dmarc.<domain>' 'v=DMARC1; p=quarantine; rua=mailto:postmaster@...'",
+            "For login/transactional mail, send from a dedicated subdomain (e.g., noreply@auth.ring.com) separate from marketing sends",
+            "Test deliverability with mail-tester.com before production; target score >= 9/10",
+            "Nodemailer DKIM config: dkim: { domainName, keySelector, privateKey } on createTransport options"
+          ]
+        },
+        {
+          "concept": "transporter_verification",
+          "truths": [
+            "Call await transporter.verify() once at startup to confirm DNS resolution, TCP connection, TLS, and AUTH succeed",
+            "Log verification failure but do not crash the app — email is non-blocking for app boot",
+            "transporter.verify() does NOT verify sender envelope permission — only connectivity and auth",
+            "In K8s / CloudNativePG context: run verify() in a readiness probe side-effect or health check endpoint"
+          ]
+        },
+        {
+          "concept": "sendMail_options",
+          "truths": [
+            "Always set both html and text fields — never send HTML-only emails (spam filters penalise, accessibility suffers)",
+            "messageId: generate with '<' + uuid + '@' + domain + '>' for traceability",
+            "headers: { 'X-Login-Request': '1' } for internal logging and filtering",
+            "replyTo: 'noreply@domain' to prevent users replying to transactional no-reply addresses and getting bounces silently",
+            "Priority: normal for OTP/login emails; never 'high' (triggers spam filters)",
+            "Return value: { messageId, accepted[], rejected[], response } — log messageId for delivery tracing",
+            "If rejected[] is non-empty, treat as delivery failure and surface error to user"
+          ]
+        },
+        {
+          "concept": "development_testing",
+          "truths": [
+            "Use Ethereal Email (nodemailer.createTestAccount()) for zero-config dev; all mail captured, no real SMTP needed",
+            "nodemailer.getTestMessageUrl(info) returns preview URL after sendMail — log it in dev mode",
+            "Mailpit (Docker: axllent/mailpit) is a self-hosted Ethereal alternative with web UI — ideal for local / CI",
+            "Never use real SMTP credentials in .env.local checked into Git",
+            "Use conditional transporter: if DEV use Ethereal/Mailpit; if PROD use own SMTP — switch on NODE_ENV or EMAIL_MODE env var"
+          ]
+        }
+      ]
+    },
+    "layer_1_react_email_5": {
+      "description": "react-email 5.x template patterns, rendering, and Next.js 16 integration",
+      "truth_lens": [
+        {
+          "concept": "package_versions",
+          "truths": [
+            "react-email 5.0 requires @react-email/components >= 1.0.8 — must update both in sync",
+            "react-email 5.0 drops renderAsync entirely — replace all renderAsync calls with await render()",
+            "react-email 5.0 uses @react-email/render 2.x — render() is now async by default, returns Promise<string>",
+            "react-email 5.0 supports React 19.2 and Next.js 16 natively",
+            "Tailwind support in react-email 5 requires Tailwind 4 — not compatible with Tailwind 3 config",
+            "Install: npm install react-email @react-email/components @react-email/render"
+          ]
+        },
+        {
+          "concept": "template_structure",
+          "truths": [
+            "Email template files live in emails/ or src/emails/ directory (sibling to app/)",
+            "Each template is a plain React functional component — NOT a Server Component; no async/await inside template",
+            "Template props are passed at render time: await render(<OTPEmail code={otp} userName={name} />)",
+            "Import only from @react-email/components; never import Next.js or browser APIs into email templates",
+            "Required wrapper components: <Html lang='en'> → <Head /> → <Preview> → <Body> → <Container>",
+            "<Preview> text is the inbox preview snippet (50–90 chars) — critical for open rates",
+            "Inline all styles OR use the <Tailwind> wrapper — email clients do not load external stylesheets",
+            "Max email width: 600px in <Container> — universal email client safe width"
+          ]
+        },
+        {
+          "concept": "otp_code_template",
+          "truths": [
+            "OTP digit display: each digit in its own <Text> cell or a monospace code block — aids visual parsing",
+            "Include: greeting with user name, 6-digit code large & centered, explicit expiry time ('expires in 10 minutes'), fallback text if user didn't request it",
+            "Include plain-text fallback: 'Your login code is: 123456. Expires in 10 minutes.'",
+            "Security warning line: 'If you did not request this code, you can safely ignore this email.'",
+            "Do NOT include the full login URL in OTP emails — the OTP form is on the same page the user is on",
+            "Subject line: 'Your login code: {code}' — puts the code in notification preview on mobile; highly usable"
+          ]
+        },
+        {
+          "concept": "magic_link_template",
+          "truths": [
+            "Magic link email: single prominent <Button href={loginUrl}> — Button component renders as <a> with inline styles",
+            "Always include the raw URL as plain text below the button for email clients that strip buttons",
+            "URL format: https://app.domain/auth/verify?token={opaqueToken}&email={encodedEmail}",
+            "Never put the HMAC secret or raw token entropy in the URL — only the opaque lookup token",
+            "Expiry statement prominent: 'This link expires in 15 minutes and can only be used once.'",
+            "Link should open in same window/tab — do not use target='_blank' (breaks some email clients)"
+          ]
+        },
+        {
+          "concept": "rendering_in_server_action",
+          "truths": [
+            "Call await render(<EmailTemplate />) inside a 'use server' Server Action or server-side lib function",
+            "render() from @react-email/render returns HTML string for html field and supports plainText option",
+            "Plain text: await render(<EmailTemplate />, { plainText: true }) — returns stripped text version",
+            "Both renders are needed: const html = await render(<OTPEmail {...props} />); const text = await render(<OTPEmail {...props} />, { plainText: true })",
+            "Never import react-email templates in 'use client' components — they are server-render-only",
+            "Add 'react-email' and '@react-email/components' to Next.js 16 serverComponentsExternalPackages if you encounter import errors"
+          ]
+        },
+        {
+          "concept": "dev_preview_server",
+          "truths": [
+            "Add script to package.json: 'email': 'email dev --dir ./src/emails --port 3001'",
+            "Run alongside Next.js dev server on a different port (3001 vs 3000)",
+            "Preview server hot-reloads template changes — essential for visual iteration",
+            "Export PreviewProps from each template for the preview server: export const PreviewProps: OTPEmailProps = { code: '847291', userName: 'Ray' }",
+            "Preview server is dev-only; never deployed to production"
+          ]
+        }
+      ]
+    },
+    "layer_2_token_security": {
+      "description": "Cryptographic OTP and magic link token generation and verification",
+      "truth_lens": [
+        {
+          "concept": "otp_generation",
+          "truths": [
+            "Generate 6-digit OTP: const bytes = crypto.randomBytes(4); const otp = (bytes.readUInt32BE(0) % 1000000).toString().padStart(6, '0')",
+            "This uses CSPRNG — never use Math.floor(Math.random() * 1000000)",
+            "6 digits = 1,000,000 possibilities; with 10-minute TTL and rate limiting, brute force is infeasible",
+            "Store HMAC of the OTP, not the raw OTP: crypto.createHmac('sha256', HMAC_SECRET).update(otp).digest('hex')",
+            "HMAC_SECRET is a server-only env var (min 32 bytes entropy); never NEXT_PUBLIC_",
+            "Comparison: regenerate HMAC from user input, compare with crypto.timingSafeEqual(Buffer.from(stored), Buffer.from(computed))",
+            "timingSafeEqual prevents timing attacks where attacker deduces correctness by measuring response time"
+          ]
+        },
+        {
+          "concept": "magic_link_token_generation",
+          "truths": [
+            "Generate 256-bit (32-byte) opaque token: const token = crypto.randomBytes(32).toString('hex') — 64 hex chars",
+            "This is the lookup key stored in DB and sent in URL — it IS the credential",
+            "Optionally HMAC-sign the (email, token) tuple for double verification: const sig = hmac(HMAC_SECRET, email + ':' + token)",
+            "URL: /auth/verify?token={token}&sig={sig} — verify sig server-side before DB lookup",
+            "Store SHA-256 hash of the token in DB, not the raw token: crypto.createHash('sha256').update(token).digest('hex')",
+            "On verification: hash the incoming token, look up the hash in DB — raw token never stored at rest",
+            "256-bit entropy with 15-minute TTL makes brute force statistically impossible (2^256 search space)"
+          ]
+        },
+        {
+          "concept": "token_consumption",
+          "truths": [
+            "Use a single atomic UPDATE to consume: UPDATE email_login_tokens SET used_at = NOW() WHERE token_hash = $1 AND used_at IS NULL AND expires_at > NOW() AND email = $2 RETURNING user_id, id",
+            "If RETURNING returns no rows: token is expired, already used, or invalid — return generic 'invalid or expired link' error",
+            "Never reveal whether token was used vs expired vs not found — prevents oracle attacks",
+            "Do NOT use SELECT then UPDATE — race condition allows token reuse under concurrent requests",
+            "After consuming token: create authenticated session (httpOnly cookie, iron-session, or auth library token)",
+            "Delete or retain consumed tokens based on audit policy; if retaining: DELETE WHERE used_at < NOW() - INTERVAL '24 hours' in cleanup job"
+          ]
+        },
+        {
+          "concept": "rate_limiting",
+          "truths": [
+            "Rate limit token requests by email address: max 3 requests per 15 minutes per email",
+            "Rate limit token verification attempts by IP: max 5 failed attempts per 15 minutes per IP",
+            "Implement in PostgreSQL: count rows WHERE email = $1 AND created_at > NOW() - INTERVAL '15 minutes' before inserting new token",
+            "Return HTTP 429 (or Server Action error state) with 'Too many requests' — do not reveal count",
+            "For OTP: invalidate all previous unused tokens for that email before generating a new one (prevents code accumulation)",
+            "For magic link: same — DELETE WHERE email = $1 AND used_at IS NULL AND expires_at > NOW() before inserting fresh token",
+            "Consider Upstash Redis for distributed rate limiting if running multiple Next.js pods; postgres-based rate limit is adequate for moderate traffic"
+          ]
+        },
+        {
+          "concept": "otp_vs_magic_link_tradeoffs",
+          "truths": [
+            "OTP code: user stays in the app tab — best UX for mobile/desktop flows where email app is separate; slightly lower security surface (manually typed = typo-proof by UX, not by crypto)",
+            "Magic link: one-click from email — most frictionless; risks email prefetching scanners auto-clicking the link (see: anti-scanning measures)",
+            "Anti-scanner for magic link: use POST confirmation page — link leads to /auth/confirm page that shows a 'Complete login' button; actual token consumption on POST, not GET",
+            "Offer both flows in one UI: 'Enter the 6-digit code OR click the link in your email'",
+            "Magic link prefetch protection: check User-Agent for known scanner bots before consuming; or require explicit POST confirmation",
+            "OTP brute force: 1M possibilities / 3 attempts per 15 min window = ~1.4 billion years to exhaust"
+          ]
+        }
+      ]
+    },
+    "layer_3_postgres_schema": {
+      "description": "PostgreSQL 15 DDL and queries for email login tokens",
+      "truth_lens": [
+        {
+          "concept": "schema_design",
+          "truths": [
+            "Table name: email_login_tokens — dedicated table; not a column on users",
+            "Supports both OTP and magic link flows in same table via flow_type ENUM",
+            "token_hash stores SHA-256 hex of raw token (magic link) or HMAC-SHA-256 of OTP — never raw token",
+            "email column: VARCHAR(254) NOT NULL — max RFC-5321 email length; indexed for rate-limit queries",
+            "expires_at: TIMESTAMPTZ NOT NULL — set at insertion; 10 min for OTP, 15 min for magic link",
+            "used_at: TIMESTAMPTZ NULL — NULL = unused; set atomically on consumption",
+            "user_id: UUID NULL REFERENCES users(id) ON DELETE CASCADE — NULL before user exists (registration flow), set for returning user flow",
+            "ip_address: INET NULL — requester IP for audit and rate limiting",
+            "attempt_count: SMALLINT NOT NULL DEFAULT 0 — incremented on each failed OTP verification attempt; lock at threshold"
+          ]
+        },
+        {
+          "concept": "ddl",
+          "truths": [
+            "CREATE TYPE email_flow_type AS ENUM ('otp_code', 'magic_link');",
+            "CREATE TABLE email_login_tokens (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), email VARCHAR(254) NOT NULL, token_hash VARCHAR(64) NOT NULL, flow_type email_flow_type NOT NULL DEFAULT 'otp_code', user_id UUID REFERENCES users(id) ON DELETE CASCADE, expires_at TIMESTAMPTZ NOT NULL, used_at TIMESTAMPTZ, ip_address INET, attempt_count SMALLINT NOT NULL DEFAULT 0, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());",
+            "UNIQUE(token_hash) — prevents accidental duplicate token storage (astronomically unlikely but enforced)",
+            "INDEX ON (email, created_at DESC) WHERE used_at IS NULL — supports rate limit count query",
+            "INDEX ON (token_hash) WHERE used_at IS NULL — atomic consumption lookup",
+            "INDEX ON (expires_at) WHERE used_at IS NULL — cleanup cron target",
+            "RLS: ENABLE ROW LEVEL SECURITY; policy allows only app_readwrite role for INSERT/UPDATE; login_verifier role SELECT + UPDATE(used_at, attempt_count) only"
+          ]
+        },
+        {
+          "concept": "key_queries",
+          "truths": [
+            "Rate limit check: SELECT COUNT(*) FROM email_login_tokens WHERE email = $1 AND created_at > NOW() - INTERVAL '15 minutes'",
+            "Invalidate old unused tokens: DELETE FROM email_login_tokens WHERE email = $1 AND used_at IS NULL AND expires_at > NOW()",
+            "Insert new token: INSERT INTO email_login_tokens (email, token_hash, flow_type, user_id, expires_at, ip_address) VALUES ($1, $2, $3, $4, NOW() + $5::INTERVAL, $6) RETURNING id",
+            "Atomic consumption: UPDATE email_login_tokens SET used_at = NOW() WHERE token_hash = $1 AND email = $2 AND used_at IS NULL AND expires_at > NOW() RETURNING user_id, id",
+            "Increment attempt: UPDATE email_login_tokens SET attempt_count = attempt_count + 1 WHERE token_hash = $1 AND used_at IS NULL RETURNING attempt_count",
+            "Cleanup cron: DELETE FROM email_login_tokens WHERE expires_at < NOW() - INTERVAL '24 hours'"
+          ]
+        },
+        {
+          "concept": "cloudnativepg_alignment",
+          "truths": [
+            "email_login_tokens lives in the application database — same CloudNativePG cluster as users table",
+            "Separate DB role 'login_verifier': GRANT SELECT, UPDATE (used_at, attempt_count) ON email_login_tokens TO login_verifier — Server Action for verification uses this role",
+            "App_readwrite role: GRANT INSERT, DELETE ON email_login_tokens TO app_readwrite — for token creation and cleanup",
+            "RLS policy: app_readwrite role bypasses RLS with BYPASSRLS; login_verifier applies RLS WHERE email = current_setting('app.current_email')::TEXT if needed",
+            "WAL archiving covers this table automatically — no special backup config",
+            "Partition by created_at (monthly) if >1M tokens/month expected for efficient cleanup"
+          ]
+        }
+      ]
+    },
+    "layer_4_nextjs16_flow": {
+      "description": "Next.js 16 App Router implementation of the two-step passwordless login",
+      "truth_lens": [
+        {
+          "concept": "flow_overview",
+          "truths": [
+            "Step 1 — Request: user enters email → Server Action requestLoginCode() → generates token → sends email → returns { step: 'verify', maskedEmail }",
+            "Step 2 — Verify (OTP): user enters 6-digit code → Server Action verifyLoginCode() → validates → creates session → redirect('/dashboard')",
+            "Step 2 — Verify (magic link): user clicks link in email → GET /auth/verify → confirmation page → POST Server Action consumeMagicLink() → create session → redirect",
+            "Both steps handled by useActionState in a single 'use client' login page component",
+            "State machine: { step: 'email' | 'verify' | 'success', error?, maskedEmail? } — drives UI branch rendering",
+            "Progressive enhancement: form with <form action={serverAction}> works without JS; useActionState adds pending states on top"
+          ]
+        },
+        {
+          "concept": "server_action_request",
+          "truths": [
+            "'use server' at top of actions file",
+            "requestLoginCode(prevState, formData): validate email with Zod (z.string().email()); normalize to lowercase and trim",
+            "Check rate limit in DB (max 3 requests per 15 min per email); if exceeded return { error: 'Too many requests. Try again later.' }",
+            "Invalidate previous unused tokens for this email (DELETE WHERE email = $1 AND used_at IS NULL)",
+            "Generate OTP or magic link token using crypto.randomBytes()",
+            "Hash token: HMAC for OTP, SHA-256 for magic link token",
+            "Insert into email_login_tokens with appropriate expires_at interval",
+            "Render email template: const html = await render(<OTPEmail code={otp} />); const text = await render(<OTPEmail code={otp} />, { plainText: true })",
+            "Send via transporter.sendMail({ from, to: email, subject, html, text })",
+            "Return { step: 'verify', maskedEmail: maskEmail(email), flowType: 'otp_code' } — never return the token or OTP to client"
+          ]
+        },
+        {
+          "concept": "server_action_verify",
+          "truths": [
+            "verifyLoginCode(prevState, formData): extract email (from hidden input, never trust client for user_id) and otp from formData",
+            "Validate otp: Zod z.string().length(6).regex(/^\\d{6}$/)",
+            "Compute HMAC of submitted OTP: crypto.createHmac('sha256', HMAC_SECRET).update(otp).digest('hex')",
+            "Fetch token row: SELECT id, token_hash, attempt_count, user_id FROM email_login_tokens WHERE email = $1 AND used_at IS NULL AND expires_at > NOW()",
+            "If no row: return { error: 'Code expired or invalid' }",
+            "If attempt_count >= 5: return { error: 'Too many failed attempts. Request a new code.' }",
+            "Compare HMACs with crypto.timingSafeEqual() — constant time",
+            "On mismatch: increment attempt_count; return { error: 'Invalid code' }",
+            "On match: atomic UPDATE SET used_at = NOW() WHERE id = $1 RETURNING user_id",
+            "Create session (httpOnly cookie); redirect('/dashboard')"
+          ]
+        },
+        {
+          "concept": "magic_link_verification_route",
+          "truths": [
+            "Route: app/auth/verify/page.tsx — Server Component that reads searchParams.token and searchParams.email",
+            "Do NOT consume token on GET — show a confirmation page with a form containing a hidden token field",
+            "Confirmation page renders: 'Click below to complete your login' + <form action={consumeMagicLink}><button>Log in</button></form>",
+            "This pattern defeats email prefetch scanners that auto-GET URLs in emails",
+            "consumeMagicLink(prevState, formData) Server Action: extract token from hidden input",
+            "Hash token: crypto.createHash('sha256').update(token).digest('hex')",
+            "Atomic UPDATE consumption query; on success create session and redirect"
+          ]
+        },
+        {
+          "concept": "useActionState_pattern",
+          "truths": [
+            "Import: import { useActionState } from 'react' — NOT from 'react-dom' (React 19)",
+            "useFormState is deprecated in React 19 / Next.js 16 — use useActionState exclusively",
+            "Signature: const [state, formAction, isPending] = useActionState(serverAction, initialState)",
+            "initialState: { step: 'email', error: null, maskedEmail: null }",
+            "Server Action signature: async function action(prevState: State, formData: FormData): Promise<State>",
+            "Render branch: if (state.step === 'verify') render OTP input form; else render email input form",
+            "isPending: disable submit button and show loading spinner while action is in-flight",
+            "Pass maskedEmail as hidden input in verify step — do not re-ask user for email"
+          ]
+        },
+        {
+          "concept": "form_component_structure",
+          "truths": [
+            "LoginPage: 'use client'; renders two-step UI based on state.step",
+            "Step 1 form: email input + submit → calls requestLoginCode action",
+            "Step 2 form (OTP): hidden email input + 6-box OTP input + submit → calls verifyLoginCode action",
+            "OTP input UX: 6 separate single-character <input type='text' maxLength={1}> auto-advancing on input; or single <input type='text' inputMode='numeric' pattern='[0-9]*' maxLength={6}>",
+            "Single wide OTP input is simpler and more accessible — recommended over 6-box approach",
+            "After paste: strip non-numeric chars and fill the input; JavaScript paste handler recommended",
+            "Error display: {state.error && <p role='alert' aria-live='polite'>{state.error}</p>}",
+            "Resend code button: calls requestLoginCode again with same email (hidden in form)"
+          ]
+        }
+      ]
+    },
+    "layer_5_email_deliverability": {
+      "description": "Making sure self-hosted email reaches the inbox, not spam",
+      "truth_lens": [
+        {
+          "concept": "dns_requirements",
+          "truths": [
+            "PTR record: IP → mail.yourdomain.com (reverse DNS — set via hosting provider / ISP)",
+            "A record: mail.yourdomain.com → your IP",
+            "MX record: not strictly required for outbound-only sender but recommended",
+            "SPF: 'v=spf1 ip4:YOUR_IP -all' on the sending domain",
+            "DKIM: generate 2048-bit RSA key pair; publish public key as TXT record at <selector>._domainkey.<domain>",
+            "DMARC: 'v=DMARC1; p=quarantine; rua=mailto:dmarc@domain; pct=100'",
+            "All four (PTR+SPF+DKIM+DMARC) are required for reliable inbox delivery in 2025 — any missing one degrades deliverability significantly"
+          ]
+        },
+        {
+          "concept": "nodemailer_dkim",
+          "truths": [
+            "Configure DKIM in Nodemailer transporter: dkim: { domainName: 'yourdomain.com', keySelector: 'login2025', privateKey: process.env.DKIM_PRIVATE_KEY }",
+            "DKIM_PRIVATE_KEY: server-only env var; PEM-encoded RSA private key; never NEXT_PUBLIC_",
+            "Nodemailer signs each message automatically with the DKIM config on the transporter",
+            "Use a dedicated key selector for transactional login emails (separate from newsletter selector) for independent rotation"
+          ]
+        },
+        {
+          "concept": "content_best_practices",
+          "truths": [
+            "Subject lines for OTP: 'Your login code: {code}' — clear, expected, not spammy",
+            "Subject lines for magic link: 'Your login link for {AppName}' — specific and branded",
+            "Never ALL CAPS subject lines",
+            "Include physical mailing address in footer (CAN-SPAM requirement for US; GDPR best practice globally)",
+            "Unsubscribe link not required for transactional authentication emails but include a 'help' link",
+            "Text:HTML ratio — react-email plain-text rendering ensures good ratio automatically",
+            "Avoid spam trigger words in OTP emails: 'free', 'click here', 'confirm your account' (prefer 'complete your login')"
+          ]
+        },
+        {
+          "concept": "ip_reputation",
+          "truths": [
+            "New IP: warm up by sending to engaged users first; don't blast 10K emails on day 1",
+            "Bounce handling: implement a webhook or IMAP listener to mark hard-bounced emails; stop sending to them",
+            "Unsubscribe/block list: maintain in DB; check before sending any email (including transactional)",
+            "Monitor blacklists: MXToolbox, Spamhaus — check weekly when starting out",
+            "Dedicated IP for transactional vs. dedicated IP for marketing if volume warrants it"
+          ]
+        }
+      ]
+    },
+    "layer_6_security_hardening": {
+      "description": "Security model for the full email login system",
+      "truth_lens": [
+        {
+          "concept": "env_vars",
+          "truths": [
+            "SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS — server-only; never NEXT_PUBLIC_",
+            "OTP_HMAC_SECRET — min 32 bytes random hex; used to HMAC OTPs before storage",
+            "DKIM_PRIVATE_KEY — PEM RSA private key for DKIM signing",
+            "EMAIL_FROM — 'AppName <noreply@auth.yourdomain.com>'",
+            "Store all in K8s Secrets (or .env.local for development only; never commit to Git)",
+            "Rotate OTP_HMAC_SECRET annually; all active tokens (already short-lived) will be invalidated on rotation — acceptable"
+          ]
+        },
+        {
+          "concept": "session_creation",
+          "truths": [
+            "After successful token consumption: create server-side session — httpOnly, Secure, SameSite=Lax cookie",
+            "Use iron-session, Auth.js v5 JWT, or custom PASETO token — not localStorage",
+            "Session must encode user_id, issued_at, expires_at — validate on every request in middleware",
+            "Rotate session ID/token on login to prevent session fixation attacks",
+            "Set short initial session (e.g., 7 days) with sliding window renewal on activity"
+          ]
+        },
+        {
+          "concept": "csrf_protection",
+          "truths": [
+            "Server Actions in Next.js 16 include built-in CSRF protection via origin check for same-origin form submissions",
+            "For extra hardness: validate Referer/Origin header in Server Action if called from sensitive operations",
+            "SameSite=Lax on session cookie prevents most CSRF scenarios for navigation-triggered forms",
+            "Magic link GET → POST confirmation pattern also functions as CSRF protection (attacker can GET the link but cannot POST the confirmation from another origin)"
+          ]
+        },
+        {
+          "concept": "error_message_policy",
+          "truths": [
+            "Never reveal whether an email address exists in the system — always return 'If this email is registered, a code was sent' (prevents email enumeration)",
+            "For token errors: always use generic 'Invalid or expired code/link' — never 'Token not found' vs 'Token expired' (oracle)",
+            "For rate limit: 'Too many requests. Please wait before trying again.' — don't reveal count or window duration",
+            "Log detailed errors server-side (with correlation ID) but return only safe messages to client"
+          ]
+        }
+      ]
+    },
+    "layer_7_common_pitfalls": {
+      "description": "Real failure modes in email login systems",
+      "truth_lens": [
+        {
+          "concept": "renderAsync_removed",
+          "problem": "Build fails with 'renderAsync is not a function' after upgrading react-email",
+          "cause": "react-email 5 removes renderAsync; it was deprecated in v3",
+          "fix": "Replace all renderAsync() with await render() — render() is now async by default in @react-email/render 2.x"
+        },
+        {
+          "concept": "transporter_per_request",
+          "problem": "SMTP connection errors or extreme latency under load",
+          "cause": "Creating a new nodemailer.createTransport() on every Server Action invocation — opens new TLS handshake each time",
+          "fix": "Module-level singleton transporter in lib/mailer.ts; use pool: true for own SMTP server"
+        },
+        {
+          "concept": "magic_link_scanner_consumed",
+          "problem": "Users report 'link already used' immediately after clicking",
+          "cause": "Email security scanners (Barracuda, Proofpoint, Microsoft SafeLinks) auto-GET every URL in incoming emails",
+          "fix": "Never consume token on GET; use POST confirmation page pattern — scanner cannot POST"
+        },
+        {
+          "concept": "timing_attack_on_otp",
+          "problem": "Attacker can deduce correct OTP digits by measuring response time variance",
+          "cause": "String comparison: if (storedHmac === computedHmac) — JavaScript string comparison short-circuits on first mismatch",
+          "fix": "crypto.timingSafeEqual(Buffer.from(stored, 'hex'), Buffer.from(computed, 'hex')) — constant time regardless of match position"
+        },
+        {
+          "concept": "token_not_hashed",
+          "problem": "Database breach exposes raw OTPs or magic link tokens — immediate account takeover for all valid tokens",
+          "cause": "Storing raw OTP or raw magic link token in token column",
+          "fix": "Store HMAC(OTP) for codes; store SHA-256(token) for magic links. Raw token is never persisted."
+        },
+        {
+          "concept": "html_only_email",
+          "problem": "Emails rejected by strict spam filters or unreadable in plain-text email clients",
+          "cause": "Only setting html field in sendMail options; no text field",
+          "fix": "Always render both: await render(component) for html; await render(component, { plainText: true }) for text; set both on sendMail"
+        },
+        {
+          "concept": "useFormState_deprecation",
+          "problem": "React 19 / Next.js 16 build warning or runtime error on useFormState import",
+          "cause": "Using deprecated useFormState from 'react-dom'",
+          "fix": "Replace with useActionState from 'react'; update Server Action signature to include prevState as first param"
+        },
+        {
+          "concept": "email_enumeration",
+          "problem": "Attacker can determine which email addresses are registered by checking response messages",
+          "cause": "Returning 'Email not found' vs 'Code sent' based on DB lookup result",
+          "fix": "Always return the same response ('If this email is registered, a code was sent') regardless of whether email exists in users table"
+        },
+        {
+          "concept": "react_email_ssr_crash",
+          "problem": "Next.js crashes on render with 'Cannot use import statement in module' or similar",
+          "cause": "react-email packages not in serverComponentsExternalPackages in next.config.ts",
+          "fix": "Add to next.config.ts: experimental: { serverComponentsExternalPackages: ['@react-email/render', '@react-email/components', 'react-email'] }"
+        },
+        {
+          "concept": "no_rate_limiting",
+          "problem": "Attacker floods system with OTP requests for a target email, causing email spam to the victim",
+          "cause": "No rate limiting on token request endpoint",
+          "fix": "Max 3 requests per 15 minutes per email address enforced at DB level before transporter.sendMail() is called"
+        }
+      ]
+    }
+  },
+  "postgresql_schema": {
+    "description": "Complete production DDL for email_login_tokens — PostgreSQL 15 / CloudNativePG",
+    "ddl_sequence": [
+      "CREATE TYPE email_flow_type AS ENUM ('otp_code', 'magic_link');",
+      "",
+      "CREATE TABLE email_login_tokens (",
+      "  id             UUID          PRIMARY KEY DEFAULT gen_random_uuid(),",
+      "  email          VARCHAR(254)  NOT NULL,",
+      "  token_hash     VARCHAR(64)   NOT NULL,",
+      "  flow_type      email_flow_type NOT NULL DEFAULT 'otp_code',",
+      "  user_id        UUID          REFERENCES users(id) ON DELETE CASCADE,",
+      "  expires_at     TIMESTAMPTZ   NOT NULL,",
+      "  used_at        TIMESTAMPTZ,",
+      "  ip_address     INET,",
+      "  attempt_count  SMALLINT      NOT NULL DEFAULT 0,",
+      "  created_at     TIMESTAMPTZ   NOT NULL DEFAULT NOW()",
+      ");",
+      "",
+      "CREATE UNIQUE INDEX email_login_tokens_hash_uidx ON email_login_tokens (token_hash);",
+      "CREATE INDEX email_login_tokens_email_rate_idx ON email_login_tokens (email, created_at DESC) WHERE used_at IS NULL;",
+      "CREATE INDEX email_login_tokens_cleanup_idx ON email_login_tokens (expires_at) WHERE used_at IS NULL;",
+      "",
+      "ALTER TABLE email_login_tokens ENABLE ROW LEVEL SECURITY;",
+      "",
+      "-- App write role: create and delete tokens",
+      "GRANT INSERT, DELETE ON email_login_tokens TO app_readwrite;",
+      "",
+      "-- Login verifier role: read and consume tokens only",
+      "GRANT SELECT ON email_login_tokens TO login_verifier;",
+      "GRANT UPDATE (used_at, attempt_count) ON email_login_tokens TO login_verifier;"
+    ],
+    "rate_limit_query": "SELECT COUNT(*) FROM email_login_tokens WHERE email = $1 AND created_at > NOW() - INTERVAL '15 minutes'",
+    "invalidate_old_query": "DELETE FROM email_login_tokens WHERE email = $1 AND used_at IS NULL AND flow_type = $2",
+    "insert_query": "INSERT INTO email_login_tokens (email, token_hash, flow_type, user_id, expires_at, ip_address) VALUES ($1, $2, $3, $4, NOW() + $5::INTERVAL, $6) RETURNING id",
+    "atomic_consume_query": "UPDATE email_login_tokens SET used_at = NOW() WHERE token_hash = $1 AND email = $2 AND used_at IS NULL AND expires_at > NOW() RETURNING user_id, id",
+    "increment_attempt_query": "UPDATE email_login_tokens SET attempt_count = attempt_count + 1 WHERE id = $1 RETURNING attempt_count",
+    "cleanup_cron": "DELETE FROM email_login_tokens WHERE expires_at < NOW() - INTERVAL '24 hours'"
+  },
+  "file_structure": {
+    "description": "Canonical file layout for the email login system in Next.js 16 App Router",
+    "files": [
+      {
+        "path": "lib/mailer.ts",
+        "role": "Nodemailer transporter singleton — server-only module",
+        "note": "pool: true for own SMTP; Ethereal fallback in dev; call verify() at startup"
+      },
+      {
+        "path": "lib/tokens.ts",
+        "role": "Token generation and verification utilities",
+        "note": "generateOTP(), generateMagicToken(), hmacOTP(), hashToken(), verifyOTPTiming()"
+      },
+      {
+        "path": "emails/OTPEmail.tsx",
+        "role": "react-email OTP code template",
+        "note": "Props: { code, userName, appName, expiresInMinutes }; export PreviewProps for dev server"
+      },
+      {
+        "path": "emails/MagicLinkEmail.tsx",
+        "role": "react-email magic link template",
+        "note": "Props: { loginUrl, userName, appName, expiresInMinutes }"
+      },
+      {
+        "path": "app/_actions/auth-email-actions.ts",
+        "role": "Server Actions: requestLoginCode, verifyLoginCode, consumeMagicLink",
+        "note": "'use server'; imports lib/mailer, lib/tokens, db, @react-email/render"
+      },
+      {
+        "path": "app/(auth)/login/page.tsx",
+        "role": "Login page — 'use client'; useActionState state machine",
+        "note": "Renders email step or OTP verify step based on state.step"
+      },
+      {
+        "path": "app/auth/verify/page.tsx",
+        "role": "Magic link confirmation page — Server Component",
+        "note": "Reads searchParams.token; renders POST form; does NOT consume on GET"
+      }
+    ]
+  },
+  "env_vars": {
+    "server_only": [
+      "SMTP_HOST — hostname of own SMTP server",
+      "SMTP_PORT — 465 (TLS) or 587 (STARTTLS)",
+      "SMTP_USER — SMTP auth username",
+      "SMTP_PASS — SMTP auth password",
+      "SMTP_FROM — 'AppName <noreply@auth.yourdomain.com>'",
+      "DKIM_PRIVATE_KEY — PEM RSA private key for DKIM signing",
+      "OTP_HMAC_SECRET — min 32-byte hex string for HMAC of OTP codes",
+      "DATABASE_URL — PostgreSQL connection string"
+    ],
+    "never_expose_as_NEXT_PUBLIC": [
+      "All SMTP credentials",
+      "OTP_HMAC_SECRET",
+      "DKIM_PRIVATE_KEY",
+      "DATABASE_URL"
+    ],
+    "dev_only": [
+      "ETHEREAL_USER — Ethereal test account user (auto-created via createTestAccount())",
+      "ETHEREAL_PASS — Ethereal test account password",
+      "EMAIL_MODE=ethereal — switches transporter to Ethereal in dev"
+    ]
+  },
+  "anti_patterns": [
+    "Storing raw OTP or raw magic link token in the database — DB breach = immediate account takeover for all valid tokens",
+    "String equality (===) for OTP comparison — timing side-channel; always use crypto.timingSafeEqual()",
+    "Creating new nodemailer.createTransport() inside the Server Action body — opens TLS handshake per email",
+    "Consuming magic link token on HTTP GET — email scanner bots auto-GET all URLs, instantly invalidating links",
+    "Using renderAsync() from @react-email/render — deprecated in v3, removed in v5; use await render()",
+    "Sending HTML-only email — no text field degrades deliverability and breaks plain-text email clients",
+    "Returning 'Email not found' vs 'Code sent' — email enumeration oracle; always return same message",
+    "Not rate-limiting token requests — attacker can spam victim's inbox with OTP emails",
+    "Not rate-limiting verification attempts — allows brute force of 6-digit OTP (1M attempts needed but no limit = feasible)",
+    "Using useFormState from 'react-dom' — deprecated in React 19; import useActionState from 'react'",
+    "Exposing SMTP credentials as NEXT_PUBLIC_ env vars — accessible to any browser that loads the page",
+    "Not adding react-email packages to serverComponentsExternalPackages in next.config.ts — causes SSR module resolution errors",
+    "SELECT then UPDATE for token consumption — race condition allows replay attack under concurrent requests; use single atomic UPDATE",
+    "Skipping SPF/DKIM/DMARC DNS records — emails immediately land in spam or are rejected by modern MTAs",
+    "Not sending plain-text version alongside HTML — CAN-SPAM requirement and deliverability best practice"
+  ],
+  "jq_usage_guide": {
+    "examples": [
+      {
+        "query": ".knowledge_layers.layer_7_common_pitfalls.truth_lens[] | select(.concept==\"magic_link_scanner_consumed\")",
+        "returns": "Scanner pre-fetch problem and POST confirmation fix"
+      },
+      {
+        "query": ".knowledge_layers.layer_2_token_security.truth_lens[] | select(.concept==\"otp_generation\") | .truths[]",
+        "returns": "All OTP generation truths including HMAC storage and timingSafeEqual"
+      },
+      {
+        "query": ".postgresql_schema | to_entries[] | .key + \": \" + .value",
+        "returns": "All SQL queries by name"
+      },
+      {
+        "query": ".postgresql_schema.ddl_sequence[]",
+        "returns": "Full DDL in order"
+      },
+      {
+        "query": ".knowledge_layers.layer_4_nextjs16_flow.truth_lens[] | select(.concept==\"useActionState_pattern\") | .truths[]",
+        "returns": "useActionState signature and state machine pattern"
+      },
+      {
+        "query": ".knowledge_layers.layer_1_react_email_5.truth_lens[] | select(.concept==\"package_versions\") | .truths[]",
+        "returns": "react-email 5 breaking changes and version requirements"
+      },
+      {
+        "query": ".anti_patterns[]",
+        "returns": "All email login anti-patterns"
+      },
+      {
+        "query": ".env_vars.server_only[]",
+        "returns": "All server-only env vars"
+      },
+      {
+        "query": ".knowledge_layers.layer_0_smtp_transport.truth_lens[] | select(.concept==\"transporter_singleton\") | .truths[]",
+        "returns": "Nodemailer pooled transporter setup truths"
+      },
+      {
+        "query": ".file_structure.files[] | .path + \" — \" + .role",
+        "returns": "All file paths and their roles"
+      },
+      {
+        "query": ".core_principles[]",
+        "returns": "All specialist core principles"
+      },
+      {
+        "query": ".knowledge_layers | keys[]",
+        "returns": "All knowledge layer identifiers"
+      }
+    ]
+  },
+  "meta": {
+    "version": "1.0.0",
+    "research_sources": [
+      "nodemailer.com/smtp — pooled SMTP transport, DKIM, STARTTLS",
+      "nodemailer.com/smtp/pooled — connection pool lifecycle",
+      "resend.com/blog/react-email-5 — v5 breaking changes, renderAsync removal, React 19 / Next.js 16 support",
+      "resend.com/blog/react-email-3 — render() async migration",
+      "supertokens.com/blog/magiclinks — token security and scanner attack vectors",
+      "baytechconsulting.com/blog/magic-links — token TTL consensus, one-time use enforcement",
+      "clerk.com/blog/magic-links — HMAC/CSPRNG token generation theory",
+      "nextjs.org/docs/app/guides/authentication — useActionState + Zod pattern",
+      "vercel.com/academy/nextjs-foundations/server-actions-for-forms — Server Action form patterns"
+    ],
+    "compatible_with": [
+      "react-email 5.x",
+      "@react-email/components 1.x",
+      "@react-email/render 2.x",
+      "nodemailer 6.x",
+      "Next.js 16 App Router",
+      "React 19",
+      "PostgreSQL 15 / CloudNativePG",
+      "Zod 4"
+    ],
+    "schema": "truth_lens nested array per layer; pitfall entries use problem/cause/fix structure",
+    "jq_root": ".",
+    "maintainer_notes": "The three most critical implementation details: (1) POST confirmation gate for magic links to defeat scanner bots; (2) crypto.timingSafeEqual for OTP comparison; (3) render() is async in react-email 5 — await it. Everything else is configuration."
+  }
+}

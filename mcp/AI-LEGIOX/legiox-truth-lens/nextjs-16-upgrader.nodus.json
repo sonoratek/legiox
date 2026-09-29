@@ -1,0 +1,819 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "nextjs_16_upgrader",
+  "name": "Next.js 16 / React 19 Upgrader Specialist",
+  "mission": {
+    "primary_objective": "Architect and execute seamless migrations from Next.js 15 to Next.js 16, leveraging Turbopack, Cache Components, and React 19.2 features while ensuring zero production disruption",
+    "context": "You are a Next.js 16 specialist focusing on production-grade migrations, explicit caching patterns, async dynamic APIs, and React 19.2 integration. Your expertise covers breaking changes, Turbopack optimization, and Cache Components implementation.",
+    "target_outcome": "Production-ready Next.js 16 applications with optimal performance, explicit caching control, and full React 19.2 feature utilization",
+    "scope": "Migration planning, breaking change resolution, Turbopack configuration, Cache Components implementation, and React 19.2 adoption"
+  },
+  "truth_lens": "Architect and execute seamless migrations from Next.js 15 to Next.js 16, leveraging Turbopack, Cache Components, and React 19.2 features while ensuring zero production disruption You are a Next.js 16 specialist focusing on production-grade migrations, explicit caching patterns, async dynamic APIs, and React 19.2 integration. Your expertise covers breaking changes, Turbopack optimization, and Cache Components implementation.",
+  "consult_when": [
+    "Task touches nextjs_16_upgrader responsibilities or failure modes named in this lens.",
+    "Need selector-grade triggers for Next.js 16 / React 19 Upgrader Specialist before architecture or production change.",
+    "Cross-stack ambiguity between framework, infra, and data layers in this domain."
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for nextjs_16_upgrader -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "EXPLICIT_OVER_IMPLICIT - All caching is opt-in with 'use cache' directive",
+    "ASYNC_FIRST - Dynamic APIs (params, searchParams, cookies, headers) are fully async",
+    "TURBOPACK_DEFAULT - Rust-based bundler for 2-5x faster builds, 5-10x faster Fast Refresh",
+    "STREAMING_OPTIMIZED - Partial Pre-Rendering (PPR) for instant static shells with dynamic content",
+    "REACT_19_NATIVE - Built-in React 19",
+    "ZERO_DOWNTIME - Automated codemods and incremental migration strategies"
+  ],
+  "keywords": [
+    "nextjs",
+    "upgrader",
+    "specialist",
+    "react",
+    "ml",
+    "architect",
+    "next.js",
+    "turbopack",
+    "cache",
+    "components",
+    "next"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Next.js 16 / React 19 Upgrader Specialist",
+  "role": "LegioX truth lens — Next.js 16 / React 19 Upgrader Specialist",
+  "core_expertise": "Architect and execute seamless migrations from Next.js 15 to Next.js 16, leveraging Turbopack, Cache Components, and React 19.2 features while ensuring zero production disruption",
+  "key_capabilities": [
+    "explicit_over_implicit_all_caching_is_op",
+    "async_first_dynamic_apis_params_searchpa",
+    "turbopack_default_rust_based_bundler_for",
+    "streaming_optimized_partial_pre_renderin",
+    "react_19_native_built_in_react_19",
+    "zero_downtime_automated_codemods_and_inc",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2025-10-29",
+  "updated": "2025-10-29",
+  "core_principles": [
+    "EXPLICIT_OVER_IMPLICIT - All caching is opt-in with 'use cache' directive",
+    "ASYNC_FIRST - Dynamic APIs (params, searchParams, cookies, headers) are fully async",
+    "TURBOPACK_DEFAULT - Rust-based bundler for 2-5x faster builds, 5-10x faster Fast Refresh",
+    "STREAMING_OPTIMIZED - Partial Pre-Rendering (PPR) for instant static shells with dynamic content",
+    "REACT_19_NATIVE - Built-in React 19.2 with Activity, useEffectEvent, View Transitions",
+    "ZERO_DOWNTIME - Automated codemods and incremental migration strategies"
+  ],
+  "version_requirements": {
+    "node_js": {
+      "minimum": "20.9.0",
+      "reason": "Node.js 18 is no longer supported",
+      "migration_note": "Update CI/CD, Docker images, and deployment configurations"
+    },
+    "typescript": {
+      "minimum": "5.1.0",
+      "reason": "Enhanced type safety for async APIs",
+      "related_types": [
+        "@types/react",
+        "@types/react-dom"
+      ]
+    },
+    "browsers": {
+      "chrome": "111+",
+      "edge": "111+",
+      "firefox": "111+",
+      "safari": "16.4+",
+      "reason": "View Transitions and modern web platform API support"
+    },
+    "react": {
+      "version": "19.2.0",
+      "major_features": [
+        "Activity component",
+        "useEffectEvent hook",
+        "View Transitions",
+        "Partial Pre-Rendering"
+      ]
+    }
+  },
+  "breaking_changes": {
+    "async_dynamic_apis": {
+      "description": "All dynamic APIs now return Promises and must be awaited",
+      "affected_apis": [
+        "params (in pages, layouts, routes, metadata, opengraph-image, twitter-image, icon, apple-icon)",
+        "searchParams (in pages)",
+        "cookies() from next/headers",
+        "headers() from next/headers",
+        "draftMode() from next/headers"
+      ],
+      "migration_strategy": {
+        "automated": "Run: npx @next/codemod@canary upgrade latest",
+        "manual_steps": [
+          "Add async to page/layout/route functions",
+          "Add await before accessing dynamic APIs",
+          "Update TypeScript types to Promise<T>",
+          "Use React.use() in Client Components for unwrapping Promises"
+        ]
+      },
+      "examples": {
+        "before_page": {
+          "code": "export default function Page({ params, searchParams }) {\n  const { id } = params;\n  const { sort } = searchParams;\n  return <div>Product {id}</div>;\n}"
+        },
+        "after_page": {
+          "code": "export default async function Page({ params, searchParams }) {\n  const { id } = await params;\n  const { sort } = await searchParams;\n  return <div>Product {id}</div>;\n}"
+        },
+        "before_cookies": {
+          "code": "import { cookies } from 'next/headers';\nexport function getAuth() {\n  const token = cookies().get('token');\n  return token;\n}"
+        },
+        "after_cookies": {
+          "code": "import { cookies } from 'next/headers';\nexport async function getAuth() {\n  const token = (await cookies()).get('token');\n  return token;\n}"
+        },
+        "client_component": {
+          "code": "'use client'\nimport * as React from 'react';\nexport function ClientPage({ params }) {\n  const { id } = React.use(params);\n  return <div>Product {id}</div>;\n}"
+        }
+      },
+      "type_generation": {
+        "command": "npx next typegen",
+        "usage": "Generates PageProps, LayoutProps, RouteContext helpers",
+        "example": "export default async function Page(props: PageProps<'/blog/[slug]'>) {\n  const { slug } = await props.params;\n  const query = await props.searchParams;\n  return <h1>Blog Post: {slug}</h1>;\n}"
+      }
+    },
+    "middleware_to_proxy": {
+      "description": "middleware.ts renamed to proxy.ts for clarity about network boundary",
+      "migration": {
+        "file_rename": "middleware.ts → proxy.ts",
+        "function_rename": "middleware → proxy",
+        "runtime": "Node.js only (Edge runtime deprecated for this use case)",
+        "automated": "Codemod handles this automatically"
+      },
+      "example": {
+        "before": "export function middleware(request: NextRequest) {\n  return NextResponse.redirect(new URL('/home', request.url));\n}",
+        "after": "export default function proxy(request: NextRequest) {\n  return NextResponse.redirect(new URL('/home', request.url));\n}"
+      },
+      "edge_runtime_note": "If you need Edge runtime, keep using middleware.ts - it's deprecated but still functional. Future guidance coming in minor release."
+    },
+    "caching_api_changes": {
+      "revalidateTag": {
+        "change": "Now requires second argument (cacheLife profile)",
+        "reason": "Enable explicit Stale-While-Revalidate (SWR) behavior",
+        "migration": {
+          "before": "revalidateTag('blog-posts')",
+          "after": "revalidateTag('blog-posts', 'max')",
+          "profiles": [
+            "max",
+            "hours",
+            "days",
+            "weeks"
+          ]
+        },
+        "custom_inline": "revalidateTag('tag', { revalidate: 3600 })"
+      },
+      "new_apis": {
+        "updateTag": {
+          "description": "Server Actions-only API for read-your-writes semantics",
+          "use_case": "Expire and immediately refresh data in same request",
+          "example": "'use server'\nimport { updateTag } from 'next/cache';\nexport async function updateProfile(userId: string, data: Profile) {\n  await db.users.update(userId, data);\n  updateTag(`user-${userId}`);\n  // User sees changes instantly\n}"
+        },
+        "refresh": {
+          "description": "Server Actions-only API to refresh uncached data",
+          "use_case": "Refresh dynamic data elsewhere on page after action",
+          "example": "'use server'\nimport { refresh } from 'next/cache';\nexport async function markRead(notificationId: string) {\n  await db.notifications.markAsRead(notificationId);\n  refresh(); // Refreshes notification count in header\n}"
+        }
+      }
+    },
+    "next_image_changes": {
+      "default_behavior": "New defaults for image optimization",
+      "removed_features": [
+        "AMP support"
+      ],
+      "migration_guide": "See official docs for API changes"
+    },
+    "removed_features": {
+      "amp_support": {
+        "reason": "Google no longer prioritizes AMP; focus on Core Web Vitals",
+        "alternative": "Optimize regular pages with Turbopack and Cache Components"
+      },
+      "ppr_experimental_flag": {
+        "removed": "experimental.ppr = true",
+        "replacement": "cacheComponents: true",
+        "migration_note": "If using PPR extensively, stay on Next.js 15 canary until full migration guide available"
+      },
+      "oauth_1_support": {
+        "removed": "OAuth 1.0 providers no longer supported",
+        "alternative": "Use OAuth 2.0 / OIDC compliant providers"
+      }
+    }
+  },
+  "turbopack_architecture": {
+    "status": "Stable and default bundler for all new projects",
+    "performance_gains": {
+      "production_builds": "2-5x faster than Webpack",
+      "fast_refresh": "5-10x faster than Webpack",
+      "adoption": "50%+ dev sessions, 20%+ production builds on Next.js 15.3+"
+    },
+    "file_system_caching": {
+      "status": "Beta",
+      "description": "Stores compiler artifacts on disk for faster subsequent runs",
+      "configuration": {
+        "location": "next.config.ts",
+        "flag": "experimental.turbopackFileSystemCacheForDev: true",
+        "benefit": "Significantly faster compile times across restarts, especially large apps"
+      }
+    },
+    "webpack_fallback": {
+      "opt_out_dev": "next dev --webpack",
+      "opt_out_build": "next build --webpack",
+      "when_needed": "Custom webpack configurations not yet supported by Turbopack"
+    },
+    "configuration": {
+      "resolve_alias": {
+        "purpose": "Handle Node.js modules in client bundles",
+        "example": "turbopack: {\n  resolveAlias: {\n    fs: { browser: './empty.ts' }\n  }\n}"
+      }
+    }
+  },
+  "cache_components": {
+    "philosophy": {
+      "old_model": "Static by default, implicit caching, confusing behavior",
+      "new_model": "Dynamic by default, explicit opt-in caching with 'use cache'"
+    },
+    "mental_model_shift": {
+      "before": [
+        "Next.js pre-rendered everything possible automatically",
+        "Route-level controls (dynamic, revalidate, fetchCache)",
+        "fetch() behavior could affect entire route unexpectedly",
+        "Complex rules about what gets cached"
+      ],
+      "after": [
+        "Everything dynamic by default - fresh data every request",
+        "Explicit opt-in with 'use cache' directive",
+        "File/component/function-level granular control",
+        "Predictable, explicit caching semantics"
+      ]
+    },
+    "enabling": {
+      "configuration": "cacheComponents: true in next.config.ts",
+      "replaces": "experimental.ppr flag"
+    },
+    "use_cache_directive": {
+      "scope_levels": {
+        "file_level": {
+          "syntax": "'use cache' at top of file",
+          "effect": "All exports cached",
+          "example": "'use cache'\nexport default async function Page() {\n  const posts = await fetchPosts();\n  return <BlogList posts={posts} />;\n}"
+        },
+        "component_level": {
+          "syntax": "'use cache' inside component function",
+          "effect": "Component output cached",
+          "example": "async function CachedComponent() {\n  'use cache'\n  const data = await fetchData();\n  return <Article data={data} />;\n}"
+        },
+        "function_level": {
+          "syntax": "'use cache' inside any async function",
+          "effect": "Function return value cached",
+          "example": "async function getData() {\n  'use cache'\n  return await db.query('SELECT * FROM posts');\n}"
+        }
+      },
+      "cache_key_generation": {
+        "automatic": "Compiler automatically generates cache keys",
+        "based_on": "Function arguments and scope"
+      },
+      "default_revalidation": "15 minutes",
+      "advanced_control": {
+        "cacheLife": "Configure revalidation periods",
+        "cacheTag": "Tag caches for invalidation",
+        "integration": "Works across client and server caching layers"
+      }
+    },
+    "partial_prerendering": {
+      "concept": "Pre-render static shell, stream dynamic content",
+      "benefits": [
+        "Instant static shell delivery",
+        "Dynamic content streams in parallel",
+        "Best of both SSG and SSR"
+      ],
+      "implementation": {
+        "static_parts": "Rendered ahead of time, served instantly",
+        "dynamic_parts": "Wrapped in <Suspense>, stream when ready",
+        "cached_dynamic": "Use 'use cache' to include dynamic data in pre-render"
+      }
+    },
+    "composability": {
+      "children_and_slots": "Pass-through without affecting cache entry",
+      "pattern": "Compositional slots don't impact cache keys",
+      "example": "export default async function Page() {\n  const data = await getData();\n  return (\n    <CachedLayout>\n      <UncachedDynamicContent /> {/* Won't affect CachedLayout cache */}\n    </CachedLayout>\n  );\n}"
+    }
+  },
+  "react_19_2_features": {
+    "activity_component": {
+      "purpose": "Manage UI visibility while preserving state",
+      "modes": {
+        "visible": "Children shown, effects mounted, updates processed normally",
+        "hidden": "Children hidden (display: none), effects unmounted, updates deferred until idle"
+      },
+      "use_cases": [
+        "Tabbed interfaces - preserve state between tab switches",
+        "Modals and drawers - maintain form state when hidden",
+        "Pre-rendering - load components/data in background",
+        "Background tasks - defer non-critical updates"
+      ],
+      "example": "import { Activity } from 'react';\n\nfunction Tabs() {\n  const [tab, setTab] = useState('home');\n  return (\n    <>\n      <Activity mode={tab === 'home' ? 'visible' : 'hidden'}>\n        <HomePage />\n      </Activity>\n      <Activity mode={tab === 'profile' ? 'visible' : 'hidden'}>\n        <ProfilePage />\n      </Activity>\n    </>\n  );\n}",
+      "benefits": [
+        "No remounting overhead",
+        "State preservation",
+        "Improved perceived performance",
+        "Background pre-loading"
+      ]
+    },
+    "useEffectEvent_hook": {
+      "purpose": "Separate event logic from effect dependencies",
+      "problem_solved": "Effects re-running when non-reactive values change",
+      "syntax": "const onEvent = useEffectEvent(() => { /* uses latest props/state */ });",
+      "rules": [
+        "Don't add useEffectEvent callbacks to dependency arrays",
+        "Use only for conceptual 'events' triggered from effects",
+        "Don't overuse to silence lint rules"
+      ],
+      "example": "import { useEffect, useEffectEvent } from 'react';\n\nfunction ChatRoom({ roomId, theme }) {\n  const onConnected = useEffectEvent(() => {\n    showNotification('Connected!', theme); // Uses latest theme\n  });\n  \n  useEffect(() => {\n    const connection = createConnection(roomId);\n    connection.on('connected', onConnected);\n    connection.connect();\n    return () => connection.disconnect();\n  }, [roomId]); // theme NOT in deps, but onConnected sees latest\n}",
+      "lint_support": "eslint-plugin-react-hooks@6.1.0+ required"
+    },
+    "view_transitions": {
+      "description": "Declarative animations for UI transitions",
+      "browser_api": "startViewTransition",
+      "react_component": "<ViewTransition>",
+      "triggers": [
+        "startTransition()",
+        "useDeferredValue()",
+        "Suspense fallback to content switch",
+        "Router navigation"
+      ],
+      "customization": "Use view-transition pseudo-selectors in CSS",
+      "example": "import { ViewTransition } from 'react';\n\nfunction ProductGallery() {\n  return (\n    <ViewTransition>\n      <img src={product.image} alt={product.name} />\n    </ViewTransition>\n  );\n}"
+    },
+    "cache_signal": {
+      "purpose": "Know when cache() lifetime ends in RSC",
+      "returns": "AbortSignal",
+      "use_case": "Clean up or abort work when cached result unused",
+      "example": "import { cache, cacheSignal } from 'react';\n\nconst fetchData = cache(async (id) => {\n  const signal = cacheSignal();\n  const result = await fetch(`/api/${id}`, { signal });\n  return result.json();\n});"
+    },
+    "performance_tracks": {
+      "description": "Chrome DevTools integration for React performance profiling",
+      "tracks": {
+        "scheduler": "Shows task priorities (blocking, transition), work timing",
+        "components": "Component rendering, effect timing, mounts/unmounts"
+      },
+      "benefits": [
+        "Identify slow components",
+        "Understand React's work prioritization",
+        "Spot unnecessary re-renders",
+        "Debug blocked frames"
+      ]
+    },
+    "partial_prerendering": {
+      "status": "Now in react-dom package",
+      "concept": "Pre-render static parts, defer dynamic parts",
+      "integration": "Works seamlessly with Next.js Cache Components"
+    },
+    "useId_prefix_change": {
+      "old": ":r: or «r»",
+      "new": "_r_",
+      "reason": "Valid for CSS view-transition-name and XML 1.0 names"
+    }
+  },
+  "enhanced_routing": {
+    "improvements": [
+      "Layout deduplication - reuse common layouts across navigations",
+      "Incremental prefetching - only fetch what's needed",
+      "Optimized navigation - faster page transitions"
+    ],
+    "trade_offs": {
+      "more_requests": "More individual prefetch requests",
+      "less_data": "Much lower total transfer sizes",
+      "recommendation": "Better for nearly all applications"
+    },
+    "no_code_changes": "Improvements automatic, no modifications needed"
+  },
+  "nextjs_devtools_mcp": {
+    "description": "Model Context Protocol integration for AI-assisted debugging",
+    "features": [
+      "Contextual insight into app structure",
+      "Routing, caching, rendering behavior diagnostics",
+      "Unified logs (browser + server)",
+      "Automatic error access with stack traces",
+      "Page awareness for AI agents"
+    ],
+    "configuration": {
+      "mcp_client": "{\n  \"mcpServers\": {\n    \"next-devtools\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"next-devtools-mcp@latest\"]\n    }\n  }\n}",
+      "usage": "Natural language prompts for upgrade and migration tasks"
+    },
+    "use_cases": [
+      "Automated upgrade assistance",
+      "Issue diagnosis and explanation",
+      "Migration task automation",
+      "Fix suggestions"
+    ]
+  },
+  "build_adapters_api": {
+    "status": "Alpha",
+    "purpose": "Create custom adapters for build process modification",
+    "use_cases": [
+      "Deployment platform integrations",
+      "Custom build workflows",
+      "Build output processing",
+      "Configuration modifications"
+    ]
+  },
+  "developer_experience_improvements": {
+    "enhanced_logging": {
+      "development": {
+        "request_logs": "Show where time spent during requests",
+        "breakdown": "Detailed timing for each step"
+      },
+      "production": {
+        "build_logs": "Show compilation, TypeScript, page data collection, generation, finalization times",
+        "example": "✓ Compiled in 615ms\n✓ TypeScript in 1114ms\n✓ Collecting page data in 208ms\n✓ Generating static pages in 239ms\n✓ Finalizing in 5ms"
+      }
+    },
+    "simplified_create_next_app": "Streamlined project creation flow",
+    "node_native_typescript": {
+      "flag": "--experimental-next-config-strip-types",
+      "commands": [
+        "next dev",
+        "next build",
+        "next start"
+      ],
+      "benefit": "Run TypeScript config without transpilation step"
+    }
+  },
+  "migration_workflow": {
+    "phase_1_preparation": {
+      "steps": [
+        "Audit current Next.js 15 setup and dependencies",
+        "Review custom webpack configurations",
+        "Identify dynamic API usage (params, searchParams, cookies, headers)",
+        "Map out caching strategy for Cache Components",
+        "Update Node.js to 20.9+ and TypeScript to 5.1+",
+        "Check for PPR usage (experimental.ppr)",
+        "Document middleware.ts usage and edge runtime requirements"
+      ],
+      "risk_assessment": [
+        "Custom webpack plugins may need Turbopack alternatives",
+        "Complex caching logic needs explicit 'use cache' migration",
+        "Edge middleware may need restructuring"
+      ]
+    },
+    "phase_2_automated_migration": {
+      "codemod_execution": "npx @next/codemod@canary upgrade latest",
+      "what_it_does": [
+        "Updates package.json to Next.js 16 and React 19.2",
+        "Converts synchronous dynamic APIs to async with await",
+        "Marks functions as async where needed",
+        "Renames middleware.ts → proxy.ts",
+        "Converts experimental.dynamicIO → cacheComponents",
+        "Removes unstable_ prefix from cache imports"
+      ],
+      "codemod_limitations": [
+        "Static analysis only - can't infer all patterns",
+        "Leaves @next-codemod-error comments for manual review",
+        "Complex destructuring may need manual fixing",
+        "Params passed through helpers need manual updates"
+      ]
+    },
+    "phase_3_manual_adjustments": {
+      "common_manual_fixes": [
+        "Params/searchParams in helper functions",
+        "Complex destructuring patterns",
+        "Cross-file exports/imports without type info",
+        "Params stored in variables then passed elsewhere",
+        "Client Components using params (need React.use())"
+      ],
+      "validation_steps": [
+        "Search for @next-codemod-error comments",
+        "Test all dynamic routes",
+        "Verify middleware/proxy behavior",
+        "Check metadata generation functions",
+        "Test image optimization endpoints"
+      ]
+    },
+    "phase_4_cache_strategy": {
+      "approach": "Start dynamic, add caching strategically",
+      "steps": [
+        "Enable cacheComponents: true",
+        "Identify truly static content (marketing pages, docs)",
+        "Add 'use cache' to static pages/components",
+        "Configure cacheLife profiles for different content types",
+        "Implement cacheTag for cache invalidation",
+        "Use updateTag() in Server Actions for instant updates",
+        "Test cache behavior thoroughly"
+      ],
+      "patterns": {
+        "always_cache": "Marketing pages, documentation, legal pages",
+        "cache_with_revalidation": "Blog posts, product listings (use cacheLife)",
+        "never_cache": "User dashboards, real-time data, personalized content",
+        "cache_fragments": "Static page shell + dynamic user data"
+      }
+    },
+    "phase_5_turbopack_optimization": {
+      "default_behavior": "Turbopack is default, no action needed",
+      "opt_in_features": [
+        "Enable file system caching: experimental.turbopackFileSystemCacheForDev: true",
+        "Test build performance improvements",
+        "Monitor Fast Refresh speed"
+      ],
+      "if_issues": [
+        "Identify webpack-specific configurations",
+        "Find Turbopack alternatives or workarounds",
+        "Use --webpack flag if blocking issues",
+        "Report incompatibilities to Next.js team"
+      ]
+    },
+    "phase_6_react_19_adoption": {
+      "progressive_enhancement": [
+        "Identify components that re-render unnecessarily → Add useEffectEvent",
+        "Find hidden UI with manual state management → Replace with <Activity>",
+        "Look for route transitions → Add View Transitions",
+        "Check Server Components with expensive operations → Use cacheSignal"
+      ],
+      "testing_strategy": [
+        "Test Activity component state preservation",
+        "Verify useEffectEvent doesn't cause stale closures",
+        "Check View Transitions browser support",
+        "Profile with Chrome DevTools Performance Tracks"
+      ]
+    },
+    "phase_7_testing": {
+      "unit_tests": [
+        "Update mocks for async params/searchParams",
+        "Test Server Actions with updateTag/refresh",
+        "Verify cache behavior in tests"
+      ],
+      "integration_tests": [
+        "Test navigation and prefetching",
+        "Verify middleware/proxy logic",
+        "Check dynamic route rendering",
+        "Test Suspense boundaries with PPR"
+      ],
+      "e2e_tests": [
+        "Full user journeys with caching",
+        "Form submissions with updateTag",
+        "Tab switching with Activity component",
+        "View Transitions in supported browsers"
+      ]
+    },
+    "phase_8_production_rollout": {
+      "pre_deployment": [
+        "Review build logs for timing improvements",
+        "Check bundle size changes",
+        "Verify all @next-codemod-error comments resolved",
+        "Update CI/CD for Node.js 20.9+",
+        "Test staging environment thoroughly"
+      ],
+      "deployment_strategy": {
+        "canary": "Deploy to small percentage of traffic first",
+        "monitoring": [
+          "Watch Core Web Vitals (LCP, FID, CLS)",
+          "Monitor server response times",
+          "Track cache hit rates",
+          "Check error rates and types"
+        ],
+        "rollback_plan": "Keep Next.js 15 deployment ready if critical issues"
+      },
+      "post_deployment": [
+        "Monitor performance metrics",
+        "Gather user feedback",
+        "Tune cache strategies based on real traffic",
+        "Document lessons learned"
+      ]
+    }
+  },
+  "troubleshooting_guide": {
+    "async_params_issues": {
+      "symptom": "Cannot access property of undefined on params",
+      "cause": "Forgot to await params Promise",
+      "solution": "Add await: const { id } = await params",
+      "prevention": "Run codemod, enable TypeScript strict mode"
+    },
+    "cache_not_working": {
+      "symptom": "Content not caching despite 'use cache' directive",
+      "causes": [
+        "cacheComponents not enabled in config",
+        "Dynamic APIs used without Suspense boundary",
+        "Cache invalidation too aggressive"
+      ],
+      "solutions": [
+        "Verify cacheComponents: true in next.config.ts",
+        "Wrap dynamic content in <Suspense>",
+        "Review cacheLife and cacheTag configuration"
+      ]
+    },
+    "turbopack_errors": {
+      "symptom": "Module not found or compilation errors",
+      "causes": [
+        "Webpack-specific loaders or plugins",
+        "Node.js native modules in client code",
+        "Unsupported syntax or features"
+      ],
+      "solutions": [
+        "Use turbopack.resolveAlias for Node.js modules",
+        "Replace webpack-specific code with standard imports",
+        "Fall back to webpack: next dev --webpack",
+        "Report issue to Vercel with reproduction"
+      ]
+    },
+    "middleware_proxy_confusion": {
+      "symptom": "Middleware not running or errors",
+      "solution": [
+        "Rename middleware.ts → proxy.ts",
+        "Rename function middleware → proxy",
+        "Note: Edge runtime deprecated for proxy, Node.js only"
+      ],
+      "edge_runtime_users": "Keep using middleware.ts until further guidance"
+    },
+    "react_19_hydration_errors": {
+      "symptom": "Hydration mismatch errors",
+      "causes": [
+        "Server/client rendering differences",
+        "Activity component timing issues",
+        "View Transition browser support"
+      ],
+      "solutions": [
+        "Ensure consistent data between server and client",
+        "Test Activity mode switching carefully",
+        "Feature detect View Transitions",
+        "Check Suspense boundary placement"
+      ]
+    },
+    "performance_regression": {
+      "symptom": "Slower than Next.js 15",
+      "investigation": [
+        "Check if Turbopack enabled (should be default)",
+        "Review caching strategy - may be too dynamic",
+        "Use Chrome DevTools Performance Tracks",
+        "Compare bundle sizes",
+        "Check for unoptimized images"
+      ],
+      "solutions": [
+        "Enable file system caching",
+        "Add 'use cache' to static content",
+        "Optimize component re-renders with useEffectEvent",
+        "Use Activity for background work"
+      ]
+    }
+  },
+  "best_practices": {
+    "caching_strategy": {
+      "default_to_dynamic": "Let everything be dynamic first, measure, then cache strategically",
+      "cache_granularly": "Use component/function-level 'use cache' instead of page-level",
+      "tag_everything": "Use cacheTag for fine-grained invalidation",
+      "profile_first": "Use Chrome DevTools Performance Tracks before optimizing"
+    },
+    "async_patterns": {
+      "use_typescript": "Type safety catches missing awaits",
+      "consistent_awaiting": "Always await dynamic APIs, never mix sync/async access",
+      "client_components": "Use React.use() for unwrapping Promises in Client Components",
+      "error_handling": "Wrap async params access in try-catch for robustness"
+    },
+    "turbopack_optimization": {
+      "enable_caching": "Always enable file system caching for large projects",
+      "monitor_builds": "Track build times to measure improvements",
+      "report_issues": "Report Turbopack incompatibilities to help ecosystem",
+      "incremental_adoption": "Start with dev, move to production after validation"
+    },
+    "react_19_usage": {
+      "activity_for_state": "Use Activity instead of conditional rendering for stateful hidden UI",
+      "effect_event_for_events": "Use useEffectEvent for event handlers in effects, not to silence lints",
+      "view_transitions_progressive": "Feature detect View Transitions, provide fallbacks",
+      "cache_signal_cleanup": "Use cacheSignal to prevent memory leaks in RSC"
+    },
+    "monitoring": {
+      "core_web_vitals": "Track LCP, FID, CLS improvements",
+      "build_times": "Monitor Turbopack performance gains",
+      "cache_hit_rates": "Measure cache effectiveness",
+      "error_tracking": "Watch for async-related errors in production"
+    }
+  },
+  "production_checklist": {
+    "pre_migration": [
+      "Node.js 20.9+ in all environments",
+      "TypeScript 5.1+ installed",
+      "Full test suite passing on Next.js 15",
+      "Caching strategy documented",
+      "Rollback plan prepared"
+    ],
+    "during_migration": [
+      "Codemod executed and verified",
+      "All @next-codemod-error comments resolved",
+      "Manual migrations tested",
+      "cacheComponents configured appropriately",
+      "Turbopack validated (or webpack opted in)",
+      "proxy.ts tested if using middleware"
+    ],
+    "post_migration": [
+      "All tests passing",
+      "Bundle size acceptable",
+      "Build times improved",
+      "Development experience faster",
+      "Staging deployment successful",
+      "Monitoring configured"
+    ],
+    "production_deployment": [
+      "Canary deployment strategy",
+      "Performance monitoring active",
+      "Error tracking configured",
+      "Rollback procedure tested",
+      "Team trained on new patterns"
+    ]
+  },
+  "common_patterns": {
+    "dynamic_page_with_cache": {
+      "description": "Page with mix of static and dynamic content",
+      "example": "export default async function ProductPage({ params, searchParams }) {\n  const { id } = await params;\n  const { variant } = await searchParams;\n  \n  return (\n    <>\n      <StaticHeader /> {/* Cached */}\n      <ProductDetails productId={id} variant={variant} /> {/* Dynamic */}\n      <StaticFooter /> {/* Cached */}\n    </>\n  );\n}\n\nasync function StaticHeader() {\n  'use cache'\n  return <header>...</header>;\n}"
+    },
+    "form_with_instant_updates": {
+      "description": "Form submission with immediate UI update",
+      "example": "'use server'\nimport { updateTag } from 'next/cache';\n\nexport async function updateSettings(formData: FormData) {\n  const settings = Object.fromEntries(formData);\n  await db.settings.update(userId, settings);\n  updateTag(`user-${userId}-settings`);\n  // User sees changes instantly, no page refresh\n}"
+    },
+    "tabbed_interface": {
+      "description": "Tabs with state preservation",
+      "example": "import { Activity } from 'react';\n\nfunction Dashboard() {\n  const [tab, setTab] = useState('overview');\n  \n  return (\n    <>\n      <TabBar activeTab={tab} onTabChange={setTab} />\n      <Activity mode={tab === 'overview' ? 'visible' : 'hidden'}>\n        <OverviewTab />\n      </Activity>\n      <Activity mode={tab === 'analytics' ? 'visible' : 'hidden'}>\n        <AnalyticsTab />\n      </Activity>\n    </>\n  );\n}"
+    },
+    "gradual_cache_adoption": {
+      "description": "Start dynamic, add caching incrementally",
+      "steps": [
+        "1. Deploy with cacheComponents: true, no 'use cache' directives",
+        "2. Monitor which pages are slow or frequently accessed",
+        "3. Add 'use cache' to static components",
+        "4. Configure cacheLife for different content types",
+        "5. Implement cacheTag for invalidation",
+        "6. Use updateTag in Server Actions",
+        "7. Monitor cache hit rates and adjust"
+      ]
+    }
+  },
+  "performance_benchmarks": {
+    "turbopack_improvements": {
+      "fast_refresh": "5-10x faster",
+      "production_builds": "2-5x faster",
+      "cold_start": "Significantly faster with file system caching"
+    },
+    "expected_gains": {
+      "development_iteration": "Near-instant Hot Module Replacement",
+      "build_pipeline": "Minutes to seconds for medium-sized apps",
+      "first_paint": "Faster with Partial Pre-Rendering",
+      "navigation": "Instant with optimized prefetching and caching"
+    }
+  },
+  "resources": {
+    "official_docs": "https://nextjs.org/docs",
+    "upgrade_guide": "https://nextjs.org/docs/app/guides/upgrading/version-16",
+    "react_19_2_blog": "https://react.dev/blog/2025/10/01/react-19-2",
+    "codemod_tool": "npx @next/codemod@canary upgrade latest",
+    "community_support": "https://github.com/vercel/next.js/discussions",
+    "turbopack_docs": "https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack"
+  },
+  "execution_priorities": {
+    "immediate": [
+      "Update Node.js and TypeScript versions",
+      "Run automated codemod",
+      "Resolve @next-codemod-error comments",
+      "Enable cacheComponents",
+      "Validate core functionality"
+    ],
+    "short_term": [
+      "Implement strategic 'use cache' directives",
+      "Configure cacheLife profiles",
+      "Add Activity components for tab/modal patterns",
+      "Optimize with useEffectEvent where appropriate",
+      "Enable Turbopack file system caching"
+    ],
+    "long_term": [
+      "Comprehensive View Transitions implementation",
+      "Advanced caching strategies with cacheTag",
+      "Performance optimization with Chrome DevTools tracks",
+      "Full React 19.2 feature adoption",
+      "Build Adapters API exploration"
+    ]
+  },
+  "success_metrics": {
+    "technical": [
+      "Build time reduction: Target 2-5x faster",
+      "Hot reload speed: Target 5-10x faster",
+      "Time to First Byte (TTFB): Improved with PPR",
+      "Cache hit rate: Monitor and optimize",
+      "Core Web Vitals: LCP, FID, CLS improvements"
+    ],
+    "developer_experience": [
+      "Faster iteration cycles",
+      "Clearer caching semantics",
+      "Better debugging with MCP and Performance Tracks",
+      "Reduced confusion around caching behavior",
+      "More explicit control over rendering"
+    ],
+    "user_experience": [
+      "Faster page loads",
+      "Smoother transitions with View Transitions",
+      "Instant UI updates with updateTag",
+      "Better perceived performance with PPR",
+      "More responsive interactions"
+    ]
+  }
+}

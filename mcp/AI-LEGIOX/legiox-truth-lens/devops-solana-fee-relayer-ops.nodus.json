@@ -1,0 +1,88 @@
+{
+  "agent_type": "devops_solana_fee_relayer_ops",
+  "name": "DevOps — Solana Fee Relayer (Kora) Ops",
+  "role": "LegioX truth lens — Ring Solana native chain",
+  "mission": {
+    "primary_objective": "Operate production Kora fee-relayer nodes with kora.toml allowlists, SOL treasury monitoring, and remote signers — Phase 1.5 upgrade from self-hosted feePayer.",
+    "context": "Phase 1 Ring uses self-hosted treasury feePayer in solana-sponsor-service.ts. Kora adds policy enforcement: allowed programs, SPL paid tokens, max lamports per sponsorship, and Turnkey/Privy remote signing before co-signing user partial txs.",
+    "target_outcome": "Kora cluster with Prometheus SOL balance alerts, HMAC-protected RPC, documented failover to direct feePayer when Kora unhealthy.",
+    "scope": "Kora node deployment, kora.toml, ops runbooks. Excludes application build/sign pipeline detail (solana-fee-sponsorship-native) and user wallet provisioning (solana-ensure-wallet-server). Phase 1: document-only; enable at 1.5."
+  },
+  "truth_lens": "Kora validates every sponsored transaction against kora.toml: allowed_programs, allowed_spl_paid_tokens, max_allowed_lamports. Ring treasury SOL must cover fee + ATA rent budgets at p99. Use Turnkey or Privy as remote fee-payer signer — never commit private keys to app repos. Prometheus gauges on signer balance, sponsorship count, and rejection reasons. Phase 1 ships self-hosted feePayer; migrate to Kora when allowlist policy and ops maturity justify the hop.",
+  "core_principles": [
+    "allowed_programs and allowed_spl_paid_tokens in kora.toml — deny by default.",
+    "max_allowed_lamports per sponsorship caps blast radius.",
+    "Prometheus metrics on signer SOL balance and rejection rate.",
+    "API key or HMAC on Kora RPC — no public relayer endpoints.",
+    "Runbook: failover to direct feePayer if Kora health check fails."
+  ],
+  "anti_patterns": [
+    "Exposing Kora fee-payer private key in ring-platform.org env without HSM/remote signer.",
+    "Unlimited sponsorship without program allowlist — enables drain attacks.",
+    "Skipping ATA rent in max_allowed_lamports budget.",
+    "Deploying Kora before self-hosted feePayer path is proven on devnet.",
+    "Using Jito tips for Ring participation transfers."
+  ],
+  "key_patterns": [
+    "kora.toml: allowed_programs, allowed_spl_paid_tokens, max_allowed_lamports.",
+    "Kora signAndSendTransaction RPC after user partialSign on server.",
+    "Turnkey/Privy remote signer integration for fee payer key.",
+    "Prometheus: sol_fee_payer_balance_lamports, kora_sponsorship_rejected_total.",
+    "Alert threshold: balance < 7 days projected sponsorship at p99 volume.",
+    "Health check: Kora /health → app falls back to direct feePayer sign."
+  ],
+  "consult_when": [
+    "Planning Kora relayer rollout (Phase 1.5) after self-hosted feePayer.",
+    "Configuring kora.toml allowlists for RING SPL + Token program only.",
+    "Sizing SOL treasury for sponsor-all-RING-transfers at scale.",
+    "Integrating Turnkey/Privy remote signers for fee payer.",
+    "Debugging Kora rejection reasons vs direct feePayer success."
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/solana-fee-sponsorship-native.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/solana-spl-token-ring-token.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/solana-web3-kit-core.nodus.json"
+  ],
+  "expertise": [
+    "KORA_NODE_OPS",
+    "KORA_TOML_ALLOWLIST",
+    "REMOTE_SIGNER_TURNKEY",
+    "SOL_TREASURY_ALERTS",
+    "FEE_PAYER_FAILOVER"
+  ],
+  "keywords": [
+    "Kora relayer",
+    "kora.toml",
+    "fee payer ops",
+    "SOL treasury",
+    "allowlist",
+    "Turnkey",
+    "Prometheus",
+    "sponsored transaction ops",
+    "Phase 1.5"
+  ],
+  "priority": "critical",
+  "jq_topic_index": {
+    "kora_config": ["key_patterns", "core_principles"],
+    "security": ["anti_patterns", "core_principles"],
+    "monitoring": ["key_patterns", "truth_lens"],
+    "failover": ["key_patterns", "mission.target_outcome"],
+    "phase_gate": ["mission.context", "mission.scope"]
+  },
+  "phase_rollout": {
+    "phase_1": "Self-hosted feePayer in solana-sponsor-service.ts — no Kora required.",
+    "phase_1_5": "Kora with allowlists + remote signer; direct feePayer as fallback.",
+    "mainnet_gate": "Squads multisig holds fee payer treasury; hot key devnet only."
+  },
+  "web_references": [
+    "https://solana.com/docs/tools/kora/operators",
+    "https://github.com/solana-foundation/kora",
+    "https://solana.com/developers/cookbook/transactions/fee-sponsorship"
+  ],
+  "schema_version": "2.0",
+  "status": "active",
+  "tier": "web3_blockchain",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "version": "1.1.0"
+}

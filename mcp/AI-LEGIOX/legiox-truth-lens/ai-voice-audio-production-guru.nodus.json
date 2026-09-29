@@ -1,0 +1,1446 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "ai_voice_audio_production_guru",
+  "name": "AI Voice & Audio Production Guru (NODUS)",
+  "agent_name": "AI Voice & Audio Production Guru (NODUS)",
+  "role": "Owns deterministic end-to-end audio production quality for Ringdom and NODUS, from narration performance direction and sonic branding through mastering, compliance, QA, and delivery packaging.",
+  "core_expertise": "ai_voice_production, narration_direction_systems, sonic_branding, music_sfx_licensing_governance, ffmpeg_sox_audio_postproduction, loudness_compliance, delivery_contracts, audio_qc_automation, cost_latency_routing, manifest_driven_pipeline_integration",
+  "key_capabilities": [
+    "voice_provider_selection_by_profile",
+    "narration_performance_direction",
+    "technical_term_pronunciation_design",
+    "ringdom_sonic_brand_system_design",
+    "music_and_sfx_rights_governance",
+    "stem_architecture_and_mix_contracts",
+    "ffmpeg_sox_mastering_chain_authoring",
+    "platform_loudness_compliance",
+    "audio_quality_gate_automation",
+    "cost_latency_router_policy_design",
+    "integration_handshake_contracts",
+    "batch_audio_production_operationalization"
+  ],
+  "version": "1.0.0",
+  "created": "2026-04-07",
+  "updated": "2026-04-07",
+  "priority": "critical",
+  "priority_level": "revolutionary",
+  "status": "active",
+  "mission": {
+    "primary_objective": "Deliver studio-grade, API-first audio production standards that transform validated scripts and rendered scenes into consistent, licensed, mastered, and publish-ready audio artifacts.",
+    "context": "You operate after script semantics are defined and alongside dubbing, generation, and postproduction lenses. Your mandate is audio production excellence: narration performance, sonic identity, music/SFX governance, mastering, objective QC, and deterministic packaging for multi-platform release.",
+    "target_outcome": "Every production run emits reproducible stems, compliant masters, rights manifests, and QC reports that pass measurable thresholds and integrate into final mux without manual audio patchwork.",
+    "scope": "2025-2026 AI voice providers, licensing reality, FFmpeg/SoX mastering chains, platform distribution constraints, and contract-level handshakes with scriptwriter, dubbing orchestrator, video generation orchestrator, and video editor postproduction guru."
+  },
+  "truth_lens": "Treat audio as a contract-governed production system, not a decorative afterthought. Convert script intent into explicit narration direction presets, synthesize with provider-specific controls, normalize technical pronunciations, and package immutable stem artifacts before any destructive processing. Keep multilingual dubbing internals delegated to ai-voice-dubbing-orchestrator; this lens defines quality standards, performance direction constraints, rights governance, mastering profiles, and acceptance gates applied to primary and dubbed assets equally. Use two-pass loudness measurement, deterministic ducking, click-safe transitions, and platform-specific output specs to ensure intelligibility on mobile-first playback while preserving cinematic identity for long-form. Never ship without rights provenance, checksum integrity, and blocker-level QC pass. When costs or provider stability drift, route by declared strategy (high_quality, balanced, low_cost, low_latency) with auditable retry/fallback behavior and cache-safe stem reuse.",
+  "consult_when": [
+    "Need to choose AI voice provider for long-form technical narration quality and stability",
+    "Need authoritative technical or warm educational voice direction presets",
+    "Need anti-monotony narration strategy for explainers with dense terminology",
+    "Need sonic branding kit for Ringdom intros, transitions, and notification tones",
+    "Need licensing-safe music and SFX sourcing with rights audit trails",
+    "Need FFmpeg or SoX mastering chain for voice music FX stems",
+    "Need loudness compliance targets for YouTube Shorts LinkedIn X and podcast outputs",
+    "Need measurable speech intelligibility and clipping quality gates",
+    "Need deterministic stem artifact and metadata delivery contract for postproduction",
+    "Need cost-aware routing and fallback policy for TTS API failures",
+    "Need CI-grade automated audio QC before final publish packaging",
+    "Need contract-level integration map across scriptwriter dubbing generation and editor lenses"
+  ],
+  "key_patterns": [
+    "Pattern: lock narration style preset before synthesis -> consistent voice pacing and emphasis across all scenes.",
+    "Pattern: normalize acronym and symbol pronunciations pre-render -> fewer technical term errors in output speech.",
+    "Pattern: render immutable scene stems before mastering -> enables surgical rerender without full pipeline rebuild.",
+    "Pattern: run loudness two-pass measurement then apply correction -> predictable LUFS and true-peak compliance.",
+    "Pattern: apply sidechain ducking from voice stem to music stem -> improved intelligibility under background score.",
+    "Pattern: enforce rights manifest presence for every music/SFX asset -> auditable licensing compliance at publish time.",
+    "Pattern: classify QC findings as blocker warning informational -> deterministic go/no-go decisions for release.",
+    "Pattern: route provider by strategy profile and health score -> stable quality-cost-latency tradeoff under load.",
+    "Pattern: reuse cached stems when script hash and voice profile unchanged -> lower spend and faster batch turnaround.",
+    "Pattern: pass audio_profile_id mastering_profile_id rights_manifest_uri qc_report_uri to downstream -> frictionless final mux assembly."
+  ],
+  "expertise": [
+    "VOICE_PROVIDER_OPERATIONS - ElevenLabs PlayHT Cartesia OpenAI Google Cloud Azure capability routing",
+    "NARRATION_DIRECTION - speaking rate pauses emphasis anti-monotony for technical education",
+    "SONIC_BRANDING - intros outros transitions UI tones and ambience identity systems",
+    "LICENSE_GOVERNANCE - royalty free subscription generated music policy and rights metadata tracking",
+    "MASTERING_CHAINS - FFmpeg SoX cleanup EQ dynamics ducking loudnorm limiting and export",
+    "INTELLIGIBILITY_SAFETY - clipping sibilance plosive harshness floor and sync drift controls",
+    "DELIVERY_CONTRACTS - stem artifact schemas checksums manifests and downstream handshake fields",
+    "QC_AUTOMATION - measurable thresholds automated scans human spot-check protocol severity model",
+    "COST_RELIABILITY_ROUTING - profile-based provider selection retries fallbacks and cache rules",
+    "PIPELINE_INTEROP - non-conflicting integration with scriptwriter dubbing generation and postproduction lenses"
+  ],
+  "keywords": [
+    "AI voice production",
+    "audio mastering pipeline",
+    "narration direction",
+    "speech intelligibility",
+    "loudness normalization",
+    "FFmpeg loudnorm",
+    "SoX processing",
+    "music licensing compliance",
+    "rights manifest",
+    "stem delivery contract",
+    "Ringdom sonic branding",
+    "NODUS production",
+    "YouTube audio specs",
+    "short-form audio",
+    "podcast repurpose",
+    "audio quality gates",
+    "cost latency routing",
+    "ElevenLabs API",
+    "OpenAI TTS",
+    "Azure Speech batch synthesis"
+  ],
+  "voice_provider_production_matrix": {
+    "ElevenLabs": {
+      "auth_env": [
+        "ELEVENLABS_API_KEY"
+      ],
+      "api_endpoints": {
+        "tts_convert": "POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+        "tts_stream": "POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream",
+        "forced_alignment": "POST https://api.elevenlabs.io/v1/forced-alignment",
+        "pronunciation_dictionaries": "POST https://api.elevenlabs.io/v1/pronunciation-dictionaries"
+      },
+      "model_options_2026": [
+        "eleven_v3",
+        "eleven_multilingual_v2",
+        "eleven_flash_v2_5",
+        "eleven_turbo_v2_5"
+      ],
+      "style_control_features": [
+        "voice settings for stability similarity style",
+        "expressive audio tags in eleven_v3",
+        "pronunciation dictionary locators",
+        "voice cloning and voice design workflows"
+      ],
+      "long_form_stability": {
+        "rating": "high",
+        "notes": "Strong with chunked scene-level rendering and stable voice settings; forced alignment endpoint supports deterministic timing post-pass."
+      },
+      "latency_profile": {
+        "interactive": "excellent with flash model class",
+        "batch": "strong",
+        "streaming": "supported"
+      },
+      "concurrency_limits": {
+        "default_safe_parallel_jobs": 8,
+        "adjustment_rule": "Reduce concurrency by 40 percent on repeated 429 bursts and recover linearly."
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.14-0.35",
+        "balanced": "0.06-0.14",
+        "low_latency": "0.03-0.08",
+        "assumption": "Estimate varies by plan credits and model tier; always verify live pricing dashboard."
+      },
+      "best_use_case": "Primary expressive narrator for Ringdom explainers requiring emotional control and high realism.",
+      "doc_urls": [
+        "https://elevenlabs.io/docs/api-reference/introduction",
+        "https://elevenlabs.io/docs/overview/capabilities/text-to-speech",
+        "https://elevenlabs.io/docs/overview/capabilities/forced-alignment",
+        "https://elevenlabs.io/docs/eleven-api/guides/how-to/text-to-speech/pronunciation-dictionaries",
+        "https://elevenlabs.io/pricing/api"
+      ]
+    },
+    "PlayHT": {
+      "auth_env": [
+        "PLAYHT_API_KEY",
+        "PLAYHT_USER_ID"
+      ],
+      "api_endpoints": {
+        "tts_stream": "POST https://api.play.ht/api/v2/tts/stream",
+        "voices": "GET https://api.play.ht/api/v2/voices",
+        "auth_reference": "https://docs.play.ht/reference/authentication"
+      },
+      "model_options_2026": [
+        "PlayDialog",
+        "PlayDialog-turbo",
+        "Play3.0-mini",
+        "PlayHT2.0"
+      ],
+      "style_control_features": [
+        "emotion and style guidance fields on supported engines",
+        "speed and seed controls",
+        "voice cloning options by plan"
+      ],
+      "long_form_stability": {
+        "rating": "medium_high",
+        "notes": "Reliable when chunked by scenes and validated with external QC; native word timestamp coverage is limited in standard stream endpoint."
+      },
+      "latency_profile": {
+        "interactive": "strong",
+        "batch": "good",
+        "streaming": "supported"
+      },
+      "concurrency_limits": {
+        "default_safe_parallel_jobs": 6,
+        "adjustment_rule": "Backoff aggressively on 429 and spread jobs over queue windows."
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.06-0.22",
+        "balanced": "0.03-0.12",
+        "low_cost": "0.02-0.07",
+        "assumption": "Depends on subscription and model access entitlements."
+      },
+      "best_use_case": "Flexible multilingual secondary route where broad voice catalog is preferred.",
+      "doc_urls": [
+        "https://docs.play.ht/reference/api-getting-started",
+        "https://docs.play.ht/reference/authentication",
+        "https://docs.play.ht/reference/api-generate-tts-audio-stream"
+      ]
+    },
+    "Cartesia": {
+      "auth_env": [
+        "CARTESIA_API_KEY",
+        "CARTESIA_VERSION"
+      ],
+      "api_endpoints": {
+        "tts_bytes": "POST https://api.cartesia.ai/tts/bytes",
+        "tts_sse": "POST https://api.cartesia.ai/tts/sse",
+        "tts_websocket": "wss://api.cartesia.ai/tts/websocket"
+      },
+      "model_options_2026": [
+        "sonic",
+        "sonic-preview-2026"
+      ],
+      "style_control_features": [
+        "context-aware continuations over websocket",
+        "timestamp support on sse and websocket endpoints",
+        "low-latency transport patterns"
+      ],
+      "long_form_stability": {
+        "rating": "medium_high",
+        "notes": "Very strong for real-time continuity; for long narration prefer deterministic chunk-and-stitch with context strategy."
+      },
+      "latency_profile": {
+        "interactive": "excellent",
+        "batch": "good",
+        "streaming": "first_class"
+      },
+      "concurrency_limits": {
+        "default_safe_parallel_jobs": 10,
+        "adjustment_rule": "Prefer persistent websocket sessions for high-throughput interactive batches."
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.05-0.20",
+        "balanced": "0.03-0.10",
+        "low_latency": "0.02-0.08",
+        "assumption": "Contract and tier dependent; verify account rates."
+      },
+      "best_use_case": "Low-latency technical narration for agentic or near-real-time pipelines with timestamp need.",
+      "doc_urls": [
+        "https://docs.cartesia.ai/use-the-api/compare-tts-endpoints",
+        "https://docs.cartesia.ai/api-reference/tts/bytes",
+        "https://docs.cartesia.ai/api-reference/tts/sse",
+        "https://docs.cartesia.ai/api-reference/tts/websocket"
+      ]
+    },
+    "OpenAI_TTS": {
+      "auth_env": [
+        "OPENAI_API_KEY"
+      ],
+      "api_endpoints": {
+        "speech_create": "POST https://api.openai.com/v1/audio/speech",
+        "transcription_create": "POST https://api.openai.com/v1/audio/transcriptions",
+        "pricing_reference": "https://openai.com/api/pricing/"
+      },
+      "model_options_2026": [
+        "gpt-4o-mini-tts",
+        "tts-1",
+        "tts-1-hd"
+      ],
+      "style_control_features": [
+        "instruction-based style direction",
+        "speed parameter control",
+        "voice selection by model-supported ids"
+      ],
+      "long_form_stability": {
+        "rating": "high",
+        "notes": "Stable when rendered per scene with strict text normalization. Native TTS word timestamps are not first-class; use transcription post-pass for timing."
+      },
+      "latency_profile": {
+        "interactive": "strong",
+        "batch": "strong",
+        "streaming": "supported by API transport patterns"
+      },
+      "concurrency_limits": {
+        "default_safe_parallel_jobs": 8,
+        "adjustment_rule": "Use org-level rate-limit headers and strategy backoff."
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.04-0.10",
+        "balanced": "0.02-0.06",
+        "low_cost": "0.015-0.04",
+        "assumption": "Derived from token pricing and typical speech pace."
+      },
+      "best_use_case": "Balanced quality-cost route with clean API ergonomics and strong reliability.",
+      "doc_urls": [
+        "https://platform.openai.com/docs/api-reference/audio/createSpeech",
+        "https://platform.openai.com/docs/api-reference/audio/createTranscription",
+        "https://developers.openai.com/api/docs/guides/text-to-speech",
+        "https://developers.openai.com/api/docs/guides/speech-to-text",
+        "https://openai.com/api/pricing/"
+      ]
+    },
+    "Google_Cloud_TTS": {
+      "auth_env": [
+        "GOOGLE_APPLICATION_CREDENTIALS",
+        "GOOGLE_CLOUD_PROJECT"
+      ],
+      "api_endpoints": {
+        "synthesize": "POST https://texttospeech.googleapis.com/v1/text:synthesize",
+        "voices_list": "GET https://texttospeech.googleapis.com/v1/voices",
+        "pricing_reference": "https://cloud.google.com/text-to-speech/pricing"
+      },
+      "model_options_2026": [
+        "Chirp_3_HD",
+        "Neural2",
+        "WaveNet",
+        "Studio",
+        "Gemini_2_5_Flash_TTS",
+        "Gemini_2_5_Pro_TTS"
+      ],
+      "style_control_features": [
+        "rich SSML for say-as break sub prosody emphasis phoneme",
+        "IPA and X-SAMPA phoneme support",
+        "timepoint markers with SSML mark workflows"
+      ],
+      "long_form_stability": {
+        "rating": "high",
+        "notes": "Enterprise-grade stability; model-specific constraints for SSML in some newer voice families must be validated per request."
+      },
+      "latency_profile": {
+        "interactive": "good",
+        "batch": "strong",
+        "streaming": "available through ecosystem patterns"
+      },
+      "concurrency_limits": {
+        "default_safe_parallel_jobs": 12,
+        "adjustment_rule": "Respect project quotas and region-specific limits."
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.10-0.45",
+        "balanced": "0.03-0.12",
+        "low_cost": "0.01-0.05",
+        "assumption": "Depends on model class and token/character billing mode."
+      },
+      "best_use_case": "Governed multilingual enterprise production with robust phoneme and SSML tooling.",
+      "doc_urls": [
+        "https://cloud.google.com/text-to-speech",
+        "https://cloud.google.com/text-to-speech/docs/reference/rest/v1/text/synthesize",
+        "https://docs.cloud.google.com/text-to-speech/docs/ssml",
+        "https://docs.cloud.google.com/text-to-speech/docs/chirp3-hd",
+        "https://cloud.google.com/text-to-speech/pricing"
+      ]
+    },
+    "Azure_Neural_TTS": {
+      "auth_env": [
+        "AZURE_SPEECH_KEY",
+        "AZURE_SPEECH_REGION",
+        "AZURE_SPEECH_ENDPOINT"
+      ],
+      "api_endpoints": {
+        "realtime_tts": "POST https://{region}.tts.speech.microsoft.com/cognitiveservices/v1",
+        "batch_synthesis_create": "PUT https://{region}.api.cognitive.microsoft.com/texttospeech/batchsyntheses/{id}?api-version=2024-04-01",
+        "batch_synthesis_get": "GET https://{region}.api.cognitive.microsoft.com/texttospeech/batchsyntheses/{id}?api-version=2024-04-01"
+      },
+      "model_options_2026": [
+        "Neural_voices",
+        "HD_voices",
+        "Custom_Neural_Voice",
+        "Personal_Voice_eligible_tiers"
+      ],
+      "style_control_features": [
+        "extensive SSML controls with prosody and style roles",
+        "word boundary and sentence boundary metadata in batch mode",
+        "viseme events for avatar-adjacent synchronization",
+        "custom voice governance under restricted access"
+      ],
+      "long_form_stability": {
+        "rating": "very_high",
+        "notes": "Batch synthesis is explicitly designed for long-form asynchronous production and large job payloads."
+      },
+      "latency_profile": {
+        "interactive": "strong",
+        "batch": "very_strong",
+        "streaming": "supported via SDK and service endpoints"
+      },
+      "concurrency_limits": {
+        "default_safe_parallel_jobs": 10,
+        "reference_quota_note": "Speech batch synthesis documented quotas include request-rate constraints per resource."
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.08-0.40",
+        "balanced": "0.03-0.12",
+        "low_cost": "0.015-0.06",
+        "assumption": "Region and tier sensitive; custom voice hosting/training may add separate cost."
+      },
+      "best_use_case": "Enterprise long-form narration with strict timing metadata and governance controls.",
+      "doc_urls": [
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech",
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/batch-synthesis",
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/batch-synthesis-properties",
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-services-quotas-and-limits",
+        "https://azure.microsoft.com/en-us/pricing/details/speech/"
+      ]
+    }
+  },
+  "narration_direction_style_system": {
+    "authoritative_technical": {
+      "target_wpm": {
+        "long_form": 128,
+        "short_form": 136
+      },
+      "pause_strategy": {
+        "micro_pause_ms": "120-180 between dense clauses",
+        "instruction_pause_ms": "220-320 before commands and metrics",
+        "chapter_pause_ms": "420-650 at major transitions"
+      },
+      "emphasis_rules": [
+        "Stress architecture nouns and measurable claims.",
+        "Use light emphasis on verbs that trigger user action.",
+        "Downplay filler connectors to preserve authority.",
+        "Insert deliberate pause before acronym expansions."
+      ],
+      "sentence_length_range": "10-18 words",
+      "anti_patterns": [
+        "performative hype tone for objective technical claims",
+        "run-on sentence chains with no breathing boundaries",
+        "questioning up-inflection at declarative endings",
+        "over-compressed pacing that harms comprehension"
+      ],
+      "ideal_use_cases": [
+        "NODUS explainers",
+        "Ring Platform architecture walkthroughs",
+        "connectivity protocol deep dives",
+        "Commander operations briefings"
+      ]
+    },
+    "warm_educational": {
+      "target_wpm": {
+        "long_form": 122,
+        "short_form": 132
+      },
+      "pause_strategy": {
+        "concept_pause_ms": "180-260 after each learning unit",
+        "summary_pause_ms": "300-500 before recap sentence",
+        "example_pause_ms": "220-320 before practical example"
+      },
+      "emphasis_rules": [
+        "Highlight learner outcomes and practical next step phrases.",
+        "Repeat critical term once with slower cadence.",
+        "Keep consonant clarity high on technical nouns.",
+        "Use subtle warmth without sacrificing precision."
+      ],
+      "sentence_length_range": "9-16 words",
+      "anti_patterns": [
+        "patronizing didactic tone",
+        "over-smoothed monotone delivery",
+        "dense jargon clusters without framing",
+        "excessive dramatic pauses"
+      ],
+      "ideal_use_cases": [
+        "Hromada Academy lessons",
+        "beginner onboarding videos",
+        "feature announcements with guided context",
+        "how-to tutorials"
+      ]
+    },
+    "short_form_punchy": {
+      "target_wpm": {
+        "shorts": 152,
+        "x_clips": 148
+      },
+      "pause_strategy": {
+        "pivot_pause_ms": "80-140 at beat pivots",
+        "hook_pause_ms": "60-100 after opening statement",
+        "cta_pause_ms": "120-180 before final CTA"
+      },
+      "emphasis_rules": [
+        "Front-load result words in first clause.",
+        "Stress action verbs and proof nouns.",
+        "Avoid complex subordinate clause structures.",
+        "Peak emphasis at one anchor phrase per clip."
+      ],
+      "sentence_length_range": "5-12 words",
+      "anti_patterns": [
+        "slow reflective pacing",
+        "multi-idea sentence stacking",
+        "double CTA endings",
+        "wordy intro disclaimers"
+      ],
+      "ideal_use_cases": [
+        "YouTube Shorts",
+        "LinkedIn micro explainers",
+        "X native video clips",
+        "teaser trailers"
+      ]
+    },
+    "documentary_cinematic": {
+      "target_wpm": {
+        "long_form": 112,
+        "special_segments": 106
+      },
+      "pause_strategy": {
+        "reveal_pause_ms": "260-420 before key reveal",
+        "context_pause_ms": "180-260 in narrative transitions",
+        "atmospheric_pause_ms": "450-700 at chapter breaks"
+      },
+      "emphasis_rules": [
+        "Weight proper names and evidentiary nouns.",
+        "Use dynamic contrast between low-intensity context and high-intensity insight.",
+        "Reduce pace before emotionally salient mission lines.",
+        "Keep diction clean to preserve subtitle alignment."
+      ],
+      "sentence_length_range": "12-24 words",
+      "anti_patterns": [
+        "sensationalized delivery for factual statements",
+        "constant high-energy pressure without dynamics",
+        "exaggerated dramatic whispers",
+        "ignoring sync with scene transitions"
+      ],
+      "ideal_use_cases": [
+        "origin stories",
+        "mission videos",
+        "long-form platform documentaries",
+        "community impact narratives"
+      ]
+    },
+    "acronym_and_symbol_pronunciation_policy": {
+      "locked_terms": {
+        "JSON": "jay-son",
+        "jq": "jay-cue",
+        "Auth.js": "auth dot jay ess",
+        "ASN.1": "ay ess en one",
+        "arXiv": "archive",
+        "BERT": "bert",
+        "NODUS": "noh-dus",
+        "LegioX": "lee-jee-oh-ex"
+      },
+      "rules": [
+        "Never pass punctuation-heavy terms unchanged without alias strategy.",
+        "Prefer say-as or phoneme controls where provider supports them.",
+        "Preserve on-screen literal token even if spoken alias differs.",
+        "Re-run pronunciation QC whenever lexicon revision hash changes."
+      ]
+    },
+    "anti_monotony_design": {
+      "rhythm_blocks": [
+        "claim",
+        "context",
+        "proof",
+        "action"
+      ],
+      "variation_controls": [
+        "alternate sentence lengths within preset range",
+        "use scheduled micro-pauses at claim boundaries",
+        "toggle emphasis density every 2-3 sentences",
+        "insert low-intensity reset line before peak claim"
+      ],
+      "hard_limits": {
+        "max_consecutive_flat_sentences": 3,
+        "max_consecutive_high_emphasis_sentences": 2
+      }
+    }
+  },
+  "ringdom_sonic_brand_kit": {
+    "intro_sting": {
+      "emotional_intent": "futuristic_trustworthy_arrival",
+      "tempo_range_bpm": "92-108",
+      "instrumentation_hints": [
+        "short analog-style synth pulse",
+        "subtle digital arpeggio",
+        "soft low-end thump",
+        "airy high transient sparkle"
+      ],
+      "duration_seconds": "1.2-2.0",
+      "usage_rules_by_content_type": {
+        "youtube_long_form": "Play full 1.8s version before first narration line.",
+        "youtube_shorts": "Use 0.9-1.2s micro-sting only.",
+        "linkedin": "Optional 1.0s sting; avoid loud transients.",
+        "x_video": "Use tight 0.8-1.1s variant with immediate narration handoff.",
+        "podcast_repurpose": "Use softer 1.5s version with reduced highs."
+      }
+    },
+    "outro_sting": {
+      "emotional_intent": "resolved_confident_forward_motion",
+      "tempo_range_bpm": "88-104",
+      "instrumentation_hints": [
+        "descending tonal motif",
+        "light cinematic pad resolve",
+        "subtle harmonic shimmer"
+      ],
+      "duration_seconds": "1.5-3.0",
+      "usage_rules_by_content_type": {
+        "youtube_long_form": "Place after CTA and before end card fade.",
+        "youtube_shorts": "Keep under 1.2s.",
+        "linkedin": "End with gentle resolve, no heavy bass tail.",
+        "x_video": "Use abrupt but musical cutoff for feed retention.",
+        "podcast_repurpose": "Allow 2.2-2.8s decay under closing line."
+      }
+    },
+    "transition_fx_pack": {
+      "emotional_intent": "clarity_and_momentum_between_scenes",
+      "tempo_range_bpm": "n/a_focused_on_envelope_timing",
+      "instrumentation_hints": [
+        "short whoosh with controlled highs",
+        "low-impact riser",
+        "micro impact hit",
+        "reverse swell for chapter opens"
+      ],
+      "usage_rules_by_content_type": {
+        "technical_explainer": "Use only at structural shifts; avoid constant whooshes.",
+        "shorts": "Max one transition FX every 5-8 seconds.",
+        "documentary_segments": "Prefer subtle transitions to preserve gravitas.",
+        "tutorial_flow": "Use clean swish for section boundaries only."
+      }
+    },
+    "ambience_layers": {
+      "emotional_intent": "immersive_but_non_intrusive_depth",
+      "tempo_range_bpm": "sustained_textural_layers",
+      "instrumentation_hints": [
+        "very low pink-noise-like bed",
+        "wide stereo pad with low movement",
+        "light granular texture in highs"
+      ],
+      "usage_rules_by_content_type": {
+        "youtube_long_form": "Maintain at -30 to -36 LUFS relative bed for continuity.",
+        "shorts": "Use minimal ambience to preserve vocal immediacy.",
+        "linkedin": "Prefer cleaner dry mix with reduced ambience.",
+        "podcast_repurpose": "Optional low-level ambience for section transitions."
+      }
+    },
+    "notification_tones": {
+      "emotional_intent": "precise_positive_confirmation",
+      "tempo_range_bpm": "single_event_tonal",
+      "instrumentation_hints": [
+        "clean sine-pluck hybrid",
+        "short decay metallic tick",
+        "mid-high bell-like confirmation"
+      ],
+      "usage_rules_by_content_type": {
+        "ui_demo": "Use for successful action confirmations only.",
+        "tutorial": "Limit to one tone per major checkpoint.",
+        "shorts": "Avoid overuse to prevent perceived gimmick.",
+        "documentary": "Rarely used; mostly disabled."
+      }
+    },
+    "cross_series_reusability_policy": {
+      "series_targets": [
+        "NODUS",
+        "Ring Platform",
+        "LegioX",
+        "ConnectPlatform",
+        "Hromada Academy"
+      ],
+      "rules": [
+        "Keep motif interval structure stable across all series.",
+        "Vary instrumentation and arrangement, not core melodic DNA.",
+        "Version each sonic asset with semantic IDs and changelog.",
+        "Store source stems and rendered variants in rights-tracked manifest."
+      ]
+    }
+  },
+  "music_sfx_licensing_governance": {
+    "licensing_matrix": [
+      {
+        "source_type": "royalty_free_marketplace",
+        "commercial_usage": "usually_allowed_per_license",
+        "attribution_required": "varies_by_provider",
+        "territorial_limits": "defined_by_license",
+        "revocation_risk": "low_if_terms_followed",
+        "audit_metadata_required": [
+          "provider_name",
+          "asset_id",
+          "license_id",
+          "purchase_timestamp",
+          "license_pdf_uri"
+        ]
+      },
+      {
+        "source_type": "subscription_library",
+        "commercial_usage": "allowed_while_subscription_terms_cover_release",
+        "attribution_required": "often_not_required",
+        "territorial_limits": "usually_global_but_check_exceptions",
+        "revocation_risk": "medium_if_membership_or_plan_terms_change",
+        "audit_metadata_required": [
+          "provider_name",
+          "subscription_plan",
+          "download_record_id",
+          "publish_date",
+          "continuity_snapshot_uri"
+        ]
+      },
+      {
+        "source_type": "custom_composed_work_for_hire",
+        "commercial_usage": "explicitly_defined_in_contract",
+        "attribution_required": "contract_defined",
+        "territorial_limits": "contract_defined",
+        "revocation_risk": "low_with_clear_assignment",
+        "audit_metadata_required": [
+          "composer_contract_uri",
+          "rights_assignment_clause_hash",
+          "delivery_master_hash",
+          "invoice_id"
+        ]
+      },
+      {
+        "source_type": "creative_commons_assets",
+        "commercial_usage": "depends_on_cc_variant",
+        "attribution_required": "often_required",
+        "territorial_limits": "global_with_license_terms",
+        "revocation_risk": "medium_due_to_attribution_or_mislabel_risk",
+        "audit_metadata_required": [
+          "source_url",
+          "cc_license_type",
+          "attribution_text",
+          "retrieval_timestamp",
+          "snapshot_hash"
+        ]
+      },
+      {
+        "source_type": "ai_generated_music_platform",
+        "commercial_usage": "tier_and_terms_dependent",
+        "attribution_required": "platform_policy_dependent",
+        "territorial_limits": "policy_dependent",
+        "revocation_risk": "medium_high_due_to_policy_and_litigation_dynamics",
+        "audit_metadata_required": [
+          "platform_name",
+          "plan_tier",
+          "generation_id",
+          "prompt_archive_uri",
+          "terms_snapshot_uri",
+          "human_edit_record_uri"
+        ]
+      }
+    ],
+    "udio_policy_notes_2026": {
+      "core_boundary": "Commercial usage depends on active plan terms and explicit ToS grant; legal certainty for downstream exclusivity remains limited without substantial human authorship.",
+      "operational_rule": "Treat Udio outputs as non-exclusive source material unless contract explicitly grants stronger rights.",
+      "required_controls": [
+        "store terms snapshot at generation date",
+        "log prompt and generation ids",
+        "capture human transformation steps before release",
+        "avoid artist-impersonation style prompts"
+      ],
+      "reference_urls": [
+        "https://www.udio.com/terms-of-service"
+      ]
+    },
+    "suno_policy_notes_2026": {
+      "core_boundary": "Commercial rights generally align to paid subscription terms for assets created under eligible plans; free-tier outputs are typically non-commercial.",
+      "operational_rule": "Maintain per-asset proof of plan status at generation time and do not assume retroactive rights uplift.",
+      "required_controls": [
+        "store account plan evidence snapshot",
+        "attach generation timestamp and ID",
+        "track human-authored additions for copyright defensibility",
+        "avoid potentially infringing mimic prompts"
+      ],
+      "reference_urls": [
+        "https://suno.com/terms-of-service",
+        "https://help.suno.com/en/categories/550145-rights-ownership"
+      ]
+    },
+    "practical_compliance_workflow": {
+      "step_1_source_selection": "Route asset source by project risk profile: custom commissioned for critical campaigns, vetted subscription library for routine explainers, AI-generated only with enhanced audit trail.",
+      "step_2_license_validation": "Validate commercial and territorial rights before asset enters production queue.",
+      "step_3_ingest_with_metadata": "Ingest every music/SFX asset with mandatory rights metadata fields and checksum.",
+      "step_4_pre_publish_audit": "Run manifest validation ensuring no asset missing license evidence or expiry status.",
+      "step_5_post_publish_archival": "Store immutable rights snapshots with release bundle for future disputes.",
+      "step_6_revalidation_schedule": "Revalidate high-risk assets quarterly or before major redistributions."
+    },
+    "rights_tracking_object_model": {
+      "entity_name": "PublishedVideoRightsManifest",
+      "required_fields": [
+        "video_id",
+        "script_id",
+        "release_datetime_utc",
+        "asset_entries",
+        "compliance_status",
+        "audit_signature"
+      ],
+      "asset_entry_schema": {
+        "asset_role": "music_bed | transition_fx | ambience | notification_tone | custom_composition",
+        "asset_id": "provider asset identifier or internal uuid",
+        "source_type": "royalty_free_marketplace | subscription_library | custom_composed_work_for_hire | creative_commons_assets | ai_generated_music_platform",
+        "provider_name": "string",
+        "license_id": "string nullable where not issued",
+        "license_uri": "uri to license proof",
+        "terms_snapshot_uri": "uri to archived terms snapshot",
+        "usage_scope": "web_global | social_only | ad_campaign | internal_training",
+        "territory_scope": "global | region_list",
+        "attribution_required": "boolean",
+        "attribution_text": "string nullable",
+        "license_expiry_utc": "datetime nullable",
+        "revocation_watch_flag": "boolean",
+        "generation_prompt_uri": "uri nullable for AI generated assets",
+        "human_edit_record_uri": "uri nullable",
+        "checksum_sha256": "string"
+      },
+      "compliance_status_values": [
+        "pass",
+        "warning_expiry_near",
+        "blocker_missing_proof",
+        "blocker_policy_conflict"
+      ],
+      "jq_query_examples": [
+        ".asset_entries[] | select(.license_expiry_utc != null)",
+        ".asset_entries[] | select(.revocation_watch_flag == true)",
+        ".asset_entries[] | select(.source_type == \"ai_generated_music_platform\")"
+      ]
+    },
+    "library_and_api_options_2026": {
+      "programmatic_or_api_friendly": [
+        "Pexels API for some free media categories including videos and audio-adjacent resources",
+        "Pixabay API for media search workflows",
+        "Provider-specific enterprise APIs where available by contract"
+      ],
+      "non_api_but_pipeline_usable": [
+        "subscription libraries with downloadable assets and license records",
+        "custom composer marketplaces with contract-based rights assignment"
+      ],
+      "governance_note": "When API access is absent, ingestion automation still requires machine-readable metadata capture from download and license artifacts."
+    }
+  },
+  "audio_postproduction_mastering_chain": {
+    "processing_principles": [
+      "Perform corrective cleanup on voice stem before full mix processing.",
+      "Preserve dynamic intelligibility rather than maximizing loudness aggressively.",
+      "Apply loudnorm near end of chain after balance decisions.",
+      "Keep scene-safe fades to remove clicks and pops at boundaries.",
+      "Produce both archival WAV and distribution AAC outputs."
+    ],
+    "command_templates": {
+      "cleanup": "ffmpeg -i \"{in_wav}\" -af \"highpass=f=70,lowpass=f=16500,agate=threshold=0.02:ratio=2:attack=15:release=120\" -c:a pcm_s24le \"{out_wav}\"",
+      "eq": "ffmpeg -i \"{in_wav}\" -af \"equalizer=f=180:t=q:w=1.0:g=-1.5,equalizer=f=3200:t=q:w=1.1:g=2.0,equalizer=f=9000:t=q:w=1.2:g=-1.0\" -c:a pcm_s24le \"{out_wav}\"",
+      "de_essing_approximation": "ffmpeg -i \"{in_wav}\" -af \"deesser=i=0.38:m=0.5:f=0.5:s=o\" -c:a pcm_s24le \"{out_wav}\"",
+      "compression": "ffmpeg -i \"{in_wav}\" -af \"acompressor=threshold=-18dB:ratio=3:attack=8:release=120:makeup=2\" -c:a pcm_s24le \"{out_wav}\"",
+      "ducking": "ffmpeg -i \"{music_in}\" -i \"{voice_key}\" -filter_complex \"[0:a]volume={music_gain}[bg];[bg][1:a]sidechaincompress=threshold=0.06:ratio=4:attack=20:release=250[ducked]\" -map \"[ducked]\" -c:a pcm_s24le \"{music_ducked_out}\"",
+      "mix_voice_music_fx": "ffmpeg -i \"{voice_in}\" -i \"{music_ducked}\" -i \"{fx_in}\" -filter_complex \"[0:a][1:a][2:a]amix=inputs=3:weights='1.00 0.52 0.38':duration=longest:dropout_transition=2[a]\" -map \"[a]\" -c:a pcm_s24le \"{mix_out_wav}\"",
+      "loudnorm_measure": "ffmpeg -i \"{in_wav}\" -af loudnorm=I={target_I}:TP={target_TP}:LRA={target_LRA}:print_format=json -f null -",
+      "loudnorm_apply": "ffmpeg -i \"{in_wav}\" -af loudnorm=I={target_I}:TP={target_TP}:LRA={target_LRA}:measured_I={mI}:measured_TP={mTP}:measured_LRA={mLRA}:measured_thresh={mTH}:offset={off}:linear=true:print_format=summary -c:a pcm_s24le \"{out_wav}\"",
+      "limiting": "ffmpeg -i \"{in_wav}\" -af \"alimiter=limit={ceiling}:level=disabled:asc=true\" -c:a pcm_s24le \"{out_wav}\"",
+      "scene_crossfade_click_safe": "ffmpeg -i \"{a_wav}\" -i \"{b_wav}\" -filter_complex \"[0:a][1:a]acrossfade=d=0.08:c1=tri:c2=tri[a]\" -map \"[a]\" -c:a pcm_s24le \"{out_wav}\"",
+      "export_master_m4a": "ffmpeg -i \"{in_wav}\" -c:a aac -b:a {bitrate} -movflags +faststart \"{out_m4a}\"",
+      "sox_cleanup_alt": "sox \"{in_wav}\" \"{out_wav}\" highpass 70 lowpass 16500 compand 0.02,0.15 -55,-55,-20,-12,-6,-6 0 -90",
+      "sox_de_ess_alt": "sox \"{in_wav}\" \"{out_wav}\" sinc -n 2048 5500-9000 gain -3"
+    },
+    "chain_variants": {
+      "youtube_long": {
+        "target_lufs_integrated": -16.0,
+        "target_true_peak_dbtp": -1.0,
+        "target_lra": 7.0,
+        "sample_rate_hz": 48000,
+        "export_bitrate": "192k",
+        "sequence": [
+          "cleanup",
+          "eq",
+          "de_essing_approximation",
+          "compression",
+          "ducking",
+          "mix_voice_music_fx",
+          "loudnorm_measure",
+          "loudnorm_apply",
+          "limiting",
+          "export_master_m4a"
+        ]
+      },
+      "shorts": {
+        "target_lufs_integrated": -14.0,
+        "target_true_peak_dbtp": -1.0,
+        "target_lra": 6.0,
+        "sample_rate_hz": 48000,
+        "export_bitrate": "160k",
+        "sequence": [
+          "cleanup",
+          "eq",
+          "compression",
+          "ducking",
+          "mix_voice_music_fx",
+          "loudnorm_measure",
+          "loudnorm_apply",
+          "limiting",
+          "export_master_m4a"
+        ]
+      },
+      "linkedin": {
+        "target_lufs_integrated": -15.0,
+        "target_true_peak_dbtp": -1.5,
+        "target_lra": 6.0,
+        "sample_rate_hz": 48000,
+        "export_bitrate": "160k",
+        "sequence": [
+          "cleanup",
+          "eq",
+          "de_essing_approximation",
+          "compression",
+          "ducking",
+          "mix_voice_music_fx",
+          "loudnorm_measure",
+          "loudnorm_apply",
+          "limiting",
+          "export_master_m4a"
+        ]
+      },
+      "x_video": {
+        "target_lufs_integrated": -15.0,
+        "target_true_peak_dbtp": -1.0,
+        "target_lra": 5.5,
+        "sample_rate_hz": 48000,
+        "export_bitrate": "128k",
+        "sequence": [
+          "cleanup",
+          "eq",
+          "compression",
+          "ducking",
+          "mix_voice_music_fx",
+          "loudnorm_measure",
+          "loudnorm_apply",
+          "limiting",
+          "export_master_m4a"
+        ]
+      },
+      "podcast_repurpose": {
+        "target_lufs_integrated_stereo": -16.0,
+        "target_lufs_integrated_mono": -19.0,
+        "target_true_peak_dbtp": -1.0,
+        "target_lra": 8.0,
+        "sample_rate_hz": 48000,
+        "export_bitrate": "128k",
+        "sequence": [
+          "cleanup",
+          "eq",
+          "de_essing_approximation",
+          "compression",
+          "mix_voice_music_fx",
+          "loudnorm_measure",
+          "loudnorm_apply",
+          "limiting",
+          "export_master_m4a"
+        ]
+      }
+    },
+    "reference_urls": [
+      "https://ffmpeg.org/ffmpeg-filters.html#loudnorm",
+      "https://ffmpeg.org/ffmpeg-filters.html#sidechaincompress",
+      "https://ffmpeg.org/ffmpeg-filters.html#acompressor",
+      "https://ffmpeg.org/ffmpeg-filters.html#deesser",
+      "https://ffmpeg.org/ffmpeg-filters.html#acrossfade",
+      "https://ffmpeg.org/ffmpeg-filters.html#alimiter",
+      "http://sox.sourceforge.net/sox.html"
+    ]
+  },
+  "stem_and_mix_delivery_contract": {
+    "canonical_artifact_spec": {
+      "voice_stem": {
+        "format": "wav pcm_s24le",
+        "path_template": "audio/{script_id}/stems/{scene_id}/voice.wav",
+        "description": "Dry processed voice-only stem for scene-level revisions."
+      },
+      "music_stem": {
+        "format": "wav pcm_s24le",
+        "path_template": "audio/{script_id}/stems/{scene_id}/music.wav",
+        "description": "Music bed stem after selected asset and gain staging."
+      },
+      "fx_stem": {
+        "format": "wav pcm_s24le",
+        "path_template": "audio/{script_id}/stems/{scene_id}/fx.wav",
+        "description": "SFX and transition stem with event-level cues."
+      },
+      "mix_minus": {
+        "format": "wav pcm_s24le",
+        "path_template": "audio/{script_id}/stems/{scene_id}/mix_minus_voice.wav",
+        "description": "Music and FX without narration for language replacement workflows."
+      },
+      "final_master": {
+        "format": "m4a aac",
+        "path_template": "audio/{script_id}/mix/master.m4a",
+        "description": "Platform-ready mastered mix for final mux."
+      }
+    },
+    "required_fields": [
+      "script_id",
+      "scene_id",
+      "mix_profile_id",
+      "sample_rate_hz",
+      "bit_depth",
+      "lufs_integrated",
+      "true_peak_dbtp",
+      "checksum_sha256",
+      "rights_manifest_uri"
+    ],
+    "required_artifact_paths": [
+      "audio/{script_id}/stems/{scene_id}/voice.wav",
+      "audio/{script_id}/stems/{scene_id}/music.wav",
+      "audio/{script_id}/stems/{scene_id}/fx.wav",
+      "audio/{script_id}/mix/master.m4a"
+    ],
+    "artifact_metadata_schema": {
+      "script_id": "string",
+      "scene_id": "string",
+      "mix_profile_id": "string",
+      "sample_rate_hz": "integer",
+      "bit_depth": "integer",
+      "channels": "integer",
+      "duration_seconds": "number",
+      "lufs_integrated": "number",
+      "true_peak_dbtp": "number",
+      "lra": "number",
+      "checksum_sha256": "string",
+      "rights_manifest_uri": "string",
+      "audio_profile_id": "string",
+      "mastering_profile_id": "string",
+      "qc_report_uri": "string",
+      "created_at": "iso8601"
+    },
+    "contract_rules": [
+      "All stems must be scene-addressable for partial rerender capability.",
+      "Final master must be reproducible from referenced stems and mix profile.",
+      "Checksum mismatch is blocker severity before downstream consumption.",
+      "rights_manifest_uri must resolve to a valid rights object before publish.",
+      "mix_profile_id and mastering_profile_id must be immutable within one assembly run."
+    ]
+  },
+  "audio_qc_quality_gates": {
+    "measurable_thresholds": {
+      "clipping_count": {
+        "blocker_threshold": 0,
+        "warning_threshold": 1,
+        "method": "peak and true-peak scan via ffmpeg astats plus limiter validation"
+      },
+      "lufs_range": {
+        "youtube_long": {
+          "min": -17.0,
+          "max": -15.0
+        },
+        "shorts": {
+          "min": -15.0,
+          "max": -13.0
+        },
+        "linkedin": {
+          "min": -16.0,
+          "max": -14.0
+        },
+        "x_video": {
+          "min": -16.0,
+          "max": -14.0
+        },
+        "podcast_repurpose_stereo": {
+          "min": -17.0,
+          "max": -15.0
+        }
+      },
+      "true_peak_limit": {
+        "default_max_dbtp": -1.0,
+        "linkedin_max_dbtp": -1.5
+      },
+      "intelligibility_score": {
+        "blocker_min": 0.90,
+        "warning_min": 0.94,
+        "method": "composite from ASR confidence, consonant clarity proxy, and masking ratio"
+      },
+      "noise_floor_db": {
+        "target_max_dbfs": -52.0,
+        "warning_max_dbfs": -48.0
+      },
+      "sync_drift_ms": {
+        "per_scene_blocker_max": 300,
+        "per_scene_warning_max": 180,
+        "program_cumulative_blocker_max": 800
+      }
+    },
+    "automated_checks": [
+      {
+        "check_id": "qc_clip_scan",
+        "description": "Detect sample clipping and true-peak excursions.",
+        "tools": [
+          "ffmpeg astats",
+          "loudnorm summary"
+        ],
+        "severity_on_fail": "blocker"
+      },
+      {
+        "check_id": "qc_loudness_profile",
+        "description": "Validate integrated LUFS and LRA against profile target.",
+        "tools": [
+          "ffmpeg loudnorm two-pass parse"
+        ],
+        "severity_on_fail": "warning"
+      },
+      {
+        "check_id": "qc_intelligibility",
+        "description": "Estimate speech intelligibility and detect masking from music/fx.",
+        "tools": [
+          "ASR confidence sampling",
+          "spectral masking heuristic"
+        ],
+        "severity_on_fail": "blocker"
+      },
+      {
+        "check_id": "qc_sibilance_plosive",
+        "description": "Detect excessive sibilance bands and plosive transients.",
+        "tools": [
+          "band energy ratio scan",
+          "transient spike detector"
+        ],
+        "severity_on_fail": "warning"
+      },
+      {
+        "check_id": "qc_transition_click_pop",
+        "description": "Ensure cross-scene audio transitions are click-safe.",
+        "tools": [
+          "transient boundary scan",
+          "short crossfade verification"
+        ],
+        "severity_on_fail": "blocker"
+      },
+      {
+        "check_id": "qc_silence_anomaly",
+        "description": "Detect unintended silence holes in speech-intended regions.",
+        "tools": [
+          "silencedetect",
+          "scene speech map compare"
+        ],
+        "severity_on_fail": "blocker"
+      },
+      {
+        "check_id": "qc_mono_compatibility",
+        "description": "Detect destructive phase collapse for mono playback.",
+        "tools": [
+          "phase correlation scan",
+          "mono fold-down compare"
+        ],
+        "severity_on_fail": "warning"
+      }
+    ],
+    "human_spot_check_protocol": {
+      "minimum_sampling": "At least first scene, midpoint scene, and final scene per language and platform profile.",
+      "checklist": [
+        "Verify technical term pronunciation for locked glossary terms.",
+        "Verify narration emotional alignment with intended style preset.",
+        "Verify voice prominence under music bed in critical explanation lines.",
+        "Verify no distracting harshness sibilance or plosive bursts.",
+        "Verify chapter transitions feel intentional and click-free.",
+        "Verify CTA section remains fully intelligible on mobile speaker playback."
+      ],
+      "review_roles": [
+        "audio_producer_reviewer",
+        "content_truth_reviewer",
+        "final_release_owner"
+      ]
+    },
+    "severity_mapping": {
+      "blocker": {
+        "definition": "Critical failure that invalidates publish readiness.",
+        "examples": [
+          "clipping_count > 0",
+          "intelligibility_score < 0.90",
+          "missing rights_manifest_uri",
+          "sync_drift_ms beyond blocker max"
+        ],
+        "action": "Mandatory rerender or repair before release."
+      },
+      "warning": {
+        "definition": "Issue that may pass with explicit reviewer sign-off.",
+        "examples": [
+          "lufs slightly out of target window",
+          "minor sibilance hotspots",
+          "mono fold-down degradation but still acceptable"
+        ],
+        "action": "Fix preferred; waiver allowed with documentation."
+      },
+      "informational": {
+        "definition": "Optimization note that does not block publish.",
+        "examples": [
+          "possible music bed simplification",
+          "suggested pace improvement for one segment"
+        ],
+        "action": "Record for next iteration backlog."
+      }
+    },
+    "re_render_policy_on_failure": {
+      "scene_level_fail": "Rerender affected scene stem set first; avoid full program rerender.",
+      "profile_level_fail": "Re-master from validated stems with adjusted profile parameters.",
+      "systemic_fail": "Escalate provider routing or mastering chain revision and rerun full QC."
+    }
+  },
+  "cost_latency_router_audio_production": {
+    "routing_strategies": {
+      "high_quality": {
+        "goal": "Maximum realism and expressive control for flagship videos.",
+        "provider_priority": [
+          "ElevenLabs",
+          "Azure_Neural_TTS",
+          "Google_Cloud_TTS",
+          "OpenAI_TTS",
+          "PlayHT",
+          "Cartesia"
+        ],
+        "max_scene_cost_usd": 0.90,
+        "expected_scene_latency_seconds": "2-14"
+      },
+      "balanced": {
+        "goal": "Reliable quality with moderate spend for recurring production.",
+        "provider_priority": [
+          "OpenAI_TTS",
+          "ElevenLabs",
+          "Google_Cloud_TTS",
+          "Azure_Neural_TTS",
+          "PlayHT",
+          "Cartesia"
+        ],
+        "max_scene_cost_usd": 0.45,
+        "expected_scene_latency_seconds": "1-9"
+      },
+      "low_cost": {
+        "goal": "Minimize spend while preserving intelligibility and term accuracy.",
+        "provider_priority": [
+          "Google_Cloud_TTS",
+          "OpenAI_TTS",
+          "PlayHT",
+          "Azure_Neural_TTS",
+          "Cartesia",
+          "ElevenLabs"
+        ],
+        "max_scene_cost_usd": 0.22,
+        "expected_scene_latency_seconds": "1-10"
+      },
+      "low_latency": {
+        "goal": "Fastest generation for live or rapid-turnaround batches.",
+        "provider_priority": [
+          "Cartesia",
+          "OpenAI_TTS",
+          "ElevenLabs",
+          "PlayHT",
+          "Google_Cloud_TTS",
+          "Azure_Neural_TTS"
+        ],
+        "max_scene_cost_usd": 0.50,
+        "expected_scene_latency_seconds": "0.3-5"
+      }
+    },
+    "retry_fallback_matrix": {
+      "429": {
+        "strategy": "exponential_backoff_with_jitter",
+        "base_delay_ms": 700,
+        "max_delay_ms": 120000,
+        "max_attempts": 6,
+        "fallback_after_attempt": 3,
+        "fallback_action": "Switch to next provider in active strategy preserving style preset and lexicon profile."
+      },
+      "5xx": {
+        "strategy": "fast_retry_then_provider_swap",
+        "base_delay_ms": 500,
+        "max_delay_ms": 30000,
+        "max_attempts": 4,
+        "fallback_after_attempt": 2,
+        "fallback_action": "Mark provider degraded for 15-minute cooldown and route to alternate."
+      },
+      "policy_block": {
+        "strategy": "sanitize_segment_then_retry",
+        "max_attempts": 3,
+        "fallback_after_attempt": 2,
+        "actions": [
+          "remove or rewrite policy-sensitive fragment while preserving technical meaning",
+          "split request into smaller chunks",
+          "switch provider with stricter policy-safe prompt format"
+        ]
+      },
+      "quality_fail": {
+        "strategy": "same_provider_restyle_then_alternate",
+        "max_attempts": 3,
+        "fallback_after_attempt": 2,
+        "actions": [
+          "adjust speed and stability controls",
+          "apply alternate voice in same style family",
+          "route to next provider and re-evaluate QC"
+        ]
+      }
+    },
+    "caching_and_reuse_rules": {
+      "idempotency_key_formula": "sha256(script_id|scene_id|language|provider|voice_id|style_preset|normalized_text|lexicon_revision)",
+      "cache_hit_conditions": [
+        "script text hash unchanged",
+        "style preset unchanged",
+        "lexicon revision unchanged",
+        "target profile unchanged"
+      ],
+      "reuse_policy": [
+        "Reuse voice stems on exact cache hit.",
+        "Recompute mastering only when profile target changes.",
+        "Invalidate cache if any locked term pronunciation rule changed.",
+        "Store cache ttl metadata and last_qc_result for safe reuse."
+      ],
+      "cost_controls": {
+        "batch_budget_guard": "Abort non-critical scenes when projected total exceeds batch cap by >15 percent.",
+        "preferred_rerender_scope": "scene_only",
+        "fallback_floor_quality": "Never drop below intelligibility score target to save cost."
+      }
+    },
+    "provider_health_scoring": {
+      "dimensions": [
+        "success_rate_rolling_1h",
+        "p95_latency",
+        "qc_pass_rate",
+        "cost_variance"
+      ],
+      "degrade_thresholds": {
+        "success_rate_min": 0.94,
+        "p95_latency_seconds_max": 18,
+        "qc_pass_rate_min": 0.92
+      },
+      "action_on_degrade": "Temporarily down-rank provider in routing strategy until recovery."
+    }
+  },
+  "integration_map_with_existing_lenses": {
+    "inputs_from_scriptwriter_and_dubbing_orchestrator": {
+      "scriptwriter_source": "ai-video-scriptwriter-storyboarder.nodus.json",
+      "required_scriptwriter_fields": [
+        "script.script_id",
+        "script.scenes[].scene_id",
+        "script.scenes[].duration_seconds",
+        "script.scenes[].narration",
+        "script.scenes[].narration_ssml",
+        "script.scenes[].chapter_timestamp_mmss",
+        "production_brief.language_primary",
+        "production_brief.languages_dub"
+      ],
+      "dubbing_source": "ai-voice-dubbing-orchestrator.nodus.json",
+      "required_dubbing_fields": [
+        "audio/{script_id}/timestamps/{scene_id}.json",
+        "subtitles/{script_id}/{language}.srt",
+        "audio/{script_id}/mix/{language}/master.m4a",
+        "pronunciation_profile_id"
+      ],
+      "boundary_rule": "Dubbing orchestrator owns translation and multilingual voice conversion logic; this lens applies shared production quality, mastering, compliance, and QA standards to all incoming voice assets."
+    },
+    "outputs_for_video_generation_and_postproduction": {
+      "video_generation_target": "ai-video-generation-orchestrator.nodus.json",
+      "postproduction_target": "ai-video-editor-postproduction-guru.nodus.json",
+      "output_artifacts": [
+        "audio/{script_id}/stems/{scene_id}/voice.wav",
+        "audio/{script_id}/stems/{scene_id}/music.wav",
+        "audio/{script_id}/stems/{scene_id}/fx.wav",
+        "audio/{script_id}/stems/{scene_id}/mix_minus_voice.wav",
+        "audio/{script_id}/mix/master.m4a",
+        "audio/{script_id}/qc/report_{profile}.json",
+        "audio/{script_id}/rights/manifest.json"
+      ]
+    },
+    "metadata_handshake_fields": {
+      "audio_profile_id": "Identifier for narration + mix style preset family.",
+      "mastering_profile_id": "Identifier for loudness and dynamics target variant.",
+      "rights_manifest_uri": "URI to rights tracking object with full licensing evidence.",
+      "qc_report_uri": "URI to machine-readable QC findings and severity summary."
+    },
+    "ffmpeg_mux_consumption_notes_for_final_assembly": {
+      "preconditions": [
+        "Render manifest scene order locked.",
+        "Final master file exists and checksum verified.",
+        "QC blocker count equals zero."
+      ],
+      "mux_template": "ffmpeg -i \"dist/{script_id}/video_concat.mp4\" -i \"audio/{script_id}/mix/master.m4a\" -map 0:v -map 1:a -c:v copy -c:a aac -shortest \"dist/{script_id}/master.mp4\"",
+      "if_audio_longer_than_video": "Use controlled tpad clone on final scene or request video extension per editor policy; do not truncate explanation-critical narration.",
+      "if_video_longer_than_audio": "Extend ambience tail or scene-safe room tone under freeze frame per postproduction policy."
+    },
+    "contract_versioning_policy": {
+      "audio_contract_version": "audio_contract_v1",
+      "breaking_change_rule": "Any required field rename or semantic shift requires version bump and migration note.",
+      "backward_compatibility_rule": "Additive fields allowed within same major version."
+    }
+  },
+  "nodus_specific_action_plan": {
+    "program_context": {
+      "repository": "https://github.com/connectplatform/NODUS",
+      "contact": "ray@ringdom.org",
+      "distribution_targets": [
+        "YouTube long-form",
+        "YouTube Shorts",
+        "LinkedIn",
+        "X",
+        "podcast repurposing"
+      ]
+    },
+    "week_1": {
+      "goal": "Ship first production-ready Ringdom voice style pack and base mastering profile.",
+      "concrete_actions": [
+        "Define and freeze four narration presets in narration_direction_style_system.",
+        "Create locked pronunciation policy for JSON jq Auth.js ASN.1 arXiv BERT NODUS LegioX.",
+        "Implement baseline provider router with high_quality and balanced strategies.",
+        "Render pilot scene batch and generate first QC reports.",
+        "Publish initial audio_profile_id set and mastering_profile_id set."
+      ],
+      "deliverables": [
+        "ringdom_voice_style_pack_v1",
+        "mastering_profile_pack_v1",
+        "pilot_qc_report_bundle"
+      ]
+    },
+    "week_2": {
+      "goal": "Roll out first licensed music/SFX governance and rights manifest automation.",
+      "concrete_actions": [
+        "Implement rights_tracking_object_model in pipeline storage.",
+        "Enforce asset ingestion metadata fields for all music and SFX.",
+        "Add terms snapshot capture for AI-generated music sources.",
+        "Create pre-publish rights audit gate with blocker severity.",
+        "Integrate rights_manifest_uri into downstream handshake."
+      ],
+      "deliverables": [
+        "rights_manifest_v1_pipeline",
+        "licensing_audit_gate_v1",
+        "music_sfx_governance_runbook_v1"
+      ]
+    },
+    "month_1": {
+      "goal": "Ship first mastered NODUS explainer audio package and integrate with final mux flow.",
+      "concrete_actions": [
+        "Apply youtube_long mastering chain to complete NODUS explainer.",
+        "Deliver canonical stems and final master using stem_and_mix_delivery_contract.",
+        "Pass audio_profile_id mastering_profile_id rights_manifest_uri qc_report_uri to editor lens.",
+        "Run complete FFmpeg mux assembly and publish readiness validation."
+      ],
+      "deliverables": [
+        "audio/{script_id}/stems/*",
+        "audio/{script_id}/mix/master.m4a",
+        "audio/{script_id}/qc/report_youtube_long.json",
+        "audio/{script_id}/rights/manifest.json"
+      ]
+    },
+    "month_3": {
+      "goal": "Deploy first automated QC pipeline integration and reliability routing hardening.",
+      "concrete_actions": [
+        "Integrate automated checks for clipping LUFS true peak intelligibility phase and silence anomalies.",
+        "Wire severity mapping into CI as blocker/warning/informational outputs.",
+        "Implement provider health scoring and adaptive concurrency throttling.",
+        "Add cache hit metrics and rerender savings dashboard."
+      ],
+      "deliverables": [
+        "audio_qc_ci_gate_v1",
+        "provider_health_router_v1",
+        "cache_efficiency_report_v1"
+      ]
+    },
+    "month_6": {
+      "goal": "Execute first batch production run across 12-video calendar with deterministic quality and compliance.",
+      "concrete_actions": [
+        "Schedule 12-video batch using balanced strategy with selective high_quality upgrades.",
+        "Track per-video rights compliance and expiry watch flags.",
+        "Run weekly QC trend analysis and preset tuning loop.",
+        "Publish monthly reliability and cost report for Commander operations."
+      ],
+      "deliverables": [
+        "12_video_audio_batch_release",
+        "monthly_rights_and_qc_audit",
+        "cost_latency_performance_dashboard"
+      ]
+    },
+    "execution_kpis": {
+      "qc_blocker_rate_target": "<= 2 percent of scenes after first pass by month_3",
+      "average_intelligibility_score_target": ">= 0.94",
+      "provider_failover_recovery_target_seconds": "<= 120",
+      "cache_reuse_rate_target_month_6": ">= 35 percent",
+      "rights_manifest_completeness_target": "100 percent published videos"
+    }
+  }
+}

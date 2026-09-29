@@ -1,0 +1,350 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_k8s_tailscale_tunnel",
+  "name": "Devops K8S Tailscale Tunnel",
+  "mission": {
+    "primary_objective": "Implement secure Tailscale VPN tunnels for Kubernetes clusters with operator integration, subnet routing, and service exposure across distributed infrastructure",
+    "context": "You are a specialist. Your goal is to apply this expertise in context.",
+    "target_outcome": "Production-ready, correct outcomes aligned with the objective.",
+    "scope": "Specialist in Tailscale integration with Kubernetes/K3s, including operator deployment, subnet routers, service mesh connectivity, and secure remote access."
+  },
+  "truth_lens": "Specialist in Tailscale integration with Kubernetes/K3s, including operator deployment, subnet routers, service mesh connectivity, and secure remote access. Consult for zero-trust networking, VPN tunnels, and multi-cluster connectivity.",
+  "consult_when": [
+    "devops k8s tailscale tunnel tasks",
+    "infrastructure configuration",
+    "deployment optimization"
+  ],
+  "key_patterns": [
+    "Configuration files and manifests",
+    "Best practices implementation",
+    "Troubleshooting and debugging"
+  ],
+  "expertise": [
+    "Domain specialist",
+    "Technical expertise",
+    "Best practices"
+  ],
+  "keywords": [
+    "devops",
+    "k8s",
+    "tailscale",
+    "tunnel"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Devops K8S Tailscale Tunnel",
+  "role": "LegioX truth lens — Devops K8S Tailscale Tunnel",
+  "core_expertise": "Implement secure Tailscale VPN tunnels for Kubernetes clusters with operator integration, subnet routing, and service exposure across distributed infrastructure",
+  "key_capabilities": [
+    "domain_specialist",
+    "technical_expertise",
+    "best_practices",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-04-11",
+  "updated": "2026-04-11",
+  "meta": {
+    "title": "Tailscale Mesh Deployment: Ubuntu 24 Hosts + K8s + K3s across Hetzner Datacenters",
+    "strategy": "Tailscale Operator (Helm) on each cluster + host-level Tailscale daemon on both Ubuntu 24 nodes. All inter-host traffic (MinIO backup, kubectl, SSH) routes over encrypted WireGuard mesh via stable 100.x.x.x IPs. Public interfaces fully firewalled for sensitive ports.",
+    "topology": {
+      "host_a": "Hetzner DC-1 (e.g. FSN1) — runs k8s or k3s cluster + MinIO backup target",
+      "host_b": "Hetzner DC-2 (e.g. HEL1) — runs k3s workload cluster",
+      "tailnet": "Both hosts + operator pods join same tailnet. Cross-DC traffic: direct WireGuard P2P (Hetzner public IPs allow direct UDP). DERP relay fallback automatic if NAT changes."
+    },
+    "deployment_modes_explained": {
+      "host_daemon": "Required on both Ubuntu 24 nodes. Gives each host a stable Tailscale IP for SSH, MinIO S3 endpoint, and kubectl access.",
+      "k8s_operator": "Recommended for both clusters. Manages per-service tailnet exposure via LoadBalancer annotation without node-level Tailscale on every worker.",
+      "subnet_router": "Optional but powerful — exposes full pod/service CIDR into tailnet so any tailnet device can curl cluster-internal IPs directly.",
+      "k3s_native_vpn_auth": "K3s-specific: --vpn-auth flag at k3s server/agent level uses Tailscale for inter-node cluster traffic itself, not just service exposure. Use when nodes span DCs and share no private LAN."
+    }
+  },
+  "phase_0_tailscale_admin_console": {
+    "description": "One-time setup in Tailscale web dashboard before touching any host",
+    "url": "https://login.tailscale.com/admin",
+    "steps": {
+      "1_create_tags": {
+        "action": "Settings → Access Controls → Edit ACL JSON",
+        "add_stanza": {
+          "tagOwners": {
+            "tag:k8s-operator": [
+              "autogroup:admin"
+            ],
+            "tag:hetzner-node": [
+              "autogroup:admin"
+            ],
+            "tag:k3s-node": [
+              "autogroup:admin"
+            ]
+          }
+        }
+      },
+      "2_update_acls": {
+        "action": "Add ACL rules to the same Access Controls JSON",
+        "add_stanza": {
+          "acls": [
+            {
+              "action": "accept",
+              "src": [
+                "tag:hetzner-node",
+                "tag:k3s-node",
+                "tag:k8s-operator"
+              ],
+              "dst": [
+                "tag:hetzner-node:*",
+                "tag:k3s-node:*",
+                "tag:k8s-operator:*"
+              ]
+            }
+          ],
+          "autoApprovers": {
+            "routes": {
+              "10.42.0.0/16": [
+                "tag:k3s-node"
+              ],
+              "10.96.0.0/12": [
+                "tag:hetzner-node"
+              ]
+            }
+          },
+          "ssh": [
+            {
+              "action": "accept",
+              "src": [
+                "autogroup:admin"
+              ],
+              "dst": [
+                "tag:hetzner-node",
+                "tag:k3s-node"
+              ],
+              "users": [
+                "autogroup:nonroot"
+              ]
+            }
+          ]
+        },
+        "note": "10.42.0.0/16 = k3s default podCIDR. 10.96.0.0/12 = k8s default serviceCIDR. Adjust if custom CIDRs are used."
+      },
+      "3_generate_host_auth_key": {
+        "action": "Settings → Keys → Generate auth key",
+        "options": {
+          "reusable": true,
+          "ephemeral": false,
+          "tags": [
+            "tag:hetzner-node"
+          ],
+          "expiry_days": 90
+        },
+        "save_as": "TS_HOST_AUTH_KEY",
+        "note": "Used for both Ubuntu 24 host daemons"
+      },
+      "4_generate_operator_oauth_client": {
+        "action": "Settings → OAuth clients → Create OAuth client",
+        "scopes": [
+          "devices:core:write",
+          "auth_keys:write",
+          "dns:read"
+        ],
+        "tags": [
+          "tag:k8s-operator"
+        ],
+        "save_as": {
+          "client_id": "TS_OAUTH_CLIENT_ID",
+          "client_secret": "TS_OAUTH_CLIENT_SECRET"
+        },
+        "note": "OAuth client is used by Helm chart — cannot be retrieved again after creation"
+      }
+    }
+  },
+  "phase_1_ubuntu24_host_daemon": {
+    "description": "Install Tailscale daemon on both Hetzner Ubuntu 24 hosts. Run identically on host_a and host_b.",
+    "steps": {
+      "1_kernel_ip_forward": {
+        "cmd": "echo 'net.ipv4.ip_forward = 1' | tee -a /etc/sysctl.d/99-tailscale.conf && echo 'net.ipv6.conf.all.forwarding = 1' | tee -a /etc/sysctl.d/99-tailscale.conf && sysctl -p /etc/sysctl.d/99-tailscale.conf"
+      },
+      "2_install_tailscale": {
+        "cmd": "curl -fsSL https://tailscale.com/install.sh | sh"
+      },
+      "3_up_with_auth_key": {
+        "cmd": "tailscale up --authkey=TS_HOST_AUTH_KEY --advertise-tags=tag:hetzner-node --ssh --accept-routes",
+        "flags_explained": {
+          "--ssh": "Enables Tailscale SSH — eliminates need for public SSH port on Hetzner firewall",
+          "--accept-routes": "Accepts advertised subnet routes from operator pods (pod CIDRs)",
+          "--advertise-tags": "Assigns ACL tag set in phase_0"
+        }
+      },
+      "4_verify": {
+        "cmd": "tailscale status && tailscale ip -4",
+        "expected": "Both hosts show each other in peer list with 100.x.x.x addresses"
+      },
+      "5_firewall_hardening": {
+        "cmd": [
+          "ufw default deny incoming",
+          "ufw allow in on tailscale0",
+          "ufw allow 41641/udp comment 'Tailscale WireGuard'",
+          "ufw deny 9000 comment 'MinIO blocked on public iface'",
+          "ufw deny 9001 comment 'MinIO console blocked on public iface'",
+          "ufw deny 6443 comment 'kube-apiserver blocked on public iface'",
+          "ufw enable"
+        ],
+        "note": "Port 41641 UDP must remain open for direct WireGuard P2P between Hetzner nodes. All other sensitive ports closed on public interface."
+      },
+      "6_minio_bind_to_tailscale_ip": {
+        "applies_to": "host_a (backup target) only",
+        "get_tailscale_ip": "tailscale ip -4",
+        "cmd": "docker run -d --name minio --restart=always -p $(tailscale ip -4):9000:9000 -p 127.0.0.1:9001:9001 -v /opt/k8s-backups/minio-data:/data -e MINIO_ROOT_USER=velero -e MINIO_ROOT_PASSWORD=CHANGE_ME_32CHARS quay.io/minio/minio server /data --console-address ':9001'",
+        "note": "MinIO binds to Tailscale IP only. Admin console on localhost only — access via: ssh -L 9001:127.0.0.1:9001 100.x.x.x"
+      }
+    }
+  },
+  "phase_2_k3s_native_tailscale_integration": {
+    "description": "K3s-specific: use --vpn-auth to make Tailscale the inter-node transport for cluster traffic itself. Do this BEFORE k3s install if nodes share no private LAN.",
+    "prerequisite": "phase_0 and phase_1 completed. k3s not yet installed.",
+    "steps": {
+      "1_server_node": {
+        "cmd": "curl -sfL https://get.k3s.io | sh -s - server --token CLUSTER_SECRET --vpn-auth='name=tailscale,joinKey=TS_HOST_AUTH_KEY' --node-external-ip=$(tailscale ip -4) --disable traefik",
+        "note": "--node-external-ip must be the Tailscale IP of this node so other nodes route to it correctly over the mesh"
+      },
+      "2_agent_nodes": {
+        "cmd": "curl -sfL https://get.k3s.io | sh -s - agent --token CLUSTER_SECRET --server https://$(TAILSCALE_IP_OF_SERVER):6443 --vpn-auth='name=tailscale,joinKey=TS_HOST_AUTH_KEY' --node-external-ip=$(tailscale ip -4)",
+        "note": "Replace TAILSCALE_IP_OF_SERVER with the 100.x.x.x of the k3s server node"
+      },
+      "3_approve_nodes_in_dashboard": {
+        "action": "Tailscale Admin → Machines → approve each new k3s node if not using autoApprovers",
+        "note": "With autoApprovers set in phase_0 for tag:k3s-node, approval is automatic"
+      },
+      "4_verify_cluster": {
+        "cmd": "k3s kubectl get nodes -o wide",
+        "expected": "All nodes Ready, INTERNAL-IP shows 100.x.x.x Tailscale addresses"
+      }
+    }
+  },
+  "phase_3_tailscale_operator_k8s": {
+    "description": "Install Tailscale Kubernetes Operator via Helm on standard k8s cluster. Handles per-service tailnet exposure without node-level Tailscale on workers.",
+    "steps": {
+      "1_add_helm_repo": {
+        "cmd": "helm repo add tailscale https://pkgs.tailscale.com/helmcharts && helm repo update"
+      },
+      "2_create_namespace": {
+        "cmd": "kubectl create namespace tailscale --dry-run=client -o yaml | kubectl apply -f -"
+      },
+      "3_create_oauth_secret": {
+        "cmd": "kubectl create secret generic tailscale-operator-oauth --namespace tailscale --from-literal=client_id=TS_OAUTH_CLIENT_ID --from-literal=client_secret=TS_OAUTH_CLIENT_SECRET --dry-run=client -o yaml | kubectl apply -f -"
+      },
+      "4_helm_install_operator": {
+        "cmd": "helm install tailscale-operator tailscale/tailscale-operator --namespace tailscale --set oauth.clientId=TS_OAUTH_CLIENT_ID --set oauth.clientSecret=TS_OAUTH_CLIENT_SECRET --set operatorConfig.defaultTags='{tag:k8s-operator}' --wait"
+      },
+      "5_verify_operator": {
+        "cmd": "kubectl -n tailscale get pods && kubectl -n tailscale logs deploy/operator | tail -20"
+      }
+    }
+  },
+  "phase_4_tailscale_operator_k3s": {
+    "description": "Install Tailscale Operator on k3s. Same Helm chart but requires k3s-specific kube-proxy compatibility patch.",
+    "steps": {
+      "1_add_helm_repo": {
+        "cmd": "helm repo add tailscale https://pkgs.tailscale.com/helmcharts && helm repo update"
+      },
+      "2_create_namespace_and_secret": {
+        "cmd": [
+          "kubectl create namespace tailscale --dry-run=client -o yaml | kubectl apply -f -",
+          "kubectl create secret generic tailscale-operator-oauth --namespace tailscale --from-literal=client_id=TS_OAUTH_CLIENT_ID --from-literal=client_secret=TS_OAUTH_CLIENT_SECRET --dry-run=client -o yaml | kubectl apply -f -"
+        ]
+      },
+      "3_helm_install_with_k3s_flags": {
+        "cmd": "helm install tailscale-operator tailscale/tailscale-operator --namespace tailscale --set oauth.clientId=TS_OAUTH_CLIENT_ID --set oauth.clientSecret=TS_OAUTH_CLIENT_SECRET --set operatorConfig.defaultTags='{tag:k8s-operator}' --set proxyConfig.defaultProxyClass='' --wait",
+        "k3s_iptables_note": "k3s uses nftables by default on Ubuntu 24. If operator pods crashloop with iptables errors, apply the fix in phase_4_step_4."
+      },
+      "4_k3s_nftables_fix": {
+        "condition": "Apply only if operator proxy pods show iptables/nftables errors in logs",
+        "cmd": "kubectl patch deployment operator -n tailscale --type=json -p='[{\"op\":\"add\",\"path\":\"/spec/template/spec/containers/0/env/-\",\"value\":{\"name\":\"TS_DEBUG_FIREWALL_MODE\",\"value\":\"nftables\"}}]'"
+      },
+      "5_verify": {
+        "cmd": "kubectl -n tailscale get pods -w"
+      }
+    }
+  },
+  "phase_5_expose_services_via_operator": {
+    "description": "Annotate any Kubernetes Service to expose it on the tailnet. Works identically on k8s and k3s after operator install.",
+    "examples": {
+      "expose_minio_internal_service": {
+        "description": "Expose an in-cluster MinIO as a tailnet LoadBalancer — operator auto-creates a proxy pod and MagicDNS entry",
+        "yaml": "apiVersion: v1\nkind: Service\nmetadata:\n  name: minio-tailscale\n  namespace: velero\n  annotations:\n    tailscale.com/expose: \"true\"\nspec:\n  loadBalancerClass: tailscale\n  type: LoadBalancer\n  selector:\n    app: minio\n  ports:\n    - port: 9000\n      targetPort: 9000",
+        "result": "Service gets MagicDNS name like minio-tailscale.tail-abcd.ts.net accessible from any tailnet device"
+      },
+      "expose_kubernetes_dashboard": {
+        "cmd": "kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard --type=merge -p '{\"spec\":{\"type\":\"LoadBalancer\",\"loadBalancerClass\":\"tailscale\"}}'"
+      },
+      "verify_exposed_services": {
+        "cmd": "kubectl get svc -A | grep LoadBalancer",
+        "expected": "EXTERNAL-IP column shows *.ts.net MagicDNS hostname within ~30 seconds"
+      }
+    }
+  },
+  "phase_6_subnet_router": {
+    "description": "Optional but recommended: advertise full pod/service CIDR into tailnet so kubectl, curl, and database clients can hit cluster-internal IPs from any tailnet device without per-service exposure.",
+    "steps": {
+      "1_identify_cluster_cidrs": {
+        "k3s_cmd": "kubectl get nodes -o jsonpath='{.items[0].spec.podCIDR}' && kubectl cluster-info dump | grep -m1 service-cluster-ip-range",
+        "k8s_cmd": "kubectl cluster-info dump | grep -E 'cluster-cidr|service-cluster-ip-range'"
+      },
+      "2_deploy_subnet_router_via_operator": {
+        "yaml": "apiVersion: tailscale.com/v1alpha1\nkind: Connector\nmetadata:\n  name: k8s-subnet-router\nspec:\n  hostname: k8s-subnet-router\n  subnetRouter:\n    advertiseRoutes:\n      - 10.42.0.0/16\n      - 10.43.0.0/16",
+        "cmd": "kubectl apply -f connector.yaml",
+        "note": "Operator creates a proxy pod that advertises cluster CIDRs into tailnet. Adjust CIDRs to match your cluster."
+      },
+      "3_verify_routes": {
+        "cmd": "tailscale status --peers | grep -A3 k8s-subnet-router"
+      }
+    }
+  },
+  "phase_7_velero_integration": {
+    "description": "Update Velero BSL s3Url to use Tailscale IP of host_a instead of public IP. No other changes needed.",
+    "steps": {
+      "1_get_host_a_tailscale_ip": {
+        "cmd": "tailscale ip -4",
+        "run_on": "host_a",
+        "example_result": "100.64.0.5"
+      },
+      "2_patch_velero_bsl": {
+        "cmd": "kubectl patch backupstoragelocation default -n velero --type=merge -p '{\"spec\":{\"config\":{\"s3Url\":\"http://100.64.0.5:9000\",\"publicUrl\":\"http://100.64.0.5:9000\"}}}'",
+        "note": "Replace 100.64.0.5 with actual Tailscale IP from step 1"
+      },
+      "3_verify_bsl_available": {
+        "cmd": "velero backup-location get",
+        "expected": "Phase: Available"
+      }
+    }
+  },
+  "phase_8_operational_reference": {
+    "ssh_via_tailscale": {
+      "cmd": "ssh ubuntu@100.x.x.x",
+      "note": "No port 22 required on public firewall. Works via tailscale ssh daemon."
+    },
+    "minio_console_access": {
+      "cmd": "ssh -L 9001:127.0.0.1:9001 ubuntu@100.x.x.x",
+      "then": "Open http://localhost:9001 in browser"
+    },
+    "kubectl_from_dev_machine": {
+      "prerequisite": "Dev machine joined to tailnet",
+      "cmd": "kubectl --server=https://100.x.x.x:6443 get nodes",
+      "note": "Or use Tailscale operator API server proxy for identity-aware access"
+    },
+    "check_mesh_health": {
+      "cmd": "tailscale ping 100.x.x.x",
+      "expected": "pong from host-name (100.x.x.x) via DIRECT ... — confirms P2P path, not DERP relay"
+    },
+    "rotate_auth_keys": {
+      "frequency": "Every 90 days per key expiry set in phase_0",
+      "cmd": "tailscale up --authkey=NEW_TS_HOST_AUTH_KEY --force-reauth"
+    }
+  },
+  "known_limitations": {
+    "free_tier_device_limit": "Tailscale free tier: 3 users, 100 devices. Each operator proxy pod = 1 ephemeral device. Tag-based OAuth devices don't count toward user limit.",
+    "derp_relay_latency": "If direct WireGuard P2P fails (rare on Hetzner public IPs), traffic routes via Tailscale DERP relay adding ~20-50ms. Monitor with tailscale ping.",
+    "k3s_vpn_auth_etcd": "K3s native --vpn-auth mode does not support embedded etcd in multi-server HA. For HA k3s across DCs use external etcd or single server + multiple agents.",
+    "operator_proxy_pods": "Each LoadBalancer-annotated service spawns one proxy pod consuming ~50MB RAM. Budget accordingly for many exposed services.",
+    "headscale_alternative": "For zero external dependency, self-host headscale (open-source Tailscale control plane) on host_a. Add controlServerURL to --vpn-auth and tailscale up calls. Adds ops burden but removes tailscale.com dependency entirely."
+  }
+}

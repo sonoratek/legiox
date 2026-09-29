@@ -1,0 +1,891 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_k8s_vmware_esxi_ubuntu_guru",
+  "name": "Devops K8S Vmware Esxi Ubuntu Guru",
+  "mission": {
+    "primary_objective": "Specialist mission and domain expertise.",
+    "context": "You are a specialist. Your goal is to apply this expertise in context.",
+    "target_outcome": "Production-ready, correct outcomes aligned with the objective.",
+    "scope": "Relevant scope."
+  },
+  "truth_lens": "Production-grade knowledge base for Ubuntu kernel tuning, VMware ESXi 7 HP optimization, and Kubernetes node preparation on HPE ProLiant DL360 G8 hardware. Truth-lens nested array architecture. jq_root: '.' Specialist mission and domain expertise. You are a specialist. Your goal is to apply this expertise in context.",
+  "consult_when": [
+    "VMware ESXi setup",
+    "Ubuntu kernel tuning",
+    "K8s node preparation",
+    "hardware optimization"
+  ],
+  "key_patterns": [
+    "ESXi configuration",
+    "Ubuntu kernel parameters",
+    "HPE server optimization"
+  ],
+  "expertise": [
+    "agent: domain execution patterns per lens body."
+  ],
+  "keywords": [
+    "devops",
+    "k8s",
+    "vmware",
+    "esxi",
+    "ubuntu",
+    "guru"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Devops K8S Vmware Esxi Ubuntu Guru",
+  "role": "LegioX truth lens — Devops K8S Vmware Esxi Ubuntu Guru",
+  "core_expertise": "Specialist mission and domain expertise.",
+  "key_capabilities": [
+    "agent_domain_execution_patterns_per_lens",
+    "domain_truth_lens",
+    "operational_consult"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-04-11",
+  "updated": "2026-04-11",
+  "skillset_id": "devops-vmware-esxi-ubuntu-k8s-guru",
+  "title": "DevOps VMware ESXi 7 HP + Ubuntu + Kubernetes Guru",
+  "description": "Production-grade knowledge base for Ubuntu kernel tuning, VMware ESXi 7 HP optimization, and Kubernetes node preparation on HPE ProLiant DL360 G8 hardware. Truth-lens nested array architecture. jq_root: '.'",
+  "stack": {
+    "hypervisor": "VMware ESXi 7.0 (HPE Custom Image for ProLiant)",
+    "hardware": "HPE ProLiant DL360 G8 (Intel Xeon E5-26xx v1/v2, Ivy Bridge/Sandy Bridge)",
+    "guest_os": [
+      "Ubuntu 22.04 LTS (Jammy)",
+      "Ubuntu 24.04 LTS (Noble)"
+    ],
+    "kubernetes": "kubeadm-provisioned clusters, 1.27+",
+    "container_runtime": "containerd 1.7+",
+    "vsphere_integrations": [
+      "vSphere CPI (cloud-provider-vsphere)",
+      "vSphere CSI driver"
+    ],
+    "cni_options": [
+      "Flannel",
+      "Calico",
+      "Cilium (eBPF)"
+    ]
+  },
+  "core_principles": [
+    "{\"id\": \"ESXI_IS_THE_SCHEDULER\", \"rule\": \"In a VMware guest, ESXi owns I/O scheduling, CPU scheduling, and memory ballooning. Ubuntu kernel optimizations must NOT compete with the hypervisor; they must defer to it.\"}",
+    "{\"id\": \"PARAVIRTUAL_DRIVERS_MANDATORY\", \"rule\": \"All Ubuntu VMs acting as k8s nodes must use VMXNET3 (NIC) and PVSCSI (storage controller). Emulated adapters (E1000, LSI) add CPU overhead and reduce throughput.\"}",
+    "{\"id\": \"SWAP_DISABLED\", \"rule\": \"kubelet requires swap to be disabled (enforced since k8s 1.8). ESXi memory ballooning interacts badly with guest swap. Disable swap at both OS and ESXi VM config level.\"}",
+    "{\"id\": \"THP_DISABLED\", \"rule\": \"Transparent Huge Pages (THP) must be set to 'never' on k8s nodes. THP causes latency spikes for Redis, MongoDB, PostgreSQL, and Java workloads. ESXi balloon driver conflicts with THP compaction.\"}",
+    "{\"id\": \"CGROUPS_V2_DEFAULT\", \"rule\": \"Ubuntu 22.04+ defaults to cgroups v2 (unified hierarchy). Kubernetes 1.25+ fully supports cgroupsv2. Containerd must be configured with SystemdCgroup=true. Do not downgrade to cgroupsv1.\"}",
+    "{\"id\": \"NOOP_IO_SCHEDULER\", \"rule\": \"Linux guest on ESXi must use 'none' (noop) I/O scheduler for virtual block devices. ESXi handles all I/O reordering at hypervisor layer. Guest-side scheduling adds double-overhead.\"}",
+    "{\"id\": \"DISK_ENABLE_UUID\", \"rule\": \"VM advanced config parameter disk.EnableUUID=TRUE is mandatory for vSphere CSI driver. Without it, VMDK volumes cannot be consistently identified across rescheduling events.\"}",
+    "{\"id\": \"OPEN_VM_TOOLS_REQUIRED\", \"rule\": \"open-vm-tools must be installed on every k8s node VM. It provides guest heartbeat, graceful shutdown, time sync, and is required for vCenter to cleanly manage nodes.\"}",
+    "{\"id\": \"NUMA_TOPOLOGY_AWARE\", \"rule\": \"DL360 G8 is a dual-socket NUMA system (2x Intel E5-26xx). NUMA node interleaving should be DISABLED in HPE RBSU to preserve NUMA topology visibility. ESXi and guest OS both benefit from local NUMA access.\"}",
+    "{\"id\": \"HARDWARE_VERSION_15_PLUS\", \"rule\": \"k8s node VMs must use VMware hardware version 15 or higher to support vSphere CPI/CSI features including hot-add and proper PCI device ID reporting.\"}"
+  ],
+  "knowledge_layers": {
+    "layer_0_hpe_dl360g8_hardware_profile": {
+      "description": "Physical hardware baseline for HPE ProLiant DL360 G8 — the foundation ESXi runs on",
+      "truth_lens": [
+        {
+          "concept": "cpu_topology",
+          "truths": [
+            "DL360 G8 supports 1 or 2x Intel Xeon E5-2600 v1 (Sandy Bridge-EP) or v2 (Ivy Bridge-EP) CPUs",
+            "Each socket = 1 NUMA node; dual-socket = 2 NUMA nodes visible to ESXi and guest",
+            "E5-2660 v2: 10 cores / 20 threads per socket; max 40 vCPUs total with 2 sockets",
+            "Intel VT-x (virtualization), Intel VT-d (IOMMU/directed I/O), and EPT (Extended Page Tables) are supported and must be enabled in RBSU",
+            "CPU microcode updates are critical: Spectre/Meltdown patches cause 10-30% performance regression on this generation; mitigations=off acceptable in trusted private-only clusters"
+          ]
+        },
+        {
+          "concept": "memory",
+          "truths": [
+            "DL360 G8 supports up to 768 GB DDR3 ECC RDIMM (24 DIMM slots, 12 per socket/NUMA node)",
+            "Optimal memory population: fill all channels symmetrically per NUMA node for maximum bandwidth",
+            "HPE RBSU: Node Interleaving must be DISABLED to preserve NUMA awareness; enabling it flattens NUMA into a single UMA domain, hiding topology from ESXi"
+          ]
+        },
+        {
+          "concept": "storage",
+          "truths": [
+            "P420i Smart Array controller on DL360 G8; supports RAID 0/1/5/6/10/50/60",
+            "ESXi sees the RAID logical volume as a single VMFS datastore",
+            "Local VMFS is acceptable for k8s node OS disks; shared datastore (vSAN, NFS, iSCSI) needed for vSphere CSI PersistentVolumes",
+            "SSD-backed datastores dramatically improve etcd performance on control plane nodes",
+            "PVSCSI adapter in VM delivers 12% more throughput and 18% less CPU cost vs LSI Logic virtual adapter"
+          ]
+        },
+        {
+          "concept": "network",
+          "truths": [
+            "DL360 G8 ships with NC375i (4x 1GbE) or NC552i (2x 10GbE) embedded FlexibleLOM",
+            "10GbE NICs are strongly preferred for k8s clusters due to pod network traffic amplification",
+            "VMXNET3 virtual adapter achieves near line-rate on 10GbE with low CPU overhead via hardware offloads",
+            "Separate VMkernel port groups recommended: Management, vMotion, VM Data (k8s)"
+          ]
+        },
+        {
+          "concept": "hpe_rbsu_bios_settings",
+          "truths": [
+            "HP RBSU path: System Configuration > BIOS/Platform Configuration (RBSU)",
+            "Power Management: Set to 'Maximum Performance' OR HPE Workload Profile 'Virtualization - Max Performance'",
+            "Intel Hyper-Threading: ENABLED (doubles vCPU availability)",
+            "Intel Turbo Boost: ENABLED (increases burst clock frequency)",
+            "Node Interleaving: DISABLED (preserves NUMA topology)",
+            "Intel VT-x: ENABLED; Intel VT-d: ENABLED; Intel TXT: ENABLED",
+            "Memory Speed: Maximum Frequency preferred (vs. Power Savings)",
+            "Collaborative Power Control: DISABLED when running ESXi (ESXi manages power via its own scheduler)",
+            "C-States and P-States: Disable OS control; let BIOS control at 'Maximum Performance' profile",
+            "USB 3.0: Can be disabled if not needed (minor improvement to boot time)",
+            "QPI Link Power Management: ENABLED at Maximum Performance"
+          ]
+        }
+      ]
+    },
+    "layer_1_esxi7_hp_hypervisor_configuration": {
+      "description": "ESXi 7 host-level settings relevant to Ubuntu k8s node VMs",
+      "truth_lens": [
+        {
+          "concept": "esxi_installation",
+          "truths": [
+            "Use HPE Custom Image for ESXi 7.0 U3 (VMware-ESXi-7.0.3-XXXXXXXX-HPE-703.x.x.x.iso) from HPE Broadcom portal",
+            "Custom image includes HPE-specific drivers: HP Smart Array RAID (hpsa), HP NC FlexFabric NICs, AMS (Agentless Management Service), iLO integration",
+            "Generic VMware ISO missing HP drivers causes degraded I/O performance and missing iLO health reporting",
+            "ESXi 7.0 is the last version officially supporting Gen8 hardware; ESXi 8.0 requires workaround/custom addon"
+          ]
+        },
+        {
+          "concept": "vm_hardware_settings_for_k8s_nodes",
+          "truths": [
+            "VM Compatibility: ESXi 7.0 U2 or later (hardware version 19)",
+            "Guest OS: Ubuntu Linux (64-bit) with correct kernel version selected",
+            "SCSI Controller: VMware Paravirtual (PVSCSI) — NOT LSI Logic SAS",
+            "Network Adapter: VMXNET3 — NOT E1000 or E1000e",
+            "disk.EnableUUID = TRUE in VM Advanced Parameters (required for vSphere CSI)",
+            "CPU Hot Add: ENABLED recommended for worker nodes (allows kubelet-managed scaling without full restart)",
+            "Memory Hot Add: ENABLED",
+            "Latency Sensitivity: 'Normal' for general workloads; 'High' only for real-time pods (requires CPU reservation = limit)",
+            "Memory Reservation: Set to 100% of allocated RAM for latency-sensitive nodes (prevents ESXi ballooning)",
+            "Do NOT take snapshots of CSI-attached nodes; vSphere CSI behavior with snapshots is undefined"
+          ]
+        },
+        {
+          "concept": "esxi_host_level_tuning",
+          "truths": [
+            "ESXi Power Policy: Set to 'High Performance' via vSphere Client > Host > Manage > Hardware > Power Management",
+            "BPDU Filter: Enable on VMkernel ports to prevent spanning-tree loops on pod network VLANs",
+            "Promiscuous Mode: Required if using Flannel VXLAN or Calico IPIP — enable on the relevant port group",
+            "Forged Transmits: Enable on port group if CNI creates sub-interfaces (Calico, Multus)",
+            "MAC Address Changes: Enable if CNI modifies MAC (MetalLB, Multus scenarios)",
+            "VMkernel MTU: Set to 9000 (Jumbo Frames) for vMotion and storage VMkernel NICs; ensure physical switch supports jumbo frames",
+            "NIC Teaming Policy: Load-based teaming (LBT) preferred over port-based for k8s workloads with many pod connections"
+          ]
+        },
+        {
+          "concept": "esxi_memory_management",
+          "truths": [
+            "ESXi balloon driver (vmmemctl) reclaims guest memory when host is under pressure — causes latency spikes for k8s pods",
+            "Prevent ballooning by setting Memory Reservation = Limit (100% reserved) in VM settings for control plane nodes",
+            "Transparent Page Sharing (TPS): Disabled by default since ESXi 6.5 for security; do not re-enable",
+            "Memory Overcommit: Avoid for k8s clusters; each node should have physical RAM backing equal to its VM allocation",
+            "ESXi Swap (.vswp): Ensure fast storage for ESXi swap; control plane nodes should never actually swap",
+            "NUMA memory locality: ESXi vNUMA exposes NUMA topology to guest if VM vCPU count > single NUMA node core count"
+          ]
+        },
+        {
+          "concept": "vsphere_cpi_csi_requirements",
+          "truths": [
+            "vSphere CPI (cloud-provider-vsphere) version must match Kubernetes minor version: CPI v1.30.x for k8s v1.30",
+            "CPI requires vCenter credentials with minimum permissions: read datacenter/datastore/cluster/host, manage VMs",
+            "CSI driver requires disk.EnableUUID=TRUE on ALL node VMs (master + workers)",
+            "CSI requires VM hardware version >= 15",
+            "CPI initializes each node's ProviderID (vsphere://vm-uuid) — CSI uses this to attach VMDK volumes to the correct host",
+            "kubeadm init/join must use --cloud-provider=external flag so kubelet does not use built-in cloud provider",
+            "All nodes must be tainted with node.cloudprovider.kubernetes.io/uninitialized=true:NoSchedule before CPI deployment; CPI removes taint after initialization",
+            "vsphere.conf format changed to YAML in CPI >= 1.2.0; legacy INI format deprecated"
+          ]
+        }
+      ]
+    },
+    "layer_2_ubuntu_guest_os_baseline": {
+      "description": "Ubuntu VM configuration steps before kernel tuning — the correct baseline",
+      "truth_lens": [
+        {
+          "concept": "ubuntu_version_selection",
+          "truths": [
+            "Ubuntu 22.04 LTS (Jammy): Kernel 5.15 HWE (Hardware Enablement); well-tested with k8s; recommended for production",
+            "Ubuntu 24.04 LTS (Noble): Kernel 6.8; cgroups v2 default; low-latency features merged into generic kernel; preferred for new clusters",
+            "Use Ubuntu Server (no GUI); minimal install reduces attack surface and memory overhead",
+            "Install linux-image-generic-hwe-22.04 on 22.04 to get kernel 6.x backport for better VMXNET3 and PVSCSI support"
+          ]
+        },
+        {
+          "concept": "open_vm_tools_installation",
+          "truths": [
+            "sudo apt install -y open-vm-tools",
+            "open-vm-tools replaces VMware Tools ISO — do NOT install both",
+            "open-vm-tools provides: guest heartbeat, clean shutdown/reboot, time sync with ESXi host, guest IP reporting to vCenter",
+            "Verify running: systemctl status open-vm-tools",
+            "VMware Tools status in vCenter should show 'OK (Guest Managed)' after install",
+            "For VMs used as templates: install open-vm-tools-deploypkg if using vSphere Site Recovery Manager or linked clones"
+          ]
+        },
+        {
+          "concept": "time_synchronization",
+          "truths": [
+            "In VMware guests, timekeeping is managed by the hypervisor; do NOT use NTP independently without coordination",
+            "Recommended: Enable VMware Tools time sync (controlled via open-vm-tools) OR use chrony/systemd-timesyncd pointing to reliable NTP",
+            "VMware KB 1006427: Guest clock drift is common on overcommitted hosts; use host-based time sync via vmware-tools",
+            "For k8s: etcd requires time sync within 500ms across nodes; use consistent NTP source",
+            "timedatectl set-ntp true && systemctl enable systemd-timesyncd"
+          ]
+        },
+        {
+          "concept": "filesystem_and_partitioning",
+          "truths": [
+            "Use XFS or ext4 for root and data partitions; XFS preferred for high I/O (better parallelism)",
+            "Separate /var/lib/containerd and /var/lib/etcd on dedicated disks/partitions for control plane nodes",
+            "Mount options for k8s node data partitions in /etc/fstab: noatime,nodiratime reduces write overhead",
+            "If using PVSCSI: disk is presented as /dev/sd* but I/O scheduling must be set to none (noop)",
+            "LVM over PVSCSI is acceptable; add noatime to logical volume mount options",
+            "Avoid btrfs for k8s nodes; containerd overlay2 driver has known issues with btrfs in some kernel versions"
+          ]
+        },
+        {
+          "concept": "swap_disabling",
+          "truths": [
+            "swapoff -a (disable immediately)",
+            "Comment out all swap entries in /etc/fstab",
+            "If using systemd swap units: systemctl mask swap.target",
+            "Verify: swapon --show (must return empty)",
+            "kubelet will refuse to start if swap is active and --fail-swap-on=true (default)",
+            "Kubernetes 1.28+ added beta SwapMemory feature gate for Linux swap support but it is NOT recommended on ESXi-hosted nodes due to hypervisor memory management conflicts"
+          ]
+        }
+      ]
+    },
+    "layer_3_kernel_sysctl_tuning": {
+      "description": "Linux kernel parameter tuning via sysctl for k8s on ESXi. All params go in /etc/sysctl.d/99-k8s-esxi.conf",
+      "truth_lens": [
+        {
+          "concept": "network_core_params",
+          "truths": [
+            "net.core.somaxconn = 65535  # Max connection backlog; default 128 is too low for k8s API server and pod traffic",
+            "net.core.netdev_max_backlog = 65535  # NIC receive queue depth; prevents packet drop under burst",
+            "net.core.rmem_max = 134217728  # 128MB max socket receive buffer",
+            "net.core.wmem_max = 134217728  # 128MB max socket send buffer",
+            "net.core.rmem_default = 31457280  # 30MB default receive buffer",
+            "net.core.wmem_default = 31457280  # 30MB default send buffer",
+            "net.core.optmem_max = 40960  # Per-socket ancillary buffer size"
+          ]
+        },
+        {
+          "concept": "tcp_params",
+          "truths": [
+            "net.ipv4.tcp_rmem = 4096 87380 134217728  # min/default/max TCP receive buffer",
+            "net.ipv4.tcp_wmem = 4096 65536 134217728  # min/default/max TCP send buffer",
+            "net.ipv4.tcp_max_syn_backlog = 65535  # SYN queue depth; critical for k8s API server under load",
+            "net.ipv4.tcp_syncookies = 1  # SYN flood protection; must remain 1",
+            "net.ipv4.tcp_tw_reuse = 1  # Reuse TIME_WAIT sockets; reduces ephemeral port exhaustion in pod-to-pod traffic",
+            "net.ipv4.tcp_fin_timeout = 15  # Reduce TIME_WAIT from 60s default; reclaim ports faster",
+            "net.ipv4.tcp_keepalive_time = 600  # 10min idle before keepalive probes (default 7200s is too long)",
+            "net.ipv4.tcp_keepalive_intvl = 60  # 60s between probes",
+            "net.ipv4.tcp_keepalive_probes = 5  # 5 failed probes = connection dead",
+            "net.ipv4.tcp_window_scaling = 1  # Enable window scaling for high-bandwidth flows",
+            "net.ipv4.tcp_mtu_probing = 1  # Discover MTU dynamically; important with VMXNET3 and jumbo frames",
+            "net.ipv4.ip_local_port_range = 1024 65000  # Expand ephemeral port range for pod traffic"
+          ]
+        },
+        {
+          "concept": "conntrack_params",
+          "truths": [
+            "net.netfilter.nf_conntrack_max = 1048576  # Connection tracking table size; k8s clusters exhaust default 65536 quickly",
+            "net.netfilter.nf_conntrack_tcp_timeout_established = 600  # 10min timeout for established connections (vs default 432000s = 5 days)",
+            "net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120  # Reduce TIME_WAIT entry lifetime",
+            "net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60",
+            "Increase hash table buckets: modprobe nf_conntrack hashsize=262144; persist via /etc/modprobe.d/nf_conntrack.conf: options nf_conntrack hashsize=262144",
+            "nf_conntrack_max exhaustion manifests as: 'nf_conntrack: table full, dropping packet' in dmesg; causes seemingly random pod timeouts"
+          ]
+        },
+        {
+          "concept": "bridge_and_iptables_params",
+          "truths": [
+            "net.bridge.bridge-nf-call-iptables = 1  # Required for most CNI plugins (Flannel, Calico, Weave)",
+            "net.bridge.bridge-nf-call-ip6tables = 1  # IPv6 equivalent",
+            "net.bridge.bridge-nf-call-arptables = 1  # For ARP bridging",
+            "These require br_netfilter kernel module to be loaded BEFORE applying sysctl",
+            "modprobe br_netfilter && modprobe overlay  # Add both to /etc/modules-load.d/k8s.conf for persistence",
+            "Verify: lsmod | grep br_netfilter"
+          ]
+        },
+        {
+          "concept": "ipv4_forwarding",
+          "truths": [
+            "net.ipv4.ip_forward = 1  # MANDATORY for k8s; enables routing between pods across nodes",
+            "net.ipv6.conf.all.forwarding = 1  # If using IPv6 CNI",
+            "Verify: sysctl net.ipv4.ip_forward  # Should return 1 after applying"
+          ]
+        },
+        {
+          "concept": "memory_params",
+          "truths": [
+            "vm.swappiness = 0  # Strongly avoid swap; 0 = only swap when absolutely necessary (OOM condition)",
+            "vm.dirty_ratio = 20  # % of RAM that can be dirty before sync; increase for write-heavy workloads",
+            "vm.dirty_background_ratio = 5  # % of RAM dirty before background writeback starts",
+            "vm.dirty_expire_centisecs = 3000  # 30s max dirty page age before forced flush",
+            "vm.dirty_writeback_centisecs = 500  # Writeback runs every 5s",
+            "vm.overcommit_memory = 1  # Allow memory overcommit; required for many container workloads (Go runtime allocates virtual address space aggressively)",
+            "vm.overcommit_ratio = 50  # Limit overcommit to 50% of RAM + swap (when overcommit_memory=2)",
+            "vm.max_map_count = 262144  # Required by Elasticsearch, OpenSearch, and other memory-mapped workloads",
+            "vm.min_free_kbytes = 131072  # 128MB minimum free; prevents OOM killer thrashing under memory pressure",
+            "vm.panic_on_oom = 0  # Do not panic on OOM; let OOM killer handle it"
+          ]
+        },
+        {
+          "concept": "filesystem_and_inotify_params",
+          "truths": [
+            "fs.inotify.max_user_watches = 1048576  # Default 8192 is exhausted by Prometheus, Filebeat, and many k8s controllers monitoring thousands of files",
+            "fs.inotify.max_user_instances = 8192  # Default 128; increase for many container processes",
+            "fs.file-max = 2097152  # System-wide open file descriptor limit",
+            "fs.nr_open = 1048576  # Per-process limit",
+            "kernel.pid_max = 4194304  # Default 32768; k8s nodes run hundreds of processes; 4M supports high-density clusters"
+          ]
+        },
+        {
+          "concept": "kernel_misc_params",
+          "truths": [
+            "kernel.dmesg_restrict = 0  # Allow non-root to read dmesg; useful for node debugging (restrict in high-security clusters)",
+            "kernel.core_uses_pid = 1  # Append PID to core dump filename",
+            "kernel.perf_event_paranoid = 3  # Restrict perf events to root; recommended for multi-tenant clusters",
+            "kernel.threads-max = 2097152  # Max kernel threads; increase for dense pod environments",
+            "net.ipv4.conf.all.rp_filter = 1  # Reverse path filtering; keep enabled for security",
+            "net.ipv4.conf.default.rp_filter = 1"
+          ]
+        },
+        {
+          "concept": "applying_sysctl_persistently",
+          "truths": [
+            "File location: /etc/sysctl.d/99-k8s-esxi.conf",
+            "Apply immediately: sysctl --system  OR  sysctl -p /etc/sysctl.d/99-k8s-esxi.conf",
+            "Verify a param: sysctl net.core.somaxconn",
+            "DaemonSet approach for managed clusters: use initContainer with privileged: true and hostPID: true mounting /proc to apply host-level sysctls",
+            "Pod-level sysctls: set in pod.spec.securityContext.sysctls[] for namespaced params (net.core.somaxconn is unsafe/non-namespaced; must be set at node level)"
+          ]
+        }
+      ]
+    },
+    "layer_4_kernel_grub_and_boot_params": {
+      "description": "Linux GRUB kernel command line parameters for Ubuntu on ESXi k8s nodes",
+      "truth_lens": [
+        {
+          "concept": "transparent_huge_pages_disable",
+          "truths": [
+            "Add to GRUB_CMDLINE_LINUX in /etc/default/grub: transparent_hugepage=never",
+            "Also disable defrag: echo never > /sys/kernel/mm/transparent_hugepage/defrag  (runtime)",
+            "Persist via systemd service or rc.local: echo never | tee /sys/kernel/mm/transparent_hugepage/enabled /sys/kernel/mm/transparent_hugepage/defrag",
+            "GRUB approach is most reliable; survives reboots without additional systemd units",
+            "After modifying /etc/default/grub: sudo update-grub && sudo reboot",
+            "THP disabled improves latency for Redis, MongoDB, PostgreSQL, Java (JVM), and etcd; no measurable downside for k8s general workloads"
+          ]
+        },
+        {
+          "concept": "io_scheduler_override",
+          "truths": [
+            "Add to GRUB_CMDLINE_LINUX: elevator=none  (kernel 5.0+; previously 'noop')",
+            "Why: ESXi performs I/O scheduling in the hypervisor; guest scheduler adds latency without benefit",
+            "Verify after reboot: cat /sys/block/sda/queue/scheduler  # Should show [none]",
+            "For runtime change (no reboot): echo none > /sys/block/sda/queue/scheduler  (replace sda with actual device)",
+            "Persist without GRUB: udev rule — SUBSYSTEM=='block', ACTION=='add|change', ATTR{queue/scheduler}='none'  → /etc/udev/rules.d/60-scheduler.rules",
+            "NOTE: NVMe devices use mq-deadline by default and perform well; 'none' still works but difference is smaller"
+          ]
+        },
+        {
+          "concept": "cgroup_v2_explicit_enable",
+          "truths": [
+            "Ubuntu 22.04 and 24.04 default to cgroups v2; verify: stat -fc %T /sys/fs/cgroup/  # Returns 'cgroup2fs'",
+            "If cgroupsv1 is detected (older Ubuntu): add systemd.unified_cgroup_hierarchy=1 to GRUB_CMDLINE_LINUX",
+            "containerd /etc/containerd/config.toml must have: SystemdCgroup = true under [plugins.'io.containerd.grpc.v1.cri'.containerd.runtimes.runc.options]",
+            "kubelet KubeletConfiguration must include: cgroupDriver: systemd",
+            "Mismatch between kubelet cgroupDriver and containerd SystemdCgroup causes node NotReady and 'cgroup driver' errors in kubelet logs"
+          ]
+        },
+        {
+          "concept": "spectre_meltdown_mitigation",
+          "truths": [
+            "DL360 G8 Sandy Bridge/Ivy Bridge CPUs are affected by Spectre v1/v2 and Meltdown (L1TF)",
+            "Default Ubuntu mitigations impose 10-30% CPU overhead on syscall-heavy workloads (API server, etcd)",
+            "For private/trusted networks only: add mitigations=off to GRUB_CMDLINE_LINUX to recover performance",
+            "Intermediate option: mitigations=auto (applies only necessary mitigations, skips others)",
+            "ESXi also applies its own side-channel mitigations via microcode; double-mitigation (ESXi + guest) can be conservative",
+            "NEVER disable mitigations on nodes exposed to untrusted tenant workloads"
+          ]
+        },
+        {
+          "concept": "full_grub_cmdline_recommendation",
+          "truths": [
+            "Recommended /etc/default/grub GRUB_CMDLINE_LINUX value for ESXi-hosted k8s nodes:",
+            "GRUB_CMDLINE_LINUX=\"quiet splash elevator=none transparent_hugepage=never cgroup_enable=memory cgroup_enable=cpuset\"",
+            "For performance-critical private clusters (add): mitigations=off",
+            "For NUMA visibility (verify it is already correct): numa=on  (default; only specify if disabled)",
+            "Apply: sudo update-grub && sudo reboot",
+            "Verify applied: cat /proc/cmdline"
+          ]
+        }
+      ]
+    },
+    "layer_5_kubelet_and_containerd_config": {
+      "description": "kubelet and containerd configuration for optimal performance on ESXi-hosted Ubuntu nodes",
+      "truth_lens": [
+        {
+          "concept": "containerd_configuration",
+          "truths": [
+            "containerd config default > /etc/containerd/config.toml  (generate fresh default config)",
+            "Set SystemdCgroup = true under [plugins.'io.containerd.grpc.v1.cri'.containerd.runtimes.runc.options]",
+            "sandbox_image = 'registry.k8s.io/pause:3.9'  (match your k8s version)",
+            "Increase containerd ulimits in /etc/systemd/system/containerd.service.d/limits.conf: LimitNOFILE=1048576, LimitNPROC=1048576",
+            "containerd storage root: /var/lib/containerd  — place on fast storage, separate partition if possible",
+            "overlay2 is default and correct storage driver; DO NOT use devicemapper or aufs on Ubuntu"
+          ]
+        },
+        {
+          "concept": "kubelet_configuration",
+          "truths": [
+            "cgroupDriver: systemd  (must match containerd)",
+            "maxPods: 110  (default); increase to 250 on nodes with sufficient resources and raised kernel limits",
+            "kubeReserved: cpu='500m', memory='1Gi'  — reserve resources for kubelet and system daemons; prevents OOM eviction of k8s components",
+            "systemReserved: cpu='500m', memory='512Mi'",
+            "evictionHard: memory.available<200Mi,nodefs.available<10%  — tune based on node RAM",
+            "featureGates: MemoryManager=true  — enables NUMA-aware memory allocation for Guaranteed QoS pods",
+            "topologyManagerPolicy: single-numa-node  — on dual-socket nodes, pin Guaranteed pods to single NUMA node",
+            "cpuManagerPolicy: static  — enables CPU pinning for Guaranteed pods (requests == limits, integer CPUs)"
+          ]
+        },
+        {
+          "concept": "ulimits_and_systemd_limits",
+          "truths": [
+            "Add to /etc/security/limits.conf (or /etc/security/limits.d/99-k8s.conf):",
+            "* soft nofile 1048576",
+            "* hard nofile 1048576",
+            "* soft nproc 1048576",
+            "* hard nproc 1048576",
+            "Also set in kubelet.service systemd unit via LimitNOFILE=1048576 LimitNPROC=1048576",
+            "Verify effective limits on running kubelet: cat /proc/$(pidof kubelet)/limits",
+            "Insufficient file descriptors manifests as: 'too many open files' errors in pod logs and kubelet cannot create inotify watchers"
+          ]
+        }
+      ]
+    },
+    "layer_6_node_preparation_sequence": {
+      "description": "Ordered step-by-step node preparation for Ubuntu k8s on ESXi — the correct execution order",
+      "truth_lens": [
+        {
+          "concept": "phase_0_vm_creation_checklist",
+          "truths": [
+            "1. VM hardware version >= 15 (19 preferred for ESXi 7)",
+            "2. Guest OS: Ubuntu Linux 64-bit",
+            "3. SCSI Controller: VMware Paravirtual (PVSCSI)",
+            "4. Network Adapter: VMXNET3",
+            "5. Advanced Config: disk.EnableUUID = TRUE",
+            "6. CPU: allocate cores aligned to NUMA boundary (e.g., 8 or 10 for DL360 G8 10-core socket) for NUMA locality",
+            "7. Memory: allocate with reservation = 100% (for control plane and critical nodes)",
+            "8. OS Disk: 50-100GB thin provisioned on fast VMFS",
+            "9. Additional disk for /var/lib/containerd (control plane: also separate /var/lib/etcd)"
+          ]
+        },
+        {
+          "concept": "phase_1_os_baseline",
+          "truths": [
+            "sudo apt update && sudo apt upgrade -y",
+            "sudo apt install -y open-vm-tools curl wget git vim htop iotop sysstat net-tools",
+            "sudo hostnamectl set-hostname <node-name>  # unique per node",
+            "sudo timedatectl set-ntp true",
+            "Disable ufw or configure to allow k8s ports (API server 6443, etcd 2379-2380, kubelet 10250, NodePort 30000-32767)"
+          ]
+        },
+        {
+          "concept": "phase_2_kernel_modules",
+          "truths": [
+            "Create /etc/modules-load.d/k8s.conf with: overlay, br_netfilter, nf_conntrack",
+            "modprobe overlay && modprobe br_netfilter && modprobe nf_conntrack",
+            "Verify: lsmod | grep -E 'overlay|br_netfilter|nf_conntrack'",
+            "nf_conntrack hashsize persistence: echo 'options nf_conntrack hashsize=262144' > /etc/modprobe.d/nf_conntrack.conf",
+            "update-initramfs -u  (rebuild initramfs to include modules)"
+          ]
+        },
+        {
+          "concept": "phase_3_sysctl_application",
+          "truths": [
+            "Create /etc/sysctl.d/99-k8s-esxi.conf with all parameters from layer_3",
+            "sysctl --system  (apply all sysctl.d files)",
+            "Verify critical params: sysctl net.bridge.bridge-nf-call-iptables net.ipv4.ip_forward vm.swappiness fs.inotify.max_user_watches",
+            "All should return configured values"
+          ]
+        },
+        {
+          "concept": "phase_4_swap_and_grub",
+          "truths": [
+            "swapoff -a",
+            "sed -i '/ swap / s/^/#/' /etc/fstab  (comment out swap in fstab)",
+            "Edit /etc/default/grub → update GRUB_CMDLINE_LINUX",
+            "sudo update-grub",
+            "sudo reboot  (apply grub changes, test new sysctl, verify swap disabled)"
+          ]
+        },
+        {
+          "concept": "phase_5_containerd_install",
+          "truths": [
+            "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg",
+            "echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable' > /etc/apt/sources.list.d/docker.list",
+            "apt install -y containerd.io",
+            "containerd config default > /etc/containerd/config.toml",
+            "Edit config.toml: set SystemdCgroup = true",
+            "systemctl enable --now containerd && systemctl status containerd"
+          ]
+        },
+        {
+          "concept": "phase_6_kubernetes_install",
+          "truths": [
+            "curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg",
+            "echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' > /etc/apt/sources.list.d/kubernetes.list",
+            "apt install -y kubelet kubeadm kubectl && apt-mark hold kubelet kubeadm kubectl",
+            "systemctl enable kubelet  (kubelet will not start until kubeadm init/join runs)"
+          ]
+        },
+        {
+          "concept": "phase_7_vsphere_cpi_csi",
+          "truths": [
+            "Ensure all nodes have disk.EnableUUID=TRUE in VM advanced params before kubeadm",
+            "kubeadm init must include: --cloud-provider=external (or KubeletConfiguration cloudProvider: external)",
+            "After cluster init, verify all nodes tainted: kubectl describe nodes | grep uninitialized",
+            "Create vsphere.conf with vCenter credentials and datacenter name",
+            "kubectl create configmap cloud-config --from-file=vsphere.conf -n kube-system",
+            "Apply CPI manifests matching k8s version from github.com/kubernetes/cloud-provider-vsphere/releases",
+            "Verify ProviderID set: kubectl get nodes -o jsonpath='{.items[*].spec.providerID}'  (should show vsphere://vm-uuid for each node)",
+            "Apply CSI driver manifests after CPI completes",
+            "Verify CSI: kubectl get csidrivers  (csi.vsphere.vmware.com should appear)"
+          ]
+        }
+      ]
+    },
+    "layer_7_monitoring_and_diagnostics": {
+      "description": "Commands and tools to verify tuning is applied and diagnose issues on ESXi-hosted k8s nodes",
+      "truth_lens": [
+        {
+          "concept": "verify_tuning_applied",
+          "truths": [
+            "cat /proc/cmdline  # Verify grub params active: elevator=none transparent_hugepage=never",
+            "cat /sys/kernel/mm/transparent_hugepage/enabled  # Should show: always madvise [never]",
+            "cat /sys/block/sda/queue/scheduler  # Should show: [none]",
+            "swapon --show  # Should return empty",
+            "sysctl vm.swappiness  # Should return 0",
+            "sysctl net.core.somaxconn  # Should return 65535",
+            "sysctl net.netfilter.nf_conntrack_max  # Should return 1048576",
+            "sysctl fs.inotify.max_user_watches  # Should return 1048576",
+            "stat -fc %T /sys/fs/cgroup/  # Should return cgroup2fs (cgroupsv2)",
+            "systemctl status open-vm-tools  # Should be active (running)"
+          ]
+        },
+        {
+          "concept": "node_performance_diagnostics",
+          "truths": [
+            "vmstat -s  # Memory usage overview; check swap used (should be 0)",
+            "iostat -xz 1 5  # I/O stats per device; %util should not be near 100% for PVSCSI devices",
+            "ss -s  # Socket stats; watch for large TIME_WAIT counts indicating tcp_tw_reuse not working",
+            "cat /proc/net/nf_conntrack | wc -l  # Compare against nf_conntrack_max; should be <80% of max",
+            "dmesg | grep -i 'nf_conntrack\\|table full'  # Connection tracking overflow indicator",
+            "dmesg | grep -i 'oom\\|out of memory'  # OOM events",
+            "journalctl -u kubelet --since '1 hour ago'  # kubelet errors",
+            "kubectl describe node <name>  # Check Conditions, Allocatable, Events",
+            "kubectl top nodes  # Real-time resource usage (requires metrics-server)"
+          ]
+        },
+        {
+          "concept": "vsphere_integration_diagnostics",
+          "truths": [
+            "kubectl get nodes -o wide  # Verify all nodes Ready with correct IPs",
+            "kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}: {.spec.providerID}{\"\\n\"}{end}'  # ProviderID check",
+            "kubectl -n kube-system get pods -l app=vsphere-cloud-controller-manager  # CPI pods running",
+            "kubectl -n vmware-system-csi get pods  # CSI pods running (vsphere-csi-controller, vsphere-csi-node DaemonSet)",
+            "kubectl describe csinodes  # Shows attached volumes per node",
+            "kubectl get events -n kube-system --field-selector reason=ProviderError  # vSphere API errors",
+            "On ESXi: esxcli vm process list  # Verify VM is running; check memory balloon: esxcli vm process stats -w <worldID>"
+          ]
+        }
+      ]
+    },
+    "layer_8_common_pitfalls": {
+      "description": "Known failure modes and their root causes + fixes for this exact stack",
+      "truth_lens": [
+        {
+          "concept": "pitfall_list",
+          "truths": [
+            "PITFALL: kubelet fails to start with 'swap memory is not disabled' — FIX: swapoff -a + comment /etc/fstab swap entries + verify no systemd swap units",
+            "PITFALL: Pods fail with 'nf_conntrack: table full, dropping packet' — FIX: increase net.netfilter.nf_conntrack_max to 1048576 and hashsize to 262144",
+            "PITFALL: inotify watch exhaustion, Prometheus/Filebeat silently stops monitoring — FIX: fs.inotify.max_user_watches=1048576",
+            "PITFALL: vSphere CSI cannot attach VMDK; PVC stuck in Pending — FIX: verify disk.EnableUUID=TRUE on ALL node VMs (restart VM after setting)",
+            "PITFALL: CPI never initializes nodes (taint never removed); pods stuck — FIX: verify kubeadm was run with --cloud-provider=external; check CPI pod logs; check vsphere.conf credentials",
+            "PITFALL: Node shows incorrect/missing ProviderID — FIX: CPI not running or vsphere.conf datacenter path wrong; must match exact vCenter datacenter object name",
+            "PITFALL: containerd fails to start, cgroupDriver mismatch — FIX: ensure SystemdCgroup=true in containerd config.toml AND cgroupDriver: systemd in kubelet config",
+            "PITFALL: Bridge traffic not going through iptables, pod networking broken — FIX: modprobe br_netfilter + net.bridge.bridge-nf-call-iptables=1 + net.ipv4.ip_forward=1; confirm module loads on boot via /etc/modules-load.d/k8s.conf",
+            "PITFALL: High latency spikes on Redis/Postgres pods — FIX: disable THP (transparent_hugepage=never in grub + systemd unit); verify no THP compaction running: grep AnonHugePages /proc/meminfo",
+            "PITFALL: Guest clock drift, etcd leader elections, certificate expiry warnings — FIX: ensure open-vm-tools is running and time sync enabled; or configure chrony against reliable NTP synchronized with ESXi host",
+            "PITFALL: VMXNET3 packet loss under high pod traffic — FIX: increase net.core.netdev_max_backlog to 65535; check ESXi port group for TX/RX errors in vSphere client",
+            "PITFALL: ESXi balloon driver inflating inside k8s nodes causing OOM kills — FIX: set Memory Reservation = Allocation in VM settings for control plane nodes; do not overcommit memory at ESXi host level for k8s clusters",
+            "PITFALL: Using generic ESXi ISO instead of HPE Custom Image — FIX: HP Smart Array P420i may work but miss optimized drivers; ILO health reporting broken; use HPE Custom Image for ESXi 7.0 U3 (July 2022 or later)",
+            "PITFALL: Node interleaving enabled in RBSU, ESXi shows single NUMA node — FIX: disable Node Interleaving in HPE RBSU; ESXi then exposes 2 NUMA nodes; kubelet topology manager can pin Guaranteed pods to single NUMA node",
+            "PITFALL: CSI hot-add volume attachment fails — FIX: VM must have CPU and Memory Hot Add enabled; PVSCSI supports hot-add disk without VM restart; LSI controller does NOT"
+          ]
+        }
+      ]
+    }
+  },
+  "reference_configs": {
+    "sysctl_99_k8s_esxi_conf": {
+      "description": "Complete /etc/sysctl.d/99-k8s-esxi.conf content",
+      "content": [
+        "# K8s on VMware ESXi Ubuntu Node Tuning",
+        "# Network Core",
+        "net.core.somaxconn = 65535",
+        "net.core.netdev_max_backlog = 65535",
+        "net.core.rmem_max = 134217728",
+        "net.core.wmem_max = 134217728",
+        "net.core.rmem_default = 31457280",
+        "net.core.wmem_default = 31457280",
+        "# TCP",
+        "net.ipv4.tcp_rmem = 4096 87380 134217728",
+        "net.ipv4.tcp_wmem = 4096 65536 134217728",
+        "net.ipv4.tcp_max_syn_backlog = 65535",
+        "net.ipv4.tcp_syncookies = 1",
+        "net.ipv4.tcp_tw_reuse = 1",
+        "net.ipv4.tcp_fin_timeout = 15",
+        "net.ipv4.tcp_keepalive_time = 600",
+        "net.ipv4.tcp_keepalive_intvl = 60",
+        "net.ipv4.tcp_keepalive_probes = 5",
+        "net.ipv4.tcp_window_scaling = 1",
+        "net.ipv4.tcp_mtu_probing = 1",
+        "net.ipv4.ip_local_port_range = 1024 65000",
+        "# Forwarding (mandatory for k8s)",
+        "net.ipv4.ip_forward = 1",
+        "net.ipv6.conf.all.forwarding = 1",
+        "# Connection Tracking",
+        "net.netfilter.nf_conntrack_max = 1048576",
+        "net.netfilter.nf_conntrack_tcp_timeout_established = 600",
+        "net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120",
+        "net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60",
+        "# Bridge / iptables (requires br_netfilter module)",
+        "net.bridge.bridge-nf-call-iptables = 1",
+        "net.bridge.bridge-nf-call-ip6tables = 1",
+        "net.bridge.bridge-nf-call-arptables = 1",
+        "# Memory",
+        "vm.swappiness = 0",
+        "vm.dirty_ratio = 20",
+        "vm.dirty_background_ratio = 5",
+        "vm.dirty_expire_centisecs = 3000",
+        "vm.dirty_writeback_centisecs = 500",
+        "vm.overcommit_memory = 1",
+        "vm.max_map_count = 262144",
+        "vm.min_free_kbytes = 131072",
+        "vm.panic_on_oom = 0",
+        "# Filesystem / inotify",
+        "fs.inotify.max_user_watches = 1048576",
+        "fs.inotify.max_user_instances = 8192",
+        "fs.file-max = 2097152",
+        "fs.nr_open = 1048576",
+        "# Kernel",
+        "kernel.pid_max = 4194304",
+        "kernel.threads-max = 2097152"
+      ]
+    },
+    "grub_cmdline_recommendation": {
+      "description": "Recommended GRUB_CMDLINE_LINUX in /etc/default/grub for ESXi-hosted k8s nodes",
+      "standard": "GRUB_CMDLINE_LINUX=\"quiet splash elevator=none transparent_hugepage=never cgroup_enable=memory cgroup_enable=cpuset\"",
+      "performance_private_cluster": "GRUB_CMDLINE_LINUX=\"quiet splash elevator=none transparent_hugepage=never cgroup_enable=memory cgroup_enable=cpuset mitigations=off\"",
+      "apply_command": "sudo update-grub && sudo reboot"
+    },
+    "modules_load_k8s_conf": {
+      "description": "/etc/modules-load.d/k8s.conf — kernel modules to load at boot",
+      "content": [
+        "overlay",
+        "br_netfilter",
+        "nf_conntrack"
+      ]
+    },
+    "vsphere_conf_template": {
+      "description": "vsphere.conf template for CPI (YAML format, CPI >= 1.2.0)",
+      "content": [
+        "global:",
+        "  port: 443",
+        "  insecureFlag: true",
+        "vcenter:",
+        "  <vcenter-ip-or-fqdn>:",
+        "    server: <vcenter-ip-or-fqdn>",
+        "    user: <svc-account>@vsphere.local",
+        "    password: <password>",
+        "    datacenters:",
+        "      - <datacenter-name>"
+      ]
+    },
+    "vm_advanced_params": {
+      "description": "VMware VM Advanced Configuration Parameters required for k8s",
+      "params": {
+        "disk.EnableUUID": "TRUE",
+        "sched.mem.pshare.enable": "FALSE"
+      }
+    }
+  },
+  "anti_patterns": [
+    {
+      "id": "AP01",
+      "pattern": "Using E1000/E1000e network adapter for k8s nodes",
+      "cause": "Emulated Intel NIC; all network operations go through CPU emulation",
+      "fix": "Switch to VMXNET3; Ubuntu includes the driver natively"
+    },
+    {
+      "id": "AP02",
+      "pattern": "Using LSI Logic SCSI controller instead of PVSCSI",
+      "cause": "LSI is emulated; higher CPU overhead, lower throughput for disk-heavy workloads (etcd, containerd image pulls)",
+      "fix": "Use VMware Paravirtual (PVSCSI) controller; supports boot disk since ESXi 4.1+"
+    },
+    {
+      "id": "AP03",
+      "pattern": "Not setting disk.EnableUUID=TRUE before deploying k8s",
+      "cause": "vSphere CSI driver cannot identify VMDK volumes without consistent UUID",
+      "fix": "Set in VM Advanced Parameters; requires VM power cycle to take effect; must be done BEFORE kubeadm init"
+    },
+    {
+      "id": "AP04",
+      "pattern": "Leaving swap enabled on k8s nodes",
+      "cause": "kubelet enforces --fail-swap-on=true by default; swap and ESXi balloon driver interact unpredictably",
+      "fix": "swapoff -a; comment /etc/fstab swap entries; mask systemd swap units"
+    },
+    {
+      "id": "AP05",
+      "pattern": "Running kubeadm without --cloud-provider=external on vSphere",
+      "cause": "kubelet uses deprecated in-tree vSphere provider or no provider; CPI cannot set ProviderID; CSI volumes cannot attach",
+      "fix": "Pass --cloud-provider=external to kubeadm init/join or set in KubeletConfiguration"
+    },
+    {
+      "id": "AP06",
+      "pattern": "Not loading br_netfilter before applying bridge sysctl params",
+      "cause": "sysctl apply succeeds but bridge-nf-call-iptables is silently ignored without the module; pod networking broken",
+      "fix": "modprobe br_netfilter before sysctl --system; add to /etc/modules-load.d/k8s.conf"
+    },
+    {
+      "id": "AP07",
+      "pattern": "Leaving THP enabled on k8s nodes",
+      "cause": "THP compaction causes latency spikes; conflicts with ESXi balloon driver; Redis/MongoDB/etcd warn about this explicitly",
+      "fix": "transparent_hugepage=never in GRUB; verify [never] in /sys/kernel/mm/transparent_hugepage/enabled"
+    },
+    {
+      "id": "AP08",
+      "pattern": "Using generic VMware ESXi ISO on HPE ProLiant DL360 G8",
+      "cause": "Missing HPE-specific drivers for P420i Smart Array, NC FlexLOM NICs, iLO integration, and AMS health monitoring",
+      "fix": "Use HPE Custom Image for ESXi 7.0 U3 (July 2022+ release); download from Broadcom/HPE customer portal"
+    },
+    {
+      "id": "AP09",
+      "pattern": "Enabling Node Interleaving in HPE RBSU with ESXi",
+      "cause": "Node Interleaving flattens NUMA topology into a single UMA domain; ESXi loses NUMA awareness; vCPU scheduling suboptimal",
+      "fix": "DISABLE Node Interleaving in RBSU; NUMA is ENABLED by disabling interleaving on HP servers (counterintuitive)"
+    },
+    {
+      "id": "AP10",
+      "pattern": "Setting cgroupDriver: cgroupfs in kubelet while containerd uses SystemdCgroup=true",
+      "cause": "cgroup driver mismatch causes node NotReady and container creation failures",
+      "fix": "Both must use systemd: cgroupDriver: systemd in kubelet config AND SystemdCgroup=true in containerd config.toml"
+    },
+    {
+      "id": "AP11",
+      "pattern": "Taking snapshots of VMs running as vSphere CSI nodes",
+      "cause": "vSphere CSI documentation explicitly warns snapshots of CNS node VMs cause errors and unpredictable behavior",
+      "fix": "Use Velero with vSphere CSI snapshots API for k8s-level backups; do not use vSphere snapshots on k8s nodes"
+    },
+    {
+      "id": "AP12",
+      "pattern": "Overcommitting memory at ESXi host level for k8s nodes",
+      "cause": "ESXi balloon driver inflates inside guest VMs to reclaim memory; causes guest kernel to swap; violates k8s swap=disabled guarantee",
+      "fix": "Set Memory Reservation = Limit (100%) for control plane VMs; avoid memory overcommit ratio >1.0 on hosts running k8s nodes"
+    },
+    {
+      "id": "AP13",
+      "pattern": "Using default nf_conntrack_max (65536) for k8s nodes",
+      "cause": "k8s clusters with 50+ pods easily exhaust 65536 tracked connections; manifests as random packet drops and connection resets",
+      "fix": "net.netfilter.nf_conntrack_max=1048576 + hashsize=262144 in /etc/modprobe.d/nf_conntrack.conf"
+    },
+    {
+      "id": "AP14",
+      "pattern": "Leaving default fs.inotify.max_user_watches (8192) on k8s nodes",
+      "cause": "Prometheus node-exporter, Filebeat, kubelets watching pod directories, and VS Code server each consume hundreds of inotify watches; default exhausted instantly",
+      "fix": "fs.inotify.max_user_watches=1048576 in sysctl"
+    },
+    {
+      "id": "AP15",
+      "pattern": "Using CFQ/BFQ I/O scheduler for block devices in ESXi guest",
+      "cause": "ESXi already performs I/O reordering at hypervisor layer; guest-side scheduler adds latency without benefit; double scheduling",
+      "fix": "elevator=none in GRUB or echo none > /sys/block/sda/queue/scheduler"
+    }
+  ],
+  "jq_usage_examples": [
+    {
+      "description": "Get all core principles",
+      "query": ".core_principles[]"
+    },
+    {
+      "description": "Get BIOS settings for DL360 G8",
+      "query": ".knowledge_layers.layer_0_hpe_dl360g8_hardware_profile.truth_lens[] | select(.concept==\"hpe_rbsu_bios_settings\") | .truths[]"
+    },
+    {
+      "description": "Get all VM hardware settings for k8s nodes",
+      "query": ".knowledge_layers.layer_1_esxi7_hp_hypervisor_configuration.truth_lens[] | select(.concept==\"vm_hardware_settings_for_k8s_nodes\") | .truths[]"
+    },
+    {
+      "description": "Get complete sysctl parameter list",
+      "query": ".knowledge_layers.layer_3_kernel_sysctl_tuning.truth_lens[].truths[]"
+    },
+    {
+      "description": "Get GRUB cmdline recommendation",
+      "query": ".reference_configs.grub_cmdline_recommendation"
+    },
+    {
+      "description": "Get all anti-patterns",
+      "query": ".anti_patterns[] | {id, pattern, fix}"
+    },
+    {
+      "description": "Get vSphere CPI/CSI requirements",
+      "query": ".knowledge_layers.layer_1_esxi7_hp_hypervisor_configuration.truth_lens[] | select(.concept==\"vsphere_cpi_csi_requirements\") | .truths[]"
+    },
+    {
+      "description": "Get ordered node preparation phases",
+      "query": ".knowledge_layers.layer_6_node_preparation_sequence.truth_lens[] | {phase: .concept, steps: .truths}"
+    },
+    {
+      "description": "Get all pitfalls and fixes",
+      "query": ".knowledge_layers.layer_8_common_pitfalls.truth_lens[].truths[]"
+    },
+    {
+      "description": "Get verification commands",
+      "query": ".knowledge_layers.layer_7_monitoring_and_diagnostics.truth_lens[] | select(.concept==\"verify_tuning_applied\") | .truths[]"
+    },
+    {
+      "description": "Get complete sysctl file content",
+      "query": ".reference_configs.sysctl_99_k8s_esxi_conf.content[]"
+    },
+    {
+      "description": "Get kubelet configuration recommendations",
+      "query": ".knowledge_layers.layer_5_kubelet_and_containerd_config.truth_lens[] | select(.concept==\"kubelet_configuration\") | .truths[]"
+    }
+  ],
+  "meta": {
+    "created": "2026-03-11",
+    "author": "TechnoRing Legion / Sonoratek LLC",
+    "hardware_scope": "HPE ProLiant DL360 G8 (Gen8), Sandy Bridge-EP / Ivy Bridge-EP Xeon, VMware ESXi 7.0 HPE Custom Image",
+    "software_scope": "Ubuntu 22.04/24.04 LTS, Kubernetes 1.27-1.32, containerd 1.7+, vSphere CPI v1.27-1.30, vSphere CSI v3.x",
+    "schema": "truth-lens nested array per layer; jq_root='.'; each layer has concept groups with truths[]",
+    "sources": [
+      "kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster",
+      "cloud-provider-vsphere.sigs.k8s.io/tutorials",
+      "broadcom knowledge.broadcom.com PVSCSI/VMXNET3 KB articles",
+      "vmware.com Performance Best Practices vSphere 7.0 U2",
+      "hpe.com RBSU Workload Profiles documentation",
+      "latitude.sh k8s kernel tuning guide",
+      "peterwoods.online tuning Linux for Kubernetes pt1 and pt2",
+      "overcast.blog kernel tuning and optimization for Kubernetes"
+    ]
+  }
+}

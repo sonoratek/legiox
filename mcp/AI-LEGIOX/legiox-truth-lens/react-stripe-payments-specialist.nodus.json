@@ -1,0 +1,525 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "react_stripe_payments_specialist",
+  "name": "Stripe React Payments Specialist",
+  "mission": {
+    "primary_objective": "Build, integrate, and maintain production-grade payment flows using Stripe Elements, Stripe.js, React Stripe.js, the Stripe REST API, webhooks, and Connect — covering one-time payments, subscriptions, marketplaces, and embedded UI components",
+    "context": "Stripe is a payment infrastructure platform. React Stripe.js is a thin React wrapper around Stripe Elements (iframe-based secure input components). All card data never touches your server — it is tokenized inside Stripe-hosted iframes. The REST API (server-side) creates PaymentIntents, Customers, Subscriptions, etc. The client confirms those intents via Stripe.js methods exposed through React hooks.",
+    "target_outcome": "PCI-compliant, type-safe, webhook-verified, production-ready payment integrations with correct async UX and robust error handling",
+    "scope": "React frontend + Node.js/any backend server integration, with Connect (platform/marketplace) and webhook patterns"
+  },
+  "truth_lens": "Build, integrate, and maintain production-grade payment flows using Stripe Elements, Stripe.js, React Stripe.js, the Stripe REST API, webhooks, and Connect — covering one-time payments, subscriptions, marketplaces, and embedded UI components Stripe is a payment infrastructure platform. React Stripe.js is a thin React wrapper around Stripe Elements (iframe-based secure input components). All card data never touches your server — it is tokenized inside Stripe-hosted iframes. The REST API (server-side) creates PaymentIntents, Customers, Subscriptions, etc. The client confirms those intents via Stripe.js methods exposed through React hook",
+  "consult_when": [
+    "Task touches react_stripe_payments_specialist responsibilities or failure modes named in this lens.",
+    "Need selector-grade triggers for Stripe React Payments Specialist before architecture or production change.",
+    "Cross-stack ambiguity between framework, infra, and data layers in this domain."
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for react_stripe_payments_specialist -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "NEVER_TOUCH_RAW_CARD — Card data only flows through Stripe Elements iframes; your code never sees raw PAN, CVC, or expiry",
+    "SERVER_SIDE_INTENT — Always create PaymentIntent / SetupIntent / Subscription on the server; send only clientSecret to the client",
+    "LOAD_OUTSIDE_RENDER — Call loadStripe() at module scope, not inside a component, to avoid re-instantiating the Stripe object on every render",
+    "DISABLE_UNTIL_LOADED — Keep submit button disabled while stripe or elements is null (Promise not yet resolved)",
+    "SIMULATE_CONFIRM — Use stripe",
+    "VERIFY_WEBHOOKS — Always validate Stripe-Signature header with stripe"
+  ],
+  "keywords": [
+    "react",
+    "stripe",
+    "payments",
+    "specialist",
+    "api",
+    "rest",
+    "ai",
+    "ui",
+    "payment",
+    "build",
+    "elements",
+    "stripe.js"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Stripe React Payments Specialist",
+  "role": "LegioX truth lens — Stripe React Payments Specialist",
+  "core_expertise": "Build, integrate, and maintain production-grade payment flows using Stripe Elements, Stripe.js, React Stripe.js, the Stripe REST API, webhooks, and Connect — covering one-time payments, subscriptions, marketplaces, and embedded UI components",
+  "key_capabilities": [
+    "never_touch_raw_card_card_data_only_flow",
+    "server_side_intent_always_create_payment",
+    "load_outside_render_call_loadstripe_at_m",
+    "disable_until_loaded_keep_submit_button_",
+    "simulate_confirm_use_stripe",
+    "verify_webhooks_always_validate_stripe_s",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-02-22",
+  "updated": "2026-02-22",
+  "source_versions": {
+    "stripe_js": "latest (js.stripe.com/v3/)",
+    "react_stripe_js": "@stripe/react-stripe-js latest",
+    "stripe_js_loader": "@stripe/stripe-js latest",
+    "stripe_node": "stripe npm package (server-side)",
+    "stripe_api_version": "v1 (REST) + v2 (thin events / Clover+)",
+    "react_minimum": "16.8+ (hooks required)",
+    "typescript_support": "full type inference via @stripe/stripe-js types"
+  },
+  "core_principles": [
+    "NEVER_TOUCH_RAW_CARD — Card data only flows through Stripe Elements iframes; your code never sees raw PAN, CVC, or expiry",
+    "SERVER_SIDE_INTENT — Always create PaymentIntent / SetupIntent / Subscription on the server; send only clientSecret to the client",
+    "LOAD_OUTSIDE_RENDER — Call loadStripe() at module scope, not inside a component, to avoid re-instantiating the Stripe object on every render",
+    "DISABLE_UNTIL_LOADED — Keep submit button disabled while stripe or elements is null (Promise not yet resolved)",
+    "SIMULATE_CONFIRM — Use stripe.confirmPayment / stripe.confirmSetup with the elements instance, never raw card tokens directly",
+    "VERIFY_WEBHOOKS — Always validate Stripe-Signature header with stripe.webhooks.constructEvent before acting on events",
+    "IDEMPOTENCY — Use idempotencyKey on server-side API calls to safely retry failed requests",
+    "RETURN_2XX_FAST — Webhook handlers must return 200 immediately; defer heavy processing to async workers",
+    "TEST_BEFORE_LIVE — Use sk_test_ / pk_test_ keys and Stripe test card numbers during development; never commit live keys"
+  ],
+  "installation": {
+    "client": {
+      "packages": "npm install --save @stripe/react-stripe-js @stripe/stripe-js",
+      "yarn": "yarn add @stripe/react-stripe-js @stripe/stripe-js",
+      "umd_note": "Always load Stripe.js from js.stripe.com directly — never bundle or self-host it (PCI compliance requirement)"
+    },
+    "server": {
+      "node": "npm install stripe",
+      "init": "const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)",
+      "env_vars": "STRIPE_SECRET_KEY=sk_test_... | STRIPE_PUBLISHABLE_KEY=pk_test_... | STRIPE_WEBHOOK_SECRET=whsec_..."
+    }
+  },
+  "authentication": {
+    "api_key_types": {
+      "secret_key": "sk_test_... (server only) / sk_live_... — never expose client-side",
+      "publishable_key": "pk_test_... / pk_live_... — safe to expose in browser; used to init Stripe.js",
+      "restricted_key": "Scoped to specific resources; prefer for microservices",
+      "webhook_secret": "whsec_... — used only for signature verification in webhook handlers"
+    },
+    "base_url": "https://api.stripe.com",
+    "auth_method": "HTTP Basic Auth — API key as username, no password; or Bearer token for cross-origin",
+    "test_mode": "All calls with sk_test_ / pk_test_ are sandboxed; no real charges occur",
+    "per_request_key": "Pass { apiKey } option to individual stripe.* calls for Connect multi-account patterns"
+  },
+  "providers_and_initialization": {
+    "loadStripe": {
+      "import": "import { loadStripe } from '@stripe/stripe-js'",
+      "usage": "const stripePromise = loadStripe('pk_test_...')  // call at module level",
+      "returns": "Promise<Stripe | null>",
+      "rule": "Must be called outside component render — create once at module scope"
+    },
+    "Elements_provider": {
+      "description": "Wraps your checkout subtree; provides Stripe + Elements context to all descendants",
+      "import": "import { Elements } from '@stripe/react-stripe-js'",
+      "usage": "<Elements stripe={stripePromise} options={{ clientSecret }}>...</Elements>",
+      "props": {
+        "stripe": "(required) Stripe | null | Promise<Stripe | null> — pass stripePromise",
+        "options": "(optional) ElementsOptions — must include clientSecret for Payment/Setup Element; immutable after set; update appearance via elements.update()"
+      },
+      "options_key_fields": {
+        "clientSecret": "PaymentIntent or SetupIntent clientSecret from your server",
+        "appearance": "Appearance API object — theme, variables, rules for visual customization",
+        "loader": "'auto' | 'always' | 'never' — controls skeleton loader display",
+        "locale": "BCP-47 locale string for Element language",
+        "fonts": "Array of custom font objects to inject into Element iframes"
+      }
+    },
+    "CheckoutProvider": {
+      "description": "Alternative provider for Checkout Sessions API flow (embedded components UI mode)",
+      "import": "import { CheckoutProvider } from '@stripe/react-stripe-js/checkout'",
+      "usage": "<CheckoutProvider stripe={stripePromise} options={{ clientSecret: sessionClientSecret }}>...</CheckoutProvider>",
+      "note": "clientSecret here is from a Checkout Session, not a PaymentIntent"
+    }
+  },
+  "hooks_reference": {
+    "useStripe": {
+      "signature": "useStripe(): Stripe | null",
+      "returns": "Stripe object (or null while Promise is pending)",
+      "usage": "const stripe = useStripe()",
+      "guard": "Always check if (!stripe) before calling stripe.* methods"
+    },
+    "useElements": {
+      "signature": "useElements(): Elements | null",
+      "returns": "Elements instance managing mounted Element components",
+      "usage": "const elements = useElements()",
+      "guard": "Always check if (!elements) before calling elements.*",
+      "key_methods": {
+        "elements.submit()": "Trigger validation and collect data before confirmPayment when using deferred intent creation",
+        "elements.update(options)": "Dynamically update appearance, currency, amount post-mount",
+        "elements.getElement(type)": "Get reference to a mounted element instance for imperative calls"
+      }
+    },
+    "useCheckout": {
+      "signature": "useCheckout(): CheckoutValue",
+      "import": "import { useCheckout } from '@stripe/react-stripe-js/checkout'",
+      "returns_shape": {
+        "type": "'loading' | 'error' | 'success'",
+        "checkout": "Checkout object when type === 'success'; includes confirm(), updateLineItems(), etc.",
+        "error": "Error object when type === 'error'"
+      },
+      "confirm_usage": "const result = await checkout.confirm(); if (result.type === 'error') { showError(result.error.message) }"
+    },
+    "ElementsConsumer": {
+      "description": "Render-prop / HOC alternative to hooks for class components",
+      "usage": "<ElementsConsumer>{({ stripe, elements }) => <Form stripe={stripe} elements={elements} />}</ElementsConsumer>"
+    }
+  },
+  "element_components": {
+    "universal_props": {
+      "options": "(optional) Element-specific config object",
+      "onReady": "(element) => void — fired when fully rendered, receives Element ref",
+      "onChange": "(event) => void — fires on input change; event.complete, event.error",
+      "onFocus": "() => void",
+      "onBlur": "() => void",
+      "onEscape": "(event) => void",
+      "onLoaderStart": "(event) => void — loader UI mounted (payment/address/linkAuthentication elements)",
+      "onLoaderror": "(event) => void — element failed to load"
+    },
+    "advanced_integration_elements": {
+      "PaymentElement": {
+        "description": "Unified input for 25+ payment methods; dynamically adjusts to customer location and currency",
+        "import": "import { PaymentElement } from '@stripe/react-stripe-js'",
+        "key_options": "layout ('tabs'|'accordion'|'auto'), paymentMethodOrder[], business.name, fields.billingDetails"
+      },
+      "AddressElement": {
+        "description": "Collects billing or shipping addresses in 236+ regional formats",
+        "options": "mode: 'billing' | 'shipping'; fields; autocomplete; defaultValues; display"
+      },
+      "ExpressCheckoutElement": {
+        "description": "One-click wallet buttons — Apple Pay, Google Pay, Link, PayPal",
+        "options": "paymentMethods, wallets, buttonType, buttonTheme, buttonHeight, layout"
+      },
+      "LinkAuthenticationElement": {
+        "description": "Email input with Link autofill; reduces friction for returning Link users"
+      },
+      "CardElement": "Single-line all-in-one card input (number + expiry + CVC)",
+      "CardNumberElement": "Card number only — compose with CardExpiryElement + CardCvcElement",
+      "CardExpiryElement": "Expiry date only",
+      "CardCvcElement": "CVC only",
+      "IbanElement": "SEPA IBAN input",
+      "AuBankAccountElement": "BECS Direct Debit (AU) — BSB + account number",
+      "PaymentRequestButtonElement": "Apple Pay / Google Pay button via Payment Request API"
+    },
+    "checkout_provider_elements": {
+      "PaymentElement": "import from '@stripe/react-stripe-js/checkout'",
+      "BillingAddressElement": "Billing address for CheckoutProvider flow",
+      "ShippingAddressElement": "Shipping address for CheckoutProvider flow",
+      "ExpressCheckoutElement": "Wallet buttons in CheckoutProvider flow"
+    }
+  },
+  "stripe_js_methods": {
+    "payment_confirmation": {
+      "stripe.confirmPayment": {
+        "usage": "await stripe.confirmPayment({ elements, confirmParams: { return_url } })",
+        "returns": "{ error } on failure; on success customer is redirected to return_url",
+        "redirect_option": "redirect: 'if_required' — stays on page for non-redirect payment methods",
+        "deferred_pattern": "Pass { elements, clientSecret } when creating intent at confirm time"
+      },
+      "stripe.confirmSetup": {
+        "usage": "await stripe.confirmSetup({ elements, confirmParams: { return_url } })",
+        "purpose": "Save a payment method without charging (SetupIntent flow)"
+      }
+    },
+    "payment_method_specific_confirm": {
+      "stripe.confirmCardPayment": "Legacy — prefer confirmPayment with PaymentElement",
+      "stripe.confirmCardSetup": "Legacy — prefer confirmSetup",
+      "stripe.confirmBancontactPayment": "Country-specific helpers follow same pattern",
+      "note": "All confirm* methods accept { payment_method } or { elements } (preferred)"
+    },
+    "payment_intents": {
+      "stripe.retrievePaymentIntent": "stripe.retrievePaymentIntent(clientSecret) — poll intent status after redirect return"
+    },
+    "payment_request": {
+      "stripe.paymentRequest": "Create a PaymentRequest object for Apple Pay / Google Pay; check canMakePayment() before rendering button"
+    },
+    "tokens_and_sources": {
+      "stripe.createToken": "Legacy tokenization — avoid for new integrations; use PaymentMethod instead",
+      "stripe.createPaymentMethod": "Create a PaymentMethod from Element data without confirming"
+    }
+  },
+  "server_side_api_patterns": {
+    "payment_intent_flow": {
+      "step1_create_intent": "POST /v1/payment_intents — { amount (cents), currency, automatic_payment_methods: { enabled: true } }",
+      "step2_send_client_secret": "Return { clientSecret: intent.client_secret } to client",
+      "step3_client_confirms": "stripe.confirmPayment({ elements, confirmParams: { return_url } })",
+      "step4_webhook_fulfillment": "Listen for payment_intent.succeeded webhook to fulfill order"
+    },
+    "setup_intent_flow": {
+      "purpose": "Save a payment method for future use (subscriptions, off-session charges)",
+      "create": "POST /v1/setup_intents — { customer, payment_method_types, usage: 'off_session' }",
+      "confirm_client": "stripe.confirmSetup({ elements, confirmParams: { return_url } })",
+      "webhook": "setup_intent.succeeded — store payment_method.id on customer record"
+    },
+    "checkout_sessions_flow": {
+      "create": "POST /v1/checkout/sessions — { mode: 'payment'|'subscription', line_items, success_url, cancel_url, ui_mode: 'embedded' }",
+      "embedded_ui": "Set ui_mode: 'embedded', return_url; receive clientSecret; use CheckoutProvider",
+      "hosted_ui": "Redirect to session.url for Stripe-hosted checkout page",
+      "webhook": "checkout.session.completed for fulfillment"
+    },
+    "subscriptions": {
+      "create_customer": "POST /v1/customers — { email, payment_method, invoice_settings: { default_payment_method } }",
+      "create_subscription": "POST /v1/subscriptions — { customer, items: [{ price }], payment_behavior: 'default_incomplete', expand: ['latest_invoice.payment_intent'] }",
+      "client_confirms": "Confirm using latest_invoice.payment_intent.client_secret",
+      "webhooks": [
+        "invoice.payment_succeeded",
+        "invoice.payment_failed",
+        "customer.subscription.deleted",
+        "customer.subscription.updated"
+      ]
+    },
+    "refunds": "POST /v1/refunds — { payment_intent, amount (optional, partial) }",
+    "customers": "POST /v1/customers — { email, name, metadata }; attach payment methods via /v1/payment_methods/:id/attach",
+    "idempotency": "Pass Idempotency-Key header or { idempotencyKey } option to all mutating calls"
+  },
+  "webhooks": {
+    "overview": "Stripe pushes POST requests with JSON Event objects to your registered HTTPS endpoint on async events",
+    "endpoint_requirements": [
+      "HTTPS in production (HTTP only for local dev)",
+      "Return 2xx before any heavy processing — defer to queue/worker",
+      "POST method",
+      "No auth required from Stripe's side — verify via signature instead"
+    ],
+    "signature_verification": {
+      "header": "Stripe-Signature",
+      "node_example": "const event = stripe.webhooks.constructEvent(payload, sig, process.env.STRIPE_WEBHOOK_SECRET)",
+      "python_example": "event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)",
+      "raw_body_required": "Must use raw Buffer/bytes — not parsed JSON — for constructEvent",
+      "express_tip": "Use express.raw({ type: 'application/json' }) before your webhook route"
+    },
+    "event_object_shape": {
+      "id": "evt_...",
+      "type": "e.g. 'payment_intent.succeeded'",
+      "data.object": "Full Stripe resource snapshot at time of event",
+      "livemode": "boolean",
+      "api_version": "Stripe API version string"
+    },
+    "v2_thin_events": {
+      "description": "Clover+ SDK era — thin events contain minimal data; call fetchRelatedObject() or fetchEvent() for full data",
+      "parse": "client.parse_event_notification(body, sig, secret) — returns typed event notification",
+      "fetch_related": "event_notif.fetch_related_object() — retrieves latest API object",
+      "unknown_events": "Use UnknownEventNotification class for event types introduced after SDK release"
+    },
+    "key_events": {
+      "payment_lifecycle": [
+        "payment_intent.succeeded",
+        "payment_intent.payment_failed",
+        "payment_intent.canceled",
+        "payment_intent.requires_action"
+      ],
+      "checkout": [
+        "checkout.session.completed",
+        "checkout.session.expired",
+        "checkout.session.async_payment_succeeded"
+      ],
+      "subscriptions": [
+        "customer.subscription.created",
+        "customer.subscription.updated",
+        "customer.subscription.deleted",
+        "invoice.payment_succeeded",
+        "invoice.payment_failed",
+        "invoice.upcoming"
+      ],
+      "disputes": [
+        "charge.dispute.created",
+        "charge.dispute.closed",
+        "charge.dispute.updated"
+      ],
+      "connect": [
+        "account.updated",
+        "account.application.deauthorized",
+        "transfer.created",
+        "payout.paid"
+      ],
+      "setup": [
+        "setup_intent.succeeded",
+        "setup_intent.setup_failed"
+      ]
+    },
+    "local_testing": "stripe listen --forward-to localhost:4242/webhook — provides local whsec_ secret",
+    "retry_behavior": "Stripe retries on non-2xx responses with exponential backoff for up to 3 days; design handlers to be idempotent"
+  },
+  "connect_platform_patterns": {
+    "overview": "Stripe Connect enables platforms and marketplaces to route payments to connected accounts",
+    "account_types": {
+      "standard": "Full Stripe account; user has direct Stripe relationship; Stripe handles risk/support",
+      "express": "Limited dashboard; platform owns onboarding UX; Stripe manages risk",
+      "custom": "Fully white-labeled; platform owns all UX, risk, and compliance — highest responsibility"
+    },
+    "charge_types": {
+      "direct_charge": "Charge created directly on connected account; platform acts as software provider (e.g. Shopify). Set stripe-account header to connected account id.",
+      "destination_charge": "Charge on platform; funds immediately transfer to connected account. Add transfer_data.destination = connected_account_id to PaymentIntent.",
+      "separate_charges_and_transfers": "Charge on platform; manually create Transfer objects to one or more connected accounts. Flexible but complex balance management."
+    },
+    "onboarding": {
+      "hosted": "stripe.accountLinks.create({ account, return_url, refresh_url, type: 'account_onboarding' }) → redirect to url",
+      "embedded": "Use @stripe/connect-js embedded components for in-app onboarding without redirect"
+    },
+    "application_fees": "Add application_fee_amount (cents) to PaymentIntent or application_fee to Subscription",
+    "risk_responsibility": {
+      "stripe_managed": "Stripe monitors risk, communicates with connected accounts — best for SaaS platforms",
+      "platform_managed": "Platform liable for negative balances — best for marketplaces needing full control"
+    },
+    "dashboard_access": {
+      "full_dashboard": "Connected accounts log into Stripe Dashboard — full feature access",
+      "express_dashboard": "Limited payout/earnings view; no refund/dispute management",
+      "embedded_components": "Build Connect UI inline using @stripe/connect-js — no redirect"
+    }
+  },
+  "appearance_api": {
+    "overview": "Configure Element visual styling via options.appearance in Elements provider; updates applied via elements.update()",
+    "shape": {
+      "theme": "'stripe' | 'night' | 'flat' | 'none'",
+      "variables": "CSS custom properties — colorPrimary, colorBackground, colorText, colorDanger, fontFamily, spacingUnit, borderRadius, etc.",
+      "rules": "Per-selector style overrides: { '.Input': { color: '#fff' }, '.Input:focus': { ... } }",
+      "labels": "'above' | 'floating'"
+    },
+    "note": "Elements are iframes — cannot style with external CSS or Tailwind; must use Appearance API"
+  },
+  "error_handling": {
+    "client_side": {
+      "pattern": "const result = await stripe.confirmPayment(...); if (result.error) { setError(result.error.message) }",
+      "error_types": {
+        "card_error": "Invalid card details — show to user (e.g. 'Your card number is incorrect')",
+        "validation_error": "Element input invalid before submission",
+        "api_error": "Stripe internal error — retry later",
+        "authentication_error": "Invalid API key",
+        "rate_limit_error": "Too many requests",
+        "idempotency_error": "Idempotency key reused with different params"
+      },
+      "error_fields": "error.type, error.code, error.message, error.decline_code, error.param"
+    },
+    "server_side": {
+      "pattern": "try { const intent = await stripe.paymentIntents.create(...) } catch (err) { if (err.type === 'StripeCardError') { res.status(402).send(err.message) } }",
+      "http_status_mapping": {
+        "200": "Success",
+        "400": "Bad request / missing params",
+        "401": "Invalid API key",
+        "402": "Card declined / payment failed",
+        "404": "Resource not found",
+        "429": "Rate limit exceeded",
+        "500": "Stripe internal error — retry with exponential backoff"
+      }
+    },
+    "webhook_errors": "Log failed events; Stripe retries; use idempotency to prevent double-processing"
+  },
+  "pci_compliance": {
+    "scope_reduction": "Using Stripe Elements / hosted checkout reduces your PCI scope to SAQ A — the lowest tier",
+    "rules": [
+      "Never log or store raw card data on your servers",
+      "Always load Stripe.js from js.stripe.com (not self-hosted)",
+      "Never handle card numbers in your JavaScript — only Element refs",
+      "Use HTTPS everywhere"
+    ],
+    "ssr_note": "During SSR, pass null or a pending Promise to Elements provider — Stripe.js only loads client-side"
+  },
+  "ssr_patterns": {
+    "next_js": {
+      "load_stripe": "Create stripePromise at module scope in a shared file; import in components",
+      "provider_placement": "Wrap checkout route layout with <Elements>; not the root layout (avoid loading Stripe.js on every page)",
+      "conditional_render": "Render Elements tree only when clientSecret is available from server action / API route",
+      "server_action": "Create PaymentIntent in server action; return clientSecret; set in state before rendering Elements"
+    },
+    "initial_render": "Pass stripe={null} to Elements during SSR — prevents hydration mismatch"
+  },
+  "testing": {
+    "test_cards": {
+      "success": "4242 4242 4242 4242 — any future expiry, any CVC",
+      "auth_required": "4000 0025 0000 3155 — triggers 3D Secure authentication",
+      "decline": "4000 0000 0000 0002 — generic decline",
+      "insufficient_funds": "4000 0000 0000 9995",
+      "expired": "4000 0000 0000 0069"
+    },
+    "stripe_cli": {
+      "listen": "stripe listen --forward-to localhost:4242/webhook",
+      "trigger": "stripe trigger payment_intent.succeeded",
+      "login": "stripe login — persists secret key locally"
+    },
+    "test_mode_flag": "Stripe dashboard shows TEST MODE badge; all test objects prefixed with test_ or use _test_ in IDs"
+  },
+  "common_patterns_by_task": {
+    "one_time_payment": {
+      "server": "Create PaymentIntent → return clientSecret",
+      "client": "Elements(clientSecret) → PaymentElement → stripe.confirmPayment({ elements, confirmParams: { return_url } })",
+      "webhook": "payment_intent.succeeded → fulfill order"
+    },
+    "save_card_for_future": {
+      "server": "Create Customer → Create SetupIntent → return clientSecret",
+      "client": "Elements(clientSecret) → PaymentElement → stripe.confirmSetup({ elements, confirmParams: { return_url } })",
+      "webhook": "setup_intent.succeeded → store payment_method.id"
+    },
+    "subscription": {
+      "server": "Create Customer + PaymentMethod → Create Subscription (default_incomplete) → return latest_invoice.payment_intent.client_secret",
+      "client": "Confirm PaymentIntent with card Elements",
+      "webhook": "invoice.payment_succeeded for renewal; invoice.payment_failed for dunning"
+    },
+    "embedded_checkout": {
+      "server": "Create Checkout Session (ui_mode: 'embedded', return_url) → return clientSecret",
+      "client": "CheckoutProvider(clientSecret) → PaymentElement → useCheckout().checkout.confirm()",
+      "webhook": "checkout.session.completed"
+    },
+    "marketplace_payout": {
+      "server": "PaymentIntent with transfer_data.destination = connectedAccountId + application_fee_amount",
+      "onboard": "accountLinks.create → redirect to stripe onboarding",
+      "webhook": "transfer.created, payout.paid on connected account"
+    },
+    "express_checkout_buttons": {
+      "client": "Elements → ExpressCheckoutElement → onConfirm callback → stripe.confirmPayment",
+      "prereq": "PaymentIntent clientSecret must be in Elements options before element loads"
+    }
+  },
+  "key_api_resources": {
+    "PaymentIntent": "Core object for one-time charges; stateful (requires_payment_method → requires_confirmation → processing → succeeded/failed)",
+    "SetupIntent": "Save payment method without charging; attach to Customer for future use",
+    "Customer": "Stripe entity for a user; attach PaymentMethods, create Subscriptions against",
+    "PaymentMethod": "Tokenized payment instrument (card, bank, wallet); reusable when attached to Customer",
+    "Subscription": "Recurring billing; tied to Customer + Price; auto-creates Invoices",
+    "Invoice": "Bill generated for subscription cycle; contains PaymentIntent for collection",
+    "Price": "Defines amount + currency + billing interval for Subscription",
+    "Product": "What you're selling; has one or more Prices",
+    "CheckoutSession": "Hosted or embedded payment page session; generates its own clientSecret",
+    "Refund": "Partial or full reversal of a Charge",
+    "Dispute": "Chargeback initiated by customer's bank; handle via Evidence submission",
+    "Account": "Stripe Connect connected account",
+    "Transfer": "Move funds from platform to connected account",
+    "Payout": "Send funds from Stripe balance to bank account"
+  },
+  "sdk_architecture": {
+    "client_side": {
+      "@stripe/stripe-js": "loadStripe() — async loads Stripe.js from CDN; exports Stripe type definitions",
+      "@stripe/react-stripe-js": "Elements, CheckoutProvider, useStripe, useElements, useCheckout, ElementsConsumer, all Element components"
+    },
+    "server_side": {
+      "stripe_node": "Full REST API client; stripe.paymentIntents.*, stripe.customers.*, stripe.webhooks.constructEvent, etc.",
+      "api_pattern": "All server SDK methods return Promises; use async/await"
+    },
+    "element_iframe_model": "Each Element renders inside a Stripe-hosted iframe; your JS communicates via postMessage abstraction — this is how PCI SAQ A scope reduction works"
+  },
+  "observability_and_debugging": {
+    "stripe_dashboard": "Events, logs, payment details, webhook attempts visible at dashboard.stripe.com",
+    "stripe_cli_logs": "stripe logs tail — real-time API request stream",
+    "event_inspector": "Click any event in dashboard to see full payload and replay it",
+    "network_tab": "stripe.confirmPayment triggers requests to api.stripe.com — inspect in DevTools",
+    "webhook_delivery": "Dashboard shows webhook delivery attempts, response codes, and allows manual retry",
+    "test_mode_isolation": "Test and live data are fully isolated — no risk of mixing"
+  },
+  "security_checklist": [
+    "Secret keys only on server — never in client bundle or env vars prefixed NEXT_PUBLIC_",
+    "Publishable key only on client — no harm if exposed",
+    "Webhook secret only on server — used for constructEvent signature verification",
+    "Validate webhook signatures on every event before processing",
+    "Use HTTPS for all endpoints including webhook receivers",
+    "Load Stripe.js from js.stripe.com only — never self-host",
+    "Set Stripe API version explicitly — pin in stripe SDK init to avoid surprise breaking changes",
+    "Use idempotency keys on all server-side create/update calls"
+  ],
+  "execution_command": {
+    "install": "npm install @stripe/react-stripe-js @stripe/stripe-js stripe",
+    "init_client": "const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)",
+    "provider_setup": "<Elements stripe={stripePromise} options={{ clientSecret }}> wraps checkout subtree",
+    "payment_flow": "Server creates PaymentIntent → client receives clientSecret → Elements + PaymentElement → stripe.confirmPayment",
+    "webhook_flow": "Register endpoint → validate Stripe-Signature → handle event type → return 200",
+    "connect_flow": "Create Account → accountLinks for onboarding → PaymentIntent with transfer_data.destination",
+    "test": "stripe listen --forward-to localhost:4242/webhook && stripe trigger payment_intent.succeeded"
+  }
+}

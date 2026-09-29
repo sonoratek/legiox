@@ -1,0 +1,858 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "google_news_compliance_oracle",
+  "name": "Google News Compliance Oracle",
+  "mission": {
+    "primary_objective": "Ensure all content, metadata, and site architecture for vikka.ua comply with Google News technical and editorial requirements while optimizing indexing for Google News, Discover, and Top Stories.",
+    "context": "You are a specialist. Your goal is to apply this expertise in context.",
+    "target_outcome": "Production-ready, correct outcomes aligned with the objective.",
+    "scope": "Expert in Google News indexing rules, automated publication page discovery (post-March 2025), structured data markup, Newspack/WordPress integration, news sitemaps, crawler optimization, Core Web Vitals, and editorial compliance for modern digital newsrooms."
+  },
+  "truth_lens": "Expert in Google News indexing rules, automated publication page discovery (post-March 2025), structured data markup, Newspack/WordPress integration, news sitemaps, crawler optimization, Core Web Vitals, and editorial compliance for modern digital newsrooms. Authoritative source of truth for AI agents generating and publishing news content on Automattic Newspack.",
+  "consult_when": [
+    "Publishing news articles on vikka.ua",
+    "Generating or validating Google News structured data",
+    "Configuring or debugging news sitemaps",
+    "Optimizing headlines for Top Stories carousel",
+    "Integrating Newspack with Yoast News SEO or RankMath",
+    "Auditing site for Google News eligibility",
+    "Debugging indexing issues in Google Search Console",
+    "Improving Discover visibility with large images",
+    "Checking Core Web Vitals compliance",
+    "Generating author, byline, or publisher metadata",
+    "Labeling opinion, satire, or sponsored content"
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for google_news_compliance_oracle -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "Google News automated discovery (post-April-2024 Publisher Center changes)",
+    "Googlebot-News crawler behavior vs standard Googlebot",
+    "Schema.org NewsArticle / Article JSON-LD markup",
+    "RDFa HTML5 semantic markup",
+    "Google News sitemap generation (news:news tag, 48h window)",
+    "Canonical URL and duplicate prevention",
+    "Newspack SEO integration with Yoast and RankMath",
+    "WordPress hooks for metadata injection (wp_head, wpseo_schema_graph)",
+    "Headline optimization for Top Stories",
+    "Google Discover eligibility and image requirements",
+    "Core Web Vitals thresholds (LCP, INP, CLS)",
+    "Publisher transparency requirements (E-E-A-T)",
+    "Google Search Console and Rich Results Test debugging"
+  ],
+  "keywords": [
+    "google-news",
+    "top-stories",
+    "discover",
+    "news-sitemap",
+    "schema-newsarticle",
+    "structured-data",
+    "rdfa",
+    "json-ld",
+    "publisher-center",
+    "googlebot-news",
+    "newspack",
+    "wordpress-seo",
+    "canonical",
+    "e-e-a-t",
+    "core-web-vitals",
+    "yoast-news-seo",
+    "rankmath",
+    "wpseo_schema_graph",
+    "lcp",
+    "inp",
+    "cls",
+    "wp_head",
+    "max-image-preview",
+    "vikka-ua",
+    "ukrainian-news",
+    "google",
+    "news",
+    "compliance",
+    "oracle"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "agent_name": "Google News Compliance Oracle",
+  "role": "LegioX truth lens — Google News Compliance Oracle",
+  "core_expertise": "Ensure all content, metadata, and site architecture for vikka.ua comply with Google News technical and editorial requirements while optimizing indexing for Google News, Discover, and Top Stories.",
+  "key_capabilities": [
+    "google_news_automated_discovery_post_apr",
+    "googlebot_news_crawler_behavior_vs_stand",
+    "schema_org_newsarticle_article_json_ld_m",
+    "rdfa_html5_semantic_markup",
+    "google_news_sitemap_generation_news_news",
+    "canonical_url_and_duplicate_prevention",
+    "newspack_seo_integration_with_yoast_and_",
+    "wordpress_hooks_for_metadata_injection_w",
+    "headline_optimization_for_top_stories",
+    "google_discover_eligibility_and_image_re",
+    "core_web_vitals_thresholds_lcp_inp_cls",
+    "publisher_transparency_requirements_e_e_",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "critical",
+  "created": "2026-03-12",
+  "updated": "2026-03-12",
+  "core_principles": [
+    "AUTOMATED_DISCOVERY_FIRST — As of March 2025, Google News automatically discovers and generates publication pages algorithmically. Publisher Center no longer accepts manual submissions, RSS feeds, or custom sections. Eligibility is determined purely by content quality, structured data, and policy compliance.",
+    "HEADLINE_INTEGRITY — Headlines must truthfully reflect article content. Avoid clickbait, ALL CAPS, misleading framing, or sensationalism. Google may demote or exclude articles with deceptive headlines from Top Stories and Discover.",
+    "STRUCTURED_DATA_IS_SIGNAL — NewsArticle JSON-LD is not required for Top Stories eligibility, but provides explicit authorship, publication dates, and image signals that significantly improve indexing accuracy and rich result eligibility.",
+    "AUTHOR_TRANSPARENCY — All news articles must display real, identifiable authors with bylines. Author pages with bios and credentials strengthen E-E-A-T. Anonymous or vague bylines risk exclusion under Google's transparency policy.",
+    "CRAWLER_VISIBILITY — Googlebot-News must have unrestricted access to full article content. robots.txt must not block news crawlers. Paywalls, login walls, and lazy-load content that is invisible to crawlers will prevent indexing.",
+    "NEWS_SITEMAP_IS_REQUIRED — A Google News sitemap with <news:news> tags is essential for discovery speed. Only include URLs from the last 48 hours. Maximum 1000 URLs per sitemap file. Update on every publish event.",
+    "FRESHNESS_IS_RANKING_SIGNAL — Publication date and dateModified must accurately reflect when articles were originally published and last substantially updated. Artificially refreshing dates without content changes violates Google policy.",
+    "DISCOVER_NEEDS_LARGE_IMAGES — Featured images must be at least 1200px wide (16:9 preferred) and accompanied by <meta name='robots' content='max-image-preview:large'> to qualify for large Discover cards. Small images yield thumbnail-only display.",
+    "CORE_WEB_VITALS_ARE_RANKING_FACTORS — LCP ≤2.5s, INP ≤200ms, CLS ≤0.1 at 75th percentile of real user data. Failing CWV directly affects Page Experience ranking signal. Newspack must be tuned for these thresholds on mobile.",
+    "PUBLISHER_IS_ORGANIZATION — Schema.org publisher must always be an Organization entity, never a Person. The logo field must be an ImageObject with a valid URL. Google requires this for NewsArticle rich results validation.",
+    "NO_AI_CONTENT_SPAM — Automatically generated, low-quality, or AI-mass-produced content without editorial oversight violates Google's spam and news policies. AI-assisted articles must be reviewed, edited, and authored by a real human.",
+    "CONTENT_LABELS_ARE_MANDATORY — Opinion, satire, press releases, user-generated content, and advertorials must be labeled using Google Publisher Center content labels and visible on-page disclosures. Unlabeled sponsored content is a policy violation."
+  ],
+  "knowledge_layers": {
+    "layer_0_google_news_platform_fundamentals": {
+      "summary": "Google News crawler architecture, eligibility rules, transparency requirements, and crawler access configuration for Newspack sites.",
+      "truth_lens": [
+        {
+          "concept": "automated_discovery_2025",
+          "truths": [
+            "As of late March 2025, Google News fully transitioned to automatically generated publication pages. Manual Publisher Center submissions, RSS feed submissions, and custom sections no longer appear to users.",
+            "Google's systems identify and rank eligible content based on: relevance, prominence, authoritativeness, freshness, location, and language.",
+            "Publisher Center remains useful only for: Reader Revenue Manager configuration, Google News Showcase panels, and favicon/branding for Showcase.",
+            "There is no application process for Google News inclusion. Eligibility is determined by content quality and policy compliance automatically.",
+            "Google News will use the site favicon as the publisher logo and the site name as the publication title for auto-generated pages."
+          ]
+        },
+        {
+          "concept": "googlebot_news_crawler",
+          "truths": [
+            "Googlebot-News is a separate crawler from standard Googlebot. It crawls news sitemaps much more frequently, sometimes within minutes of publication.",
+            "User-agent string: 'Googlebot-News'. robots.txt rules targeting 'Googlebot' do not affect Googlebot-News unless explicitly included.",
+            "Googlebot-News follows the same crawl budget and robots.txt rules as Googlebot but prioritizes recency. Articles more than 48 hours old receive lower crawl priority.",
+            "Crawl frequency increases with publishing cadence. Sites publishing 5+ articles/day receive more frequent crawls than occasional publishers.",
+            "JavaScript-rendered content is supported but may introduce indexing delays. Server-side rendering (SSR) is strongly preferred for news article content."
+          ]
+        },
+        {
+          "concept": "robots_txt_and_crawler_access",
+          "truths": [
+            "Never block Googlebot-News in robots.txt. A correctly configured robots.txt for a news site must NOT contain: User-agent: Googlebot-News followed by Disallow rules.",
+            "Recommended robots.txt for Newspack: User-agent: * Disallow: /wp-admin/ Allow: /wp-admin/admin-ajax.php — with no restrictions on Googlebot or Googlebot-News.",
+            "Sitemap declaration in robots.txt: Sitemap: https://vikka.ua/news-sitemap.xml — submit this path to Google Search Console.",
+            "Paywalled content: If using metered access, implement First Click Free or provide full content to crawlers via Googlebot conditional rendering to avoid cloaking policy violations.",
+            "HTTP headers must return 200 OK for article URLs. 301 redirects on article pages reduce crawl efficiency. Minimize redirect chains to 1 hop maximum."
+          ]
+        },
+        {
+          "concept": "transparency_and_e_e_a_t",
+          "truths": [
+            "Google's transparency policy requires: (1) a comprehensive About page, (2) clear author bylines on every article, (3) visible contact information, (4) editorial standards disclosure.",
+            "E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) is the primary quality signal for news content. Sites without verifiable authors and editorial transparency will not rank in Top Stories.",
+            "Author pages must include: full name, photo, professional bio, credentials, and ideally links to other published work. Linked author URL in NewsArticle schema amplifies this signal.",
+            "About page must disclose: publication name, founding date, ownership, editorial mission, and physical or registered address for regional publishers like vikka.ua.",
+            "Sponsored, advertorial, or paid content must be clearly labeled both on-page and in Publisher Center content area settings to avoid site reputation abuse policy violations."
+          ]
+        },
+        {
+          "concept": "editorial_standards",
+          "truths": [
+            "Content must be original, factual, and primarily focused on current news events. Aggregated or republished content without added value will not be indexed.",
+            "Thin content (articles under ~300 words without substantial reporting) signals low quality. Comprehensive articles with sourcing, quotes, and context score higher.",
+            "Fact-checked content can receive a 'Fact check' label using ClaimReview schema markup (schema.org/ClaimReview).",
+            "Live blog updates should use Schema.org LiveBlogPosting type with liveBlogUpdate arrays.",
+            "Opinion and analysis articles must be labeled with the 'Opinion' content label and should use OpinionNewsArticle schema type."
+          ]
+        }
+      ]
+    },
+    "layer_1_article_structure_requirements": {
+      "summary": "Required and recommended structural components of a Google News-compliant article for Newspack WordPress.",
+      "truth_lens": [
+        {
+          "concept": "required_article_components",
+          "truths": [
+            "HEADLINE: Must appear in <h1> tag. Must match the <title> tag and the schema headline property. Max 110 characters for schema; sitemap title may be truncated after 70 characters.",
+            "AUTHOR: Visible byline on every article. Must include full name. Author profile page URL strongly recommended. Group bylines acceptable ('Editorial Staff') but weaken E-E-A-T.",
+            "PUBLICATION DATE: Visible datetime on page matching datePublished in schema. Format: ISO 8601 with timezone, e.g., 2026-03-12T14:30:00+02:00.",
+            "MODIFIED DATE: Update dateModified only when article content is substantially changed. Never update dates artificially to game freshness signals.",
+            "PUBLISHER: Organization name and logo must appear in page footer or masthead and in structured data. Publisher must be an Organization, not a Person.",
+            "ARTICLE BODY: Full article text must be accessible to Googlebot without interaction. No content hidden behind 'Read More' clicks that require JS events.",
+            "FEATURED IMAGE: Must be present, relevant to article content, and at least 696x400px minimum (1200x675px strongly recommended for Discover eligibility)."
+          ]
+        },
+        {
+          "concept": "headline_rules",
+          "truths": [
+            "Headlines must truthfully represent article content. Misleading or clickbait headlines cause demotion in Top Stories and Discover.",
+            "Avoid ALL CAPS headlines — they signal low quality to Google's classifier.",
+            "Optimal length: 50-80 characters. Google News truncates headlines longer than 70 characters in sitemap display.",
+            "Do not include author name, publication name, or date in the headline.",
+            "Headlines should be unique across the site. Duplicate headlines on different articles cause indexing confusion.",
+            "For Ukrainian-language news on vikka.ua: ensure headlines are in proper Ukrainian (not Russian) for correct language classification by Google News."
+          ]
+        },
+        {
+          "concept": "article_freshness_and_updates",
+          "truths": [
+            "Articles published within the last 48 hours are eligible for news sitemap inclusion and fresh-news indexing.",
+            "Live breaking news articles should be updated with new information and use LiveBlogPosting schema to signal ongoing updates.",
+            "If correcting factual errors, add a visible correction notice at top of article and update dateModified.",
+            "Do not delete and republish articles to refresh dates — this creates duplicate content and orphaned backlinks.",
+            "WordPress post timestamps must be set in server local time. Newspack servers should be configured in UTC or UTC+2 (Kyiv time) consistently."
+          ]
+        }
+      ]
+    },
+    "layer_2_structured_data_schema_org": {
+      "summary": "Complete Schema.org markup patterns for all news content types, publisher logo requirements, and JSON-LD implementation for Newspack WordPress.",
+      "truth_lens": [
+        {
+          "concept": "newsarticle_json_ld_canonical",
+          "truths": [
+            "Preferred implementation: JSON-LD in a <script type='application/ld+json'> block in the <head> section.",
+            "NewsArticle is the correct type for factual news reporting. Use Article for general informational articles, BlogPosting for opinion/commentary, LiveBlogPosting for live coverage, OpinionNewsArticle for labeled opinion pieces.",
+            "Minimum required properties for Google compliance: @context, @type, headline, image, datePublished, author.",
+            "Strongly recommended additional properties: dateModified, publisher (Organization with logo), mainEntityOfPage, description.",
+            "All dates must be ISO 8601 format with timezone: '2026-03-12T14:30:00+02:00'.",
+            "Headlines in schema must match the visible <h1> on the page. Mismatches cause Rich Results Test warnings."
+          ]
+        },
+        {
+          "concept": "newsarticle_complete_example",
+          "truths": [
+            "Complete production NewsArticle JSON-LD for vikka.ua:",
+            "{",
+            "  '@context': 'https://schema.org',",
+            "  '@type': 'NewsArticle',",
+            "  'headline': 'Заголовок новини — до 110 символів',",
+            "  'description': 'Короткий опис статті для пошукових систем до 160 символів.',",
+            "  'image': [",
+            "    'https://vikka.ua/wp-content/uploads/2026/03/article-image-1x1.jpg',",
+            "    'https://vikka.ua/wp-content/uploads/2026/03/article-image-4x3.jpg',",
+            "    'https://vikka.ua/wp-content/uploads/2026/03/article-image-16x9.jpg'",
+            "  ],",
+            "  'datePublished': '2026-03-12T14:30:00+02:00',",
+            "  'dateModified': '2026-03-12T16:00:00+02:00',",
+            "  'author': [{",
+            "    '@type': 'Person',",
+            "    'name': 'Ім\\'я Прізвище',",
+            "    'url': 'https://vikka.ua/author/author-slug'",
+            "  }],",
+            "  'publisher': {",
+            "    '@type': 'Organization',",
+            "    'name': 'Вікка',",
+            "    'url': 'https://vikka.ua',",
+            "    'logo': {",
+            "      '@type': 'ImageObject',",
+            "      'url': 'https://vikka.ua/wp-content/themes/newspack-theme/images/logo.png',",
+            "      'width': 600,",
+            "      'height': 60",
+            "    }",
+            "  },",
+            "  'mainEntityOfPage': {",
+            "    '@type': 'WebPage',",
+            "    '@id': 'https://vikka.ua/news/article-slug'",
+            "  },",
+            "  'inLanguage': 'uk'",
+            "}"
+          ]
+        },
+        {
+          "concept": "publisher_logo_requirements",
+          "truths": [
+            "Publisher logo must be an ImageObject in schema, never a plain string URL.",
+            "Recommended logo dimensions: 600x60px (wide format for Google Knowledge Panel).",
+            "Minimum logo dimensions: 112x112px. Maximum dimensions: 600x60px for rectangular, 1x1 ratio acceptable.",
+            "Logo must be accessible via HTTPS. No authentication required to load the logo URL.",
+            "Logo file formats: PNG, JPEG, GIF, WebP. SVG is not accepted.",
+            "For Newspack: define logo in Customizer → Site Identity. Yoast SEO Organization settings will use this as the schema logo."
+          ]
+        },
+        {
+          "concept": "image_requirements_for_schema",
+          "truths": [
+            "Provide images in three aspect ratios inside an array: 1:1, 4:3, 16:9. This maximizes eligibility for different display contexts.",
+            "Minimum image dimensions: 696x400px. Images below this threshold cause Rich Results Test warnings.",
+            "Recommended for Discover: 1200x675px (16:9) — qualifies for large Discover card display.",
+            "Images must be crawlable (no robots.txt blocks on /wp-content/uploads/). CDN-served images must allow Googlebot access.",
+            "Do not use watermarked images, stock photo frames with logos overlaid, or images that misrepresent the article content."
+          ]
+        },
+        {
+          "concept": "specialized_schema_types",
+          "truths": [
+            "LiveBlogPosting: Use for ongoing breaking news with live updates. Include liveBlogUpdate array with BlogPosting items, each with datePublished and articleBody.",
+            "OpinionNewsArticle: Use for columnist opinion pieces. Requires visible 'Opinion' label on page. Yoast News SEO supports this type via the schema article subtypes.",
+            "AnalysisNewsArticle: For analytical journalism that interprets news events.",
+            "ReportageNewsArticle: For original investigative reporting.",
+            "ReviewNewsArticle: For reviews of films, books, events (less common for news sites).",
+            "ClaimReview: For fact-checking articles. Identifies specific claims with verdict ratings. Enables 'Fact check' label in Google News."
+          ]
+        }
+      ]
+    },
+    "layer_3_rdfa_markup_integration": {
+      "summary": "RDFa HTML5 semantic markup for news articles, publisher metadata, and OpenGraph alignment.",
+      "truth_lens": [
+        {
+          "concept": "rdfa_article_markup",
+          "truths": [
+            "RDFa is an alternative to JSON-LD and embeds structured data directly in HTML attributes. Google supports both; JSON-LD is preferred and easier to maintain in WordPress.",
+            "Core RDFa attributes: vocab='https://schema.org/' typeof='NewsArticle' on the article container element.",
+            "Property mapping: property='headline' on <h1>, property='datePublished' content='ISO-DATE' on <time>, property='author' typeof='Person' on byline element.",
+            "RDFa and JSON-LD can coexist on the same page. However, ensure they do not contradict each other (e.g., different author names).",
+            "Newspack with Yoast SEO outputs JSON-LD by default. Adding RDFa manually requires custom PHP in the theme or a mu-plugin to prevent duplication conflicts."
+          ]
+        },
+        {
+          "concept": "rdfa_complete_article_example",
+          "truths": [
+            "RDFa article markup pattern for Newspack theme templates:",
+            "<article vocab='https://schema.org/' typeof='NewsArticle'>",
+            "  <h1 property='headline'>Заголовок статті</h1>",
+            "  <div property='author' typeof='Person'>",
+            "    <a property='url' href='https://vikka.ua/author/name'>",
+            "      <span property='name'>Ім'я Автора</span>",
+            "    </a>",
+            "  </div>",
+            "  <time property='datePublished' content='2026-03-12T14:30:00+02:00' datetime='2026-03-12T14:30:00+02:00'>12 березня 2026</time>",
+            "  <div property='publisher' typeof='Organization'>",
+            "    <span property='name'>Вікка</span>",
+            "  </div>",
+            "  <div property='articleBody'>...повний текст статті...</div>",
+            "</article>"
+          ]
+        },
+        {
+          "concept": "opengraph_alignment",
+          "truths": [
+            "OpenGraph tags are consumed by Discover and social platforms for thumbnail and title selection. og:title must match article headline.",
+            "og:image must be at least 1200x630px for optimal Discover and Facebook/Twitter display.",
+            "og:type should be 'article' for news articles.",
+            "article:published_time and article:modified_time OpenGraph tags signal freshness to Discover.",
+            "article:author OpenGraph tag should link to the author profile page.",
+            "Yoast SEO and RankMath both generate OpenGraph tags automatically. Ensure they are not overridden by Newspack theme or conflicting plugins."
+          ]
+        }
+      ]
+    },
+    "layer_4_google_news_sitemap": {
+      "summary": "News sitemap XML format, required tags, 48-hour window enforcement, and WordPress/Newspack generation patterns.",
+      "truth_lens": [
+        {
+          "concept": "sitemap_format_and_tags",
+          "truths": [
+            "News sitemaps extend standard XML sitemaps with the https://www.google.com/schemas/sitemap-news/0.9/ namespace.",
+            "Required XML structure per article URL: <url><loc>, <news:news><news:publication><news:name>, <news:language>, <news:publication_date>, <news:title>.",
+            "news:publication name must exactly match the publication name as it appears on news.google.com (e.g., 'Вікка' or 'Vikka' — be consistent).",
+            "news:language must be ISO 639 language code: 'uk' for Ukrainian.",
+            "news:publication_date must be the original publication date in W3C format (YYYY-MM-DDTHH:MM:SS+HH:MM).",
+            "news:title must match the article headline exactly. Do not include author name, site name, or date in this field.",
+            "Maximum 1000 URLs per sitemap file. Articles older than 48 hours must be removed from the news sitemap (or the <news:news> tag removed)."
+          ]
+        },
+        {
+          "concept": "news_sitemap_xml_example",
+          "truths": [
+            "Complete news sitemap example for vikka.ua:",
+            "<?xml version='1.0' encoding='UTF-8'?>",
+            "<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'",
+            "        xmlns:news='https://www.google.com/schemas/sitemap-news/0.9/'>",
+            "  <url>",
+            "    <loc>https://vikka.ua/news/article-slug/</loc>",
+            "    <news:news>",
+            "      <news:publication>",
+            "        <news:name>Вікка</news:name>",
+            "        <news:language>uk</news:language>",
+            "      </news:publication>",
+            "      <news:publication_date>2026-03-12T14:30:00+02:00</news:publication_date>",
+            "      <news:title>Заголовок новини</news:title>",
+            "    </news:news>",
+            "  </url>",
+            "</urlset>"
+          ]
+        },
+        {
+          "concept": "wordpress_sitemap_generation",
+          "truths": [
+            "Yoast News SEO plugin: Generates news sitemap at /news-sitemap.xml automatically. Configure via SEO → News SEO → Publication Name (must match Google News display name).",
+            "RankMath: Enable News Sitemap module in Dashboard → Rank Math SEO. Configure post types to include. News sitemap URL: /news-sitemap.xml.",
+            "Newspack: Does not generate news sitemaps natively. Requires Yoast News SEO or RankMath News module.",
+            "After enabling, submit sitemap URL to Google Search Console: Settings → Sitemaps → Add sitemap.",
+            "Sitemap must update immediately on article publish. Use WordPress action hook 'publish_post' to trigger sitemap regeneration if using custom generation.",
+            "Do not create a new sitemap file per article. Update the single news-sitemap.xml file dynamically with the latest articles."
+          ]
+        },
+        {
+          "concept": "sitemap_submission_and_monitoring",
+          "truths": [
+            "Submit news sitemap in Google Search Console → Sitemaps. URL: https://vikka.ua/news-sitemap.xml.",
+            "Monitor sitemap status in Search Console for errors: invalid date formats, inaccessible URLs, articles exceeding 48h window.",
+            "News sitemap coverage is tracked separately from main sitemap. Check 'News sitemap' report in Search Console for indexing status.",
+            "Articles remain in the news sitemap coverage report in Search Console for 30 days even after being removed from the actual sitemap file.",
+            "If Googlebot-News stops crawling your sitemap (no recent fetches in Search Console), it may indicate publishing frequency has dropped below Google's threshold."
+          ]
+        }
+      ]
+    },
+    "layer_5_wordpress_newspack_integration": {
+      "summary": "Newspack SEO configuration, Yoast and RankMath integration, WordPress hooks for metadata injection, and schema modification filters.",
+      "truth_lens": [
+        {
+          "concept": "newspack_seo_stack",
+          "truths": [
+            "Newspack is built on WordPress and is compatible with all standard WordPress SEO plugins.",
+            "Recommended SEO stack for Google News: Newspack + Yoast SEO (free or premium) + Yoast News SEO plugin (paid, ~$79/yr) for news sitemap + schema subtypes.",
+            "Alternative: Newspack + RankMath SEO (free or Pro) with News Sitemap module enabled. RankMath Pro includes news sitemap and News Article schema out of the box.",
+            "Do NOT activate both Yoast and RankMath simultaneously — they conflict on schema output and sitemap generation.",
+            "Google Site Kit plugin: Integrates Search Console, Analytics, and PageSpeed Insights data directly in WordPress dashboard. Recommended for monitoring."
+          ]
+        },
+        {
+          "concept": "yoast_seo_configuration",
+          "truths": [
+            "Yoast SEO → General → Features: Enable Schema, XML Sitemaps, OpenGraph.",
+            "Yoast SEO → Search Appearance → Content Types → Posts: Set Schema Article Type to 'NewsArticle'.",
+            "Yoast SEO → Social → Facebook: Enable OpenGraph metadata.",
+            "Yoast News SEO: Set Publication Name to exact match of Google News display name.",
+            "Yoast News SEO: Select which post types to include in news sitemap (typically 'Posts' only).",
+            "Yoast SEO Organization settings: Set organization name, URL, and logo. These populate the Publisher object in schema."
+          ]
+        },
+        {
+          "concept": "wordpress_hooks_for_metadata",
+          "truths": [
+            "wp_head: Primary hook for injecting <meta> tags, canonical URLs, and JSON-LD into the page <head>. Use add_action('wp_head', 'my_news_meta_inject', 5).",
+            "wpseo_schema_graph: Yoast filter to add, remove, or modify schema graph pieces. Return modified $graph array.",
+            "wpseo_json_ld_output: Legacy Yoast filter (pre-v14). Use wpseo_schema_graph for Yoast SEO v14+.",
+            "the_content: Hook to append correction notices, content labels, or structured metadata after article body.",
+            "wpseo_title: Filter for overriding Yoast-generated SEO title. Signature: apply_filters('wpseo_title', $title).",
+            "wpseo_metadesc: Filter for overriding Yoast-generated meta description.",
+            "wpseo_canonical: Filter for overriding canonical URL output.",
+            "rank_math/json_ld: RankMath filter equivalent to wpseo_schema_graph for modifying JSON-LD output."
+          ]
+        },
+        {
+          "concept": "schema_modification_examples",
+          "truths": [
+            "Inject custom author URL into Yoast schema: add_filter('wpseo_schema_graph', function($graph, $context) { foreach($graph as &$piece) { if($piece['@type'] === 'Person') { $piece['url'] = get_author_posts_url(get_the_author_meta('ID')); } } return $graph; }, 10, 2);",
+            "Add inLanguage property for Ukrainian content: add_filter('wpseo_schema_graph', function($graph) { foreach($graph as &$piece) { if(in_array($piece['@type'], ['NewsArticle','Article'])) { $piece['inLanguage'] = 'uk'; } } return $graph; });",
+            "Override article type to NewsArticle for all posts: Use Yoast SEO → Search Appearance → Posts → Schema tab → Article Type → NewsArticle.",
+            "RankMath schema type per post: In Gutenberg sidebar → RankMath SEO → Schema → Edit Schema → Change type to NewsArticle."
+          ]
+        }
+      ]
+    },
+    "layer_6_google_discover_optimization": {
+      "summary": "Discover eligibility signals, image requirements, headline patterns, and metadata configuration for maximum Discover visibility.",
+      "truth_lens": [
+        {
+          "concept": "discover_eligibility_signals",
+          "truths": [
+            "Google Discover is a personalized feed on mobile that surfaces content proactively without search queries. No direct submission or configuration exists.",
+            "Discover eligibility signals: high-quality images (≥1200px), strong E-E-A-T, accurate and engaging headlines, full text accessible to crawler, Core Web Vitals passing on mobile.",
+            "Two meta tags that BLOCK Discover entirely: <meta name='robots' content='nopagereadaloud'> and <meta name='robots' content='notranslate'>. Never use these on news articles.",
+            "If a user dismisses a story from Discover, that specific URL is permanently suppressed for that user. No workaround exists.",
+            "Personalization layers Discover uses: Google interest graph, Publisher Center signals (still relevant for branding), user follow/dismiss actions, engagement dwell time."
+          ]
+        },
+        {
+          "concept": "image_requirements_for_discover",
+          "truths": [
+            "Minimum image width: 1200px. Images below this will display as small thumbnails on the right side of cards, significantly reducing CTR.",
+            "Recommended dimensions: 1200x675px (16:9 aspect ratio). This fills the full-width Discover card on mobile.",
+            "Required meta tag in <head>: <meta name='robots' content='max-image-preview:large'>. Without this, even 1200px images may show as thumbnails.",
+            "No text overlays or watermarks on featured images. Google's classifier may reject images with overlaid text.",
+            "Featured image must be directly relevant to article content. Stock photos with generic subjects reduce Discover performance.",
+            "OpenGraph og:image must point to the same 1200px+ image. Yoast and RankMath set this from the featured image if configured correctly."
+          ]
+        },
+        {
+          "concept": "headline_patterns_for_discover",
+          "truths": [
+            "Discover favors headlines that accurately reflect content and satisfy curiosity without being clickbait.",
+            "Informational headlines ('How X works', 'Why Y happened') perform well in Discover.",
+            "Avoid: question headlines with obvious answers, numeric lists ('10 ways to...') for breaking news, superlatives ('Best ever', 'Most shocking').",
+            "Discover headline optimal length: 40-80 characters for full display on mobile cards.",
+            "Evergreen content (timeless informational articles) can resurface repeatedly in Discover. Breaking news spikes quickly then stops."
+          ]
+        }
+      ]
+    },
+    "layer_7_performance_requirements": {
+      "summary": "Core Web Vitals thresholds, image optimization, lazy loading policies, and Newspack-specific performance configurations.",
+      "truth_lens": [
+        {
+          "concept": "core_web_vitals_thresholds",
+          "truths": [
+            "LCP (Largest Contentful Paint) — Good: ≤2.5s | Needs Improvement: 2.5s–4.0s | Poor: >4.0s. Typically the featured article image or <h1> headline.",
+            "INP (Interaction to Next Paint, replaced FID in March 2024) — Good: ≤200ms | Needs Improvement: 200ms–500ms | Poor: >500ms.",
+            "CLS (Cumulative Layout Shift) — Good: ≤0.1 | Needs Improvement: 0.1–0.25 | Poor: >0.25.",
+            "Google measures CWV at the 75th percentile of real user data from CrUX. A site passes only when 75% of page loads meet the 'Good' threshold.",
+            "CWV are confirmed ranking factors in the Page Experience algorithm, estimated at 10-15% of ranking signal weight for competitive queries.",
+            "Monitor CWV via: Google Search Console → Core Web Vitals report, PageSpeed Insights (https://pagespeed.web.dev), and Chrome UX Report."
+          ]
+        },
+        {
+          "concept": "image_optimization_for_performance",
+          "truths": [
+            "Serve featured images in WebP format. Newspack supports WebP via WordPress 5.8+ native WebP conversion or Imagify/ShortPixel plugins.",
+            "Set explicit width and height attributes on all images to prevent CLS from layout shifts during load.",
+            "Use srcset and sizes attributes for responsive images. Newspack generates these automatically for attached images.",
+            "Preload the LCP image (featured article image) with: <link rel='preload' as='image' href='article-hero.webp' fetchpriority='high'>.",
+            "Lazy load below-fold images with loading='lazy'. Do NOT lazy load the featured image or first in-article image — these are likely the LCP element.",
+            "Target article featured image file size: under 150KB at 1200x675px using WebP compression."
+          ]
+        },
+        {
+          "concept": "newspack_performance_configuration",
+          "truths": [
+            "Newspack uses WordPress hosting (typically WP Engine or Pressable). Enable full-page caching at the server level.",
+            "Disable WordPress emojis script: remove_action('wp_head', 'print_emoji_detection_script', 7) in functions.php or use Newspack plugin settings.",
+            "Use a CDN (Cloudflare or Fastly) for static assets. Newspack hosting includes CDN by default on managed plans.",
+            "Minimize third-party scripts. Each third-party ad tag or analytics script can add 50-200ms to INP scores.",
+            "Enable Newspack's AMP support for article pages if Top Stories AMP carousel eligibility is desired. AMP pages must pass W3C AMP validation.",
+            "PHP 8.2+ required for Newspack and WordPress 6.7+. Older PHP versions reduce server response time and CWV scores."
+          ]
+        }
+      ]
+    },
+    "layer_8_popular_google_news_plugins": {
+      "summary": "Ecosystem overview of WordPress plugins for Google News compliance, their features, and compatibility with Newspack.",
+      "truth_lens": [
+        {
+          "concept": "yoast_seo_and_news_seo",
+          "truths": [
+            "Yoast SEO (free): Core SEO plugin. Generates JSON-LD schema, XML sitemaps, OpenGraph/Twitter Card tags. Compatible with Newspack. Required foundation for Yoast News SEO.",
+            "Yoast News SEO (paid, ~$79/yr): Adds news sitemap generation, Google News-specific schema subtypes (OpinionNewsArticle, AnalysisNewsArticle, etc.), and Googlebot-News index control per post.",
+            "Yoast hooks relevant to News: wpseo_schema_graph, wpseo_title, wpseo_metadesc, wpseo_canonical, Yoast\\WPSEOFree\\Presentations\\AbstractPresentation.",
+            "Yoast News SEO supports WordPress 6.5+ and PHP 7.4+. Tested compatible with Newspack theme and Newspack Blocks.",
+            "Known Newspack + Yoast issue: Newspack theme may output duplicate <title> tags if Yoast title template not overriding theme. Check with View Source."
+          ]
+        },
+        {
+          "concept": "rankmath_for_news",
+          "truths": [
+            "RankMath (free): Full-featured SEO plugin with built-in schema generator, sitemap, and Search Console integration. Free version includes NewsArticle schema type.",
+            "RankMath Pro ($59/yr): Adds News Sitemap module, advanced schema customization, and bulk schema editing.",
+            "RankMath News Sitemap: Enable via Rank Math SEO → Modules → News Sitemap. Automatically includes/excludes posts based on post type settings. Posts are auto-removed after 48 hours.",
+            "RankMath compatibility with Newspack: Fully compatible. One-click import from Yoast if migrating.",
+            "RankMath filter for schema: rank_math/json_ld — used to modify JSON-LD output programmatically."
+          ]
+        },
+        {
+          "concept": "google_site_kit",
+          "truths": [
+            "Google Site Kit (free official plugin): Integrates Search Console, Analytics 4, PageSpeed Insights, and Adsense data into WordPress dashboard.",
+            "Provides Core Web Vitals field data from CrUX directly in wp-admin without leaving WordPress.",
+            "Does NOT affect SEO output, schema, or sitemaps. Purely a monitoring and analytics dashboard.",
+            "Recommended for all Newspack installations for centralized Google product monitoring.",
+            "Site Kit requires Google account authentication and ownership verification in Search Console."
+          ]
+        },
+        {
+          "concept": "amp_plugin_status",
+          "truths": [
+            "AMP for WordPress plugin (by AMP Project): Generates AMP versions of articles. Still supported as of 2026 but adoption has declined significantly.",
+            "Google removed AMP as a requirement for Top Stories carousel in 2021. Standard web pages with good CWV can appear in Top Stories.",
+            "AMP pages still provide a performance advantage (sub-1s LCP on Google AMP cache) and may benefit lower-resource sites.",
+            "Newspack has native AMP support built in. AMP pages must pass W3C AMP validator at validator.ampproject.org.",
+            "If using AMP, ensure structured data is output correctly in AMP templates. Yoast SEO handles this automatically."
+          ]
+        }
+      ]
+    },
+    "layer_9_googlebot_debugging": {
+      "summary": "Debugging tools, methods, and workflows for diagnosing Google News indexing issues on Newspack sites.",
+      "truth_lens": [
+        {
+          "concept": "google_search_console_debugging",
+          "truths": [
+            "URL Inspection Tool: Enter any article URL to see last crawl date, crawl status, indexing status, and rendered HTML as Googlebot sees it. Essential first step for any indexing problem.",
+            "Core Web Vitals Report: Shows LCP, INP, CLS by URL group for mobile and desktop, sourced from real CrUX data.",
+            "Sitemaps Report: Verify news sitemap was fetched and processed. Shows count of submitted vs indexed URLs.",
+            "Manual Actions: Check for Google News policy violations that resulted in manual penalties. Located at Security & Manual Actions → Manual Actions.",
+            "Discover Performance Report: Available in Search Console. Shows clicks, impressions, CTR from Google Discover. Requires sufficient Discover traffic to populate.",
+            "Rich Results Report: Track errors and warnings in NewsArticle structured data implementation across the site."
+          ]
+        },
+        {
+          "concept": "rich_results_test",
+          "truths": [
+            "Google Rich Results Test (https://search.google.com/test/rich-results): Validates JSON-LD schema for a live URL or pasted code snippet.",
+            "Test output shows: detected schema types, missing required properties, warnings for recommended properties, and preview of rich result appearance.",
+            "Common errors to fix: missing 'image' property, date format errors (not ISO 8601), publisher logo as string URL instead of ImageObject.",
+            "Use 'Test live URL' mode to test actual Newspack pages as they render for Googlebot (JS-executed).",
+            "Schema.org validator (https://validator.schema.org): Cross-validate JSON-LD against schema.org specification independently of Google requirements."
+          ]
+        },
+        {
+          "concept": "crawler_log_analysis",
+          "truths": [
+            "Server access logs: Filter for 'Googlebot-News' user agent to see which URLs were crawled, frequency, and response codes.",
+            "Log pattern to monitor: 200 (success), 301/302 (redirects — minimize), 404 (broken URLs — fix or remove from sitemap), 500 (server errors — critical).",
+            "High crawl frequency on /news-sitemap.xml confirms Googlebot-News is actively monitoring the sitemap.",
+            "Long gaps (>4 hours) between Googlebot-News fetches of the news sitemap may indicate low publishing frequency or sitemap errors.",
+            "Screaming Frog SEO Spider: Can simulate Googlebot crawl of Newspack site to identify crawl issues, redirect chains, and missing meta tags at scale."
+          ]
+        }
+      ]
+    },
+    "layer_10_publisher_center": {
+      "summary": "Current Publisher Center functionality post-March 2025, what remains useful, and configuration best practices for vikka.ua.",
+      "truth_lens": [
+        {
+          "concept": "publisher_center_current_role_2025",
+          "truths": [
+            "As of March 2025, Publisher Center no longer controls publication page appearance in Google News. All publication pages are auto-generated.",
+            "Publisher Center retains value for: (1) Reader Revenue Manager (subscription/donation flows), (2) Google News Showcase (commercial panels), (3) Subscribe with Google.",
+            "Publication verification: Still requires Google Search Console ownership verification of the site domain.",
+            "Content labels: Publisher Center is used to apply content labels to URL patterns (e.g., /opinion/ → Opinion label). This remains functional.",
+            "Google News will use site favicon for publisher logo in auto-generated pages. Ensure favicon is high-quality (512x512px SVG or PNG recommended).",
+            "For vikka.ua: Access Publisher Center at https://publishercenter.google.com. Organization must be verified."
+          ]
+        },
+        {
+          "concept": "content_labels_configuration",
+          "truths": [
+            "Available content labels: Opinion, Satire, Parody, User-Generated Content, Press Release, Blog.",
+            "Configure via Publisher Center → More Options → Add content labels → Enter URL pattern (e.g., https://vikka.ua/opinion/).",
+            "Opinion label is critical: Unlabeled opinion content presented as news violates Google's editorial standards policy.",
+            "Fact-checked content receives a 'Fact check' label automatically when ClaimReview markup is detected.",
+            "Sponsored/advertorial content must be labeled and must not focus on the sponsor without disclosure. Site reputation abuse policy applies as of May 2024."
+          ]
+        }
+      ]
+    },
+    "layer_11_anti_patterns": {
+      "summary": "Critical mistakes that cause Google News exclusion, ranking suppression, or manual penalties. Enforcement guide for AI agents generating content on vikka.ua.",
+      "truth_lens": [
+        {
+          "concept": "content_anti_patterns",
+          "truths": [
+            "MISSING_AUTHORS: Articles without visible bylines are treated as lacking transparency. Google will not index anonymous news content under E-E-A-T.",
+            "THIN_CONTENT: Articles under 300 words without substantial reporting, sourcing, or original information signal low quality. Minimum viable news article: 400+ words with at least one attributed source.",
+            "AI_CONTENT_SPAM: Mass-produced AI articles without human editorial review violate Google's spam policy. AI-assisted content is acceptable only when reviewed, edited, and published by a human editor.",
+            "DUPLICATE_ARTICLES: Publishing the same story multiple times under different URLs (wire service content reprinted verbatim). Use canonical tags or noindex for duplicate versions.",
+            "DATE_MANIPULATION: Updating post dates without substantive content changes to game freshness signals. Google detects this and may penalize the site.",
+            "MISLEADING_HEADLINES: Headlines that do not accurately represent article content cause Discover demotion and Top Stories exclusion.",
+            "UNLABELED_ADVERTORIAL: Sponsored content presented as editorial news without disclosure violates both Google News policy and Ukrainian advertising law."
+          ]
+        },
+        {
+          "concept": "technical_anti_patterns",
+          "truths": [
+            "INCORRECT_SCHEMA_PUBLISHER_TYPE: Using '@type': 'Person' as publisher instead of 'Organization'. Google requires Organization for NewsArticle publisher.",
+            "LOGO_AS_STRING_URL: schema publisher.logo as a plain string URL instead of ImageObject. Causes Rich Results Test error: 'logo' should be a valid ImageObject.",
+            "WRONG_DATE_FORMAT: Dates like '2026-03-12' without time component are insufficient. ISO 8601 with full datetime and timezone required: '2026-03-12T14:30:00+02:00'.",
+            "BLOCKING_CRAWLER: Any robots.txt Disallow rule targeting Googlebot or Googlebot-News on article paths will prevent news indexing entirely.",
+            "LOW_QUALITY_IMAGES: Featured images below 696x400px cause Rich Results warnings. Images below 1200px prevent large Discover card display.",
+            "NOINDEX_ON_ARTICLES: Adding 'noindex' to article pages via Yoast or custom code prevents them from appearing anywhere in Google, including News.",
+            "DUPLICATE_SCHEMA: Multiple JSON-LD blocks on the same page with conflicting data (e.g., Yoast output + manual injection with different author names).",
+            "HIDDEN_REDIRECTS: Cloaking article URLs with JavaScript redirects or meta refresh that Googlebot cannot follow."
+          ]
+        }
+      ]
+    }
+  },
+  "environment_requirements": {
+    "wordpress": {
+      "minimum_version": "6.5",
+      "recommended_version": "6.7+",
+      "notes": "Newspack requires WordPress 6.5+. WordPress 6.7+ required for Yoast News SEO latest version compatibility."
+    },
+    "php": {
+      "minimum_version": "7.4",
+      "recommended_version": "8.2",
+      "notes": "PHP 8.2 provides the best performance for Newspack. Lower versions significantly impact server response time and LCP scores."
+    },
+    "seo_plugin": {
+      "option_a": "Yoast SEO (free) + Yoast News SEO (paid) — gold standard for news sites",
+      "option_b": "RankMath Pro — more features at lower cost, excellent news sitemap support",
+      "constraint": "Never activate both simultaneously. Choose one SEO plugin ecosystem."
+    },
+    "https": {
+      "required": true,
+      "notes": "HTTPS is mandatory. Google News will not index HTTP-only sites. TLS certificate must be valid and non-expired. Mixed content warnings must be resolved."
+    },
+    "cdn_compatibility": {
+      "supported": [
+        "Cloudflare",
+        "Fastly",
+        "AWS CloudFront",
+        "Newspack managed CDN"
+      ],
+      "notes": "CDN must not cache articles with stale canonical URLs. Configure cache-control headers: max-age=3600 for article pages, max-age=300 for news sitemap."
+    },
+    "hosting": {
+      "newspack_managed": "WP Engine or Pressable via Automattic. Includes server-level caching and CDN.",
+      "self_hosted_requirements": "PHP-FPM 8.2, Redis object cache, Nginx with gzip, full-page cache plugin (W3 Total Cache or WP Rocket)."
+    }
+  },
+  "anti_patterns": [
+    {
+      "id": "MISSING_AUTHORS",
+      "category": "editorial",
+      "severity": "critical",
+      "cause": "Article published without visible byline",
+      "fix": "Add author byline to all articles. Create author pages. Link author in schema."
+    },
+    {
+      "id": "AI_CONTENT_SPAM",
+      "category": "editorial",
+      "severity": "critical",
+      "cause": "Mass AI-generated articles without human review",
+      "fix": "All published articles must be reviewed and edited by a human editor before publishing."
+    },
+    {
+      "id": "THIN_CONTENT",
+      "category": "editorial",
+      "severity": "high",
+      "cause": "Article body under 300 words, no sources cited",
+      "fix": "Minimum 400 words for news articles. Include attributed quotes, sourced data, and context."
+    },
+    {
+      "id": "DUPLICATE_ARTICLES",
+      "category": "technical",
+      "severity": "high",
+      "cause": "Wire content reprinted verbatim across multiple URLs",
+      "fix": "Use rel=canonical pointing to original source or noindex duplicates."
+    },
+    {
+      "id": "DATE_MANIPULATION",
+      "category": "editorial",
+      "severity": "critical",
+      "cause": "Refreshing post dates without substantive edits",
+      "fix": "Only update dateModified on genuine content updates. Never change datePublished after initial publication."
+    },
+    {
+      "id": "INCORRECT_PUBLISHER_TYPE",
+      "category": "schema",
+      "severity": "high",
+      "cause": "publisher @type set to Person instead of Organization",
+      "fix": "Set publisher: { '@type': 'Organization', 'name': 'Вікка', 'logo': { '@type': 'ImageObject', ... } }"
+    },
+    {
+      "id": "LOGO_AS_STRING",
+      "category": "schema",
+      "severity": "medium",
+      "cause": "publisher.logo is a plain string URL",
+      "fix": "Use ImageObject: publisher.logo = { '@type': 'ImageObject', 'url': '...', 'width': 600, 'height': 60 }"
+    },
+    {
+      "id": "WRONG_DATE_FORMAT",
+      "category": "schema",
+      "severity": "high",
+      "cause": "Dates in YYYY-MM-DD format without time or timezone",
+      "fix": "Use ISO 8601 full datetime: '2026-03-12T14:30:00+02:00'"
+    },
+    {
+      "id": "BLOCKING_CRAWLER",
+      "category": "technical",
+      "severity": "critical",
+      "cause": "robots.txt Disallow blocking Googlebot-News on article paths",
+      "fix": "Remove all Disallow rules for Googlebot-News. Only disallow wp-admin."
+    },
+    {
+      "id": "LOW_QUALITY_IMAGES",
+      "category": "technical",
+      "severity": "high",
+      "cause": "Featured images below 696x400px or under 1200px for Discover",
+      "fix": "Upload featured images at minimum 1200x675px WebP."
+    },
+    {
+      "id": "NO_MAX_IMAGE_PREVIEW",
+      "category": "technical",
+      "severity": "high",
+      "cause": "Missing max-image-preview:large meta tag",
+      "fix": "Add <meta name='robots' content='max-image-preview:large'> to all article pages via wp_head hook."
+    },
+    {
+      "id": "NOINDEX_ON_ARTICLES",
+      "category": "technical",
+      "severity": "critical",
+      "cause": "noindex meta tag on news article posts",
+      "fix": "Remove noindex from all published news articles in Yoast or RankMath settings."
+    },
+    {
+      "id": "DUPLICATE_SCHEMA",
+      "category": "schema",
+      "severity": "medium",
+      "cause": "Multiple JSON-LD blocks with conflicting data from plugin + manual injection",
+      "fix": "Use only one schema output mechanism. Extend via wpseo_schema_graph filter instead of adding separate <script> blocks."
+    },
+    {
+      "id": "UNLABELED_ADVERTORIAL",
+      "category": "editorial",
+      "severity": "critical",
+      "cause": "Sponsored content not labeled as such",
+      "fix": "Add on-page disclosure. Configure Publisher Center content label for /sponsored/ URL pattern."
+    },
+    {
+      "id": "MISSING_NEWS_SITEMAP",
+      "category": "technical",
+      "severity": "critical",
+      "cause": "No Google News sitemap submitted",
+      "fix": "Install Yoast News SEO or RankMath Pro. Submit sitemap to Google Search Console."
+    }
+  ],
+  "meta": {
+    "schema_version": "1.0.0",
+    "target_platform": "Automattic Newspack on WordPress 6.7+",
+    "primary_site": "https://vikka.ua",
+    "primary_language": "uk",
+    "google_news_display_name": "Вікка",
+    "sitemap_url": "https://vikka.ua/news-sitemap.xml",
+    "search_console_property": "https://vikka.ua",
+    "jq_root": ".",
+    "jq_queries": {
+      "all_anti_patterns": ".anti_patterns[]",
+      "critical_anti_patterns": ".anti_patterns[] | select(.severity==\"critical\")",
+      "schema_anti_patterns": ".anti_patterns[] | select(.category==\"schema\")",
+      "core_principles": ".core_principles[]",
+      "newsarticle_json_ld_example": ".knowledge_layers.layer_2_structured_data_schema_org.truth_lens[] | select(.concept==\"newsarticle_complete_example\") | .truths[]",
+      "sitemap_xml_example": ".knowledge_layers.layer_4_google_news_sitemap.truth_lens[] | select(.concept==\"news_sitemap_xml_example\") | .truths[]",
+      "wordpress_hooks": ".knowledge_layers.layer_5_wordpress_newspack_integration.truth_lens[] | select(.concept==\"wordpress_hooks_for_metadata\") | .truths[]",
+      "discover_image_rules": ".knowledge_layers.layer_6_google_discover_optimization.truth_lens[] | select(.concept==\"image_requirements_for_discover\") | .truths[]",
+      "cwv_thresholds": ".knowledge_layers.layer_7_performance_requirements.truth_lens[] | select(.concept==\"core_web_vitals_thresholds\") | .truths[]",
+      "crawler_config": ".knowledge_layers.layer_0_google_news_platform_fundamentals.truth_lens[] | select(.concept==\"robots_txt_and_crawler_access\") | .truths[]",
+      "publisher_center_2025": ".knowledge_layers.layer_10_publisher_center.truth_lens[] | select(.concept==\"publisher_center_current_role_2025\") | .truths[]",
+      "yoast_configuration": ".knowledge_layers.layer_5_wordpress_newspack_integration.truth_lens[] | select(.concept==\"yoast_seo_configuration\") | .truths[]",
+      "headline_rules": ".knowledge_layers.layer_1_article_structure_requirements.truth_lens[] | select(.concept==\"headline_rules\") | .truths[]",
+      "rdfa_example": ".knowledge_layers.layer_3_rdfa_markup_integration.truth_lens[] | select(.concept==\"rdfa_complete_article_example\") | .truths[]",
+      "layer_keys": ".knowledge_layers | keys[]",
+      "environment_requirements": ".environment_requirements"
+    },
+    "validation_patterns": {
+      "headline_max_chars": 110,
+      "headline_min_chars": 10,
+      "sitemap_title_max_chars": 70,
+      "image_minimum_width_px": 696,
+      "image_minimum_height_px": 400,
+      "discover_image_minimum_width_px": 1200,
+      "publisher_logo_max_width_px": 600,
+      "publisher_logo_max_height_px": 60,
+      "date_format_regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$",
+      "news_sitemap_max_urls": 1000,
+      "news_sitemap_max_age_hours": 48,
+      "cwv_lcp_good_seconds": 2.5,
+      "cwv_inp_good_ms": 200,
+      "cwv_cls_good": 0.1,
+      "article_minimum_word_count": 400
+    },
+    "sources": [
+      "https://support.google.com/news/publisher-center/answer/6204050",
+      "https://support.google.com/news/publisher-center/answer/15898024",
+      "https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap",
+      "https://developers.google.com/search/docs/appearance/structured-data/article",
+      "https://schema.org/NewsArticle",
+      "https://web.dev/articles/vitals",
+      "https://developers.google.com/search/docs/appearance/core-web-vitals",
+      "https://developer.yoast.com/customization/news-seo/hooks/",
+      "https://rankmath.com/kb/newspack/"
+    ],
+    "last_verified": "2026-03-12",
+    "notes": "Publisher Center transitioned to fully automated publication pages in March 2025. This skillset reflects the post-transition state. RSS feed submissions and manual section customization are no longer applicable."
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "flow_react_next_integration",
+  "name": "Flow React Next Integration (Ring Frontend Layer)",
+  "mission": {
+    "primary_objective": "Integrate Flow blockchain interactions into Ring Platform Next.js 16 App Router using @onflow/react-sdk with TypeScript-first hooks, wallet Connect UX, and sponsored transaction handoff to server payer where required.",
+    "context": "Ring uses React 19 Server Components by default. Flow wallet interactions are client-only. FlowProvider wraps the app; hooks (useFlowCurrentUser, useFlowMutate, useFlowQuery) handle queries and mutations. Distinguish @onflow/react-sdk from @xyflow/react (diagram UI).",
+    "target_outcome": "Ring clone pages show Connect wallet, user address, FT/NFT balances, and submit sponsored txs without EVM wagmi — consistent with flow_sponsored_transactions backend.",
+    "scope": "Client components, FlowProvider config, react-sdk hooks, flow.json contract deps — not Cadence contract source (flow_cadence_*) or server ensureWallet (flow_ensure_wallet_server)."
+  },
+  "truth_lens": "Flow in Next.js is a client-island problem: FlowProvider and all mutate/query hooks live in 'use client' boundaries. Server Components may read off-chain Postgres wallet mapping from ensureWallet; on-chain reads use useFlowQuery with TanStack Query caching. Never import @onflow/fcl wallet auth in Server Actions without understanding server lacks browser wallet.",
+  "core_principles": [
+    "Install @onflow/react-sdk; wrap app with FlowProvider + flow.json imports.",
+    "Use official Connect component for wallet discovery — do not build custom modal unless branding requires.",
+    "useFlowMutate for user-signed txs; combine with server-built payer authz for full sponsorship pattern.",
+    "Configure accessNodeUrl + flowNetwork per environment (mainnet/testnet/emulator).",
+    "WalletConnect: set walletconnectProjectId in FlowProvider when enabling WC option."
+  ],
+  "anti_patterns": [
+    "Confusing react-flow / @xyflow/react with @onflow/react-sdk.",
+    "Mounting FlowProvider in Server Component without client wrapper.",
+    "Calling useFlowMutate from Server Actions or RSC pages directly.",
+    "Hardcoding mainnet access node in test environments.",
+    "Expecting browser wallet to pay fees in production Ring (use sponsored payer)."
+  ],
+  "key_patterns": [
+    "flow-provider-wrapper.tsx: 'use client'; FlowProvider config={{ accessNodeUrl, flowNetwork, appDetailTitle, ... }} flowJson={flowJSON}.",
+    "layout.tsx imports FlowProviderWrapper around {children}.",
+    "useFlowCurrentUser(): user.loggedIn, user.addr, authenticate(), unauthenticate().",
+    "useFlowQuery({ cadence, args }) for scripts; useFlowMutate for transactions.",
+    "useFlowTransaction(transactionId) for status tracking after mutate.",
+    "useFlowAuthz() returns wallet authorization fn for proposer/authorizer roles.",
+    "Starter reference: github.com/onflow/flow-react-sdk-starter (Next App Router + Testnet)."
+  ],
+  "consult_when": [
+    "Adding Flow wallet to Ring Platform Next.js clone",
+    "Configuring FlowProvider for mainnet vs testnet vs emulator",
+    "Choosing hooks for balance display vs NFT gallery vs transfer button",
+    "Integrating Connect with Ring Auth.js session (linked vs walletless)",
+    "Enabling WalletConnect in FlowProvider config"
+  ],
+  "expertise": [
+    "FLOW_PROVIDER_SETUP — Next.js App Router client wrapper",
+    "REACT_SDK_HOOKS — query, mutate, current user, transaction status",
+    "WALLET_CONNECT_UX — Connect component and discovery",
+    "RSC_BOUNDARY — server vs client split for Ring pages"
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/flow-sponsored-transactions.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-ensure-wallet-server.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-cadence-ft-mint.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-cadence-nft-marketplace.nodus.json"
+  ],
+  "package_stack": {
+    "primary": "@onflow/react-sdk",
+    "underlying": "@onflow/fcl",
+    "types": "@onflow/typedefs",
+    "query": "@tanstack/react-query (via react-sdk hooks)",
+    "not_flow": "@xyflow/react — unrelated diagram library"
+  },
+  "flow_provider_config": {
+    "required_fields": [
+      "accessNodeUrl",
+      "flowNetwork",
+      "appDetailTitle"
+    ],
+    "recommended_fields": [
+      "appDetailIcon",
+      "appDetailDescription",
+      "appDetailUrl",
+      "walletconnectProjectId"
+    ],
+    "mainnet_access_node_example": "https://rest-mainnet.onflow.org",
+    "testnet_access_node_example": "https://rest-testnet.onflow.org"
+  },
+  "hooks_reference": {
+    "useFlowCurrentUser": "Auth state + authenticate/unauthenticate",
+    "useFlowQuery": "Cadence scripts with caching",
+    "useFlowMutate": "Cadence transactions (mutations)",
+    "useFlowTransaction": "Track tx id to sealed/executed",
+    "useFlowAuthz": "Authorization function for tx roles",
+    "useFlowAccount": "Account object fetch",
+    "doc": "https://developers.flow.com/build/tools/react-sdk/hooks"
+  },
+  "jq_topic_index": {
+    "flow_provider": "flow_provider_config; package_stack",
+    "hooks": "hooks_reference",
+    "connect": "core_principles; key_patterns",
+    "app_router": "key_patterns; anti_patterns",
+    "walletconnect": "flow_provider_config.recommended_fields"
+  },
+  "keywords": [
+    "flow",
+    "react",
+    "nextjs",
+    "react-sdk",
+    "FlowProvider",
+    "useFlowMutate",
+    "useFlowQuery",
+    "Connect",
+    "app_router",
+    "ring",
+    "jq_topic_index"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "role": "LegioX truth lens — Flow React/Next.js integration",
+  "version": "1.0.0",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "tier": "web3_blockchain",
+  "web_references": [
+    {
+      "topic": "Flow React SDK",
+      "url": "https://developers.flow.com/build/tools/react-sdk"
+    },
+    {
+      "topic": "React SDK hooks",
+      "url": "https://developers.flow.com/build/tools/react-sdk/hooks"
+    },
+    {
+      "topic": "FCL JS overview",
+      "url": "https://developers.flow.com/build/tools/clients/fcl-js"
+    },
+    {
+      "topic": "Next.js starter",
+      "url": "https://github.com/onflow/flow-react-sdk-starter"
+    }
+  ]
+}

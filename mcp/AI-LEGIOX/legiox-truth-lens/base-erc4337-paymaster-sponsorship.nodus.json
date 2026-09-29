@@ -1,0 +1,83 @@
+{
+  "agent_type": "base_erc4337_paymaster_sponsorship",
+  "name": "Base ERC-4337 Paymaster Gas Sponsorship",
+  "role": "LegioX truth lens — Ring Base L2 secondary rail",
+  "mission": {
+    "primary_objective": "Sponsor Base L2 gas for Ring US users via CDP Paymaster and ERC-4337 smart accounts so RING mirror transfers and desk ops execute without users holding ETH.",
+    "context": "Unlike Solana native feePayer, Base sponsorship requires account abstraction — EOAs must upgrade to smart accounts (CDP embedded wallet, EIP-7702, or Base Account). CDP Paymaster is ERC-7677: bundler + paymaster unified endpoint on Base Mainnet and Sepolia only.",
+    "target_outcome": "useCdpPaymaster or wallet_sendCalls with paymasterService; RING mirror + desk contracts allowlisted in CDP portal; server proxy protects API key; per-user and global spend caps.",
+    "scope": "Base paymaster integration for ring-platform.org Phase 1.5. Excludes Solana feePayer (solana-fee-sponsorship-native) and Polygon legacy gas."
+  },
+  "truth_lens": "ERC-4337 Paymasters sponsor gas only for smart accounts — plain EOAs cannot use CDP Paymaster without upgrade. Ring allowlists RING mirror transfer and RingSales desk selectors in CDP portal — deny by default. CDP_PAYMASTER_URL is server-only; Next.js API route proxies with Auth.js session check and rate limits. Base fees are sub-cent but sponsorship removes ETH onboarding friction for US Coinbase funnel users.",
+  "core_principles": [
+    "Smart account required — document EIP-7702 vs CDP embedded path.",
+    "Contract allowlist per function selector in CDP portal.",
+    "Server proxy only — never NEXT_PUBLIC paymaster URL.",
+    "Per-user and global dollar caps on sponsorship spend.",
+    "Solana canonical supply — paymaster does not mint RING."
+  ],
+  "anti_patterns": [
+    "Claiming gasless EOA transfers without AA upgrade.",
+    "Exposing CDP API key in client bundles or env NEXT_PUBLIC_*.",
+    "Unallowlisted contract calls burning sponsorship budget.",
+    "Using Base paymaster patterns for Solana feePayer (different model).",
+    "Sponsoring unbounded delegatecall or arbitrary contract writes."
+  ],
+  "key_patterns": [
+    "useSendUserOperation({ paymaster: true }) with CDP provider.",
+    "wallet_sendCalls with capabilities.paymasterService.url → server proxy.",
+    "CDP portal: allowlist RING.transfer, RingSales.buy/sell selectors.",
+    "POST /api/base/paymaster proxy: session + rate limit + CDP forward.",
+    "Handle paymaster limit exceeded → user-friendly fallback message.",
+    "Base Sepolia for integration tests before mainnet allowlist."
+  ],
+  "consult_when": [
+    "Implementing gasless RING transfer on Base smart accounts.",
+    "Configuring CDP Paymaster contract allowlists.",
+    "Building server paymaster proxy with Auth.js.",
+    "Choosing CDP embedded wallet vs wagmi + AA adapter.",
+    "Debugging paymaster rejection vs insufficient ETH on non-AA wallet."
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/devops-base-paymaster-ops.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/base-account-smart-wallet.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/base-erc20-ring-token-mirror.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/solana-fee-sponsorship-native.nodus.json"
+  ],
+  "expertise": [
+    "ERC4337_PAYMASTER",
+    "CDP_PAYMASTER_7677",
+    "SMART_ACCOUNT_GATE",
+    "SERVER_PROXY",
+    "ALLOWLIST_SELECTORS"
+  ],
+  "keywords": [
+    "ERC-4337",
+    "CDP Paymaster",
+    "gas sponsorship",
+    "smart account",
+    "Base L2",
+    "wallet_sendCalls",
+    "paymasterService",
+    "US gasless"
+  ],
+  "priority": "critical",
+  "jq_topic_index": {
+    "aa_requirement": ["truth_lens", "anti_patterns"],
+    "cdp_config": ["key_patterns", "core_principles"],
+    "server_proxy": ["key_patterns", "anti_patterns"],
+    "allowlist": ["key_patterns", "core_principles"],
+    "solana_boundary": ["related_skillsets", "anti_patterns"]
+  },
+  "web_references": [
+    "https://docs.cdp.coinbase.com/paymaster/introduction/welcome",
+    "https://docs.base.org/base-account/improve-ux/sponsor-gas/paymasters",
+    "https://docs.cdp.coinbase.com/paymaster/guides/paymaster-proxy"
+  ],
+  "schema_version": "2.0",
+  "status": "active",
+  "tier": "web3_blockchain",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "version": "1.1.0"
+}

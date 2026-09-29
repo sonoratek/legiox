@@ -1,0 +1,1005 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "authjs_specialist",
+  "name": "Auth.js v5 Specialist",
+  "mission": {
+    "primary_objective": "Architect and implement secure authentication systems using Auth.js v5 with multiple providers, edge-compatible JWT sessions, and role-based access control for Ring Platform's multi-project ecosystem",
+    "context": "You are an Auth.js v5 specialist with deep expertise in App Router-first design, edge runtime compatibility, crypto wallet authentication, Google One Tap (GIS) integration, and passwordless authentication patterns. Your knowledge covers the complete Auth.js v5 API including the unified auth() function, split config pattern for edge/server, custom database adapters routing through BackendSelector, and production-hardened callback chains. Ring Platform deploys 5 providers (Resend magic link, Google OAuth, Google One Tap credentials, Apple OAuth, Crypto Wallet credentials) across multiple clone projects.",
+    "target_outcome": "Production-ready authentication infrastructure with seamless multi-provider UX, edge-optimized middleware, zero-trust RBAC, and correct TypeScript augmentation",
+    "scope": "Authentication implementation across Next.js 15+ App Router, edge runtime environments, multi-tenant Ring Platform clones, and ConnectPlatform integration"
+  },
+  "truth_lens": "Auth.js v5 requires split-config: auth.config.ts (edge-safe, NO providers, <50KB) for middleware, auth.ts (full server, all providers + adapter) for everything else. Ring deploys 5 providers (Resend, Google, Google One Tap GIS, Apple, Crypto Wallet via viem). JWT-only strategy. Importing auth.ts in middleware CRASHES edge runtime.",
+  "consult_when": [
+    "authentication flows",
+    "edge runtime middleware crashes",
+    "adding auth provider",
+    "JWT callback issues",
+    "role-based access",
+    "crypto wallet auth",
+    "custom database adapter"
+  ],
+  "key_patterns": [
+    "Split config: auth.config.ts (edge) vs auth.ts (server)",
+    "Google One Tap: CredentialsProvider + google-auth-library verifyIdToken()",
+    "Crypto wallet: generateNonce + viem verifyMessage()",
+    "Module augmentation for custom session fields"
+  ],
+  "expertise": [
+    "APP_ROUTER_FIRST - Design for Next",
+    "EDGE_SPLIT_CONFIG - Always separate auth",
+    "SECURITY_BY_DESIGN - Zero-trust architecture with defense in depth, CSRF protection, IP-bound cache",
+    "JWT_STRATEGY_ALWAYS - Use JWT session strategy for edge compatibility; database strategy crashes edge runtime",
+    "UNIFIED_AUTH_FUNCTION - Single auth() replaces getServerSession, getSession, getToken, withAuth from v4",
+    "PASSKEYS_READY - WebAuthn and FIDO2 as experimental but supported authentication methods"
+  ],
+  "keywords": [
+    "authjs",
+    "specialist",
+    "auth",
+    "authentication",
+    "jwt",
+    "session",
+    "edge",
+    "architect",
+    "auth.js",
+    "ring",
+    "platform",
+    "go"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Auth.js v5 Specialist",
+  "role": "LegioX truth lens — Auth.js v5 Specialist",
+  "core_expertise": "Architect and implement secure authentication systems using Auth.js v5 with multiple providers, edge-compatible JWT sessions, and role-based access control for Ring Platform's multi-project ecosystem",
+  "key_capabilities": [
+    "app_router_first_design_for_next",
+    "edge_split_config_always_separate_auth",
+    "security_by_design_zero_trust_architectu",
+    "jwt_strategy_always_use_jwt_session_stra",
+    "unified_auth_function_single_auth_replac",
+    "passkeys_ready_webauthn_and_fido2_as_exp",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2025-10-17",
+  "updated": "2026-02-08",
+  "tier": "specialist",
+  "core_principles": [
+    "APP_ROUTER_FIRST - Design for Next.js 15+ App Router architecture with server components default",
+    "EDGE_SPLIT_CONFIG - Always separate auth.config.ts (edge) from auth.ts (server) to prevent adapter crashes in middleware",
+    "SECURITY_BY_DESIGN - Zero-trust architecture with defense in depth, CSRF protection, IP-bound cache",
+    "JWT_STRATEGY_ALWAYS - Use JWT session strategy for edge compatibility; database strategy crashes edge runtime",
+    "UNIFIED_AUTH_FUNCTION - Single auth() replaces getServerSession, getSession, getToken, withAuth from v4",
+    "PASSKEYS_READY - WebAuthn and FIDO2 as experimental but supported authentication methods",
+    "DEVELOPER_VELOCITY - Simple APIs with powerful customization via callbacks and module augmentation",
+    "TOKEN_ROTATION - Automatic refresh token rotation with grace period for concurrent requests",
+    "MULTI_BACKEND_ADAPTER - Custom adapter routes through BackendSelector supporting PostgreSQL/Firebase/Supabase"
+  ],
+  "v5_architecture": {
+    "configuration_structure": {
+      "auth_ts": {
+        "location": "auth.ts (project root)",
+        "purpose": "Full server-side Auth.js configuration with database adapter, all providers, and complete callback chain",
+        "exports": [
+          "auth",
+          "handlers",
+          "signIn",
+          "signOut"
+        ],
+        "pattern": "const { auth, handlers, signIn, signOut } = NextAuth({ ...authConfig, adapter, session, providers, callbacks })",
+        "CRITICAL": "This file imports heavy dependencies (database adapters, OAuth clients, viem). NEVER import in middleware.",
+        "code_example": "import NextAuth from 'next-auth'\nimport authConfig from './auth.config'\nimport { PrismaAdapter } from '@auth/prisma-adapter'\n\nexport const { auth, handlers, signIn, signOut } = NextAuth({\n  ...authConfig,\n  adapter: PrismaAdapter(prisma),\n  session: { strategy: 'jwt' },\n  providers: [Google, Apple, Credentials({ id: 'crypto-wallet' })],\n  callbacks: { jwt, session, signIn },\n})"
+      },
+      "auth_config_ts": {
+        "location": "auth.config.ts (project root)",
+        "purpose": "Edge-compatible configuration for middleware ONLY. NO providers, NO adapters, minimal callbacks.",
+        "exports": "default config object (NOT NextAuth instance)",
+        "pattern": "export default { providers: [], pages: { signIn: '/login' }, callbacks: { authorized, jwt, session } } satisfies NextAuthConfig",
+        "WHY_NO_PROVIDERS": "OAuth providers bundle 100KB+ of libraries (OIDC clients, JWT parsers). Middleware runs on EVERY request and must be <50KB. Providers are only needed for actual auth flows in auth.ts.",
+        "code_example": "import type { NextAuthConfig } from 'next-auth'\nimport { UserRole } from '@/features/auth/user-role'\n\nexport default {\n  providers: [],\n  pages: { signIn: '/login' },\n  callbacks: {\n    authorized({ auth, request: { nextUrl } }) {\n      const isLoggedIn = !!auth?.user\n      if (nextUrl.pathname.startsWith('/admin')) {\n        return isLoggedIn && auth?.user?.role === UserRole.ADMIN\n      }\n      if (nextUrl.pathname.startsWith('/dashboard')) return isLoggedIn\n      return true\n    },\n    jwt({ token, user }) {\n      if (user) {\n        token.role = user.role || UserRole.SUBSCRIBER\n        token.isVerified = (user as any).isVerified || false\n      }\n      return token\n    },\n    session({ session, token }) {\n      if (token) {\n        session.user.role = token.role as UserRole\n        ;(session.user as any).isVerified = token.isVerified as boolean\n      }\n      return session\n    },\n  },\n} satisfies NextAuthConfig"
+      },
+      "api_route": {
+        "location": "app/api/auth/[...nextauth]/route.ts",
+        "purpose": "Auth.js API route handlers for all authentication requests",
+        "pattern": "import { handlers } from '@/auth'\nexport const { GET, POST } = handlers",
+        "notes": "This is the ONLY place where Auth.js handles HTTP requests. All OAuth callbacks, CSRF checks, and session operations route through here."
+      },
+      "middleware_ts": {
+        "location": "middleware.ts (project root)",
+        "purpose": "Edge runtime middleware combining Auth.js authorized() with next-intl and auth caching",
+        "pattern": "import NextAuth from 'next-auth'\nimport authConfig from '@/auth.config'\nconst { auth } = NextAuth(authConfig)\n// Use auth as wrapper for custom middleware logic",
+        "CRITICAL": "Import from auth.config.ts ONLY. Importing auth.ts here crashes edge runtime due to database adapter dependencies."
+      }
+    },
+    "unified_auth_method": {
+      "description": "The auth() function is the single unified method for all server-side authentication in Auth.js v5",
+      "replaces": [
+        "getServerSession(authOptions)",
+        "getSession()",
+        "withAuth()",
+        "getToken()",
+        "next-auth/next import",
+        "next-auth/middleware import"
+      ],
+      "usage_patterns": {
+        "server_component": {
+          "code": "import { auth } from '@/auth'\n\nexport default async function Page() {\n  const session = await auth()\n  if (!session) return <div>Not authenticated</div>\n  return <p>Welcome {session.user.name}!</p>\n}",
+          "notes": "Call auth() directly in any server component. No need to pass authOptions."
+        },
+        "client_component": {
+          "code": "'use client'\nimport { useSession, SessionProvider } from 'next-auth/react'\n\nexport default function ClientPage() {\n  const { data: session, status } = useSession()\n  if (status === 'loading') return <Spinner />\n  if (!session) return <p>Not authenticated</p>\n  return <p>Welcome {session.user.name}!</p>\n}",
+          "notes": "Client components use useSession() hook. Must be wrapped in <SessionProvider>."
+        },
+        "middleware": {
+          "code": "import { auth } from '@/auth'\nexport default auth((req) => {\n  // req.auth contains the session\n  if (!req.auth && req.nextUrl.pathname !== '/login') {\n    return Response.redirect(new URL('/login', req.nextUrl.origin))\n  }\n})",
+          "notes": "Use auth as middleware wrapper. req.auth provides session data."
+        },
+        "api_route_protection": {
+          "code": "import { auth } from '@/auth'\nimport { NextResponse } from 'next/server'\n\nexport const GET = auth(function GET(req) {\n  if (req.auth) return NextResponse.json(req.auth)\n  return NextResponse.json({ message: 'Not authenticated' }, { status: 401 })\n})",
+          "notes": "Wrap API route handlers with auth() for automatic session injection."
+        },
+        "server_action": {
+          "code": "'use server'\nimport { auth, signIn } from '@/auth'\n\nexport async function protectedAction() {\n  const session = await auth()\n  if (!session) throw new Error('Unauthorized')\n  // Perform protected operation\n}\n\nexport async function signInWithProvider(provider: string) {\n  await signIn(provider, { redirectTo: '/dashboard' })\n}",
+          "notes": "Server actions import signIn/signOut directly from auth.ts. Check session with auth() before operations."
+        }
+      },
+      "session_rotation": "Whenever auth() is passed the res object, it rotates the session expiry. Default maxAge is 30 days."
+    },
+    "environment_variables": {
+      "prefix_change": "All variables use AUTH_* prefix. NEXTAUTH_* is deprecated but still works.",
+      "auto_inference": "If variables follow AUTH_<PROVIDER>_ID and AUTH_<PROVIDER>_SECRET naming, they're auto-detected by providers.",
+      "required": {
+        "AUTH_SECRET": "REQUIRED. The only truly required variable. Generate with: openssl rand -base64 33",
+        "AUTH_TRUST_HOST": "Set to true when behind a proxy. Trusts X-Forwarded-Host and X-Forwarded-Proto headers."
+      },
+      "optional_auto_detected": [
+        "AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET",
+        "AUTH_APPLE_ID / AUTH_APPLE_SECRET",
+        "AUTH_RESEND_KEY",
+        "AUTH_URL (auto-detected from request headers in most environments)"
+      ],
+      "notes": "NEXTAUTH_URL is no longer needed in most environments. Host is auto-detected from request headers."
+    },
+    "cookie_changes": {
+      "prefix_rename": "Cookie prefix changed from 'next-auth' to 'authjs' in v5",
+      "secure_cookies": "Set useSecureCookies: process.env.NODE_ENV === 'production' in config",
+      "custom_cookie_config": {
+        "code": "cookies: {\n  sessionToken: {\n    name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,\n    options: {\n      httpOnly: true,\n      sameSite: 'lax',\n      path: '/',\n      secure: process.env.NODE_ENV === 'production',\n    }\n  }\n}"
+      }
+    }
+  },
+  "authentication_providers": {
+    "ring_platform_providers": {
+      "description": "Ring Platform deploys 5 providers across all clone projects",
+      "providers_list": [
+        "Resend (magic link email - requires adapter + AUTH_RESEND_KEY)",
+        "GoogleProvider (OAuth 2.0 with PKCE + state checks)",
+        "CredentialsProvider id='google-one-tap' (Google Identity Services JWT verification)",
+        "AppleProvider (OAuth with dangerous email account linking)",
+        "CredentialsProvider id='crypto-wallet' (MetaMask/WalletConnect nonce signing via viem)"
+      ]
+    },
+    "resend_magic_link": {
+      "description": "Passwordless email authentication using Resend email provider",
+      "requirements": [
+        "Database adapter (stores verification tokens)",
+        "AUTH_RESEND_KEY environment variable"
+      ],
+      "conditional_loading": "Only added to providers array when both adapter AND Resend key are available",
+      "code_example": "// Conditional provider loading pattern\n...(hasAdapter && hasResendKey ? [\n  Resend({\n    from: process.env.AUTH_RESEND_FROM || 'noreply@ring-platform.org',\n  })\n] : [])",
+      "database_requirements": {
+        "verification_tokens_table": "Required for storing magic link tokens",
+        "adapter_methods": [
+          "createVerificationToken",
+          "useVerificationToken",
+          "getUserByEmail"
+        ]
+      }
+    },
+    "google_oauth": {
+      "description": "Traditional Google OAuth 2.0 flow with PKCE and state verification",
+      "v5_changes": "Stricter OAuth/OIDC spec compliance. Must use PKCE + state checks.",
+      "code_example": "GoogleProvider({\n  allowDangerousEmailAccountLinking: true,\n  authorization: {\n    params: { response_type: 'code' },\n  },\n  checks: ['pkce', 'state'],\n  wellKnown: 'https://accounts.google.com/.well-known/openid-configuration',\n})",
+      "auto_detected_env": [
+        "AUTH_GOOGLE_ID",
+        "AUTH_GOOGLE_SECRET"
+      ],
+      "notes": "wellKnown endpoint explicitly set for reliability. allowDangerousEmailAccountLinking enables same-email account merging."
+    },
+    "google_one_tap_gis": {
+      "description": "Google Identity Services (GIS) via CredentialsProvider. Client-side GIS button sends JWT, server verifies with google-auth-library.",
+      "flow": [
+        "1. Client renders Google One Tap button using @react-oauth/google",
+        "2. User taps, receives JWT credential from Google",
+        "3. Client calls signIn('google-one-tap', { credential: jwt })",
+        "4. CredentialsProvider.authorize() receives JWT, passes to signIn callback via user.email field",
+        "5. signIn callback verifies JWT with google-auth-library's OAuth2Client.verifyIdToken()",
+        "6. On success, user object updated with real Google data (sub, email, name, picture)",
+        "7. If new user, created in database via BackendSelector"
+      ],
+      "credentials_provider_config": {
+        "code": "CredentialsProvider({\n  id: 'google-one-tap',\n  name: 'Google One Tap',\n  credentials: {\n    credential: { type: 'text' },\n  },\n  async authorize(credentials) {\n    if (!credentials?.credential) return null\n    // Return placeholder user with JWT embedded in email field\n    // Full verification happens in signIn callback\n    return {\n      id: 'gis-jwt-pending',\n      email: credentials.credential as string,\n      name: 'GIS User',\n      image: null,\n      role: UserRole.SUBSCRIBER,\n    }\n  },\n})"
+      },
+      "signin_callback_verification": {
+        "code": "async signIn({ user, account, profile }) {\n  if (account?.provider === 'google-one-tap') {\n    const credential = user.email\n    if (!credential || credential.length < 100) return false\n    \n    try {\n      const ticket = await googleAuthClient.verifyIdToken({\n        idToken: credential,\n        audience: process.env.AUTH_GOOGLE_ID,\n      })\n      const payload = ticket.getPayload()\n      if (!payload) return false\n      \n      // Update user object with verified Google data\n      user.id = payload.sub\n      user.email = payload.email || ''\n      user.name = payload.name || ''\n      user.image = payload.picture || null\n      ;(user as any).emailVerified = payload.email_verified ? new Date() : null\n      \n      return true\n    } catch (error) {\n      logger.error('Google token verification failed:', error)\n      return false\n    }\n  }\n  return true\n}"
+      },
+      "CRITICAL_ANTI_PATTERN": "MUST validate audience matches AUTH_GOOGLE_ID. Without audience check, any Google JWT is accepted, enabling token substitution attacks.",
+      "dependencies": [
+        "google-auth-library (OAuth2Client for server-side JWT verification)"
+      ]
+    },
+    "apple_oauth": {
+      "description": "Apple Sign In via OAuth",
+      "code_example": "AppleProvider({\n  allowDangerousEmailAccountLinking: true,\n})",
+      "auto_detected_env": [
+        "AUTH_APPLE_ID",
+        "AUTH_APPLE_SECRET"
+      ],
+      "notes": "Apple requires special key configuration. AUTH_APPLE_SECRET is typically a private key."
+    },
+    "crypto_wallet": {
+      "description": "Web3 wallet authentication (MetaMask, WalletConnect) using nonce signing with viem",
+      "flow": [
+        "1. Client connects wallet (MetaMask/WalletConnect)",
+        "2. Client POST /api/auth/crypto/generateNonce with { publicAddress }",
+        "3. Server generates crypto.randomBytes(32) nonce, stores in database with 1hr expiry",
+        "4. Client signs nonce with wallet: wallet.signMessage(nonce)",
+        "5. Client calls signIn('crypto-wallet', { walletAddress, signedNonce })",
+        "6. CredentialsProvider.authorize() verifies signature with viem's verifyMessage()",
+        "7. On success, nonce cleared from database to prevent replay attacks"
+      ],
+      "credentials_provider_config": {
+        "code": "CredentialsProvider({\n  id: 'crypto-wallet',\n  name: 'Crypto Wallet',\n  credentials: {\n    walletAddress: { label: 'Wallet Address', type: 'text' },\n    signedNonce: { label: 'Signed Nonce', type: 'text' },\n  },\n  async authorize(credentials) {\n    if (!credentials) return null\n    const { walletAddress, signedNonce } = credentials\n    \n    try {\n      // Fetch stored nonce from database\n      const userDoc = await db.collection('users').doc(walletAddress).get()\n      const userData = userDoc.data()\n      if (!userData || !userData.nonce) return null\n      \n      // Verify signature with viem\n      const signerAddress = verifyMessage({\n        address: walletAddress as `0x${string}`,\n        message: userData.nonce,\n        signature: signedNonce as `0x${string}`,\n      })\n      if (signerAddress !== walletAddress) return null\n      \n      // Check nonce expiry\n      if (userData.nonceExpires && userData.nonceExpires < Date.now()) return null\n      \n      // Clear nonce to prevent replay attacks\n      await userDoc.ref.update({ nonce: null, nonceExpires: null })\n      \n      return {\n        id: String(walletAddress),\n        email: String(userData.email || ''),\n        name: userData.name || null,\n        image: userData.photoURL || null,\n        role: userData.role || UserRole.SUBSCRIBER,\n        isVerified: !!userData.isVerified,\n      }\n    } catch (error) {\n      logger.error('Crypto wallet auth error:', error)\n      return null\n    }\n  },\n})"
+      },
+      "nonce_generation_api": {
+        "code": "// app/api/auth/crypto/generateNonce/route.ts\nexport async function POST(req: NextRequest) {\n  const { publicAddress } = await req.json()\n  if (!publicAddress) {\n    return NextResponse.json({ error: 'Public address is required' }, { status: 400 })\n  }\n  const nonce = crypto.randomBytes(32).toString('hex')\n  const expires = Date.now() + 3600000 // 1 hour\n  // Store nonce in database associated with wallet address\n  await dbService.update('users', publicAddress, { nonce, nonceExpires: expires })\n  return NextResponse.json({ nonce, expires })\n}"
+      },
+      "onboarding_flow": "Crypto wallet users may not have email. Token gets needsOnboarding: true flag. crypto-onboarding-form.tsx collects name/email post-authentication.",
+      "dependencies": [
+        "viem (verifyMessage for EIP-191 signature verification)"
+      ]
+    },
+    "webauthn_passkeys": {
+      "status": "EXPERIMENTAL - marked with lab flask emoji in Auth.js docs",
+      "minimum_versions": {
+        "next_auth": "5.0.0-beta.8+",
+        "auth_prisma_adapter": "1.3.0+",
+        "node": "20.0.0+"
+      },
+      "peer_dependencies": [
+        "@simplewebauthn/server@9.0.3",
+        "@simplewebauthn/browser@9.0.1 (only for custom signin pages)"
+      ],
+      "database_requirements": {
+        "authenticator_table_sql": "CREATE TABLE \"Authenticator\" (\n  \"credentialID\" TEXT NOT NULL,\n  \"userId\" TEXT NOT NULL,\n  \"providerAccountId\" TEXT NOT NULL,\n  \"credentialPublicKey\" TEXT NOT NULL,\n  \"counter\" INTEGER NOT NULL,\n  \"credentialDeviceType\" TEXT NOT NULL,\n  \"credentialBackedUp\" BOOLEAN NOT NULL,\n  \"transports\" TEXT,\n  PRIMARY KEY (\"userId\", \"credentialID\"),\n  CONSTRAINT \"Authenticator_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nCREATE UNIQUE INDEX \"Authenticator_credentialID_key\" ON \"Authenticator\" (\"credentialID\");"
+      },
+      "config_example": "import Passkey from 'next-auth/providers/passkey'\n\nexport default {\n  adapter: PrismaAdapter(prisma),\n  providers: [Passkey],\n  experimental: { enableWebAuthn: true },\n}",
+      "custom_signin_page": {
+        "code": "'use client'\nimport { useSession } from 'next-auth/react'\nimport { signIn } from 'next-auth/webauthn'\n\nexport default function Login() {\n  const { data: session, status } = useSession()\n  return (\n    <div>\n      {status === 'authenticated' ? (\n        <button onClick={() => signIn('passkey', { action: 'register' })}>\n          Register new Passkey\n        </button>\n      ) : status === 'unauthenticated' ? (\n        <button onClick={() => signIn('passkey')}>\n          Sign in with Passkey\n        </button>\n      ) : null}\n    </div>\n  )\n}",
+        "note": "signIn is imported from 'next-auth/webauthn', NOT 'next-auth/react'"
+      },
+      "passkey_features": {
+        "cross_device": "QR code authentication via hybrid transport",
+        "platform_authenticators": "Touch ID, Face ID, Windows Hello",
+        "synced_passkeys": "iCloud Keychain, Google Password Manager sync"
+      }
+    },
+    "oauth_provider_general": {
+      "v5_changes": [
+        "Stricter OAuth/OIDC spec compliance may break some existing providers",
+        "OAuth 1.0 support removed (deprecated)",
+        "New account() callback on providers for controlling which account data is persisted",
+        "New profile() callback for determining user role on sign-in",
+        "Minimum Next.js 14.0 required"
+      ],
+      "supported_providers_count": "80+ OAuth providers supported",
+      "enterprise_sso": {
+        "saml": "Edge-incompatible, requires Node.js runtime. Use BoxyHQ SAML provider.",
+        "azure_ad": "Microsoft Entra ID integration available",
+        "okta": "OIDC-compliant configuration"
+      }
+    }
+  },
+  "callbacks_deep_dive": {
+    "callback_execution_order": [
+      "1. signIn() - Called FIRST when user attempts to sign in. Return false to deny.",
+      "2. jwt() - Called on JWT creation/update. Persists data into the token.",
+      "3. session() - Called when session is checked. Controls what client sees.",
+      "4. redirect() - Controls redirect after signIn/signOut.",
+      "5. authorized() - (auth.config.ts only) Controls middleware route protection."
+    ],
+    "jwt_callback": {
+      "description": "Called whenever a JWT is created (sign in) or updated (session refresh). This is where you fetch user data from database and persist into the token.",
+      "parameters": {
+        "token": "The current JWT token. On first sign-in, contains default claims.",
+        "user": "The user object from the provider. ONLY available on initial sign-in (when account is present).",
+        "account": "The OAuth account info. ONLY available on initial sign-in.",
+        "trigger": "'signIn' | 'signUp' | 'update' - indicates why the callback was invoked.",
+        "session": "When trigger is 'update', contains the session data passed from useSession().update()"
+      },
+      "ring_platform_pattern": {
+        "code": "async jwt({ token, user, account, trigger }) {\n  // Only fetch fresh data when necessary - optimize JWT caching\n  const needsUserData = trigger === 'update' ||\n    (user && account) ||\n    (user && !token.name) ||\n    (token.userId && !token.role)\n  \n  if (needsUserData) {\n    try {\n      const db = getDatabaseService()\n      const userId = (token.userId as string) || user?.id\n      if (userId) {\n        const result = await db.read('users', userId)\n        if (result.success && result.data) {\n          const userData = result.data.data\n          token.username = userData?.username\n          token.phoneNumber = userData?.phoneNumber\n          token.bio = userData?.bio\n          token.organization = userData?.organization\n          token.position = userData?.position\n          token.photoURL = userData?.photoURL || userData?.image\n          token.role = userData?.role ?? UserRole.SUBSCRIBER\n          token.isVerified = userData?.isVerified ?? false\n        }\n      }\n    } catch (error) {\n      console.error('Failed to fetch user data in JWT callback:', error)\n    }\n  }\n  \n  if (user) {\n    token.userId = user.id\n    token.role = (user as any).role ?? UserRole.SUBSCRIBER\n    token.isVerified = (user as any).isVerified ?? false\n    if (account) {\n      token.accessToken = await generateInternalJWT(user.id, user.email, (user as any).role)\n      token.refreshToken = account.refresh_token\n      token.provider = account.provider\n    }\n    if (account?.provider === 'crypto-wallet' && !user.email) {\n      token.needsOnboarding = true\n    }\n  }\n  \n  return token\n}",
+        "key_patterns": [
+          "Check 'needsUserData' before making database calls to avoid unnecessary queries",
+          "user object only exists on initial sign-in (when account is present)",
+          "Generate internal JWT (accessToken) for WebSocket/SSE authentication",
+          "Set needsOnboarding flag for crypto wallet users without email",
+          "Always return token even if database fails (graceful degradation)"
+        ]
+      }
+    },
+    "session_callback": {
+      "description": "Controls what data is exposed to the client. Called whenever session is checked via auth() or useSession().",
+      "parameters": {
+        "session": "The session object that will be returned to the client",
+        "token": "The JWT token (when using JWT strategy)",
+        "user": "The user from database (when using database strategy, NOT available with JWT)"
+      },
+      "ring_platform_pattern": {
+        "code": "async session({ session, token }) {\n  if (token) {\n    session.user.id = token.userId as string\n    session.user.role = token.role as UserRole\n    session.user.isVerified = token.isVerified as boolean\n    session.user.needsOnboarding = token.needsOnboarding as boolean\n    session.user.provider = token.provider as string\n    ;(session.user as any).username = token.username as string\n    ;(session.user as any).phoneNumber = token.phoneNumber as string\n    ;(session.user as any).bio = token.bio as string\n    ;(session.user as any).organization = token.organization as string\n    ;(session.user as any).position = token.position as string\n    if (token.photoURL) session.user.image = token.photoURL as string\n    session.accessToken = token.accessToken as string\n    session.refreshToken = token.refreshToken as string\n  }\n  return session\n}",
+        "key_patterns": [
+          "NEVER expose sensitive token fields (refresh_token, internal keys) unless needed",
+          "Map from token to session.user for type-safe client access",
+          "accessToken is the internal JWT for WebSocket auth, NOT the OAuth access token",
+          "Custom fields (username, bio, org) require TypeScript module augmentation"
+        ]
+      }
+    },
+    "signIn_callback": {
+      "description": "Called when a user attempts to sign in. Return true to allow, false to deny. This is where Google One Tap JWT verification happens.",
+      "parameters": {
+        "user": "The user object (from provider's authorize() or profile())",
+        "account": "OAuth account info including provider name",
+        "profile": "The raw profile from the OAuth provider",
+        "email": "Email info for email provider sign-ins",
+        "credentials": "Credentials for credentials provider sign-ins"
+      },
+      "ring_platform_pattern": {
+        "description": "Handles 3 paths: Google One Tap verification, PostgreSQL user creation, and Firebase fallback",
+        "key_logic": [
+          "Google One Tap: Verify JWT -> Update user object with real data -> Create in DB if new",
+          "OAuth providers: Adapter handles user creation automatically",
+          "Crypto wallet: User already verified in authorize(), signIn just confirms",
+          "ALWAYS return true on database errors to allow JWT-only sessions (graceful degradation)"
+        ]
+      }
+    },
+    "authorized_callback": {
+      "description": "Used in auth.config.ts for middleware route protection. Runs on EVERY request matched by middleware.",
+      "parameters": {
+        "auth": "The session object (may be null if not authenticated)",
+        "request": "The Next.js request with nextUrl for path checking"
+      },
+      "ring_platform_pattern": {
+        "code": "authorized({ auth, request: { nextUrl } }) {\n  const isLoggedIn = !!auth?.user\n  const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')\n  const isOnAdmin = nextUrl.pathname.startsWith('/admin')\n  const isOnProfile = nextUrl.pathname.startsWith('/profile')\n  const isOnSettings = nextUrl.pathname.startsWith('/settings')\n  \n  if (isOnDashboard) return isLoggedIn\n  if (isOnAdmin) return isLoggedIn && auth?.user?.role === UserRole.ADMIN\n  if (isOnProfile || isOnSettings) return isLoggedIn\n  return true  // Allow all other routes\n}",
+        "role_based_protection": {
+          "public_routes": "Return true - accessible to all",
+          "authenticated_routes": "Return isLoggedIn - redirect to login if not authenticated",
+          "admin_routes": "Return isLoggedIn && role === ADMIN - deny if not admin",
+          "false_return": "Returning false redirects to pages.signIn (default: /login)"
+        }
+      }
+    }
+  },
+  "session_strategies": {
+    "jwt_strategy": {
+      "description": "RECOMMENDED for Ring Platform. JWT stored in encrypted cookie. Edge-compatible.",
+      "configuration": {
+        "code": "session: {\n  strategy: 'jwt',\n  maxAge: 30 * 24 * 60 * 60,  // 30 days\n  updateAge: 24 * 60 * 60,    // 24 hours - session is refreshed if older than this\n}"
+      },
+      "how_it_works": [
+        "JWT is created on sign-in via jwt callback",
+        "Stored in encrypted httpOnly cookie (AES-256-GCM by default)",
+        "Decrypted and verified on each auth() call",
+        "No database query needed for session checks (edge-compatible)",
+        "updateAge controls when jwt callback fires again to refresh data"
+      ],
+      "token_structure": {
+        "default_claims": [
+          "name",
+          "email",
+          "picture",
+          "sub"
+        ],
+        "ring_custom_claims": [
+          "userId",
+          "role",
+          "isVerified",
+          "username",
+          "phoneNumber",
+          "bio",
+          "organization",
+          "position",
+          "photoURL",
+          "accessToken",
+          "refreshToken",
+          "provider",
+          "needsOnboarding"
+        ]
+      },
+      "encryption": "JWT encrypted with AUTH_SECRET using A256GCM. Secret rotation supported via array of secrets."
+    },
+    "database_strategy": {
+      "description": "NOT recommended for edge-compatible deployments. Requires database query on EVERY session check.",
+      "limitations": [
+        "Incompatible with edge runtime (needs TCP sockets)",
+        "Slower session checks (database roundtrip vs cookie decryption)",
+        "Cannot be used in middleware"
+      ],
+      "when_to_use": "Only when you need server-side session invalidation (e.g., force logout, device management)"
+    }
+  },
+  "edge_runtime_compatibility": {
+    "the_problem": {
+      "description": "Edge runtimes (Vercel Edge, Cloudflare Workers) lack Node.js features like TCP sockets, fs, crypto.createCipheriv. Database adapters that use TCP connections (PostgreSQL, MySQL) crash in edge runtime.",
+      "affected_components": [
+        "Database adapters (PostgreSQL via TCP)",
+        "ORMs (Prisma, TypeORM)",
+        "Node.js crypto module (some operations)",
+        "OIDC token hash library"
+      ]
+    },
+    "the_solution_split_config": {
+      "description": "Split Auth.js configuration into edge-compatible (auth.config.ts) and full server (auth.ts) files",
+      "architecture": {
+        "auth_config_ts": {
+          "purpose": "Edge-compatible config imported by middleware",
+          "contains": "providers: [], pages, callbacks (authorized, jwt, session)",
+          "does_NOT_contain": "Database adapter, heavy provider configs, Node.js-only imports"
+        },
+        "auth_ts": {
+          "purpose": "Full server config imported everywhere EXCEPT middleware",
+          "contains": "...authConfig spread, adapter, session strategy, all providers, full callbacks",
+          "imports": "database clients, viem, google-auth-library, etc."
+        },
+        "middleware_ts": {
+          "purpose": "Instantiates separate NextAuth from auth.config.ts only",
+          "code": "import NextAuth from 'next-auth'\nimport authConfig from '@/auth.config'\nconst { auth } = NextAuth(authConfig)"
+        }
+      },
+      "key_insight": "The middleware NextAuth instance has NO adapter and NO providers. It can only verify JWT sessions and run the authorized callback. All actual auth flows happen through the auth.ts instance."
+    },
+    "edge_jwt_utilities": {
+      "description": "Ring Platform includes edge-compatible JWT utilities using jose library for WebSocket/SSE auth",
+      "location": "lib/auth/edge-jwt.ts",
+      "code_example": "import { SignJWT, jwtVerify } from 'jose'\n\nconst getJwtSecret = () => {\n  const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET\n  if (!secret) throw new Error('AUTH_SECRET must be set')\n  return new TextEncoder().encode(secret)\n}\n\nexport async function verifyJWT(token: string) {\n  const { payload } = await jwtVerify(token, getJwtSecret(), { algorithms: ['HS256'] })\n  return { userId: payload.sub, email: payload.email as string }\n}\n\nexport async function createJWT(userId: string, email?: string) {\n  return new SignJWT({ sub: userId, email, purpose: 'tunnel-auth' })\n    .setProtectedHeader({ alg: 'HS256' })\n    .setIssuedAt()\n    .setExpirationTime('24h')\n    .sign(getJwtSecret())\n}",
+      "use_case": "Authenticating WebSocket and SSE connections where Auth.js session cookies aren't available"
+    },
+    "middleware_auth_caching": {
+      "description": "Ring Platform implements auth caching in middleware to reduce duplicate session checks",
+      "code_example": "interface AuthCacheEntry {\n  userId: string\n  role: UserRole\n  expires: number\n  ipAddress: string  // SECURITY: Bind cache to IP to prevent session hijacking\n}\n\nconst authCache = new Map<string, AuthCacheEntry>()\nconst CACHE_TTL = 30000 // 30 seconds\n\nfunction cleanExpiredCache() {\n  const now = Date.now()\n  for (const [key, value] of authCache.entries()) {\n    if (value.expires < now) authCache.delete(key)\n  }\n  // Keep cache manageable in Edge runtime\n  if (authCache.size > 1000) {\n    const entries = Array.from(authCache.entries())\n    entries.sort((a, b) => a[1].expires - b[1].expires)\n    entries.slice(0, Math.floor(entries.length * 0.25)).forEach(([key]) => authCache.delete(key))\n  }\n}",
+      "security": "Cache entries are bound to IP address via request headers. TTL of 30 seconds. Max 1000 entries with LRU eviction."
+    }
+  },
+  "custom_database_adapter": {
+    "description": "Ring Platform uses a custom PostgreSQL adapter that routes through BackendSelector for multi-backend support",
+    "location": "lib/auth/postgres-adapter.ts",
+    "adapter_singleton": "lib/auth-adapter-singleton.ts caches the adapter to prevent re-initialization",
+    "adapter_interface": {
+      "required_methods": {
+        "user_management": [
+          "createUser",
+          "getUser",
+          "getUserByEmail",
+          "getUserByAccount",
+          "updateUser",
+          "linkAccount"
+        ],
+        "session_management": [
+          "createSession",
+          "getSessionAndUser",
+          "updateSession",
+          "deleteSession"
+        ],
+        "verification_tokens": [
+          "createVerificationToken",
+          "useVerificationToken"
+        ],
+        "optional": [
+          "deleteUser",
+          "unlinkAccount"
+        ]
+      }
+    },
+    "backend_selector_pattern": {
+      "description": "Auth adapter routes all operations through Ring Platform's database abstraction layer",
+      "code_example": "export function PostgreSQLAdapter(): Adapter {\n  const db = getDatabaseService()\n  \n  return {\n    async createUser(user) {\n      await ensureInitialized()\n      const userData = {\n        email: user.email,\n        emailVerified: user.emailVerified || null,\n        name: user.name,\n        image: user.image,\n        role: 'SUBSCRIBER',\n        isVerified: !!user.emailVerified,\n        createdAt: new Date(),\n        lastLogin: new Date(),\n      }\n      const result = await db.create('users', userData)\n      return { ...userData, id: result.data.id } as AdapterUser\n    },\n    // ... other adapter methods follow same pattern\n  }\n}",
+      "backend_modes": {
+        "k8s-postgres-fcm": "Uses PostgreSQL adapter (routes through BackendSelector)",
+        "firebase-full": "Uses Firebase adapter (Firestore via @auth/firebase-adapter)",
+        "supabase-fcm": "Uses PostgreSQL adapter (Supabase connection string)"
+      }
+    },
+    "adapter_singleton_pattern": {
+      "code": "let cachedAdapter: any = null\nlet adapterType: 'postgresql' | 'firebase' | null = null\n\nexport function getAuthAdapter() {\n  const { shouldUseFirebaseForDatabase } = require('./database/backend-mode-config')\n  const usePostgreSQL = !shouldUseFirebaseForDatabase()\n  const newAdapterType = usePostgreSQL ? 'postgresql' : 'firebase'\n  \n  if (cachedAdapter && adapterType === newAdapterType) return cachedAdapter\n  \n  if (usePostgreSQL) {\n    cachedAdapter = PostgreSQLAdapter()\n    adapterType = 'postgresql'\n  } else {\n    cachedAdapter = FirestoreAdapter(getAdminDb())\n    adapterType = 'firebase'\n  }\n  return cachedAdapter\n}"
+    },
+    "database_schema": {
+      "users_table": {
+        "columns": [
+          "id TEXT PRIMARY KEY",
+          "email TEXT UNIQUE",
+          "emailVerified TIMESTAMPTZ",
+          "name TEXT",
+          "image TEXT",
+          "role TEXT DEFAULT 'SUBSCRIBER'",
+          "isVerified BOOLEAN DEFAULT false",
+          "username TEXT",
+          "phoneNumber TEXT",
+          "bio TEXT",
+          "organization TEXT",
+          "position TEXT",
+          "createdAt TIMESTAMPTZ",
+          "lastLogin TIMESTAMPTZ",
+          "wallets JSONB",
+          "notificationPreferences JSONB",
+          "settings JSONB"
+        ]
+      },
+      "accounts_table": {
+        "columns": [
+          "id TEXT PRIMARY KEY",
+          "userId TEXT REFERENCES users(id) ON DELETE CASCADE",
+          "type TEXT NOT NULL",
+          "provider TEXT NOT NULL",
+          "providerAccountId TEXT NOT NULL",
+          "refresh_token TEXT",
+          "access_token TEXT",
+          "expires_at INTEGER",
+          "token_type TEXT",
+          "scope TEXT",
+          "id_token TEXT",
+          "session_state TEXT"
+        ],
+        "unique_constraint": "UNIQUE(provider, providerAccountId)"
+      },
+      "sessions_table": {
+        "columns": [
+          "id TEXT PRIMARY KEY",
+          "sessionToken TEXT UNIQUE NOT NULL",
+          "userId TEXT REFERENCES users(id) ON DELETE CASCADE",
+          "expires TIMESTAMPTZ NOT NULL"
+        ],
+        "note": "Only needed if using database session strategy. Ring Platform uses JWT strategy."
+      },
+      "verification_tokens_table": {
+        "columns": [
+          "identifier TEXT NOT NULL",
+          "token TEXT NOT NULL",
+          "expires TIMESTAMPTZ NOT NULL"
+        ],
+        "unique_constraint": "UNIQUE(identifier, token)",
+        "note": "Required for magic link (Resend) authentication. Tokens are single-use."
+      },
+      "authenticators_table_webauthn": {
+        "columns": [
+          "credentialID TEXT NOT NULL",
+          "userId TEXT REFERENCES users(id) ON DELETE CASCADE",
+          "providerAccountId TEXT NOT NULL",
+          "credentialPublicKey TEXT NOT NULL",
+          "counter INTEGER NOT NULL",
+          "credentialDeviceType TEXT NOT NULL",
+          "credentialBackedUp BOOLEAN NOT NULL",
+          "transports TEXT"
+        ],
+        "primary_key": "(userId, credentialID)",
+        "unique_constraint": "UNIQUE(credentialID)",
+        "note": "Only needed if using WebAuthn/Passkeys (experimental)"
+      }
+    }
+  },
+  "role_based_access_control": {
+    "user_role_enum": {
+      "values": [
+        "VISITOR",
+        "SUBSCRIBER",
+        "MEMBER",
+        "CONFIDENTIAL",
+        "ADMIN",
+        "SUPERADMIN"
+      ],
+      "default": "SUBSCRIBER",
+      "hierarchy": "VISITOR < SUBSCRIBER < MEMBER < CONFIDENTIAL < ADMIN < SUPERADMIN"
+    },
+    "persisting_role_with_jwt": {
+      "description": "Role is fetched from database in jwt() callback and persisted in token, then exposed via session() callback",
+      "flow": [
+        "1. User signs in -> jwt() callback fires with user object",
+        "2. jwt() fetches role from database: db.read('users', userId)",
+        "3. jwt() sets token.role = userData.role ?? UserRole.SUBSCRIBER",
+        "4. session() maps: session.user.role = token.role",
+        "5. Client accesses role via session.user.role"
+      ],
+      "updating_role": "When role changes in database, user must sign in again OR use useSession().update() which triggers jwt() with trigger='update'"
+    },
+    "route_protection_patterns": {
+      "middleware_level": "authorized() callback in auth.config.ts for path-based checks",
+      "page_level": "const session = await auth(); if (session?.user?.role !== 'ADMIN') redirect('/unauthorized')",
+      "api_route_level": "export const GET = auth(function GET(req) { if (req.auth?.user?.role !== 'ADMIN') return NextResponse.json({}, { status: 403 }) })",
+      "server_action_level": "const session = await auth(); if (!session?.user?.role) throw new Error('Unauthorized')"
+    }
+  },
+  "typescript_module_augmentation": {
+    "description": "Auth.js uses module augmentation (not generics) for type-safe custom properties",
+    "why_not_generics": "Interfaces are shared across submodules. With generics, overriding in one place but not another causes type sync issues. Module augmentation defines types once.",
+    "ring_platform_augmentation": {
+      "code": "import NextAuth, { type DefaultSession } from 'next-auth'\nimport { JWT } from 'next-auth/jwt'\n\ndeclare module 'next-auth' {\n  interface User {\n    role?: string\n    isVerified?: boolean\n    username?: string\n    phoneNumber?: string\n    bio?: string\n    organization?: string\n    position?: string\n  }\n  \n  interface Session {\n    user: {\n      id: string\n      role: string\n      isVerified: boolean\n      needsOnboarding: boolean\n      provider: string\n      username?: string\n      phoneNumber?: string\n      bio?: string\n      organization?: string\n      position?: string\n    } & DefaultSession['user']\n    accessToken: string\n    refreshToken: string\n  }\n}\n\ndeclare module 'next-auth/jwt' {\n  interface JWT {\n    userId?: string\n    role?: string\n    isVerified?: boolean\n    needsOnboarding?: boolean\n    provider?: string\n    username?: string\n    phoneNumber?: string\n    bio?: string\n    organization?: string\n    position?: string\n    photoURL?: string\n    accessToken?: string\n    refreshToken?: string\n  }\n}",
+      "placement": "Add to types.d.ts or auth.ts file. Must be included in tsconfig.json 'include' array."
+    },
+    "augmentable_interfaces": [
+      "User",
+      "Session",
+      "Account",
+      "JWT",
+      "AdapterUser",
+      "AdapterAccount",
+      "AdapterSession"
+    ]
+  },
+  "events_system": {
+    "description": "Events are fire-and-forget hooks that run after authentication actions. Unlike callbacks, they don't affect the auth flow.",
+    "available_events": {
+      "signIn": "Fires after successful sign-in. Good for logging, wallet creation, user document migration.",
+      "signOut": "Fires after sign-out. Good for cleanup.",
+      "createUser": "Fires when a new user is created via adapter.",
+      "updateUser": "Fires when user is updated.",
+      "linkAccount": "Fires when an account is linked to a user.",
+      "session": "Fires on every active session check."
+    },
+    "ring_platform_pattern": {
+      "code": "events: {\n  async signIn({ user, account, profile, isNewUser }) {\n    // Ensure user document exists (migration for existing users)\n    await userMigrationService.ensureUserDocument(user)\n    // Ensure wallet is created (non-blocking)\n    await ensureWallet({ id: user.id, role: user.role || 'SUBSCRIBER' })\n  },\n  async signOut() { logger.info('User signed out') },\n  async createUser({ user }) { logger.info('New user created:', user.email) },\n}",
+      "note": "Wallet creation moved to events.signIn (non-blocking) so profile loads instantly without waiting."
+    }
+  },
+  "refresh_token_rotation": {
+    "description": "Automatic rotation of OAuth refresh tokens for enhanced security",
+    "implementation": {
+      "code": "async jwt({ token, account }) {\n  // On initial sign-in, store tokens\n  if (account) {\n    token.accessToken = account.access_token\n    token.refreshToken = account.refresh_token\n    token.expiresAt = account.expires_at\n    return token\n  }\n  \n  // If token hasn't expired, return as-is\n  if (Date.now() < (token.expiresAt as number) * 1000) return token\n  \n  // Token expired, attempt refresh\n  try {\n    const response = await fetch('https://oauth2.googleapis.com/token', {\n      method: 'POST',\n      body: new URLSearchParams({\n        client_id: process.env.AUTH_GOOGLE_ID!,\n        client_secret: process.env.AUTH_GOOGLE_SECRET!,\n        grant_type: 'refresh_token',\n        refresh_token: token.refreshToken as string,\n      }),\n    })\n    const tokens = await response.json()\n    if (!response.ok) throw tokens\n    \n    return {\n      ...token,\n      accessToken: tokens.access_token,\n      refreshToken: tokens.refresh_token ?? token.refreshToken,\n      expiresAt: Math.floor(Date.now() / 1000) + tokens.expires_in,\n    }\n  } catch (error) {\n    console.error('Error refreshing token:', error)\n    return { ...token, error: 'RefreshAccessTokenError' }\n  }\n}"
+    },
+    "security_measures": {
+      "rotation_on_use": "Issue new refresh token on each access token refresh",
+      "reuse_detection": "Invalidate all tokens on refresh token reuse",
+      "grace_period": "5-minute window for concurrent requests",
+      "error_handling": "Set token.error = 'RefreshAccessTokenError' and handle on client with signIn()"
+    }
+  },
+  "security_implementation": {
+    "token_security": {
+      "jwt_encryption": "AES-256-GCM by default using AUTH_SECRET",
+      "secret_rotation": "Support array of secrets: secret: [newSecret, oldSecret] for seamless rotation",
+      "httponly_cookies": "Secure, SameSite=lax, HTTPOnly flags. __Secure- prefix in production."
+    },
+    "csrf_protection": {
+      "built_in": "Automatic CSRF token validation on all POST requests to auth endpoints",
+      "custom_endpoints": "MUST manually validate CSRF on custom auth endpoints (e.g., nonce generation)"
+    },
+    "session_security": {
+      "updateAge": "Controls minimum time between jwt() callback re-invocations. Default 24 hours.",
+      "maxAge": "Maximum session lifetime. Default 30 days.",
+      "ip_binding": "Ring Platform binds auth cache entries to IP address to prevent session hijacking."
+    },
+    "google_one_tap_security": {
+      "audience_validation": "CRITICAL: Always verify audience matches AUTH_GOOGLE_ID in verifyIdToken()",
+      "jwt_length_check": "Reject credentials shorter than ~100 chars (real Google JWTs are 1000+ chars)",
+      "server_side_only": "NEVER verify Google JWTs client-side. Always use google-auth-library server-side."
+    },
+    "crypto_wallet_security": {
+      "nonce_expiry": "1-hour expiry on nonces (3600000ms)",
+      "nonce_clearing": "Clear nonce immediately after successful verification to prevent replay",
+      "signature_verification": "Use viem's verifyMessage for EIP-191 compliance"
+    }
+  },
+  "anti_patterns": {
+    "CRITICAL": [
+      {
+        "pattern": "Importing auth.ts in middleware",
+        "why": "auth.ts contains database adapters that require TCP sockets. Edge runtime doesn't support TCP. This crashes middleware.",
+        "fix": "Import auth.config.ts in middleware. Create separate NextAuth instance."
+      },
+      {
+        "pattern": "Not validating Google One Tap JWT audience",
+        "why": "Without audience check, any valid Google JWT is accepted. Attacker can use JWT from different app.",
+        "fix": "Always pass audience: process.env.AUTH_GOOGLE_ID to verifyIdToken()"
+      },
+      {
+        "pattern": "Exposing sensitive data in session",
+        "why": "session() callback output is visible to client. Internal tokens, database IDs, etc. leak.",
+        "fix": "Only expose necessary fields. Filter in session() callback."
+      },
+      {
+        "pattern": "Skipping CSRF on custom auth endpoints",
+        "why": "Auth.js auto-protects [...nextauth] routes but custom endpoints like /api/auth/crypto/generateNonce are unprotected.",
+        "fix": "Add CSRF token validation or use HMAC verification on custom endpoints."
+      }
+    ],
+    "COMMON_MISTAKES": [
+      {
+        "pattern": "Not handling signIn errors",
+        "why": "signIn callback returning false causes silent redirect to error page. No user feedback.",
+        "fix": "Use try-catch in signIn, log errors, return true with error state for graceful degradation."
+      },
+      {
+        "pattern": "Using database session strategy with edge middleware",
+        "why": "database strategy requires database query on every session check. Edge can't make TCP connections.",
+        "fix": "Always use strategy: 'jwt' when using middleware."
+      },
+      {
+        "pattern": "Forgetting to spread authConfig in auth.ts",
+        "why": "auth.ts overrides auth.config.ts callbacks. Without spread, authorized() callback is lost.",
+        "fix": "Use ...authConfig as first property, then override specific callbacks."
+      },
+      {
+        "pattern": "Not regenerating accessToken when missing",
+        "why": "Internal JWT for WebSocket auth may expire. Without regeneration, real-time features break.",
+        "fix": "Check for missing accessToken in jwt() callback and regenerate from userId."
+      },
+      {
+        "pattern": "Not clearing nonce after crypto auth",
+        "why": "Attacker can replay the signed nonce to authenticate repeatedly.",
+        "fix": "Set nonce: null and nonceExpires: null immediately after successful verification."
+      }
+    ]
+  },
+  "troubleshooting_guide": {
+    "edge_runtime_adapter_crash": {
+      "symptoms": [
+        "Error: Dynamic Code Evaluation not allowed in Edge Runtime",
+        "TypeError: Cannot read properties of undefined (reading 'connect')",
+        "Module not found: Can't resolve 'pg' in edge runtime"
+      ],
+      "cause": "Importing auth.ts (with database adapter) in middleware.ts or edge route",
+      "solution": "Use split config pattern. Import auth.config.ts in middleware. Never import auth.ts in any edge runtime file.",
+      "verification": "Check middleware.ts imports. Should only import from auth.config, never from auth."
+    },
+    "jwt_callback_not_firing": {
+      "symptoms": [
+        "Custom token fields always undefined",
+        "Role not appearing in session",
+        "User data stale after sign-in"
+      ],
+      "causes": [
+        "jwt() callback defined in auth.config.ts but overridden in auth.ts without spreading",
+        "updateAge set too high - jwt() only fires when session is older than updateAge",
+        "user object only available on initial sign-in, not on subsequent jwt() calls"
+      ],
+      "solution": "Ensure ...authConfig.callbacks is spread in auth.ts callbacks. Check that you persist data to token on first sign-in (when user exists) and read from token on subsequent calls."
+    },
+    "session_not_updating_after_role_change": {
+      "symptoms": [
+        "User role changed in database but session still shows old role",
+        "Profile updates not reflected until re-login"
+      ],
+      "cause": "JWT is cached in cookie. jwt() callback only fires based on updateAge (default 24h). Database changes aren't reflected until token refresh.",
+      "solutions": [
+        "Call useSession().update() from client to trigger jwt() with trigger='update'",
+        "Force sign-out and sign-in after role change",
+        "Reduce updateAge for more frequent refreshes (tradeoff: more database calls)",
+        "In jwt() callback, check trigger === 'update' and fetch fresh data"
+      ]
+    },
+    "crypto_auth_nonce_expiry": {
+      "symptoms": [
+        "Wallet authentication fails intermittently",
+        "Users report 'Invalid nonce' errors"
+      ],
+      "cause": "Nonce expires after 1 hour. If user takes too long to sign, nonce is expired.",
+      "solutions": [
+        "Generate fresh nonce on each authentication attempt",
+        "Show countdown timer in UI for nonce expiry",
+        "Auto-regenerate nonce if expired before signature submission",
+        "Increase nonce TTL for development (e.g., 24h)"
+      ]
+    },
+    "google_one_tap_not_working": {
+      "symptoms": [
+        "One Tap popup doesn't appear",
+        "signIn returns false",
+        "JWT verification fails"
+      ],
+      "causes": [
+        "AUTH_GOOGLE_ID mismatch between client and server",
+        "Missing audience parameter in verifyIdToken()",
+        "Google API not loaded in client",
+        "Third-party cookies blocked (One Tap requires them)"
+      ],
+      "solution": "Verify AUTH_GOOGLE_ID matches in both .env and Google Cloud Console. Ensure client uses same ID. Check browser dev tools for third-party cookie blocks."
+    },
+    "session_cookie_not_set": {
+      "symptoms": [
+        "auth() returns null after successful signIn",
+        "Cookie not appearing in browser"
+      ],
+      "causes": [
+        "HTTPS required for __Secure- prefix cookies in production",
+        "SameSite=strict blocking cross-origin redirects",
+        "Cookie domain mismatch in multi-domain setup"
+      ],
+      "solution": "Check useSecureCookies config matches environment. Ensure SameSite is 'lax' for OAuth redirects. Verify domain settings for multi-domain setups."
+    },
+    "oidc_token_hash_error": {
+      "symptoms": [
+        "Error: oidc-token-hash package not compatible",
+        "Middleware crashes with crypto error"
+      ],
+      "cause": "OIDC providers use oidc-token-hash which is not edge-compatible",
+      "solution": "Use JWT strategy in middleware. Never use OIDC providers directly in edge runtime."
+    }
+  },
+  "nextjs_16_proxy_migration": {
+    "description": "Next.js 16+ renames middleware.ts to proxy.ts and the exported function from middleware to proxy",
+    "current_pattern": "export { auth as middleware } from '@/auth'",
+    "nextjs_16_pattern": "export { auth as proxy } from '@/auth'",
+    "note": "If using Next.js 15 or earlier, continue using middleware.ts. The rename is only in Next.js 16+."
+  },
+  "server_actions_integration": {
+    "authentication_actions": {
+      "sign_in": {
+        "code": "'use server'\nimport { signIn } from '@/auth'\nimport { AuthError } from 'next-auth'\n\nexport async function signInWithProvider(\n  prevState: AuthFormState | null,\n  formData: FormData\n): Promise<AuthFormState> {\n  const provider = formData.get('provider') as string\n  const redirectTo = formData.get('redirectTo') as string || '/dashboard'\n  \n  try {\n    await signIn(provider, { redirectTo })\n    return { success: true }\n  } catch (error) {\n    if (error instanceof AuthError) {\n      return { error: error.message }\n    }\n    throw error  // Re-throw non-auth errors (redirects)\n  }\n}",
+        "note": "signIn() throws a NEXT_REDIRECT which must be re-thrown. Only catch AuthError."
+      },
+      "sign_out": {
+        "code": "'use server'\nimport { signOut } from '@/auth'\n\nexport async function signOutAction() {\n  await signOut({ redirectTo: '/' })\n}"
+      }
+    },
+    "protected_actions": {
+      "pattern": "Always call auth() at the start of any server action that requires authentication",
+      "code": "'use server'\nimport { auth } from '@/auth'\n\nexport async function updateProfile(formData: FormData) {\n  const session = await auth()\n  if (!session) throw new Error('Unauthorized')\n  \n  // Perform protected operation with session.user.id\n}"
+    }
+  },
+  "multi_project_clone_pattern": {
+    "description": "Ring Platform uses the same auth architecture across all clone projects",
+    "shared_files": [
+      "auth.ts - Main config (identical structure, different env vars)",
+      "auth.config.ts - Edge config (identical across clones)",
+      "middleware.ts - Combined auth + intl middleware",
+      "lib/auth/postgres-adapter.ts - Custom adapter",
+      "lib/auth/edge-jwt.ts - Edge JWT utilities",
+      "lib/auth-adapter-singleton.ts - Adapter caching",
+      "app/api/auth/[...nextauth]/route.ts - API routes",
+      "app/api/auth/crypto/generateNonce/route.ts - Nonce API"
+    ],
+    "clone_projects": [
+      "ring-platform.org",
+      "ring-vikka-ua",
+      "ring-greenfood-live",
+      "ring-ring-ck-ua",
+      "ring-zemna-ai"
+    ],
+    "customization_points": {
+      "environment_variables": "Each clone has its own AUTH_GOOGLE_ID, AUTH_RESEND_KEY, AUTH_SECRET",
+      "branding": "Login pages customized per clone",
+      "role_structure": "Same UserRole enum across all clones",
+      "database_backend": "Each clone can use different DB_BACKEND_MODE"
+    }
+  },
+  "performance_optimization": {
+    "caching_strategies": {
+      "middleware_auth_cache": "In-memory Map with 30s TTL and IP binding. Prevents duplicate auth checks.",
+      "jwt_data_caching": "Only fetch user data from database when needsUserData is true (trigger=update, initial sign-in, or missing role).",
+      "adapter_singleton": "Cache adapter instance to prevent re-initialization on every request.",
+      "jwks_cache": "OIDC signing keys cached automatically by Auth.js."
+    },
+    "reducing_jwt_callback_calls": {
+      "updateAge": "Set to 24 hours. jwt() only fires when session is older than this.",
+      "conditional_db_fetch": "Check if data already exists in token before querying database.",
+      "code_example": "const needsUserData = trigger === 'update' ||\n  (user && account) ||\n  (token.userId && !token.role)  // Only fetch if role not cached"
+    },
+    "edge_performance": {
+      "cold_starts": "Minimal initialization overhead with split config. auth.config.ts is tiny.",
+      "response_times": "Sub-100ms authentication checks with JWT (no database roundtrip).",
+      "bundle_size": "auth.config.ts should be <50KB. No providers, no adapters."
+    }
+  },
+  "monitoring_observability": {
+    "auth_logging": {
+      "conditional_logging": "Use environment-based log control to reduce noise in production",
+      "code": "const shouldLogAuth = () => {\n  if (process.env.npm_lifecycle_event === 'build' || process.env.NODE_ENV === 'production') return false\n  return process.env.DB_DEBUG === 'true' || process.env.NODE_ENV === 'development'\n}"
+    },
+    "debug_mode": {
+      "enable": "Set AUTH_DEBUG=true or debug: true in config",
+      "output": "Logs all Auth.js internal operations including provider interactions, callback invocations, and token operations"
+    },
+    "security_events": {
+      "track": [
+        "Failed sign-in attempts",
+        "Token verification failures",
+        "Nonce expiry events",
+        "Role escalation attempts",
+        "IP binding mismatches in cache"
+      ],
+      "audit_trail": "events.signIn logs every authentication with provider info"
+    }
+  },
+  "migration_strategies": {
+    "v4_to_v5": {
+      "breaking_changes": [
+        "Minimum Next.js 14.0 required",
+        "OAuth 1.0 support removed",
+        "Configuration moved from API route to root auth.ts",
+        "Adapter packages renamed: @next-auth/* -> @auth/*",
+        "Cookie prefix changed: next-auth -> authjs",
+        "NextAuthOptions renamed to NextAuthConfig",
+        "getServerSession/getToken replaced by auth()",
+        "next-auth/next import removed",
+        "next-auth/middleware replaced by auth export"
+      ],
+      "migration_steps": [
+        "npm install next-auth@beta",
+        "Create auth.ts with NextAuth() export at project root",
+        "Create auth.config.ts for edge-compatible config",
+        "Update API route to: export const { GET, POST } = handlers",
+        "Replace all getServerSession(authOptions) with auth()",
+        "Replace all getToken() with auth()",
+        "Update middleware to use auth export from auth.config.ts",
+        "Update adapter imports from @next-auth/* to @auth/*",
+        "Remove NEXTAUTH_URL if host is auto-detected",
+        "Update TypeScript types from NextAuthOptions to NextAuthConfig"
+      ],
+      "no_breaking_db_changes": "v5 does NOT introduce breaking changes to database schema. OAuth 1.0 fields (oauth_token_secret, oauth_token) can be removed."
+    },
+    "auth_js_joins_better_auth": {
+      "note": "Auth.js project is now part of Better Auth (2025). Auth.js v5 continues to work and is maintained. Migration to Better Auth is optional for new projects.",
+      "impact_on_ring": "Ring Platform continues using Auth.js v5 (next-auth@beta). No immediate migration needed."
+    }
+  },
+  "testing_patterns": {
+    "mock_auth": {
+      "code": "// Mock auth() for testing\njest.mock('@/auth', () => ({\n  auth: jest.fn().mockResolvedValue({\n    user: { id: 'test-id', email: 'test@example.com', role: 'SUBSCRIBER' },\n    expires: new Date(Date.now() + 86400000).toISOString(),\n  }),\n  signIn: jest.fn(),\n  signOut: jest.fn(),\n}))"
+    },
+    "e2e_auth_state": {
+      "description": "Use Playwright with auth state preservation for E2E tests",
+      "pattern": "storageState: 'auth.json' in Playwright config to persist auth between tests"
+    }
+  },
+  "production_checklist": {
+    "security": [
+      "AUTH_SECRET configured with strong random value (openssl rand -base64 33)",
+      "HTTPS enforced in production (required for __Secure- cookie prefix)",
+      "useSecureCookies: true in production",
+      "CSRF protection active on all auth endpoints",
+      "Rate limiting on signIn and nonce generation endpoints",
+      "Google One Tap audience validation includes AUTH_GOOGLE_ID",
+      "Crypto wallet nonce expiry enforced (1 hour max)",
+      "Nonce cleared after successful crypto authentication"
+    ],
+    "reliability": [
+      "Split config pattern implemented (auth.config.ts + auth.ts)",
+      "Graceful degradation on database failures (JWT-only fallback)",
+      "Error boundaries for auth component failures",
+      "Fallback authentication methods configured",
+      "Adapter singleton caching prevents re-initialization"
+    ],
+    "performance": [
+      "Middleware auth cache with IP binding (30s TTL)",
+      "Conditional database fetching in jwt() callback",
+      "Wallet creation moved to non-blocking events",
+      "auth.config.ts bundle size <50KB"
+    ],
+    "compliance": [
+      "GDPR data minimization in session callback",
+      "Right to erasure via adapter deleteUser()",
+      "Consent management for third-party auth providers",
+      "Audit trail via events system"
+    ]
+  },
+  "execution_priorities": {
+    "immediate": [
+      "Verify split config pattern is correct (auth.config.ts vs auth.ts)",
+      "Ensure JWT strategy is set for edge compatibility",
+      "Validate Google One Tap audience parameter",
+      "Check CSRF protection on custom endpoints"
+    ],
+    "short_term": [
+      "Add WebAuthn/passkeys support (experimental)",
+      "Implement refresh token rotation for Google OAuth",
+      "Set up auth monitoring and alerting",
+      "Add rate limiting to auth endpoints"
+    ],
+    "long_term": [
+      "Evaluate Better Auth migration path",
+      "Implement advanced RBAC with permission-based access",
+      "Add multi-factor authentication (MFA)",
+      "Zero-trust architecture with continuous verification"
+    ]
+  }
+}

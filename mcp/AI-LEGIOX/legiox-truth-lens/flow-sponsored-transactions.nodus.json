@@ -1,0 +1,141 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "flow_sponsored_transactions",
+  "name": "Flow Sponsored Transactions (Gas Abstraction Layer)",
+  "mission": {
+    "primary_objective": "Implement protocol-native gas sponsorship on Flow so Ring users never hold or spend FLOW for routine participation, transfer, mint, or marketplace actions.",
+    "context": "Flow transactions separate Proposer, Authorizer, and Payer roles. Ring treasury (service account) acts as Payer while the user or app-controlled child account remains Proposer/Authorizer. This replaces EVM paymaster infrastructure for interim Ringdom deployment. Sponsor budgets and allowlisted Cadence templates prevent abuse.",
+    "target_outcome": "Every Ring-surface mutation uses a sponsored transaction pattern with deterministic fee accounting, compute limits, and auditable payer identity — users experience Web2-like checkout without gas prompts.",
+    "scope": "FCL/@onflow/react-sdk payer configuration, server-side authz for treasury account, compute limit selection, and sponsor policy — not Cadence contract authoring (see flow_cadence_* lenses)."
+  },
+  "truth_lens": "Gas abstraction on Flow is a first-class protocol feature, not a bolt-on smart contract. The Payer account pays network fees in FLOW; Authorizers sign state changes; they need not be the same party. Ring must always set payer explicitly to treasury authz in production — never assume FCL defaults (current user pays) unless testing locally.",
+  "core_principles": [
+    "Separate payer from user: treasury FLOW balance funds UX; project FT/NFT live in user vaults.",
+    "Simulate before submit: use FCL pre-flight or Access API dry-run where applicable; cap compute with explicit limits.",
+    "Allowlist Cadence templates: sponsor only known transaction bodies — no arbitrary user-supplied Cadence in hot paths.",
+    "Meter treasury spend: daily FLOW burn budgets, per-user rate limits, alert on anomaly.",
+    "Prefer onceExecuted over deprecated sealed patterns for lower latency (FCL v1.15+)."
+  ],
+  "anti_patterns": [
+    "Defaulting payer to fcl.authz / fcl.currentUser in production Ring flows.",
+    "Sponsoring unbounded arbitrary Cadence from client without server policy review.",
+    "Blind compute limit of 9999 on every tx — wastes treasury or causes aborts.",
+    "Storing payer private keys in client bundles or NEXT_PUBLIC env vars.",
+    "Assuming Flow Wallet auto-sponsor on mainnet covers third-party app txs without your own payer setup."
+  ],
+  "key_patterns": [
+    "fcl.mutate({ cadence, proposer: userAuthz, authorizations: [userAuthz], payer: treasuryAuthz, limit: N }).",
+    "fcl.send([ fcl.transaction`...`, fcl.proposer(userAuthz), fcl.authorizations([userAuthz]), fcl.payer(treasuryAuthz) ]).",
+    "Server-side treasury authz: sign payer role with service account key from HSM/K8s secret — never expose to browser.",
+    "Compute limit heuristic: simple FT transfer ~50–100; NFT transfer ~100–200; complex marketplace tx profile on testnet first.",
+    "Flow EVM alternative: custom gateway with GAS_PRICE=0 and service account signing — only if Ring uses Flow EVM path.",
+    "Post-tx: fcl.tx(transactionId).onceExecuted() for result + events."
+  ],
+  "consult_when": [
+    "Designing gasless UX for Ring login, airdrop, vote, or NFT actions on Flow",
+    "Wiring treasury service account as transaction payer in FCL or react-sdk",
+    "Choosing compute limits and FLOW budget alerts for sponsored txs",
+    "Comparing Cadence sponsor vs Flow EVM sponsored RPC gateway",
+    "Debugging 'insufficient balance' on payer account vs authorizer account"
+  ],
+  "expertise": [
+    "FLOW_TX_ROLES — proposer, authorizer, payer separation",
+    "FCL_PAYER_AUTHZ — treasury signing and mutate/send builders",
+    "SPONSOR_POLICY — allowlists, budgets, rate limits",
+    "COMPUTE_METERING — limit selection and abort handling"
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/flow-ensure-wallet-server.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-hybrid-custody-wallet.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-react-next-integration.nodus.json"
+  ],
+  "transaction_roles": {
+    "proposer": "Anti-replay nonce role; often the user or app child account.",
+    "authorizer": "Signs for accounts whose storage/contracts mutate; may include multiple parties.",
+    "payer": "Exactly one account pays FLOW fees; Ring treasury in production.",
+    "disclaimer": "Payer does not grant access to payer account storage — fees only."
+  },
+  "sponsor_policy": {
+    "allowlisted_templates": [
+      "ft_transfer",
+      "ft_airdrop_deposit",
+      "nft_mint_to_collection",
+      "nft_transfer",
+      "marketplace_list_purchase",
+      "hybrid_custody_link"
+    ],
+    "deny": "arbitrary_cadence_from_client",
+    "per_user_rate_limit_per_hour": 60,
+    "daily_flow_budget_alert_lamports": "configure_per_environment"
+  },
+  "compute_limit_guidance": {
+    "disclaimer": "Cadence meters compute units; Flow fees are generally low. Profile on testnet.",
+    "examples_from_flow_docs": {
+      "flow_token_transfer_cu": 19,
+      "single_nft_transfer_cu": 26,
+      "evm_token_transfer_cu": 28
+    },
+    "ring_default_start": 100,
+    "complex_marketplace_profile_first": true
+  },
+  "fcl_patterns": {
+    "mutate_sponsored": "await fcl.mutate({ cadence, proposer, authorizations, payer: treasuryAuthz, limit })",
+    "wait_for_result": "await fcl.tx(transactionId).onceExecuted()",
+    "payer_builder": "fcl.payer(treasuryAuthz) or import { payer } from '@onflow/fcl'"
+  },
+  "flow_evm_sponsored_gateway": {
+    "note": "Optional path if Ring uses Flow EVM: custom RPC gateway with GAS_PRICE=0; service account pays.",
+    "doc": "https://developers.flow.com/blockchain-development-tutorials/gasless-transactions/sponsored-transactions-evm-endpoint"
+  },
+  "core_contract_addresses": {
+    "disclaimer": "Payer pays in FLOW; project tokens are separate FT contracts.",
+    "flow_token_mainnet": "0x1654653399040a61"
+  },
+  "jq_topic_index": {
+    "payer": "transaction_roles.payer; fcl_patterns.mutate_sponsored; sponsor_policy",
+    "proposer": "transaction_roles.proposer",
+    "authorizer": "transaction_roles.authorizer",
+    "compute_limit": "compute_limit_guidance",
+    "sponsor_budget": "sponsor_policy",
+    "evm_gateway": "flow_evm_sponsored_gateway"
+  },
+  "keywords": [
+    "flow",
+    "sponsored",
+    "gasless",
+    "payer",
+    "fcl",
+    "mutate",
+    "treasury",
+    "compute_limit",
+    "proposer",
+    "authorizer",
+    "ring",
+    "jq_topic_index"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "role": "LegioX truth lens — Flow sponsored transactions and gas abstraction",
+  "version": "1.0.0",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "tier": "web3_blockchain",
+  "web_references": [
+    {
+      "topic": "Gasless transactions overview",
+      "url": "https://developers.flow.com/blockchain-development-tutorials/gasless-transactions"
+    },
+    {
+      "topic": "FCL transactions and roles",
+      "url": "https://developers.flow.com/build/tools/clients/fcl-js/transactions"
+    },
+    {
+      "topic": "FCL payer builder",
+      "url": "https://developers.flow.com/build/tools/clients/fcl-js/packages-docs/fcl/payer"
+    },
+    {
+      "topic": "Sponsored Flow EVM endpoint",
+      "url": "https://developers.flow.com/blockchain-development-tutorials/gasless-transactions/sponsored-transactions-evm-endpoint"
+    }
+  ]
+}

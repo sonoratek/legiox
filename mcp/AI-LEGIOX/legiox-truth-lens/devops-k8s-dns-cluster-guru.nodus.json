@@ -1,0 +1,759 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_k8s_dns_cluster_guru",
+  "name": "K8s DNS Cluster Guru — Self-Hosted Authoritative DNS on Dual k3s Nodes",
+  "created": "2026-04-05",
+  "updated": "2026-04-05",
+  "mission": {
+    "primary_objective": "Design, deploy, and operate a production-grade self-hosted authoritative DNS infrastructure on two independent k3s single-node clusters (Ubuntu 22.04), replacing CloudFlare as the authoritative nameserver for domains like ringdom.org with a YAML-driven, GitOps-compatible zone management system that integrates natively with k8s Ingress, cert-manager, and ExternalDNS.",
+    "context": "Ray operates two k3s single-node servers (not clustered together) running production workloads including the Ring Platform. Current DNS: CloudFlare NS with manually managed zone records. Goal: own the NS delegation, manage zones as YAML/ConfigMaps in git, and have ExternalDNS auto-create DNS records from Ingress annotations. The two k3s machines act as ns1 and ns2 for the same authoritative zone — connected only via AXFR zone transfer, not as a k8s cluster. Ring Platform uses nginx ingress, cert-manager with letsencrypt-prod ClusterIssuer, and multi-namespace ring clone deployments (e.g. ring-ringdom-org). Current zone: ringdom.org with A/AAAA, MX, SRV, TXT/SPF/DKIM/DMARC, CNAME records.",
+    "target_outcome": "Two authoritative nameservers (ns1.ringdom.org @ k3s-1, ns2.ringdom.org @ k3s-2) serving ringdom.org and future ring clone domains; ExternalDNS auto-syncing Ingress hostnames to PowerDNS via REST API; cert-manager issuing Let's Encrypt certs via HTTP-01 (or DNS-01 via ExternalDNS + PowerDNS); zone records stored as YAML ConfigMaps in git; NS delegation updated at registrar (Cloudflare → custom).",
+    "scope": "PowerDNS Authoritative Server on k3s (two independent clusters), ExternalDNS with PowerDNS provider, AXFR primary/secondary zone replication, registrar NS delegation, glue records, cert-manager integration, CoreDNS role (cluster-internal only), Ubuntu 22.04 host requirements for port 53, ringdom.org zone migration from Cloudflare."
+  },
+
+  "core_principles": [
+    "TWO_INDEPENDENT_K3S_NOT_CLUSTERED — ns1 and ns2 run on separate k3s single-node instances connected only via AXFR zone transfer over the public internet; no shared etcd, no cluster API between them",
+    "POWERDNS_IS_AUTHORITATIVE_COREDNS_IS_INTERNAL — CoreDNS serves kube-internal cluster.local discovery ONLY; PowerDNS serves external internet DNS; do NOT expose CoreDNS on port 53 to the internet",
+    "ZONE_AS_CODE — zone records stored in PowerDNS-Admin or via REST API calls driven by YAML manifests/ConfigMaps committed to git; ExternalDNS handles Ingress records automatically",
+    "EXTERNALDNS_OWNS_INGRESS_RECORDS — ExternalDNS watches Ingress objects and Services with LoadBalancer type, creates/updates/deletes A/AAAA/CNAME records in PowerDNS via REST API using txt-owner-id to track ownership",
+    "GLUE_RECORDS_REQUIRED — when using ns1.ringdom.org and ns2.ringdom.org as your nameservers for ringdom.org itself, the registrar MUST register glue A/AAAA records (IANA requirement: at least 2 NS hosts must resolve to different IPs)",
+    "SERIAL_INCREMENT_BEFORE_TRANSFER — PowerDNS auto-manages SOA serial on API writes; always verify SOA serial incremented before testing AXFR from secondary",
+    "ACME_HTTP01_FIRST_THEN_DNS01 — use HTTP-01 (cert-manager nginx ingress) as default; DNS-01 (ExternalDNS + PowerDNS) only for wildcard certs or non-HTTP services",
+    "TTL_STRATEGY — during migration keep TTLs at 300s (5min); after stable raise NS/SOA to 86400; A records at 300-3600; MX/TXT at 3600"
+  ],
+
+  "architecture": {
+    "overview": "Two k3s single-node servers each running a PowerDNS Authoritative Server pod exposed on host port 53 (UDP+TCP). ns1 (k3s-1) is the PRIMARY — owns writes, ExternalDNS pushes to its REST API. ns2 (k3s-2) is the SECONDARY — receives zone via AXFR from ns1 on NOTIFY. ExternalDNS runs on each k3s cluster but points to ns1 API only. CoreDNS remains the cluster DNS on both machines (untouched, port 53 inside pod network only).",
+    "component_roles": {
+      "ns1_k3s_1": {
+        "ip": "5.161.246.54",
+        "role": "PRIMARY authoritative — pdns with gsqlite3 or PostgreSQL backend",
+        "accepts_writes": true,
+        "externaldns_target": true,
+        "exposed_port": "53 UDP+TCP (NodePort or hostNetwork)"
+      },
+      "ns2_k3s_2": {
+        "ip": "135.181.161.60",
+        "role": "SECONDARY authoritative — pdns with gsqlite3 backend, receives AXFR from ns1",
+        "accepts_writes": false,
+        "externaldns_target": false,
+        "exposed_port": "53 UDP+TCP"
+      },
+      "externaldns": {
+        "runs_on": "k3s-1 (primary cluster)",
+        "provider": "pdns",
+        "sources": ["ingress", "service"],
+        "watches": "all namespaces matching --domain-filter"
+      },
+      "cert_manager": {
+        "runs_on": "both k3s clusters independently",
+        "issuer": "letsencrypt-prod ClusterIssuer (HTTP-01)",
+        "tls_secret": "per-namespace, e.g. ringdom-org-tls"
+      },
+      "coredns": {
+        "role": "INTERNAL cluster DNS only (cluster.local, in-addr.arpa)",
+        "not_exposed": true,
+        "note": "Do NOT add external zones to CoreDNS; do NOT expose on 0.0.0.0:53"
+      }
+    },
+    "data_flow": [
+      "Ingress created in ring-ringdom-org namespace with annotation external-dns.alpha.kubernetes.io/hostname: ringdom.org",
+      "ExternalDNS detects Ingress, calls PowerDNS REST API on ns1 → creates/updates A record ringdom.org → ingress-nginx NodePort IP",
+      "PowerDNS ns1 increments SOA serial, sends NOTIFY to ns2",
+      "PowerDNS ns2 receives NOTIFY, initiates AXFR from ns1, updates its SQLite",
+      "Internet DNS resolvers query ns1 or ns2 via UDP/TCP port 53",
+      "cert-manager creates CertificateRequest → ACME HTTP-01 challenge → Let's Encrypt validates via nginx Ingress → issues TLS cert into Secret"
+    ]
+  },
+
+  "powerdns_on_k3s": {
+    "overview": "Deploy PowerDNS Authoritative Server as a k8s Deployment on each k3s node. Use SQLite backend on each node (simple, no external DB required for small zones). Expose port 53 via hostNetwork or NodePort. Enable HTTP API for ExternalDNS integration.",
+
+    "ns1_primary_manifest": {
+      "description": "Primary PowerDNS deployment on k3s-1 (ns1.ringdom.org @ 5.161.246.54)",
+      "namespace": "dns-system",
+      "yaml_fragments": [
+        "---",
+        "apiVersion: v1",
+        "kind: Namespace",
+        "metadata:",
+        "  name: dns-system",
+        "---",
+        "apiVersion: v1",
+        "kind: ConfigMap",
+        "metadata:",
+        "  name: pdns-config",
+        "  namespace: dns-system",
+        "data:",
+        "  pdns.conf: |",
+        "    launch=gsqlite3",
+        "    gsqlite3-database=/var/lib/powerdns/pdns.db",
+        "    gsqlite3-dnssec=no",
+        "    local-address=0.0.0.0",
+        "    local-port=53",
+        "    # REST API for ExternalDNS",
+        "    api=yes",
+        "    api-key=REPLACE_WITH_STRONG_KEY",
+        "    webserver=yes",
+        "    webserver-address=0.0.0.0",
+        "    webserver-port=8081",
+        "    webserver-allow-from=0.0.0.0/0,::/0",
+        "    # Primary mode",
+        "    primary=yes",
+        "    secondary=no",
+        "    # AXFR to ns2",
+        "    allow-axfr-ips=135.181.161.60",
+        "    also-notify=135.181.161.60",
+        "    # Security",
+        "    allow-notify-from=",
+        "    # Logging",
+        "    log-dns-queries=no",
+        "    loglevel=4",
+        "---",
+        "apiVersion: v1",
+        "kind: PersistentVolumeClaim",
+        "metadata:",
+        "  name: pdns-data",
+        "  namespace: dns-system",
+        "spec:",
+        "  accessModes: [ReadWriteOnce]",
+        "  storageClassName: local-path",
+        "  resources:",
+        "    requests:",
+        "      storage: 1Gi",
+        "---",
+        "apiVersion: apps/v1",
+        "kind: Deployment",
+        "metadata:",
+        "  name: powerdns-primary",
+        "  namespace: dns-system",
+        "spec:",
+        "  replicas: 1",
+        "  selector:",
+        "    matchLabels:",
+        "      app: powerdns-primary",
+        "  template:",
+        "    metadata:",
+        "      labels:",
+        "        app: powerdns-primary",
+        "    spec:",
+        "      hostNetwork: true",
+        "      dnsPolicy: ClusterFirstWithHostNet",
+        "      initContainers:",
+        "      - name: init-db",
+        "        image: powerdns/pdns-auth-49:latest",
+        "        command: [\"/bin/sh\", \"-c\"]",
+        "        args:",
+        "          - |",
+        "            if [ ! -f /var/lib/powerdns/pdns.db ]; then",
+        "              sqlite3 /var/lib/powerdns/pdns.db < /usr/share/doc/pdns-backend-sqlite3/schema.sqlite3.sql",
+        "            fi",
+        "        volumeMounts:",
+        "        - name: pdns-data",
+        "          mountPath: /var/lib/powerdns",
+        "      containers:",
+        "      - name: powerdns",
+        "        image: powerdns/pdns-auth-49:latest",
+        "        args: [\"--config-dir=/etc/pdns\"]",
+        "        ports:",
+        "        - containerPort: 53",
+        "          protocol: UDP",
+        "          hostPort: 53",
+        "        - containerPort: 53",
+        "          protocol: TCP",
+        "          hostPort: 53",
+        "        - containerPort: 8081",
+        "          protocol: TCP",
+        "        volumeMounts:",
+        "        - name: pdns-config",
+        "          mountPath: /etc/pdns/pdns.conf",
+        "          subPath: pdns.conf",
+        "        - name: pdns-data",
+        "          mountPath: /var/lib/powerdns",
+        "        resources:",
+        "          requests:",
+        "            memory: 64Mi",
+        "            cpu: 50m",
+        "          limits:",
+        "            memory: 256Mi",
+        "            cpu: 200m",
+        "        livenessProbe:",
+        "          exec:",
+        "            command: [\"pdns_control\", \"ping\"]",
+        "          initialDelaySeconds: 15",
+        "          periodSeconds: 30",
+        "      volumes:",
+        "      - name: pdns-config",
+        "        configMap:",
+        "          name: pdns-config",
+        "      - name: pdns-data",
+        "        persistentVolumeClaim:",
+        "          claimName: pdns-data"
+      ]
+    },
+
+    "ns2_secondary_manifest": {
+      "description": "Secondary PowerDNS on k3s-2 (ns2.ringdom.org @ 135.181.161.60) — receives AXFR only",
+      "key_differences_from_primary": [
+        "primary=no",
+        "secondary=yes",
+        "allow-notify-from=5.161.246.54  # only accept NOTIFY from ns1",
+        "api=no  # no ExternalDNS on secondary",
+        "No also-notify (secondary does not re-notify)"
+      ],
+      "pdns_conf_secondary": [
+        "launch=gsqlite3",
+        "gsqlite3-database=/var/lib/powerdns/pdns.db",
+        "local-address=0.0.0.0",
+        "local-port=53",
+        "primary=no",
+        "secondary=yes",
+        "allow-notify-from=5.161.246.54",
+        "autosecondary=yes",
+        "xfr-cycle-interval=60",
+        "log-dns-queries=no",
+        "loglevel=4"
+      ]
+    },
+
+    "service_exposure": {
+      "option_a_hostnetwork": {
+        "description": "Recommended for single-node k3s — pod uses host network stack, port 53 binds directly to node IP",
+        "requirement": "Only ONE pod can use hostNetwork per node; ensure no other port-53 listener exists",
+        "check_cmd": "ss -tulnp | grep ':53'"
+      },
+      "option_b_nodeport": {
+        "description": "Use NodePort 53 — requires metallb or manual iptables rule; less recommended for UDP",
+        "note": "Some cloud providers do not allow NodePort < 1024; hostNetwork is cleaner for DNS"
+      },
+      "systemd_resolved_conflict": {
+        "description": "Ubuntu 22.04 runs systemd-resolved on 127.0.0.53:53 which may conflict",
+        "fix": [
+          "sudo systemctl disable systemd-resolved",
+          "sudo systemctl stop systemd-resolved",
+          "sudo rm /etc/resolv.conf",
+          "echo 'nameserver 8.8.8.8' | sudo tee /etc/resolv.conf",
+          "# Or stub-only: edit /etc/systemd/resolved.conf → DNSStubListener=no → restart"
+        ]
+      }
+    },
+
+    "initial_zone_bootstrap": {
+      "description": "Create ringdom.org zone in PowerDNS via REST API on ns1 after deployment",
+      "create_zone_curl": [
+        "# Create zone",
+        "curl -s -X POST http://ns1.ringdom.org:8081/api/v1/servers/localhost/zones \\",
+        "  -H 'X-API-Key: REPLACE_WITH_STRONG_KEY' \\",
+        "  -H 'Content-Type: application/json' \\",
+        "  -d '{",
+        "    \"name\": \"ringdom.org.\",",
+        "    \"kind\": \"Native\",",
+        "    \"nameservers\": [\"ns1.ringdom.org.\", \"ns2.ringdom.org.\"]",
+        "  }'"
+      ],
+      "note_on_kind": "Use 'Native' initially; change to 'Master' after ns2 is set up as secondary",
+      "add_records_curl": [
+        "# Add A record for apex",
+        "curl -s -X PATCH http://ns1.ringdom.org:8081/api/v1/servers/localhost/zones/ringdom.org. \\",
+        "  -H 'X-API-Key: REPLACE_WITH_STRONG_KEY' \\",
+        "  -H 'Content-Type: application/json' \\",
+        "  -d '{",
+        "    \"rrsets\": [{",
+        "      \"name\": \"ringdom.org.\",",
+        "      \"type\": \"A\",",
+        "      \"ttl\": 300,",
+        "      \"changetype\": \"REPLACE\",",
+        "      \"records\": [{\"content\": \"5.161.246.54\", \"disabled\": false}]",
+        "    }]",
+        "  }'"
+      ]
+    }
+  },
+
+  "zone_migration_from_cloudflare": {
+    "overview": "Full ringdom.org zone migration procedure — preserve all existing records, go live with new NS only after ns1+ns2 are verified answering correctly.",
+
+    "ringdom_org_zone_records": {
+      "description": "Extracted from uploaded ringdom.org zone export — translate all records to PowerDNS API calls or pdnsutil commands",
+      "current_ips": {
+        "apex": "5.161.246.54 (k3s-1 / ns1)",
+        "mail_webmail_autoconfig_autodiscover": "135.181.161.60 (k3s-2 / mail server)"
+      },
+      "records_to_create": [
+        "ringdom.org.          300 IN A     5.161.246.54",
+        "ns1.ringdom.org.      3600 IN A    5.161.246.54",
+        "ns2.ringdom.org.      3600 IN A    135.181.161.60",
+        "www.ringdom.org.      300  IN CNAME ringdom.org.",
+        "mail.ringdom.org.     300  IN A     135.181.161.60",
+        "webmail.ringdom.org.  300  IN A     135.181.161.60",
+        "autoconfig.ringdom.org. 300 IN A   135.181.161.60",
+        "autodiscover.ringdom.org. 300 IN A 135.181.161.60",
+        "ringdom.org.          3600 IN MX   10 mail.ringdom.org.",
+        "ringdom.org.          3600 IN TXT  \"v=spf1 mx a:mail.ringdom.org ip4:135.181.161.60 -all\"",
+        "_dmarc.ringdom.org.   3600 IN TXT  \"v=DMARC1; p=quarantine; rua=mailto:emperor@ringdom.org; ruf=mailto:emperor@ringdom.org; fo=1; adkim=r; aspf=r; pct=100\"",
+        "mail._domainkey.ringdom.org. 3600 IN TXT \"v=DKIM1; h=sha256; k=rsa; p=MIIBIjAN...IDAQAB\"",
+        "_autodiscover._tcp.ringdom.org. 3600 IN SRV 0 0 443 autodiscover.ringdom.org.",
+        "_imaps._tcp.ringdom.org.   3600 IN SRV 0 1 993 mail.ringdom.org.",
+        "_imap._tcp.ringdom.org.    3600 IN SRV 0 1 143 mail.ringdom.org.",
+        "_smtps._tcp.ringdom.org.   3600 IN SRV 0 1 465 mail.ringdom.org.",
+        "_submission._tcp.ringdom.org. 3600 IN SRV 0 1 587 mail.ringdom.org.",
+        "ringdom.org. 3600 IN AAAA (not in current zone — add if v6 is available)"
+      ]
+    },
+
+    "migration_steps": [
+      "STEP 1: Deploy ns1 PowerDNS on k3s-1 (5.161.246.54), verify port 53 is reachable: dig @5.161.246.54 ringdom.org SOA",
+      "STEP 2: Populate all zone records via REST API or pdnsutil zone-import from zone file",
+      "STEP 3: Deploy ns2 PowerDNS on k3s-2 (135.181.161.60) in secondary mode, configure allow-notify-from=5.161.246.54",
+      "STEP 4: On ns1, change zone kind to Master and set also-notify=135.181.161.60; trigger manual AXFR: pdnsutil list-zone ringdom.org; pdns_control retrieve ringdom.org (on ns2)",
+      "STEP 5: Verify ns2 has all records: dig @135.181.161.60 ringdom.org SOA; dig @135.181.161.60 ringdom.org MX",
+      "STEP 6: Verify SOA serials match on both: dig @5.161.246.54 ringdom.org SOA && dig @135.181.161.60 ringdom.org SOA",
+      "STEP 7: Register glue records at domain registrar (Namecheap/Gandi/whoever manages ringdom.org): ns1.ringdom.org → 5.161.246.54, ns2.ringdom.org → 135.181.161.60",
+      "STEP 8: Lower TTL of existing Cloudflare NS records to 60s and wait for TTL to expire",
+      "STEP 9: Change NS delegation at registrar from Cloudflare to ns1.ringdom.org + ns2.ringdom.org",
+      "STEP 10: Verify global propagation: dig +trace ringdom.org A; use dnschecker.org or 'dig @8.8.8.8 ringdom.org NS'",
+      "STEP 11: After 24h stable, raise NS record TTL to 86400 and A record TTLs to 3600"
+    ],
+
+    "import_zone_from_file": [
+      "# Import existing zone file directly via pdnsutil on the ns1 pod",
+      "kubectl exec -n dns-system deploy/powerdns-primary -- pdnsutil load-zone ringdom.org /tmp/ringdom.org.zone",
+      "# Or via REST API zone import endpoint",
+      "curl -s -X POST http://ns1.ringdom.org:8081/api/v1/servers/localhost/zones \\",
+      "  -H 'X-API-Key: KEY' -H 'Content-Type: application/x-www-form-urlencoded' \\",
+      "  --data-urlencode 'zone@ringdom.org.zone'",
+      "# After import, verify",
+      "kubectl exec -n dns-system deploy/powerdns-primary -- pdnsutil list-zone ringdom.org"
+    ]
+  },
+
+  "externaldns_setup": {
+    "overview": "ExternalDNS runs on k3s-1, watches Ingress and Service objects cluster-wide, and upserts records into PowerDNS ns1 via REST API. It uses TXT ownership records to track what it manages.",
+
+    "rbac_manifest": [
+      "apiVersion: v1",
+      "kind: ServiceAccount",
+      "metadata:",
+      "  name: external-dns",
+      "  namespace: dns-system",
+      "---",
+      "apiVersion: rbac.authorization.k8s.io/v1",
+      "kind: ClusterRole",
+      "metadata:",
+      "  name: external-dns",
+      "rules:",
+      "- apiGroups: [\"\"]",
+      "  resources: [\"services\", \"endpoints\", \"pods\", \"nodes\"]",
+      "  verbs: [\"get\", \"watch\", \"list\"]",
+      "- apiGroups: [\"extensions\", \"networking.k8s.io\"]",
+      "  resources: [\"ingresses\"]",
+      "  verbs: [\"get\", \"watch\", \"list\"]",
+      "- apiGroups: [\"externaldns.k8s.io\"]",
+      "  resources: [\"dnsendpoints\"]",
+      "  verbs: [\"get\", \"watch\", \"list\", \"update\"]",
+      "---",
+      "apiVersion: rbac.authorization.k8s.io/v1",
+      "kind: ClusterRoleBinding",
+      "metadata:",
+      "  name: external-dns",
+      "subjects:",
+      "- kind: ServiceAccount",
+      "  name: external-dns",
+      "  namespace: dns-system",
+      "roleRef:",
+      "  apiGroup: rbac.authorization.k8s.io",
+      "  kind: ClusterRole",
+      "  name: external-dns"
+    ],
+
+    "deployment_manifest": [
+      "apiVersion: apps/v1",
+      "kind: Deployment",
+      "metadata:",
+      "  name: external-dns",
+      "  namespace: dns-system",
+      "spec:",
+      "  replicas: 1",
+      "  strategy:",
+      "    type: Recreate",
+      "  selector:",
+      "    matchLabels:",
+      "      app: external-dns",
+      "  template:",
+      "    metadata:",
+      "      labels:",
+      "        app: external-dns",
+      "    spec:",
+      "      serviceAccountName: external-dns",
+      "      containers:",
+      "      - name: external-dns",
+      "        image: registry.k8s.io/external-dns/external-dns:v0.20.0",
+      "        args:",
+      "        - --source=ingress",
+      "        - --source=service",
+      "        - --source=crd",
+      "        - --provider=pdns",
+      "        - --pdns-server=http://powerdns-api-svc.dns-system.svc.cluster.local:8081",
+      "        - --pdns-api-key=$(PDNS_API_KEY)",
+      "        - --pdns-server-id=localhost",
+      "        - --txt-owner-id=k3s-1",
+      "        - --domain-filter=ringdom.org",
+      "        - --policy=sync",
+      "        - --log-level=info",
+      "        - --interval=60s",
+      "        - --registry=txt",
+      "        env:",
+      "        - name: PDNS_API_KEY",
+      "          valueFrom:",
+      "            secretKeyRef:",
+      "              name: pdns-api-key",
+      "              key: api-key",
+      "        resources:",
+      "          requests:",
+      "            memory: 32Mi",
+      "            cpu: 25m",
+      "          limits:",
+      "            memory: 128Mi",
+      "            cpu: 100m"
+    ],
+
+    "pdns_api_service": [
+      "# Internal Service to expose PowerDNS API to ExternalDNS",
+      "apiVersion: v1",
+      "kind: Service",
+      "metadata:",
+      "  name: powerdns-api-svc",
+      "  namespace: dns-system",
+      "spec:",
+      "  selector:",
+      "    app: powerdns-primary",
+      "  ports:",
+      "  - name: api",
+      "    port: 8081",
+      "    targetPort: 8081",
+      "    protocol: TCP"
+    ],
+
+    "ingress_annotation_usage": {
+      "description": "Add annotation to Ingress objects to trigger ExternalDNS record creation",
+      "annotation": "external-dns.alpha.kubernetes.io/hostname: ringdom.org",
+      "ringdom_org_ingress_patch": [
+        "# Patch the existing ringdom.org Ingress to add ExternalDNS annotation",
+        "kubectl annotate ingress ring-ringdom-org -n ring-ringdom-org \\",
+        "  external-dns.alpha.kubernetes.io/hostname=ringdom.org,www.ringdom.org"
+      ],
+      "note": "ExternalDNS will create A records pointing to the nginx ingress controller's NodePort or LoadBalancer IP; ensure NGINX ingress is exposed on the node's public IP"
+    },
+
+    "dnsendpoint_crd_example": {
+      "description": "DNSEndpoint CRD for static records not covered by Ingress (e.g. mail MX, SRV records)",
+      "yaml": [
+        "apiVersion: externaldns.k8s.io/v1alpha1",
+        "kind: DNSEndpoint",
+        "metadata:",
+        "  name: ringdom-mail-records",
+        "  namespace: dns-system",
+        "spec:",
+        "  endpoints:",
+        "  - dnsName: mail.ringdom.org",
+        "    recordTTL: 3600",
+        "    recordType: A",
+        "    targets:",
+        "    - 135.181.161.60",
+        "  - dnsName: ringdom.org",
+        "    recordTTL: 3600",
+        "    recordType: MX",
+        "    targets:",
+        "    - \"10 mail.ringdom.org\"",
+        "  - dnsName: ringdom.org",
+        "    recordTTL: 3600",
+        "    recordType: TXT",
+        "    targets:",
+        "    - \"v=spf1 mx a:mail.ringdom.org ip4:135.181.161.60 -all\""
+      ],
+      "note": "DNSEndpoints for MX/TXT/SRV records not auto-detected from Ingress. Commit these to git as zone-as-code."
+    }
+  },
+
+  "cert_manager_integration": {
+    "overview": "cert-manager remains the TLS certificate manager for each k3s cluster. It uses HTTP-01 ACME challenges via nginx Ingress (already in your existing manifests). No changes needed to existing cert-manager setup for ringdom.org — it works with any DNS provider as long as port 80 is reachable from the internet for ACME verification.",
+
+    "existing_setup_is_correct": {
+      "note": "Your current ingress.yaml already has cert-manager.io/cluster-issuer: letsencrypt-prod and TLS spec for ringdom.org + www.ringdom.org — this is correct and will continue to work after NS migration",
+      "requirement": "Port 80 must be reachable on the node's public IP for HTTP-01 challenges during cert issuance/renewal"
+    },
+
+    "cluster_issuer_yaml": [
+      "apiVersion: cert-manager.io/v1",
+      "kind: ClusterIssuer",
+      "metadata:",
+      "  name: letsencrypt-prod",
+      "spec:",
+      "  acme:",
+      "    server: https://acme-v02.api.letsencrypt.org/directory",
+      "    email: emperor@ringdom.org",
+      "    privateKeySecretRef:",
+      "      name: letsencrypt-prod",
+      "    solvers:",
+      "    - http01:",
+      "        ingress:",
+      "          class: nginx"
+    ],
+
+    "dns01_for_wildcards": {
+      "description": "If wildcard certs (*.ringdom.org) are needed, use DNS-01 challenge with PowerDNS RFC2136 or PDNS webhook",
+      "cert_manager_pdns_webhook": "github.com/zachomedia/cert-manager-webhook-pdns — Helm chart deploys a webhook solver that calls PowerDNS API directly",
+      "alternative": "ExternalDNS does not handle ACME DNS-01 challenges directly; use the pdns webhook for cert-manager instead"
+    }
+  },
+
+  "registrar_ns_delegation": {
+    "overview": "To replace Cloudflare NS, update the delegation at the domain registrar (Namecheap, Gandi, etc.). Steps depend on who manages ringdom.org registration.",
+    "current_ns": [
+      "santino.ns.cloudflare.com",
+      "uma.ns.cloudflare.com"
+    ],
+    "target_ns": [
+      "ns1.ringdom.org (5.161.246.54)",
+      "ns2.ringdom.org (135.181.161.60)"
+    ],
+    "glue_record_requirement": {
+      "explanation": "Because ns1.ringdom.org and ns2.ringdom.org are WITHIN the ringdom.org domain itself (in-bailiwick nameservers), the parent zone (.org TLD) needs glue records — A records stored at the .org registry level so resolvers can find your NS without circular dependency.",
+      "action": "At your registrar's control panel, find 'Register Custom Nameservers' or 'Glue Records' and add: ns1 → 5.161.246.54, ns2 → 135.181.161.60. This is typically found in advanced DNS settings.",
+      "iana_requirement": "IANA requires at least 2 NS hosts resolving to DIFFERENT IPs; both must answer authoritatively on UDP+TCP port 53 before delegation change is accepted by .org registry"
+    },
+    "migration_checklist": [
+      "[ ] Verify dig @5.161.246.54 ringdom.org SOA returns AA bit set",
+      "[ ] Verify dig @135.181.161.60 ringdom.org SOA returns AA bit set and matches ns1 serial",
+      "[ ] Verify both NS respond on TCP: dig +tcp @5.161.246.54 ringdom.org SOA",
+      "[ ] Register glue records at registrar: ns1.ringdom.org → 5.161.246.54, ns2.ringdom.org → 135.181.161.60",
+      "[ ] Lower Cloudflare NS record TTL to 60s, wait for TTL to expire",
+      "[ ] Change domain NS at registrar from Cloudflare to ns1.ringdom.org, ns2.ringdom.org",
+      "[ ] Test propagation: dig +trace ringdom.org A",
+      "[ ] Test mail: dig MX ringdom.org; verify SPF/DKIM/DMARC TXT records",
+      "[ ] Test web: curl -Lv https://ringdom.org; verify TLS cert from Let's Encrypt"
+    ]
+  },
+
+  "coredns_role_clarification": {
+    "overview": "CoreDNS in k3s serves cluster-internal DNS ONLY. It must NOT be exposed on the host's public port 53.",
+    "k3s_coredns_stays_internal": [
+      "CoreDNS listens on the kube-dns ClusterIP (e.g. 10.43.0.10) — internal to pod network only",
+      "Pods in the cluster resolve cluster.local and external domains via CoreDNS → forwarded to host resolver → internet",
+      "PowerDNS runs on hostNetwork port 53 for external internet DNS queries"
+    ],
+    "coredns_corefile_no_changes_needed": "Do not modify the k3s CoreDNS ConfigMap for external zone serving; use only for cluster-internal customizations if any",
+    "coredns_forward_to_powerdns": {
+      "optional": true,
+      "description": "Optionally configure CoreDNS to forward ringdom.org queries to PowerDNS for in-cluster resolution — useful so pods can resolve ringdom.org to cluster-internal IPs",
+      "corefile_patch": [
+        "ringdom.org:53 {",
+        "  forward . 127.0.0.1:5353  # PowerDNS on alternate port for cluster-internal use",
+        "  cache 30",
+        "}"
+      ],
+      "note": "Advanced use case — not required for initial setup"
+    }
+  },
+
+  "ubuntu_host_requirements": {
+    "port_53_conflict": {
+      "problem": "Ubuntu 22.04 systemd-resolved listens on 127.0.0.53:53 (stub resolver) — conflicts with PowerDNS hostNetwork pod",
+      "solution_recommended": [
+        "# Edit resolved config to disable stub",
+        "sudo sed -i 's/#DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf",
+        "sudo systemctl restart systemd-resolved",
+        "# Recreate /etc/resolv.conf as real file (not symlink to stub)",
+        "sudo rm /etc/resolv.conf",
+        "echo 'nameserver 8.8.8.8\\nnameserver 8.8.4.4' | sudo tee /etc/resolv.conf",
+        "# Verify port 53 is free",
+        "ss -tulnp | grep ':53'"
+      ]
+    },
+    "firewall_rules": [
+      "# Allow DNS on both protocols from anywhere",
+      "sudo ufw allow 53/udp",
+      "sudo ufw allow 53/tcp",
+      "# Allow PowerDNS API from internal cluster only (restrict in production)",
+      "sudo ufw allow from 10.42.0.0/16 to any port 8081",
+      "sudo ufw reload"
+    ],
+    "k3s_flannel_hostnetwork": {
+      "note": "When using hostNetwork: true on k3s, the pod IP is the node IP; ensure k3s's flannel CNI does not intercept port 53 on the host interface",
+      "check": "kubectl get pod -n dns-system -l app=powerdns-primary -o wide  # should show node IP"
+    }
+  },
+
+  "gitops_zone_as_code": {
+    "overview": "The target state: all DNS records for ringdom.org and future ring clone domains live as YAML committed to git. Two mechanisms: (1) DNSEndpoint CRDs for static records (MX, TXT, SRV); (2) Ingress annotations for dynamic A/CNAME records managed by ExternalDNS.",
+    "directory_structure": [
+      "dns/",
+      "  ringdom.org/",
+      "    namespace.yaml          # dns-system namespace",
+      "    powerdns-primary.yaml   # Deployment + ConfigMap + PVC on ns1",
+      "    powerdns-secondary.yaml # Deployment + ConfigMap on ns2",
+      "    externaldns.yaml        # ExternalDNS Deployment + RBAC",
+      "    zone-static-records.yaml # DNSEndpoint CRDs for MX, TXT, SRV",
+      "    secrets.yaml            # external-secrets or sealed-secrets for API key",
+      "  kustomization.yaml"
+    ],
+    "static_records_as_dnsendpoint": {
+      "description": "All non-Ingress records (MX, SPF, DKIM, DMARC, SRV) encoded as DNSEndpoint CRDs",
+      "benefit": "Records are version-controlled; any change goes through git PR; ExternalDNS syncs them to PowerDNS automatically"
+    },
+    "multi_domain_pattern": {
+      "description": "For each Ring clone domain (e.g. ring-sonoratek-com), add --domain-filter=sonoratek.com to ExternalDNS args OR run a second ExternalDNS instance per domain cluster",
+      "recommended_per_domain": "One ExternalDNS deployment per k3s cluster with --domain-filter listing all domains served by that cluster"
+    }
+  },
+
+  "validation_commands": {
+    "verify_powerdns": [
+      "# Check PowerDNS pod is running",
+      "kubectl get pods -n dns-system",
+      "",
+      "# Query ns1 directly",
+      "dig @5.161.246.54 ringdom.org SOA",
+      "dig @5.161.246.54 ringdom.org A",
+      "dig @5.161.246.54 ringdom.org MX",
+      "dig @5.161.246.54 ringdom.org TXT",
+      "dig @5.161.246.54 ns1.ringdom.org A",
+      "",
+      "# Query ns2 (should return same serial as ns1)",
+      "dig @135.181.161.60 ringdom.org SOA",
+      "",
+      "# Verify AA bit is set (authoritative answer)",
+      "dig @5.161.246.54 ringdom.org SOA | grep 'flags:.*aa'"
+    ],
+    "verify_externaldns": [
+      "kubectl logs -n dns-system -l app=external-dns --tail=50",
+      "kubectl get dnsendpoints -A",
+      "# Check that ExternalDNS created TXT ownership records",
+      "dig @5.161.246.54 externaldns-ringdom.org TXT"
+    ],
+    "verify_axfr": [
+      "# Test zone transfer from ns2",
+      "dig @135.181.161.60 ringdom.org AXFR",
+      "# Manual trigger from ns2 pod",
+      "kubectl exec -n dns-system deploy/powerdns-secondary -- pdns_control retrieve ringdom.org"
+    ],
+    "verify_cert_manager": [
+      "kubectl get certificate -n ring-ringdom-org",
+      "kubectl describe certificate ringdom-org-tls -n ring-ringdom-org",
+      "kubectl get challenges -A"
+    ],
+    "global_propagation": [
+      "# After NS delegation change",
+      "dig +trace ringdom.org A",
+      "dig +short NS ringdom.org",
+      "# From multiple resolvers",
+      "dig @8.8.8.8 ringdom.org A",
+      "dig @1.1.1.1 ringdom.org A"
+    ]
+  },
+
+  "troubleshooting": {
+    "axfr_not_working": [
+      "Verify allow-axfr-ips in ns1 pdns.conf includes ns2 IP",
+      "Verify allow-notify-from in ns2 pdns.conf includes ns1 IP",
+      "Check firewall: ufw allow from 5.161.246.54 to any port 53 (on ns2 host)",
+      "Manual AXFR test: dig @5.161.246.54 ringdom.org AXFR from ns2's host",
+      "Check logs: kubectl logs -n dns-system deploy/powerdns-secondary | grep -i 'axfr\\|notify\\|transfer'"
+    ],
+    "port_53_not_responding": [
+      "ss -tulnp | grep ':53'  # Check if PowerDNS is actually bound",
+      "Check for systemd-resolved conflict on port 53",
+      "Verify hostNetwork: true in pod spec and pod is Running",
+      "Check k3s firewall: iptables -L -n | grep 53",
+      "Test from outside: nc -zvu <node-ip> 53"
+    ],
+    "externaldns_not_creating_records": [
+      "Check --domain-filter matches your zone exactly (trailing dot matters in some versions)",
+      "Verify Ingress has annotation: external-dns.alpha.kubernetes.io/hostname",
+      "Check ExternalDNS logs: kubectl logs -n dns-system -l app=external-dns",
+      "Verify PDNS API is reachable from ExternalDNS pod: kubectl exec -n dns-system deploy/external-dns -- curl http://powerdns-api-svc:8081/api/v1/servers/localhost/zones -H 'X-API-Key: KEY'",
+      "Check --policy: upsert-only creates but does not delete; sync creates and deletes"
+    ],
+    "pvc_for_pdns_db": [
+      "PowerDNS SQLite db must persist across pod restarts — use PVC backed by local-path",
+      "If pod restarts and zone is gone: check PVC is bound and mountPath /var/lib/powerdns",
+      "Consider PostgreSQL backend for higher reliability (separate postgres pod or external)"
+    ]
+  },
+
+  "security_considerations": [
+    "PDNS_API_KEY_IN_SECRET — never put API key in ConfigMap; use Kubernetes Secret and inject via env var",
+    "AXFR_RESTRICT — allow-axfr-ips must be set to ns2 IP only; do NOT set to 0.0.0.0 or world-open",
+    "TSIG_FOR_AXFR — for production, use TSIG-signed AXFR between ns1 and ns2 (pdnsutil generate-tsig-key + ALLOW-AXFR-FROM metadata per zone)",
+    "WEBSERVER_RESTRICT — in production, restrict webserver-allow-from to known CIDRs or use ClusterIP-only Service for API",
+    "DNSSEC_OPTIONAL — can add later with pdnsutil secure-zone + pdnsutil rectify-zone; requires DS records at registrar",
+    "RATE_LIMIT — PowerDNS has no built-in rate limiting; consider dnsdist in front for DDoS protection on port 53"
+  ],
+
+  "truth_lens": "Self-hosted authoritative DNS infrastructure for Ringdom k3s clusters: two independent k3s single-node servers (ns1 @ 5.161.246.54, ns2 @ 135.181.161.60) each running PowerDNS Authoritative Server in hostNetwork mode, connected via AXFR primary/secondary zone transfer; ExternalDNS (pdns provider) on k3s-1 watches Ingress annotations and syncs A/CNAME records to PowerDNS REST API; static zone records (MX, TXT/SPF/DKIM/DMARC, SRV) stored as DNSEndpoint CRDs committed to git; CoreDNS remains cluster-internal DNS only; registrar NS delegation updated with glue records (ns1/ns2 in-bailiwick); cert-manager HTTP-01 via nginx ingress continues unchanged; full ringdom.org zone migrated from Cloudflare including all A/AAAA/CNAME/MX/SRV/TXT records.",
+
+  "consult_when": [
+    "setting up self-hosted authoritative DNS on k3s / Kubernetes",
+    "replacing Cloudflare NS with own nameservers",
+    "configuring PowerDNS primary/secondary zone replication via AXFR",
+    "deploying ExternalDNS with PowerDNS provider",
+    "managing DNS zone records as YAML/GitOps in Kubernetes",
+    "configuring glue records and NS delegation at registrar for custom nameservers",
+    "integrating ExternalDNS with nginx Ingress and cert-manager on k3s",
+    "resolving port 53 conflicts with systemd-resolved on Ubuntu 22.04",
+    "migrating ringdom.org or ring clone domain zones from Cloudflare to self-hosted"
+  ],
+
+  "key_patterns": [
+    "Pattern: map requirement → consult_when hit for devops_k8s_dns_cluster_guru → apply core_principles and architecture.data_flow before registrar or ExternalDNS changes.",
+    "Pattern: verify matching SOA serial on ns1 and ns2 (dig +notify path) before shortening TTLs or switching NS at registrar."
+  ],
+  "expertise": [
+    "POWERDNS_AXFR — Primary/secondary NOTIFY, allow-axfr-ips, SQLite/Postgres backend, REST API for ExternalDNS",
+    "EXTERNALDNS_PDNS — pdns provider, domain-filter, txt-owner-id, ingress/service sources only on primary writer",
+    "K3S_DNS_EDGE — hostNetwork/NodePort 53, systemd-resolved stub conflicts, CoreDNS stays cluster-internal",
+    "DELEGATION_GLUE — in-bailiwick ns1/ns2 glue A/AAAA at parent zone, minimum two distinct NS IPs"
+  ],
+
+  "anti_patterns": [
+    "EXPOSING_COREDNS_ON_PUBLIC_PORT_53 — CoreDNS is cluster-internal; exposing it externally breaks security and creates split-brain DNS",
+    "SINGLE_NS — registrars and IANA require minimum 2 NS records pointing to different IPs; single NS = delegation may be rejected",
+    "NO_GLUE_RECORDS — in-bailiwick NS hosts (ns1.ringdom.org within ringdom.org) REQUIRE glue A records at the .org TLD; without glue = unresolvable circular dependency",
+    "EDITING_CONFIGMAP_ZONES_DIRECTLY — PowerDNS reads zone data from database (SQLite/PostgreSQL), NOT from Corefile zone files; edit via REST API or pdnsutil only",
+    "EXTERNALDNS_ON_SECONDARY — ExternalDNS must point to the PRIMARY PowerDNS API only; pushing records to secondary causes zone inconsistency",
+    "CUTTING_DNS_BEFORE_VERIFYING_BOTH_NS — always verify both ns1 and ns2 answer authoritatively with matching SOA serial BEFORE changing NS delegation at registrar",
+    "MIXED_CF_AND_OWN_NS — do not list both Cloudflare NS and own NS simultaneously; use one authoritative provider; mixed NS = unpredictable resolution"
+  ],
+
+  "keywords": [
+    "PowerDNS",
+    "ExternalDNS",
+    "authoritative DNS",
+    "k3s",
+    "self-hosted DNS",
+    "zone transfer",
+    "AXFR",
+    "primary secondary",
+    "NS delegation",
+    "glue records",
+    "ringdom.org",
+    "CoreDNS",
+    "cert-manager",
+    "nginx ingress",
+    "DNSEndpoint",
+    "zone-as-code",
+    "GitOps DNS",
+    "port 53",
+    "systemd-resolved",
+    "Ubuntu 22.04",
+    "hostNetwork",
+    "Cloudflare migration",
+    "SOA serial",
+    "TSIG",
+    "pdnsutil",
+    "letsencrypt"
+  ],
+
+  "priority": "high",
+  "status": "active"
+}

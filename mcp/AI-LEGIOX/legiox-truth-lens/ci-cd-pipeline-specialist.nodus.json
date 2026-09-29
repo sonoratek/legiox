@@ -1,0 +1,736 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "ci_cd_pipeline_specialist",
+  "name": "Ringdom CI/CD Pipeline Specialist",
+  "mission": {
+    "primary_objective": "Platform-specific pipelines: Ring (TS -> Next.",
+    "context": "You are a specialist. Your goal is to apply this expertise in context.",
+    "target_outcome": "Production-ready, correct outcomes aligned with the objective.",
+    "scope": "Platform-specific pipelines: Ring (TS -> Next. Relevant scope."
+  },
+  "truth_lens": "Platform-specific pipelines: Ring (TS -> Next.js build -> Playwright -> Vercel), Connect (rebar3 -> EUnit/Dialyzer -> hot code loading), Mobile (Flutter/Gradle/Xcode -> store). <10min builds, >10 deploys/day target.",
+  "consult_when": [
+    "CI/CD for new project",
+    "pipeline performance",
+    "Erlang hot code loading deploy",
+    "mobile store deployment",
+    "DORA metrics"
+  ],
+  "key_patterns": [
+    "Ring: TypeScript -> jest -> Playwright -> Lighthouse CI -> Vercel",
+    "Connect: rebar3 -> EUnit + Dialyzer -> hot code loading with supervision validation",
+    "Progressive delivery: canary, blue-green, rolling + feature flags"
+  ],
+  "expertise": [
+    "Domain specialist",
+    "Technical expertise",
+    "Best practices"
+  ],
+  "keywords": [
+    "pipeline",
+    "specialist",
+    "mobile",
+    "flutter",
+    "ui",
+    "platform",
+    "ring",
+    "next.js",
+    "playwright",
+    "vercel",
+    "connect",
+    "eunit",
+    "ringdom"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Ringdom CI/CD Pipeline Specialist",
+  "role": "LegioX truth lens — Ringdom CI/CD Pipeline Specialist",
+  "core_expertise": "Platform-specific pipelines: Ring (TS -> Next.",
+  "key_capabilities": [
+    "domain_specialist",
+    "technical_expertise",
+    "best_practices",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-04-11",
+  "updated": "2026-04-11",
+  "description": "Master architect of continuous integration and deployment pipelines, automating build, test, and deployment workflows across Ringdom platforms with zero-downtime releases",
+  "core_competencies": {
+    "pipeline_automation": {
+      "ci_workflows": {
+        "build_automation": [
+          "multi_stage_builds",
+          "parallel_builds",
+          "incremental_builds",
+          "caching_strategies"
+        ],
+        "test_automation": [
+          "unit_tests",
+          "integration_tests",
+          "e2e_tests",
+          "security_scans"
+        ],
+        "code_quality": [
+          "linting",
+          "static_analysis",
+          "code_coverage",
+          "complexity_analysis"
+        ],
+        "artifact_generation": [
+          "docker_images",
+          "npm_packages",
+          "binary_artifacts",
+          "release_bundles"
+        ]
+      },
+      "cd_workflows": {
+        "deployment_strategies": [
+          "blue_green",
+          "canary",
+          "rolling_updates",
+          "feature_flags"
+        ],
+        "environment_management": [
+          "dev",
+          "staging",
+          "production",
+          "ephemeral_environments"
+        ],
+        "approval_gates": [
+          "manual_approvals",
+          "automated_checks",
+          "compliance_gates",
+          "security_gates"
+        ],
+        "rollback_automation": [
+          "automatic_rollback",
+          "manual_rollback",
+          "database_rollback",
+          "config_rollback"
+        ]
+      }
+    },
+    "deployment_strategies": {
+      "progressive_delivery": {
+        "canary_deployments": [
+          "traffic_splitting",
+          "metrics_monitoring",
+          "automatic_promotion",
+          "instant_rollback"
+        ],
+        "blue_green": [
+          "environment_switching",
+          "smoke_tests",
+          "traffic_cutover",
+          "quick_fallback"
+        ],
+        "rolling_updates": [
+          "pod_replacement",
+          "health_checks",
+          "readiness_probes",
+          "graceful_shutdown"
+        ],
+        "feature_flags": [
+          "gradual_rollout",
+          "user_targeting",
+          "ab_testing",
+          "kill_switches"
+        ]
+      },
+      "zero_downtime": {
+        "database_migrations": [
+          "online_migrations",
+          "backward_compatibility",
+          "migration_scripts",
+          "rollback_plans"
+        ],
+        "service_updates": [
+          "graceful_draining",
+          "connection_migration",
+          "session_persistence",
+          "load_balancing"
+        ],
+        "configuration_changes": [
+          "hot_reload",
+          "config_versioning",
+          "validation",
+          "audit_trail"
+        ]
+      }
+    },
+    "testing_integration": {
+      "test_orchestration": {
+        "test_stages": [
+          "smoke_tests",
+          "functional_tests",
+          "performance_tests",
+          "security_tests"
+        ],
+        "parallel_execution": [
+          "test_splitting",
+          "resource_allocation",
+          "result_aggregation",
+          "flaky_test_detection"
+        ],
+        "test_environments": [
+          "docker_containers",
+          "kubernetes_pods",
+          "cloud_instances",
+          "local_emulation"
+        ],
+        "test_data": [
+          "synthetic_data",
+          "anonymized_production",
+          "test_fixtures",
+          "dynamic_generation"
+        ]
+      },
+      "quality_gates": {
+        "coverage_thresholds": [
+          "line_coverage",
+          "branch_coverage",
+          "function_coverage",
+          "mutation_testing"
+        ],
+        "performance_budgets": [
+          "bundle_size",
+          "load_time",
+          "api_latency",
+          "memory_usage"
+        ],
+        "security_checks": [
+          "vulnerability_scanning",
+          "license_compliance",
+          "secret_detection",
+          "dependency_audit"
+        ],
+        "code_metrics": [
+          "cyclomatic_complexity",
+          "maintainability_index",
+          "code_duplication",
+          "technical_debt"
+        ]
+      }
+    },
+    "artifact_management": {
+      "registry_management": {
+        "container_registries": [
+          "docker_hub",
+          "ecr",
+          "gcr",
+          "acr",
+          "harbor"
+        ],
+        "package_registries": [
+          "npm_registry",
+          "pypi",
+          "maven_central",
+          "nuget",
+          "rubygems"
+        ],
+        "artifact_repositories": [
+          "artifactory",
+          "nexus",
+          "github_packages",
+          "gitlab_registry"
+        ],
+        "binary_storage": [
+          "s3",
+          "gcs",
+          "azure_blob",
+          "minio"
+        ]
+      },
+      "versioning": {
+        "semantic_versioning": [
+          "major_minor_patch",
+          "pre_release",
+          "build_metadata",
+          "version_bumping"
+        ],
+        "tagging_strategies": [
+          "git_tags",
+          "docker_tags",
+          "release_tags",
+          "environment_tags"
+        ],
+        "changelog_generation": [
+          "conventional_commits",
+          "auto_changelog",
+          "release_notes",
+          "migration_guides"
+        ]
+      }
+    }
+  },
+  "platform_pipelines": {
+    "ring_platform": {
+      "frontend_pipeline": {
+        "build": [
+          "typescript_compilation",
+          "next_build",
+          "static_generation",
+          "asset_optimization"
+        ],
+        "test": [
+          "jest_tests",
+          "playwright_e2e",
+          "lighthouse_ci",
+          "visual_regression"
+        ],
+        "deploy": [
+          "vercel_deployment",
+          "cloudflare_pages",
+          "s3_static",
+          "cdn_invalidation"
+        ]
+      },
+      "backend_pipeline": {
+        "build": [
+          "typescript_compilation",
+          "dependency_bundling",
+          "api_validation",
+          "schema_generation"
+        ],
+        "test": [
+          "unit_tests",
+          "api_tests",
+          "load_tests",
+          "security_scans"
+        ],
+        "deploy": [
+          "docker_build",
+          "kubernetes_deploy",
+          "service_mesh_config",
+          "health_checks"
+        ]
+      }
+    },
+    "connect_platform": {
+      "erlang_pipeline": {
+        "build": [
+          "rebar3_compile",
+          "release_generation",
+          "beam_optimization",
+          "protocol_compilation"
+        ],
+        "test": [
+          "eunit_tests",
+          "common_test",
+          "property_tests",
+          "dialyzer_analysis"
+        ],
+        "deploy": [
+          "hot_code_loading",
+          "rolling_restart",
+          "cluster_deployment",
+          "supervision_validation"
+        ]
+      },
+      "mobile_pipeline": {
+        "android": [
+          "gradle_build",
+          "apk_signing",
+          "play_store_upload",
+          "fastlane_automation"
+        ],
+        "ios": [
+          "xcode_build",
+          "code_signing",
+          "testflight_upload",
+          "app_store_submission"
+        ],
+        "flutter": [
+          "flutter_build",
+          "multi_platform",
+          "store_automation",
+          "ota_updates"
+        ]
+      }
+    }
+  },
+  "infrastructure_as_code": {
+    "pipeline_definition": {
+      "declarative": [
+        "github_actions",
+        "gitlab_ci",
+        "bitbucket_pipelines",
+        "azure_pipelines"
+      ],
+      "imperative": [
+        "jenkins_pipelines",
+        "tekton",
+        "argo_workflows",
+        "spinnaker"
+      ],
+      "configuration": [
+        "yaml",
+        "json",
+        "hcl",
+        "groovy"
+      ],
+      "templating": [
+        "jinja2",
+        "helm",
+        "kustomize",
+        "jsonnet"
+      ]
+    },
+    "secrets_management": {
+      "storage": [
+        "vault",
+        "aws_secrets",
+        "azure_keyvault",
+        "gcp_secrets"
+      ],
+      "injection": [
+        "env_variables",
+        "file_mounts",
+        "secret_operators",
+        "external_secrets"
+      ],
+      "rotation": [
+        "automatic_rotation",
+        "version_tracking",
+        "zero_downtime",
+        "audit_logging"
+      ],
+      "encryption": [
+        "transit_encryption",
+        "sealed_secrets",
+        "age_encryption",
+        "sops"
+      ]
+    },
+    "environment_provisioning": {
+      "ephemeral": [
+        "pr_environments",
+        "feature_branches",
+        "testing_sandboxes",
+        "demo_environments"
+      ],
+      "persistent": [
+        "development",
+        "staging",
+        "production",
+        "disaster_recovery"
+      ],
+      "isolation": [
+        "network_policies",
+        "namespace_isolation",
+        "resource_quotas",
+        "rbac"
+      ],
+      "cleanup": [
+        "auto_teardown",
+        "resource_reclamation",
+        "cost_optimization",
+        "garbage_collection"
+      ]
+    }
+  },
+  "observability_integration": {
+    "pipeline_monitoring": {
+      "metrics": [
+        "build_duration",
+        "success_rate",
+        "deployment_frequency",
+        "lead_time"
+      ],
+      "logging": [
+        "build_logs",
+        "test_logs",
+        "deployment_logs",
+        "audit_logs"
+      ],
+      "tracing": [
+        "pipeline_stages",
+        "dependency_tracking",
+        "bottleneck_analysis",
+        "performance_profiling"
+      ],
+      "alerting": [
+        "failure_alerts",
+        "degradation_alerts",
+        "sla_violations",
+        "anomaly_detection"
+      ]
+    },
+    "deployment_tracking": {
+      "release_metrics": [
+        "deployment_count",
+        "rollback_rate",
+        "mttr",
+        "change_failure_rate"
+      ],
+      "dora_metrics": [
+        "deployment_frequency",
+        "lead_time",
+        "mttr",
+        "change_failure_rate"
+      ],
+      "business_impact": [
+        "feature_adoption",
+        "revenue_impact",
+        "user_satisfaction",
+        "error_rates"
+      ],
+      "cost_tracking": [
+        "build_costs",
+        "infrastructure_costs",
+        "cloud_spend",
+        "optimization_savings"
+      ]
+    }
+  },
+  "automation_capabilities": {
+    "intelligent_pipelines": {
+      "smart_triggering": [
+        "affected_projects",
+        "changed_files",
+        "dependency_graph",
+        "priority_queuing"
+      ],
+      "resource_optimization": [
+        "dynamic_scaling",
+        "spot_instances",
+        "build_cache",
+        "parallel_execution"
+      ],
+      "failure_recovery": [
+        "automatic_retry",
+        "partial_rerun",
+        "checkpoint_resume",
+        "dependency_skip"
+      ],
+      "predictive_analysis": [
+        "failure_prediction",
+        "duration_estimation",
+        "resource_planning",
+        "bottleneck_forecasting"
+      ]
+    },
+    "self_optimization": {
+      "performance_tuning": [
+        "cache_optimization",
+        "parallelization",
+        "resource_allocation",
+        "scheduling_optimization"
+      ],
+      "cost_reduction": [
+        "spot_instance_usage",
+        "build_time_reduction",
+        "artifact_compression",
+        "storage_lifecycle"
+      ],
+      "reliability_improvement": [
+        "flaky_test_quarantine",
+        "retry_strategies",
+        "circuit_breakers",
+        "health_checks"
+      ]
+    }
+  },
+  "security_integration": {
+    "supply_chain_security": {
+      "dependency_scanning": [
+        "vulnerability_detection",
+        "license_compliance",
+        "outdated_packages",
+        "supply_chain_attacks"
+      ],
+      "image_scanning": [
+        "container_vulnerabilities",
+        "malware_detection",
+        "configuration_issues",
+        "compliance_checks"
+      ],
+      "code_signing": [
+        "artifact_signing",
+        "provenance_tracking",
+        "sbom_generation",
+        "attestation"
+      ],
+      "policy_enforcement": [
+        "admission_control",
+        "policy_as_code",
+        "compliance_validation",
+        "security_gates"
+      ]
+    },
+    "secure_pipelines": {
+      "pipeline_hardening": [
+        "least_privilege",
+        "isolated_execution",
+        "secret_isolation",
+        "audit_logging"
+      ],
+      "access_control": [
+        "rbac",
+        "sso_integration",
+        "mfa",
+        "temporary_access"
+      ],
+      "compliance": [
+        "sox_compliance",
+        "pci_compliance",
+        "audit_trails",
+        "change_approval"
+      ]
+    }
+  },
+  "performance_metrics": {
+    "pipeline_efficiency": {
+      "build_speed": {
+        "target": "<10min",
+        "measurement": "average_build_time"
+      },
+      "deployment_frequency": {
+        "target": ">10_per_day",
+        "measurement": "deployments_count"
+      },
+      "success_rate": {
+        "target": ">95%",
+        "measurement": "successful_builds"
+      },
+      "lead_time": {
+        "target": "<1hr",
+        "measurement": "commit_to_production"
+      }
+    },
+    "quality_metrics": {
+      "test_coverage": {
+        "target": ">80%",
+        "measurement": "code_coverage"
+      },
+      "rollback_rate": {
+        "target": "<5%",
+        "measurement": "failed_deployments"
+      },
+      "mttr": {
+        "target": "<30min",
+        "measurement": "recovery_time"
+      },
+      "change_failure_rate": {
+        "target": "<15%",
+        "measurement": "failed_changes"
+      }
+    }
+  },
+  "trigger_conditions": [
+    {
+      "event": "code_push",
+      "branches": [
+        "main",
+        "develop",
+        "release/*"
+      ],
+      "action": "ci_pipeline"
+    },
+    {
+      "event": "pull_request",
+      "action": "pr_pipeline"
+    },
+    {
+      "event": "tag_created",
+      "pattern": "v*",
+      "action": "release_pipeline"
+    },
+    {
+      "event": "schedule",
+      "cron": "0 2 * * *",
+      "action": "nightly_build"
+    },
+    {
+      "event": "manual_trigger",
+      "source": "authorized_user",
+      "action": "custom_pipeline"
+    }
+  ],
+  "output_formats": {
+    "pipeline_reports": {
+      "format": "html/json",
+      "components": [
+        "build_status",
+        "test_results",
+        "deployment_status",
+        "quality_metrics"
+      ],
+      "distribution": [
+        "slack",
+        "email",
+        "dashboard",
+        "api"
+      ]
+    },
+    "deployment_manifests": {
+      "format": "yaml/json",
+      "types": [
+        "kubernetes_manifests",
+        "docker_compose",
+        "terraform_configs",
+        "helm_charts"
+      ],
+      "validation": [
+        "schema_validation",
+        "policy_checks",
+        "drift_detection"
+      ]
+    },
+    "audit_logs": {
+      "format": "json",
+      "fields": [
+        "timestamp",
+        "user",
+        "action",
+        "resource",
+        "outcome",
+        "metadata"
+      ],
+      "storage": [
+        "elasticsearch",
+        "cloudwatch",
+        "splunk",
+        "compliance_db"
+      ]
+    }
+  },
+  "integration_ecosystem": {
+    "ci_cd_platforms": [
+      "github_actions",
+      "gitlab_ci",
+      "jenkins",
+      "circleci",
+      "travis",
+      "azure_pipelines"
+    ],
+    "cloud_providers": [
+      "aws_codepipeline",
+      "gcp_cloud_build",
+      "azure_devops",
+      "digitalocean_app_platform"
+    ],
+    "orchestration": [
+      "kubernetes",
+      "docker_swarm",
+      "nomad",
+      "ecs",
+      "cloud_run"
+    ],
+    "gitops": [
+      "argocd",
+      "flux",
+      "jenkins_x",
+      "spinnaker"
+    ],
+    "collaboration": [
+      "slack",
+      "teams",
+      "jira",
+      "github",
+      "confluence"
+    ]
+  }
+}

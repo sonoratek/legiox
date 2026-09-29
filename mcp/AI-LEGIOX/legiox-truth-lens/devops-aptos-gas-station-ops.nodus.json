@@ -1,0 +1,89 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_aptos_gas_station_ops",
+  "name": "Aptos Gas Station Operations (Geomi & Sponsor Treasury)",
+  "mission": {
+    "primary_objective": "Operate Ring's Aptos gas sponsorship at scale via Geomi gas station or self-hosted fee payer with contract allowlists, spend caps, and abuse controls.",
+    "context": "Ring sponsors APT for all approved user transactions. Geomi provides managed gas stations with contract rules, reCAPTCHA, and billing. Self-hosted fee payer requires manual treasury monitoring.",
+    "target_outcome": "Production gas station config per Ring clone: allowed Move functions only, rate limits, billing alerts, and wallet-adapter integration with pluginParams.",
+    "scope": "Operations and policy for gas sponsorship. Transaction semantics in aptos-fee-payer-sponsored-transactions."
+  },
+  "truth_lens": "Gas stations subsidize APT gas for transactions matching contract rules. Users submit with withFeePayer; station signs as fee payer. Ring must allowlist only Ring FA transfers, voting, marketplace, and modest swap — block arbitrary contract calls to prevent treasury drain.",
+  "core_principles": [
+    "Allowlist function targets per clone — deny by default.",
+    "reCAPTCHA on public endpoints when gas station exposed to browser.",
+    "Monitor real-time APT spend and set daily caps.",
+    "Separate fee payer treasury from FA mint treasury.",
+    "Alert on anomaly spikes (bot abuse)."
+  ],
+  "anti_patterns": [
+    "Open sponsorship of arbitrary 0x entry functions.",
+    "Single hot fee payer key without rotation plan.",
+    "No billing alerts on Geomi dashboard.",
+    "Sponsoring DEX swaps without slippage/compliance guard."
+  ],
+  "key_patterns": [
+    "Geomi: configure gas station + contract rules per function.",
+    "Wallet adapter: signAndSubmitTransaction withFeePayer pluginParams recaptchaToken.",
+    "Contract rules: spending limits per function, rate limits.",
+    "Self-hosted: HSM or KMS-wrapped fee payer + aptos.transaction.signAsFeePayer service.",
+    "Billing: monitor subsidized gas costs vs DAU."
+  ],
+  "consult_when": [
+    "Enabling Geomi gas station for Ring testnet/mainnet.",
+    "Designing Move function allowlist for sponsor policy.",
+    "Investigating sponsor treasury drain or abuse.",
+    "Choosing Geomi vs self-hosted fee payer for a clone."
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/aptos-fee-payer-sponsored-transactions.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/aptos-react-next-wallet-integration.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/aptos-token-compliance-guard.nodus.json"
+  ],
+  "expertise": [
+    "GEOMI_GAS_STATION — managed sponsor configuration.",
+    "CONTRACT_ALLOWLIST — function-level sponsorship policy.",
+    "ABUSE_CONTROLS — reCAPTCHA and rate limits.",
+    "TREASURY_OPS — APT balance and billing alerts."
+  ],
+  "keywords": [
+    "Geomi",
+    "gas station",
+    "sponsor treasury",
+    "contract rules",
+    "reCAPTCHA",
+    "fee payer ops",
+    "spending limits",
+    "APT billing"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "role": "LegioX truth lens — Aptos gas station operations",
+  "version": "1.0.0",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "tier": "web3_blockchain",
+  "geomi": {
+    "doc_url": "https://build.aptoslabs.com/docs/gas-stations",
+    "features": ["contract_rules", "recaptcha", "billing_reports", "rate_limits"],
+    "wallet_integration": "signAndSubmitTransaction withFeePayer pluginParams"
+  },
+  "ring_allowlist_example": [
+    "0x1::aptos_account::transfer_fungible_assets",
+    "0x1::aptos_account::batch_transfer_fungible_assets",
+    "ring_governance::vote",
+    "ring_marketplace::list",
+    "ring_marketplace::buy"
+  ],
+  "jq_topic_index": {
+    "contract_rules": ["geomi", "ring_allowlist_example"],
+    "recaptcha": ["geomi", "key_patterns"],
+    "billing": ["geomi.features", "core_principles"],
+    "rate_limits": ["geomi.features"]
+  },
+  "web_references": [
+    "https://build.aptoslabs.com/docs/gas-stations",
+    "https://geomi.dev",
+    "https://aptos.dev/build/guides/application-integration"
+  ]
+}

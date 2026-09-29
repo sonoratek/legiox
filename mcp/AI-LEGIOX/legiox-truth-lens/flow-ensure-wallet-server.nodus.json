@@ -1,0 +1,124 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "flow_ensure_wallet_server",
+  "name": "Flow ensureWallet Server (Auth.js → On-Chain Identity)",
+  "mission": {
+    "primary_objective": "Provide idempotent server-side `ensureWallet` for Ring Platform: on first Auth.js login, provision or resolve a Flow child account, persist mapping in PostgreSQL, and return address metadata to the app layer without user gas steps.",
+    "context": "Ring already patterns wallet creation at sign-in (EVM ensureWallet). Flow variant uses service account + Hybrid Custody pool to create accounts, sponsored by flow_sponsored_transactions. Must integrate with Ring multi-tenant whitelabel and Auth.js v5 JWT sessions.",
+    "target_outcome": "Every authenticated Ring user has exactly one Flow address (child account) within 2s of first login; repeats are no-op; failures are retry-safe and never double-mint accounts.",
+    "scope": "Server actions / API routes, secrets management, DB schema, account pool orchestration — not client FCL config (flow_react_next_integration) or Cadence contracts (flow_cadence_*)."
+  },
+  "truth_lens": "ensureWallet is an idempotent provisioning contract, not a wallet UI concern. The server owns creation transactions and payer authz; the client only displays address and requests signed ops. Never create accounts synchronously inside Auth.js signIn without timeout guards — queue or fast-path with pre-warmed pool.",
+  "core_principles": [
+    "Idempotency key: Auth.js user id (+ tenant slug) → unique Flow mapping row.",
+    "Pre-warmed account pool optional for sub-second first login; refill async.",
+    "Service account keys in K8s secrets / env — chmod 600, rotate on schedule.",
+    "Creation tx always uses treasury payer (flow_sponsored_transactions).",
+    "Log transaction id + block height for audit; reconcile orphaned accounts nightly."
+  ],
+  "anti_patterns": [
+    "Creating a new Flow account on every login without idempotency check.",
+    "Blocking Auth.js signIn callback on slow mainnet tx without timeout.",
+    "Storing unencrypted private keys in PostgreSQL — prefer HSM/KMS or capability-only models.",
+    "Exposing ensureWallet as unauthenticated public endpoint (Sybil account farm).",
+    "Mixing EVM wallet address column with Flow address without chain discriminator."
+  ],
+  "key_patterns": [
+    "ensureWallet(userId, tenantId): SELECT flow_address FROM user_wallets WHERE ...; IF NULL → allocate from pool OR submit create tx → INSERT.",
+    "Auth.js signIn callback or post-login server action triggers ensureWallet once per session establishment.",
+    "Schema: user_wallets(user_id, tenant_id, chain='flow', flow_address, child_account_type, linked_parent_address, created_tx_id, UNIQUE(user_id, tenant_id, chain)).",
+    "AccountsPool pattern: Cadence contract + backend worker maintaining N ready child accounts.",
+    "Link status: linked_parent_address NULL until user completes Hybrid Custody claim.",
+    "Ring DatabaseService: use transaction() for insert + idempotency token."
+  ],
+  "consult_when": [
+    "Implementing ensureWallet for Ring Platform on Flow",
+    "Mapping Auth.js users to Flow child accounts in PostgreSQL",
+    "Designing account pools vs just-in-time creation",
+    "Handling ensureWallet failures without breaking login",
+    "Multi-tenant whitelabel isolation for Flow addresses"
+  ],
+  "expertise": [
+    "ENSURE_WALLET_IDEMPOTENCY — exactly-once account provisioning semantics",
+    "AUTHJS_INTEGRATION — signIn callback and session enrichment",
+    "ACCOUNT_POOL_OPS — pre-create, assign, refill workers",
+    "SECRETS_AND_KEYS — service account custody boundaries"
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/flow-hybrid-custody-wallet.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-sponsored-transactions.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-react-next-integration.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/ring-backend-administrator.nodus.json"
+  ],
+  "postgres_schema_sketch": {
+    "table": "user_flow_wallets",
+    "columns": {
+      "id": "uuid PK",
+      "user_id": "uuid FK users",
+      "tenant_slug": "text",
+      "flow_address": "text NOT NULL",
+      "link_status": "enum: pending|linked|revoked",
+      "parent_address": "text NULL",
+      "provision_tx_id": "text",
+      "created_at": "timestamptz",
+      "updated_at": "timestamptz"
+    },
+    "unique": ["user_id", "tenant_slug"]
+  },
+  "ensure_wallet_algorithm": {
+    "steps": [
+      "1. Authenticate session (auth()) — reject anonymous.",
+      "2. Lookup existing row by user_id + tenant.",
+      "3. If found → return { address, link_status }.",
+      "4. Else allocate from pool OR submit create-child-account tx with payer authz.",
+      "5. INSERT row with provision_tx_id; on conflict do nothing + re-select.",
+      "6. Return address to client; optional webhook to indexers."
+    ],
+    "latency_target_ms": 2000,
+    "fallback": "Return pending + poll if tx in flight"
+  },
+  "accounts_pool_reference": {
+    "note": "onflow/elizaOnFlow AccountsPool.cdc demonstrates HybridCustody pool — adapt for Ring service account.",
+    "pattern": "Backend maintains Manager capability; pool assigns OwnedAccount to new users."
+  },
+  "jq_topic_index": {
+    "authjs_mapping": "ensure_wallet_algorithm; postgres_schema_sketch",
+    "account_pool": "accounts_pool_reference",
+    "key_custody": "anti_patterns; core_principles",
+    "idempotency": "ensure_wallet_algorithm.steps",
+    "postgres_schema": "postgres_schema_sketch"
+  },
+  "keywords": [
+    "flow",
+    "ensureWallet",
+    "authjs",
+    "server",
+    "postgresql",
+    "child_account",
+    "idempotent",
+    "ring",
+    "provisioning",
+    "jq_topic_index"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "role": "LegioX truth lens — Flow ensureWallet server provisioning",
+  "version": "1.0.0",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "tier": "web3_blockchain",
+  "web_references": [
+    {
+      "topic": "Child accounts tutorial (walletless)",
+      "url": "https://developers.flow.com/blockchain-development-tutorials/cadence/account-management/child-accounts"
+    },
+    {
+      "topic": "FCL server-side patterns",
+      "url": "https://developers.flow.com/build/tools/clients/fcl-js"
+    },
+    {
+      "topic": "Hybrid Custody repo",
+      "url": "https://github.com/onflow/hybrid-custody"
+    }
+  ]
+}

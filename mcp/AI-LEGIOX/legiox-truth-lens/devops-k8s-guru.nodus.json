@@ -1,0 +1,613 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_k8s_guru",
+  "name": "Devops K8S Guru",
+  "mission": {
+    "primary_objective": "Specialist mission and domain expertise.",
+    "context": "You are a specialist. Your goal is to apply this expertise in context.",
+    "target_outcome": "Production-ready, correct outcomes aligned with the objective.",
+    "scope": "Relevant scope."
+  },
+  "truth_lens": "Production-grade Kubernetes operations skillset for self-managed clusters on ESXi-virtualized infrastructure. Covers containerd v2 CRI lifecycle, CNI networking, storage, backup, RBAC, observability, upgrade procedures, and incident response playbooks. Synthesized from containerd/containerd upstream issues, Kubernetes SIG documentation, VMware vSphere best practices, and production incident taxonomies. Specialist mission and domain expertise. You are a specialist. Your goal is to apply this expertise in context.",
+  "consult_when": [
+    "Task touches devops_k8s_guru responsibilities or failure modes named in this lens.",
+    "Need selector-grade triggers for Devops K8S Guru before architecture or production change.",
+    "Cross-stack ambiguity between framework, infra, and data layers in this domain."
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for devops_k8s_guru -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "CONTAINERD_V2_CONFIG_IS_VERSION_3: containerd 2",
+    "CRI_PLUGIN_MUST_NOT_BE_DISABLED: disabled_plugins=[\"cri\"] in config",
+    "MIRRORS_AND_CONFIG_PATH_ARE_MUTUALLY_EXCLUSIVE: inline registry",
+    "STALE_SHIM_PROCESSES_BLOCK_CRI: orphaned containerd-shim-runc-v2 processes holding socket state can prevent containerd from cleanly reloading; kill them before restart",
+    "ETCD_IS_THE_CLUSTER_BRAIN: etcd snapshot + Velero resource backup are complementary — etcd alone does not preserve PVs; Velero alone does not restore cluster state atomically",
+    "CORDON_BEFORE_DRAIN_BEFORE_MAINTENANCE: always cordon first to stop new scheduling, then drain to evict workloads, never skip cordon on short maintenance windows"
+  ],
+  "keywords": [
+    "devops",
+    "k8s",
+    "guru"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Devops K8S Guru",
+  "role": "LegioX truth lens — Devops K8S Guru",
+  "core_expertise": "Specialist mission and domain expertise.",
+  "key_capabilities": [
+    "containerd_v2_config_is_version_3_contai",
+    "cri_plugin_must_not_be_disabled_disabled",
+    "mirrors_and_config_path_are_mutually_exc",
+    "stale_shim_processes_block_cri_orphaned_",
+    "etcd_is_the_cluster_brain_etcd_snapshot_",
+    "cordon_before_drain_before_maintenance_a",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-03-11",
+  "updated": "2026-04-11",
+  "skillset_id": "devops-k8s-guru",
+  "author": "TechnoRing Legion Synthesis",
+  "schema": "truth-lens-v1",
+  "jq_root": ".",
+  "description": "Production-grade Kubernetes operations skillset for self-managed clusters on ESXi-virtualized infrastructure. Covers containerd v2 CRI lifecycle, CNI networking, storage, backup, RBAC, observability, upgrade procedures, and incident response playbooks. Synthesized from containerd/containerd upstream issues, Kubernetes SIG documentation, VMware vSphere best practices, and production incident taxonomies.",
+  "stack_context": {
+    "hypervisor": "VMware ESXi 7.x/8.x",
+    "container_runtime": "containerd v2.x (config version 3)",
+    "orchestrator": "Kubernetes 1.28+",
+    "cni_primary": "Cilium (eBPF) or Calico (BGP/VXLAN)",
+    "storage_csi": "vSphere CSI / Longhorn / Rook-Ceph",
+    "backup": "Velero + etcdctl snapshots",
+    "ingress": "ingress-nginx / Traefik",
+    "os": "Ubuntu 22.04 LTS / AlmaLinux 9"
+  },
+  "core_principles": [
+    "CONTAINERD_V2_CONFIG_IS_VERSION_3: containerd 2.x uses config version=3 with plugin IDs prefixed io.containerd.cri.v1.* — not the legacy io.containerd.grpc.v1.cri.* used in containerd 1.x version=2 configs",
+    "CRI_PLUGIN_MUST_NOT_BE_DISABLED: disabled_plugins=[\"cri\"] in config.toml is the single most common cause of unknown service runtime.v1.RuntimeService — always check this first",
+    "MIRRORS_AND_CONFIG_PATH_ARE_MUTUALLY_EXCLUSIVE: inline registry.mirrors cannot coexist with config_path in the same plugin block — use one or the other; config_path + hosts.toml is the v2-canonical approach",
+    "STALE_SHIM_PROCESSES_BLOCK_CRI: orphaned containerd-shim-runc-v2 processes holding socket state can prevent containerd from cleanly reloading; kill them before restart",
+    "ETCD_IS_THE_CLUSTER_BRAIN: etcd snapshot + Velero resource backup are complementary — etcd alone does not preserve PVs; Velero alone does not restore cluster state atomically",
+    "CORDON_BEFORE_DRAIN_BEFORE_MAINTENANCE: always cordon first to stop new scheduling, then drain to evict workloads, never skip cordon on short maintenance windows",
+    "CNI_MTU_MUST_ACCOUNT_FOR_ENCAPSULATION: VXLAN adds 50 bytes overhead; on ESXi VMs with standard 1500 MTU host NICs, pod MTU must be ≤1450 for VXLAN, ≤1440 for VXLAN+Calico, ≤1420 for WireGuard-encrypted Cilium",
+    "ESXI_DISK_ENABLEUUID_IS_MANDATORY: all Kubernetes VMs on vSphere must have disk.EnableUUID=1 set or CSI volume attachment will fail silently",
+    "SYSTEMD_CGROUP_DRIVER_MANDATORY: on systemd hosts, both containerd and kubelet must use the systemd cgroup driver — cgroupfs mismatch causes memory pressure OOM kills and pod eviction storms",
+    "CONTROL_PLANE_UPGRADES_FIRST: etcd → kube-apiserver → controller-manager → scheduler → worker nodes; never upgrade workers before control plane components"
+  ],
+  "knowledge_layers": {
+    "layer_0_containerd_cri_lifecycle": {
+      "description": "containerd v2 CRI plugin loading, config normalization, socket validation, and stale shim recovery",
+      "truth_lens": [
+        {
+          "concept": "cri_not_running_root_causes",
+          "truths": [
+            "Root cause 1 — disabled_plugins=[\"cri\"]: most common single cause; config.toml created by Docker installation disables the CRI plugin; fix: remove disabled_plugins line and restart containerd",
+            "Root cause 2 — mirrors+config_path conflict: containerd v2 raises 'invalid cri image config: mirrors cannot be set when config_path is provided'; manifests as io.containerd.grpc.v1.cri or io.containerd.cri.v1.images plugin failing to load; the CRI runtime plugin then also fails as a cascade because it depends on the image plugin",
+            "Root cause 3 — outdated containerd version: Ubuntu 20.04 ships containerd 1.5.x which does not implement CRI v1 RuntimeService for Kubernetes 1.24+; minimum required is containerd 1.6.4+ for k8s 1.24; use Docker's apt repo to get containerd.io 1.6.x+",
+            "Root cause 4 — stale shim processes: after hard kill of containerd, orphaned containerd-shim-runc-v2 processes hold the runtime socket references; containerd restart fails to claim them; fix: pkill -f containerd-shim; rm -f /run/containerd/containerd.sock; systemctl restart containerd",
+            "Root cause 5 — socket permission: crictl returns 'permission denied' on /run/containerd/containerd.sock when run without sudo or without the user being in the containerd group",
+            "Root cause 6 — config version mismatch: mixing version=2 plugin keys (io.containerd.grpc.v1.cri) with version=3 keys (io.containerd.cri.v1.runtime) in the same config causes silent ignoring of blocks and partial plugin loading"
+          ]
+        },
+        {
+          "concept": "containerd_v2_canonical_config",
+          "truths": [
+            "Version 3 config is recommended for containerd 2.x; version 2 is still accepted and auto-migrated but migration can produce the mirrors+config_path conflict bug",
+            "Plugin ID map v2→v3: io.containerd.grpc.v1.cri → split into io.containerd.cri.v1.runtime AND io.containerd.cri.v1.images",
+            "Minimal v3 config for Kubernetes: version=3; [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc.options] SystemdCgroup=true",
+            "Registry config in v3: [plugins.'io.containerd.cri.v1.images'.registry] config_path='/etc/containerd/certs.d' — do NOT also set registry.mirrors inline",
+            "Snapshotter in v3: [plugins.'io.containerd.cri.v1.images'] snapshotter='overlayfs' — overlayfs requires kernel 4.x+ and is the default on modern distros",
+            "Sandbox image in v3: [plugins.'io.containerd.cri.v1.images'.pinned_images] sandbox='registry.k8s.io/pause:3.10.1'",
+            "Transfer Service (containerd v2.1+): CRI image pull now uses Transfer Service by default; configs that include deprecated mirrors/configs/auths trigger automatic fallback to use_local_image_pull=true with a warning log"
+          ]
+        },
+        {
+          "concept": "mirrors_vs_config_path_resolution",
+          "truths": [
+            "CONFLICT: having both [plugins.'io.containerd.cri.v1.images'.registry.mirrors] AND config_path set causes 'invalid cri image config: mirrors cannot be set when config_path is provided' — CRI image plugin fails to load",
+            "RESOLUTION OPTION A — use config_path only (recommended): set config_path='/etc/containerd/certs.d'; create /etc/containerd/certs.d/<registry>/hosts.toml per registry; delete all inline mirrors/configs/auths from config.toml",
+            "RESOLUTION OPTION B — use inline mirrors only: remove config_path entirely from registry block; keep inline [registry.mirrors] entries; note this pattern is deprecated since v1.5 and will be removed",
+            "hosts.toml structure: [host.'https://mirror.example.com'] capabilities=['pull','resolve']; for insecure registries add skip_verify=true",
+            "_default directory: /etc/containerd/certs.d/_default/hosts.toml acts as global fallback mirror for all registries not explicitly listed",
+            "Validate resolution: after fixing config, run 'containerd config dump | grep -A5 registry' to confirm output; then 'crictl pull docker.io/library/alpine:latest' to verify image pull works end-to-end"
+          ]
+        },
+        {
+          "concept": "stale_shim_recovery_procedure",
+          "truths": [
+            "Symptom: containerd restart hangs or fails; ctr plugin ls shows io.containerd.grpc.v1.cri as 'error'; journalctl shows 'failed to connect to containerd' or socket binding failures",
+            "Step 1: identify orphaned shims: ps aux | grep containerd-shim",
+            "Step 2: kill all shims: pkill -9 -f 'containerd-shim'; wait 2s",
+            "Step 3: remove stale socket: rm -f /run/containerd/containerd.sock /run/containerd/containerd-debug.sock",
+            "Step 4: optionally clean state dir if corruption suspected: rm -rf /run/containerd/io.containerd.runtime.v2.task (WARNING: causes running containers to be unmanaged — only on nodes being evacuated)",
+            "Step 5: restart containerd: systemctl restart containerd && systemctl status containerd",
+            "Step 6: verify CRI: crictl --runtime-endpoint unix:///run/containerd/containerd.sock info",
+            "Step 7: verify plugin status: ctr plugin ls | grep cri — all cri entries should show 'ok' not 'error'"
+          ]
+        },
+        {
+          "concept": "crictl_validation_sequence",
+          "truths": [
+            "crictl must have explicit endpoint to avoid deprecated multi-socket scan: create /etc/crictl.yaml with 'runtime-endpoint: unix:///run/containerd/containerd.sock'",
+            "crictl info — returns RuntimeReady:true and NetworkReady:true when CRI is healthy",
+            "crictl ps — lists running containers; failure here after containerd restart indicates kubelet has not reconnected yet",
+            "crictl pods — lists pod sandboxes; useful for verifying pause containers are healthy",
+            "crictl images — lists pulled images; useful for confirming image service is functional",
+            "crictl pull <image> — end-to-end image pull test through the CRI image service",
+            "After any containerd config change: systemctl restart containerd; sleep 5; crictl info — the 5s sleep gives containerd time to initialize all plugins before querying"
+          ]
+        }
+      ]
+    },
+    "layer_1_esxi_vm_node_configuration": {
+      "description": "VMware ESXi-specific Kubernetes node configuration requirements, performance tuning, and vSphere CSI integration",
+      "truth_lens": [
+        {
+          "concept": "mandatory_esxi_prerequisites",
+          "truths": [
+            "disk.EnableUUID=1 must be set on every Kubernetes VM — without it, vSphere CSI cannot map VMDK paths to PersistentVolumes; set via: govc vm.change -vm <name> -e disk.enableUUID=1",
+            "VMware Tools (open-vm-tools) must be installed and running on all nodes — vSphere requires it for VM lifecycle events and guest heartbeat",
+            "VM Hardware Version must be ≥15 for full Kubernetes + CSI compatibility",
+            "Use VMware Paravirtual SCSI (PVSCSI) controller for OS and data disks — significantly lower CPU overhead vs LSI Logic; PVSCSI default queue depth is 64 and can be increased for IO-heavy etcd nodes",
+            "Memory Reservation: set full memory reservation on control plane VMs especially etcd nodes — without reservation, ESXi balloon driver or memory swapping will cause etcd fsync latency spikes and leader election failures",
+            "CPU Reservation: recommended for control plane VMs in overcommitted clusters — etcd and kube-apiserver are latency-sensitive; CPU steal time causes request timeouts",
+            "Jumbo frames optional but beneficial: if ESXi vSwitch supports MTU 9000, configuring node NICs for jumbo frames allows CNI to use MTU 8950+ eliminating encapsulation overhead entirely"
+          ]
+        },
+        {
+          "concept": "overlayfs_and_esxi_disk",
+          "truths": [
+            "overlayfs is the default containerd snapshotter and works correctly on VMDK-backed ext4/xfs filesystems on ESXi",
+            "d_type (directory type) must be enabled on the underlying filesystem — ext4 and xfs both support d_type by default; older XFS volumes formatted without d_type will cause overlayfs to refuse to load",
+            "Verify d_type: xfs_info /var/lib/containerd | grep ftype — must show ftype=1",
+            "SSD-backed datastores (vSAN SSD, NVMe-backed iSCSI) are strongly recommended for /var/lib/containerd and /var/lib/kubelet — HDD-backed NFS causes containerd layer extraction and image pull to be slow",
+            "etcd data dir (/var/lib/etcd) requires separate fast disk — target <10ms fsync latency; vSAN Stretched or All-Flash tiers recommended; test with: fio --rw=write --ioengine=sync --fdatasync=1 --size=22m --bs=2300 --name=etcd-fsync-test --filename=/var/lib/etcd/test.fio"
+          ]
+        },
+        {
+          "concept": "vsphere_csi_essentials",
+          "truths": [
+            "vSphere CSI requires: Cloud Provider vSphere (CPI) running as DaemonSet; vsphere-cloud-config secret with vCenter credentials; StorageClass referencing csi.vsphere.vmware.com provisioner",
+            "StorageClass storagePolicyName maps to vSphere VM Storage Policy — define policy in vCenter then reference it in StorageClass yaml",
+            "Dynamic PV provisioning creates VMDK in the datastore specified by the storage policy; PV name = kubernetes-dynamic-pvc-<uuid>.vmdk",
+            "Node Anti-Affinity: vSphere CSI v2.x+ supports topologyKey=topology.csi.vsphere.volume/region for rack-aware volume placement",
+            "Online volume expansion: supported in vSphere CSI 2.3+ — requires allowVolumeExpansion=true in StorageClass and disk.EnableUUID on all nodes",
+            "Detach failures: if a VM is hard-powered off without graceful kubelet shutdown, CSI may leave volumes in 'attached' state on the old node; force-detach: kubectl patch pv <pv-name> -p '{\"spec\":{\"claimRef\":null}}' after confirming VM is gone"
+          ]
+        }
+      ]
+    },
+    "layer_2_networking_cni": {
+      "description": "CNI selection, MTU configuration, overlay networking on ESXi, and networking troubleshooting",
+      "truth_lens": [
+        {
+          "concept": "cni_selection_matrix",
+          "truths": [
+            "Cilium (eBPF): recommended for new clusters on Linux kernel 5.10+; highest throughput (~28.5 Gbps pod-to-service in benchmarks); kube-proxy replacement; Hubble built-in observability; debugging requires cilium CLI tools not iptables",
+            "Calico: production standard for BGP-routed on-prem; supports BGP peering to physical switches eliminating overlay entirely (best performance); also supports VXLAN/IP-in-IP overlay for simpler setups; Typha required for >50 nodes",
+            "Flannel: simplest setup; VXLAN only; no NetworkPolicy support; suitable for dev/test; not recommended for production",
+            "ESXi overlay recommendation: Cilium VXLAN or Calico VXLAN both work correctly on VMware VMs; Calico BGP requires physical switch BGP peering which is more complex but eliminates double-encapsulation on ESXi overlay networks",
+            "Canal = Calico NetworkPolicy + Flannel routing — a hybrid used in RKE2 default configuration"
+          ]
+        },
+        {
+          "concept": "mtu_configuration_critical",
+          "truths": [
+            "ESXi VM NIC default MTU=1500 (standard Ethernet); VXLAN encapsulation adds 50 bytes overhead; pod MTU must be reduced to avoid fragmentation",
+            "MTU formula for VXLAN on standard-MTU ESXi: pod_mtu = host_mtu - 50 = 1450",
+            "MTU formula for VXLAN + Calico on standard-MTU ESXi: pod_mtu = 1500 - 50 - 10 (IP) = 1440",
+            "MTU formula for Cilium WireGuard encryption on ESXi: pod_mtu = 1500 - 50 - 32 (WireGuard) = 1418, round down to 1420",
+            "Jumbo frames (MTU 9000) on ESXi vSwitch eliminates fragmentation entirely; set on vSwitch → portgroup AND guest NIC; then CNI can use 8950+ MTU",
+            "Diagnose MTU fragmentation: ping between pods with DF bit and large payload: kubectl exec -it <pod> -- ping -M do -s 1450 <other-pod-ip> — if 1450 passes but traffic drops at normal sizes, MTU fragmentation is the cause",
+            "Calico MTU config: apiVersion=operator.tigera.io/v1; kind=Installation; spec.calicoNetwork.mtu=1440",
+            "Cilium MTU config: helm upgrade cilium --set tunnel=vxlan --set mtu=1450",
+            "Flannel MTU config: ConfigMap kube-flannel-cfg; net-conf.json Backend.MTU=1450",
+            "MTU mismatch symptoms: pod-to-pod communication works for small payloads (e.g., curl returns headers) but fails or hangs for large responses (e.g., downloading files, database queries returning large result sets)"
+          ]
+        },
+        {
+          "concept": "networking_troubleshooting_commands",
+          "truths": [
+            "Verify node network: kubectl get nodes -o wide — check InternalIP assignments; if node shows no InternalIP the CNI DaemonSet may not be running on that node",
+            "Check CNI pods: kubectl get pods -n kube-system -o wide | grep -E 'cilium|calico|flannel' — all must be Running",
+            "Cilium status: kubectl -n kube-system exec -ti <cilium-pod> -- cilium status --verbose",
+            "Cilium connectivity test: kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/HEAD/examples/kubernetes/connectivity-check/connectivity-check.yaml",
+            "Calico node status: kubectl exec -n kube-system <calico-node-pod> -- calicoctl node status",
+            "Check flow logs (Cilium Hubble): kubectl -n kube-system exec -ti <cilium-pod> -- hubble observe --follow",
+            "tcpdump on node NIC: tcpdump -i eth0 -nn 'udp port 8472' — VXLAN traffic; 'udp port 4789' — Cilium VXLAN",
+            "CoreDNS health: kubectl -n kube-system get pods -l k8s-app=kube-dns; nslookup kubernetes.default.svc.cluster.local from within a pod",
+            "Network Policy debug: kubectl describe networkpolicy <name> -n <ns>; check pod label selectors match; Cilium: cilium policy get",
+            "iperf3 cross-node: kubectl run iperf-server --image=networkstatic/iperf3 -- -s; kubectl run iperf-client --image=networkstatic/iperf3 -- -c <server-pod-ip> -t 30 — expected throughput >5Gbps between VMs on same ESXi host, >1Gbps cross-host"
+          ]
+        }
+      ]
+    },
+    "layer_3_containerd_stale_state_recovery": {
+      "description": "Full end-to-end recovery procedure for the specific incident pattern: kubelet API timeout → CRI validation failure → containerd bad state → CRI plugin config error → normalization → validation",
+      "truth_lens": [
+        {
+          "concept": "incident_root_cause_chain",
+          "truths": [
+            "Phase 1 — kubelet API timeout: kubectl commands return 'Error from server: etcdserver: request timed out' or 'Unable to connect to the server'; root cause is kubelet on node not responding to apiserver healthcheck",
+            "Phase 2 — CRI validation failure: kubelet logs show 'validate service connection: CRI v1 runtime API is not implemented for endpoint unix:///var/run/containerd/containerd.sock: rpc error: code=Unimplemented desc=unknown service runtime.v1.RuntimeService' — means containerd CRI plugin is not loaded or is broken",
+            "Phase 3 — stale runtime/shim processes: orphaned containerd-shim-runc-v2 processes from previous unclean containerd stop; these hold kernel resources preventing clean containerd restart",
+            "Phase 4 — CRI plugin config error: after killing shims and restarting containerd, logs show 'failed to load plugin error=invalid cri image config: mirrors cannot be set when config_path is provided' — this is a config.toml version mismatch issue, specifically a v2→v3 migration artifact",
+            "Phase 5 — cascade failure: io.containerd.cri.v1.images fails → io.containerd.podsandbox.controller.v1 fails as dependency → io.containerd.grpc.v1.cri remains in error state → kubelet CRI validation still fails even though containerd process is running"
+          ]
+        },
+        {
+          "concept": "full_recovery_procedure",
+          "truths": [
+            "STEP 1 — Isolate node: kubectl cordon <node> — prevent new pod scheduling during recovery",
+            "STEP 2 — Check containerd state: systemctl status containerd; journalctl -u containerd --since '10m ago' | grep -E 'error|failed|warn'",
+            "STEP 3 — Identify stale shims: ps aux | grep containerd-shim | grep -v grep",
+            "STEP 4 — Kill stale shims: pkill -9 -f 'containerd-shim-runc-v2'; sleep 2",
+            "STEP 5 — Stop containerd cleanly: systemctl stop containerd",
+            "STEP 6 — Remove stale socket: rm -f /run/containerd/containerd.sock",
+            "STEP 7 — Backup current config: cp /etc/containerd/config.toml /etc/containerd/config.toml.bak.$(date +%s)",
+            "STEP 8 — Normalize config.toml: generate clean v3 default: containerd config default > /tmp/containerd-default.toml; then apply targeted overrides only (SystemdCgroup=true, sandbox image, registry config_path)",
+            "STEP 9 — Verify no mirrors+config_path conflict: grep -E 'mirrors|config_path' /etc/containerd/config.toml — if both present, remove inline mirrors block",
+            "STEP 10 — Restart containerd: systemctl start containerd; sleep 5",
+            "STEP 11 — Verify plugin status: ctr plugin ls | grep -E 'cri|podsandbox' — all should show 'ok'",
+            "STEP 12 — Validate CRI: crictl --runtime-endpoint unix:///run/containerd/containerd.sock info — should return RuntimeReady:true",
+            "STEP 13 — Restart kubelet: systemctl restart kubelet; sleep 10",
+            "STEP 14 — Verify node Ready: kubectl get node <node> — should transition from NotReady to Ready within 60s",
+            "STEP 15 — Uncordon node: kubectl uncordon <node>",
+            "STEP 16 — Verify pods rescheduled: kubectl get pods -A --field-selector spec.nodeName=<node>"
+          ]
+        },
+        {
+          "concept": "normalized_v3_config_template",
+          "truths": [
+            "Minimal production config.toml for containerd v2 + Kubernetes on systemd host:",
+            "version = 3",
+            "[plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc] runtime_type = 'io.containerd.runc.v2'",
+            "[plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc.options] SystemdCgroup = true",
+            "[plugins.'io.containerd.cri.v1.images'] snapshotter = 'overlayfs'",
+            "[plugins.'io.containerd.cri.v1.images'.pinned_images] sandbox = 'registry.k8s.io/pause:3.10.1'",
+            "[plugins.'io.containerd.cri.v1.images'.registry] config_path = '/etc/containerd/certs.d'",
+            "DO NOT add registry.mirrors inline when config_path is set — this is the conflict",
+            "To use a mirror: create /etc/containerd/certs.d/docker.io/hosts.toml with: server='https://registry-1.docker.io'; [host.'https://your-mirror.example.com'] capabilities=['pull','resolve']"
+          ]
+        }
+      ]
+    },
+    "layer_4_backup_and_dr": {
+      "description": "etcd snapshot procedures, Velero backup/restore, and disaster recovery runbooks",
+      "truth_lens": [
+        {
+          "concept": "etcd_backup_essentials",
+          "truths": [
+            "etcd is the authoritative Kubernetes state store — losing etcd without backup means full cluster rebuild",
+            "Snapshot command: ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key snapshot save /backup/etcd-$(date +%Y%m%d-%H%M%S).db",
+            "Verify snapshot: etcdctl snapshot status <file> --write-out=table — shows hash, revision, total keys, total size",
+            "Automate with CronJob: schedule every 6h; run with hostNetwork=true on control-plane node; tolerate node-role.kubernetes.io/control-plane:NoSchedule; upload to S3/MinIO",
+            "etcd cluster size: always odd numbers (3 or 5); 3-node tolerates 1 failure; 5-node tolerates 2 failures; never run single-node etcd in production",
+            "etcd disk requirement: ≤10ms fsync; HDD-backed storage causes leader election timeouts; benchmark with fio before production deployment",
+            "Restore procedure: stop kube-apiserver (remove from /etc/kubernetes/manifests/ on control plane); restore snapshot: etcdctl snapshot restore <file> --data-dir=/var/lib/etcd-restored; mv /var/lib/etcd /var/lib/etcd-old; mv /var/lib/etcd-restored /var/lib/etcd; restart kube-apiserver"
+          ]
+        },
+        {
+          "concept": "velero_operational_patterns",
+          "truths": [
+            "Velero backs up Kubernetes API objects (Deployments, Services, Secrets, ConfigMaps, PVCs) + optionally PV data via Kopia/restic or CSI snapshots",
+            "Velero does NOT replace etcd backup — etcd backup captures cluster state atomically; Velero captures Kubernetes resources independently",
+            "Install with Helm: helm install velero velero/velero -n velero --create-namespace --set configuration.backupStorageLocation[0].provider=aws --set configuration.backupStorageLocation[0].bucket=<bucket>",
+            "Scheduled backup: velero schedule create daily-full --schedule='0 2 * * *' --include-namespaces='*' --ttl 720h",
+            "Namespace backup: velero backup create prod-ns-backup --include-namespaces production",
+            "Restore: velero restore create --from-backup <backup-name>",
+            "CSI snapshot integration: --features=EnableCSI flag on install; requires VolumeSnapshotClass with velero.io/csi-volumesnapshot-class-driver-backup label",
+            "Velero on tainted nodes: configure tolerations in values.yaml for nodeAgent DaemonSet to ensure backup runs on nodes with custom taints",
+            "Partial restore failure (PVCs missing after etcd restore): manually recreate PVCs referencing existing PVs by setting volumeName in PVC spec or use Velero's include-resources flag to restore only PVC objects"
+          ]
+        }
+      ]
+    },
+    "layer_5_node_lifecycle": {
+      "description": "Node cordon/drain/upgrade/replace procedures and kubelet configuration",
+      "truth_lens": [
+        {
+          "concept": "cordon_drain_uncordon",
+          "truths": [
+            "Cordon marks node unschedulable: kubectl cordon <node> — existing pods continue running; new pods will not be scheduled; check: kubectl get node <node> shows SchedulingDisabled",
+            "Drain evicts pods gracefully: kubectl drain <node> --ignore-daemonsets --delete-emptydir-data --grace-period=60 -- evicts all pods except DaemonSets; emptyDir data is deleted",
+            "Drain flags: --force evicts pods without a controller (standalone pods — data loss risk); --timeout=<duration> sets max wait for pod eviction; --pod-selector to drain only specific pods",
+            "PodDisruptionBudget (PDB): kubectl drain will block if evicting a pod would violate a PDB (e.g., would leave 0 available replicas); inspect with kubectl get pdb -A",
+            "Uncordon restores scheduling: kubectl uncordon <node> — existing pods do NOT auto-migrate back; only new pods will be scheduled on the node",
+            "Post-maintenance verification: kubectl get pods -A --field-selector spec.nodeName=<node> — verify expected pods re-scheduled after uncordon",
+            "Node replacement (ESXi): cordon → drain → power off VM → clone or provision new VM → kubeadm join → uncordon → verify → delete old node object: kubectl delete node <old-name>"
+          ]
+        },
+        {
+          "concept": "kubelet_configuration",
+          "truths": [
+            "Primary kubelet config file: /var/lib/kubelet/config.yaml (kubeadm managed); override flags in /etc/default/kubelet or /etc/sysconfig/kubelet",
+            "Critical kubelet config: cgroupDriver: systemd — must match containerd SystemdCgroup=true; mismatch causes pod creation failures with cgroup-related errors",
+            "KubeletCgroupDriverFromCRI (containerd v2.0+): kubelet can auto-detect cgroup driver from containerd — enable with feature gate to avoid manual synchronization",
+            "evictionHard: memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5% — default eviction thresholds; lower memory threshold if pods OOMKill before eviction",
+            "maxPods: default 110; increase for dense nodes: maxPods=250 requires larger podCIDR allocation in kubeadm config (--pod-network-cidr=/23 or larger)",
+            "containerLogMaxSize + containerLogMaxFiles: default 10Mi/5; set to 50Mi/5 for production to prevent log rotation storms",
+            "protectKernelDefaults: true — prevents kubelet from modifying kernel parameters; ensure sysctl tuning done via init scripts or DaemonSet before kubelet start"
+          ]
+        },
+        {
+          "concept": "upgrade_sequence",
+          "truths": [
+            "Kubernetes supports skipping no more than 2 minor versions in upgrade — must upgrade sequentially: 1.27 → 1.28 → 1.29",
+            "Pre-upgrade checklist: etcd snapshot; Velero backup; review release notes for deprecated APIs; verify all CRDs compatible with new version; check addon compatibility (CNI, ingress, metrics-server)",
+            "Control plane upgrade order: etcd (if external) → kube-apiserver → controller-manager → scheduler; on kubeadm clusters this is: kubeadm upgrade apply v1.X.Y on first control plane node, then kubeadm upgrade node on additional control planes",
+            "Worker node upgrade: cordon → drain → upgrade kubelet + kubeadm packages → kubeadm upgrade node → systemctl restart kubelet → uncordon",
+            "kubeadm upgrade plan: run before applying upgrade — lists version skew issues and required manual steps",
+            "Post-upgrade validation: kubectl get componentstatuses; kubectl get nodes; run workload smoke tests; check apiserver audit logs for deprecated API usage"
+          ]
+        }
+      ]
+    },
+    "layer_6_observability_and_debugging": {
+      "description": "Diagnostic command corpus, log sources, metrics interpretation, and incident triage patterns",
+      "truth_lens": [
+        {
+          "concept": "cluster_health_commands",
+          "truths": [
+            "Node overview: kubectl get nodes -o wide — STATUS=Ready is required for workload scheduling; NotReady = kubelet or CRI issue",
+            "Component status: kubectl get componentstatuses (deprecated in 1.19+ but still works) or kubectl -n kube-system get pods | grep -E 'apiserver|controller|scheduler|etcd'",
+            "Event stream (most useful triage tool): kubectl get events -A --sort-by='.lastTimestamp' | tail -50 — shows Killing/Failed/BackOff/Pulling events across all namespaces",
+            "Pod diagnostics: kubectl describe pod <pod> -n <ns> — inspect Events section for OOMKilled, ImagePullBackOff, Unschedulable reasons",
+            "Resource pressure: kubectl top nodes; kubectl top pods -A — requires metrics-server installed",
+            "Pending pods analysis: kubectl get pods -A --field-selector status.phase=Pending — follow with kubectl describe pod for each: check 'insufficient cpu/memory', 'no nodes match tolerations', 'Unschedulable'",
+            "CrashLoopBackOff: kubectl logs <pod> --previous -n <ns> — shows logs from last terminated container"
+          ]
+        },
+        {
+          "concept": "control_plane_log_sources",
+          "truths": [
+            "kube-apiserver: journalctl -u kubelet on control plane OR kubectl -n kube-system logs kube-apiserver-<node>; look for 'etcd cluster is unavailable', 'unable to connect to the server', 'RBAC: access denied'",
+            "etcd: kubectl -n kube-system logs etcd-<node>; look for 'rafthttp: failed to process raft message', 'slow fdatasync', 'took too long (>500ms)', 'leader changed'",
+            "scheduler: kubectl -n kube-system logs kube-scheduler-<node>; look for 'no available nodes to schedule'; cross-reference with node taints and resource requests",
+            "controller-manager: kubectl -n kube-system logs kube-controller-manager-<node>; look for 'cannot attach volume', 'token revoked', 'reconcile loop'",
+            "kubelet: journalctl -u kubelet --since '15m ago' -n 200 — richest source for node-level issues; filter: journalctl -u kubelet | grep -E 'error|failed|oom'",
+            "containerd: journalctl -u containerd --since '15m ago' — CRI errors, image pull failures, shim crashes",
+            "Audit log: /var/log/kubernetes/audit.log (if enabled) — who deleted what when; essential for security incidents"
+          ]
+        },
+        {
+          "concept": "common_incident_patterns",
+          "truths": [
+            "PATTERN: Pods stuck Pending with 'insufficient memory' → node memory requests sum exceeds node capacity even if actual usage is low; fix: right-size resource requests or add nodes",
+            "PATTERN: Namespace stuck Terminating → finalizers blocking deletion; fix: kubectl get namespace <ns> -o json | jq '.spec.finalizers=[]' | kubectl replace --raw /api/v1/namespaces/<ns>/finalize -f -",
+            "PATTERN: PVC stuck Pending → check StorageClass exists; StorageClass provisioner matches deployed CSI driver; CSI node plugin DaemonSet running on target node (check taints)",
+            "PATTERN: CoreDNS fails to resolve service names → check pods/services in kube-system; check ConfigMap coredns for forward directive; check UDP 53 is open between nodes; check CoreDNS resource limits (CPU throttling causes DNS timeouts)",
+            "PATTERN: Intermittent node NotReady → check network connectivity between nodes; check kubelet lease renewal: kubelet lease in kube-node-lease namespace; check clock skew (>2s causes API auth failures): chronyc tracking",
+            "PATTERN: ImagePullBackOff → crictl pull <image> on node to get raw error; common causes: registry auth missing (imagePullSecrets), registry mirror misconfigured, node network issue, image does not exist",
+            "PATTERN: OOMKilled → kubectl describe pod shows OOMKilled in ContainerStatuses; check limits vs actual usage with kubectl top; increase memory limit or fix memory leak",
+            "PATTERN: etcd leader election storm → high fsync latency on etcd disk; check iowait: iostat -x 1 10; check etcd metrics: ETCDCTL_API=3 etcdctl endpoint status --write-out=table; add disk IO reservation on ESXi for etcd VMs",
+            "PATTERN: API server overwhelmed (CRD reconcile loop) → kubectl get crds | wc -l; check controller logs for tight reconcile loops; scale problem controller to 0: kubectl scale deployment <ctrl> -n <ns> --replicas=0",
+            "PATTERN: RBAC access denied → kubectl auth can-i <verb> <resource> --as=system:serviceaccount:<ns>:<sa> — debug what a SA can/cannot do; kubectl get clusterrolebinding,rolebinding -A | grep <sa>"
+          ]
+        },
+        {
+          "concept": "useful_kubectl_patterns",
+          "truths": [
+            "All pods on a specific node: kubectl get pods -A --field-selector spec.nodeName=<node>",
+            "Pods not Running: kubectl get pods -A --field-selector status.phase!=Running",
+            "Force delete stuck pod: kubectl delete pod <pod> --grace-period=0 --force -n <ns> — use only when node is confirmed gone or pod is truly stuck",
+            "Exec into pod: kubectl exec -it <pod> -n <ns> -- /bin/sh",
+            "Copy file from pod: kubectl cp <ns>/<pod>:/path/to/file ./local-file",
+            "Port forward for debugging: kubectl port-forward <pod> 8080:8080 -n <ns>",
+            "Watch pod status: kubectl get pods -w -n <ns>",
+            "jsonpath extraction: kubectl get nodes -o jsonpath='{.items[*].status.conditions[?(@.type==\"Ready\")].status}'",
+            "Rollout status: kubectl rollout status deployment/<name> -n <ns>; kubectl rollout history deployment/<name>",
+            "Emergency rollback: kubectl rollout undo deployment/<name> -n <ns>",
+            "Apply with dry-run: kubectl apply -f manifest.yaml --dry-run=server — validates against apiserver without applying",
+            "Diff before apply: kubectl diff -f manifest.yaml — shows what would change",
+            "Taint inspection: kubectl get nodes -o custom-columns=NodeName:.metadata.name,Taints:.spec.taints[*]"
+          ]
+        }
+      ]
+    },
+    "layer_7_security_and_rbac": {
+      "description": "RBAC patterns, secret management, network policies, and pod security",
+      "truth_lens": [
+        {
+          "concept": "rbac_essentials",
+          "truths": [
+            "ClusterRole + ClusterRoleBinding = cluster-wide permissions; Role + RoleBinding = namespace-scoped",
+            "Principle of least privilege: every ServiceAccount should have only the minimum required verbs/resources; default SA in each namespace is auto-mounted — disable with automountServiceAccountToken: false in pod spec when not needed",
+            "Audit SA permissions: kubectl auth can-i --list --as=system:serviceaccount:<ns>:<sa>",
+            "Aggregated ClusterRoles: admin, edit, view are built-in; bind with RoleBinding to namespace; prefer these over custom roles for standard app access",
+            "NEVER bind to cluster-admin ServiceAccount for application workloads — if operator needs wide permissions, create scoped ClusterRole with exact required resources",
+            "Impersonation for debugging: kubectl get pods --as=system:serviceaccount:production:app-sa -n production — test what the SA can see without modifying cluster"
+          ]
+        },
+        {
+          "concept": "secrets_management",
+          "truths": [
+            "Kubernetes Secrets are base64 encoded, not encrypted, in etcd by default — enable EncryptionConfiguration for etcd-at-rest encryption: aesgcm or kms provider",
+            "Avoid storing secrets in ConfigMaps or plain env vars in YAML committed to git — use sealed-secrets (Bitnami), external-secrets-operator (Vault/AWS SSM), or SOPS",
+            "imagePullSecrets: create docker-registry secret: kubectl create secret docker-registry regcred --docker-server=<url> --docker-username=<user> --docker-password=<pass>; reference in pod spec or attach to ServiceAccount",
+            "Secret rotation: update secret value; pods do NOT auto-reload env vars from updated secrets — must roll deployment: kubectl rollout restart deployment/<name>; volumes: files update within ~60s (kubelet sync interval)"
+          ]
+        },
+        {
+          "concept": "network_policy_patterns",
+          "truths": [
+            "Default deny: create NetworkPolicy with empty podSelector and no ingress/egress rules to block all traffic in a namespace, then add explicit allow policies",
+            "Default deny pattern: apiVersion=networking.k8s.io/v1; kind=NetworkPolicy; spec.podSelector={}; spec.policyTypes=[Ingress,Egress] — this denies all unless another policy allows",
+            "Allow DNS: any egress NetworkPolicy must allow UDP 53 to kube-dns namespace (kube-system) or CoreDNS will be blocked causing all DNS resolution failures",
+            "Allow healthchecks: NodePort services and readiness probes originate from the kubelet IP on the node — if using strict NetworkPolicy, allow ingress from the node CIDR",
+            "NetworkPolicy debug with Cilium: kubectl -n kube-system exec -ti <cilium-pod> -- cilium policy trace --src-k8s-pod <ns>/<pod> --dst-k8s-pod <ns>/<pod>"
+          ]
+        }
+      ]
+    },
+    "layer_8_storage_and_persistence": {
+      "description": "PV/PVC lifecycle, CSI driver operations, and storage troubleshooting",
+      "truth_lens": [
+        {
+          "concept": "pv_pvc_lifecycle",
+          "truths": [
+            "PVC phases: Pending → Bound → Released (after PVC deletion if PV reclaim policy=Retain) → Deleted (after PV deletion or reclaim policy=Delete)",
+            "Orphaned PVs in Released state block new PVC binding to same storage — fix: kubectl patch pv <pv> -p '{\"spec\":{\"claimRef\":null}}' to reset to Available, then create new PVC",
+            "StorageClass reclaim policy: Delete (default) — PV and underlying disk deleted when PVC deleted; Retain — PV and disk preserved; WaitForFirstConsumer — delays provisioning until pod is scheduled (required for topology-aware provisioning)",
+            "Volume expansion: requires allowVolumeExpansion=true in StorageClass; edit PVC spec.resources.requests.storage to new size; CSI will trigger expansion; may require pod restart for filesystem resize",
+            "ReadWriteMany (RWX): not supported by most block CSI drivers (vSphere CSI, AWS EBS); use NFS CSI (e.g., nfs-subdir-external-provisioner) or distributed storage (Longhorn, Rook-Ceph CephFS) for RWX",
+            "PVC binding debug: kubectl describe pvc <name> — check Events for provisioner errors, topology mismatch, storage policy failure"
+          ]
+        }
+      ]
+    }
+  },
+  "esxi_k8s_topology": {
+    "description": "Recommended topology for self-managed Kubernetes on ESXi",
+    "control_plane_vms": {
+      "count": 3,
+      "vcpu": 4,
+      "memory_gb": 8,
+      "disk_os_gb": 50,
+      "disk_etcd_gb": 20,
+      "disk_etcd_note": "separate VMDK on SSD-backed datastore; measure fsync < 10ms with fio",
+      "memory_reservation": "100% — prevents balloon/swap on etcd nodes",
+      "cpu_reservation": "4000MHz minimum recommended on overcommitted clusters",
+      "anti_affinity": "distribute control plane VMs across ESXi hosts using VM anti-affinity rules"
+    },
+    "worker_vms": {
+      "count": "3+ (odd preferred for daemonset symmetry)",
+      "vcpu": "4-16 based on workload",
+      "memory_gb": "16-128 based on workload",
+      "disk_os_gb": 80,
+      "disk_containerd_note": "/var/lib/containerd — size based on expected image count; 50-200GB typical",
+      "disk_type": "VMware Paravirtual SCSI; thick-provisioned eager-zeroed for etcd; thin for worker data"
+    },
+    "networking": {
+      "node_cidr": "e.g. 192.168.10.0/24",
+      "pod_cidr": "10.244.0.0/16 — /24 per node by default supports 254 pods",
+      "service_cidr": "10.96.0.0/12",
+      "mtu_standard": 1500,
+      "cni_mtu_vxlan": 1450,
+      "vswitches": "dedicated vSwitch or portgroup for Kubernetes nodes with promiscuous mode OFF (VXLAN does not need it); jumbo frames recommended (MTU 9000) if infrastructure supports"
+    }
+  },
+  "command_quick_reference": {
+    "containerd_recovery": [
+      "ps aux | grep containerd-shim — find orphaned shims",
+      "pkill -9 -f 'containerd-shim-runc-v2' — kill shims",
+      "rm -f /run/containerd/containerd.sock — remove stale socket",
+      "containerd config default > /etc/containerd/config.toml — regenerate clean config",
+      "systemctl restart containerd && sleep 5 && ctr plugin ls | grep cri",
+      "crictl --runtime-endpoint unix:///run/containerd/containerd.sock info"
+    ],
+    "node_triage": [
+      "kubectl get nodes -o wide",
+      "kubectl describe node <node>",
+      "kubectl get events -A --sort-by='.lastTimestamp' | tail -50",
+      "journalctl -u kubelet --since '15m ago' | grep -E 'error|failed'",
+      "journalctl -u containerd --since '15m ago' | grep -E 'error|failed|plugin'"
+    ],
+    "etcd_ops": [
+      "ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key endpoint health",
+      "ETCDCTL_API=3 etcdctl ... endpoint status --write-out=table",
+      "ETCDCTL_API=3 etcdctl ... snapshot save /backup/etcd-$(date +%Y%m%d-%H%M%S).db",
+      "ETCDCTL_API=3 etcdctl ... snapshot status <file> --write-out=table"
+    ],
+    "pod_triage": [
+      "kubectl get pods -A --field-selector status.phase!=Running",
+      "kubectl describe pod <pod> -n <ns>",
+      "kubectl logs <pod> -n <ns> --previous",
+      "kubectl exec -it <pod> -n <ns> -- /bin/sh",
+      "kubectl top pods -A --sort-by=memory"
+    ],
+    "network_triage": [
+      "kubectl get pods -n kube-system -o wide | grep -E 'cilium|calico|flannel|coredns'",
+      "kubectl -n kube-system exec -ti <cilium-pod> -- cilium status",
+      "kubectl -n default exec -it debug-pod -- nslookup kubernetes.default.svc.cluster.local",
+      "kubectl -n default exec -it debug-pod -- ping -M do -s 1450 <other-pod-ip>",
+      "tcpdump -i eth0 -nn 'udp port 8472' — VXLAN traffic"
+    ]
+  },
+  "anti_patterns": [
+    {
+      "id": "AP-01",
+      "pattern": "disabled_plugins=['cri'] in config.toml",
+      "cause": "Docker installation creates config.toml with CRI disabled; installing containerd from Docker repo alongside Docker leaves this in place",
+      "consequence": "unknown service runtime.v1.RuntimeService — Kubernetes cannot use containerd as CRI",
+      "fix": "Remove disabled_plugins line; systemctl restart containerd"
+    },
+    {
+      "id": "AP-02",
+      "pattern": "mirrors inline + config_path both set in same registry block",
+      "cause": "containerd config migrate from v2 to v3 does not intelligently handle the mutual exclusion; manual config edits adding config_path without removing mirrors",
+      "consequence": "CRI image plugin fails to load; cascade failure of all CRI-dependent plugins",
+      "fix": "Use one or the other; preferred: config_path + /etc/containerd/certs.d/<registry>/hosts.toml"
+    },
+    {
+      "id": "AP-03",
+      "pattern": "No memory reservation on ESXi control plane VMs",
+      "cause": "Default vSphere VM has no memory reservation; other VMs on host can cause ESXi to balloon/swap the control plane VM memory",
+      "consequence": "etcd fsync latency spikes → leader election failures → API server timeouts → cluster degradation",
+      "fix": "Set 100% memory reservation in vSphere VM settings for all control plane VMs"
+    },
+    {
+      "id": "AP-04",
+      "pattern": "disk.EnableUUID not set on worker nodes",
+      "cause": "Cloned VMs from template may not have disk.EnableUUID set if template was not configured",
+      "consequence": "vSphere CSI cannot identify VM→disk mapping; PVC attachments silently fail or attach to wrong VM",
+      "fix": "govc vm.change -vm <name> -e disk.enableUUID=1; restart node"
+    },
+    {
+      "id": "AP-05",
+      "pattern": "CNI pod MTU not reduced for VXLAN on 1500-MTU host",
+      "cause": "Default CNI deployment does not know host MTU; assumes it can use full 1500",
+      "consequence": "Fragmentation of large packets; small HTTP requests work but large file transfers or DB queries silently fail or hang",
+      "fix": "Set CNI MTU to 1450 (VXLAN) or 1440 (Calico VXLAN) or 1420 (WireGuard)"
+    },
+    {
+      "id": "AP-06",
+      "pattern": "cgroupDriver mismatch between containerd and kubelet",
+      "cause": "containerd config has SystemdCgroup=true but kubelet cgroupDriver=cgroupfs or vice versa",
+      "consequence": "Pod creation failures; OOM kills occurring at unexpected memory levels; cgroup hierarchy corruption over time",
+      "fix": "Ensure both containerd (SystemdCgroup=true) and kubelet (cgroupDriver: systemd) use the same driver"
+    },
+    {
+      "id": "AP-07",
+      "pattern": "Draining without cordoning first",
+      "cause": "kubectl drain implicitly cordons but race condition exists; new pods can be scheduled between cordon implicit and drain start",
+      "consequence": "Newly scheduled pods immediately evicted; PodDisruptionBudget violations possible",
+      "fix": "Always run kubectl cordon <node> explicitly before kubectl drain"
+    },
+    {
+      "id": "AP-08",
+      "pattern": "etcd on HDD or NFS-backed storage",
+      "cause": "Cost cutting; NAS-backed datastores assigned for convenience",
+      "consequence": "fsync > 100ms triggers etcd leader election storms; cluster instability under write load",
+      "fix": "Dedicated SSD-backed VMDK for etcd data dir; validate with fio before production; target <10ms fdatasync"
+    },
+    {
+      "id": "AP-09",
+      "pattern": "Single etcd node for production cluster",
+      "cause": "Resource savings; dev cluster config promoted to production",
+      "consequence": "Single point of failure; etcd restart causes full cluster unavailability; no quorum recovery option",
+      "fix": "Always 3+ etcd nodes in production; distributed across ESXi hosts with anti-affinity rules"
+    },
+    {
+      "id": "AP-10",
+      "pattern": "Using default namespace for all production workloads",
+      "cause": "Convenience; beginners starting in default namespace",
+      "consequence": "No RBAC isolation; NetworkPolicy scope requires selecting all pods; ResourceQuota cannot be applied per-team",
+      "fix": "Dedicated namespace per application or team; RBAC per namespace; ResourceQuota per namespace"
+    }
+  ],
+  "jq_usage_examples": [
+    ".core_principles[] | select(test(\"ETCD\"))",
+    ".knowledge_layers.layer_3_containerd_stale_state_recovery.truth_lens[] | select(.concept==\"full_recovery_procedure\") | .truths[]",
+    ".knowledge_layers.layer_0_containerd_cri_lifecycle.truth_lens[] | select(.concept==\"cri_not_running_root_causes\") | .truths[]",
+    ".anti_patterns[] | select(.id==\"AP-02\")",
+    ".command_quick_reference.containerd_recovery[]",
+    ".knowledge_layers.layer_2_networking_cni.truth_lens[] | select(.concept==\"mtu_configuration_critical\") | .truths[]",
+    ".knowledge_layers.layer_1_esxi_vm_node_configuration.truth_lens[] | select(.concept==\"mandatory_esxi_prerequisites\") | .truths[]",
+    ".knowledge_layers.layer_6_observability_and_debugging.truth_lens[] | select(.concept==\"common_incident_patterns\") | .truths[]",
+    ".esxi_k8s_topology.control_plane_vms",
+    ".anti_patterns[] | {id, pattern, fix}"
+  ]
+}

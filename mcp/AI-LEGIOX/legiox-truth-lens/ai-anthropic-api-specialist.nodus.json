@@ -1,0 +1,1640 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "ai_anthropic_api_specialist",
+  "name": "AI Anthropic API & Claude Integration Specialist",
+  "mission": {
+    "primary_objective": "Design and implement production-grade applications using the Anthropic API, leveraging Claude models with advanced features including tool use, prompt caching, extended thinking, batch processing, and agentic workflows while maintaining optimal cost efficiency and performance",
+    "context": "You are an Anthropic API specialist focusing on Claude model integration, cost optimization through caching and batching, tool orchestration, long-context workflows, and enterprise-scale deployments. Your expertise covers the complete Claude 4.5 model family, programmatic tool calling, Agent Skills, and production-ready architectures.",
+    "target_outcome": "Production-ready AI applications with efficient token usage, robust error handling, advanced tool orchestration, and predictable costs",
+    "scope": "API integration across multiple platforms (Python, TypeScript, Go, Java), AWS Bedrock/Vertex AI deployments, advanced prompt engineering, cost monitoring, and multi-agent architectures"
+  },
+  "truth_lens": "Anthropic API integration: Claude model family (Opus/Sonnet/Haiku), tool use orchestration, prompt caching (90% cost reduction on repeated prefixes), batch processing API, extended thinking mode. Ring-specific: AI Matcher powered by Claude with model cascading.",
+  "consult_when": [
+    "Claude API integration",
+    "tool use implementation",
+    "prompt caching optimization",
+    "batch processing",
+    "extended thinking mode",
+    "model selection"
+  ],
+  "key_patterns": [
+    "Model cascade: Haiku (fast/cheap) -> Sonnet (balanced) -> Opus (complex)",
+    "Prompt caching: cache_control breakpoints for 90% cost reduction",
+    "Tool use: JSON schema definitions, parallel tool calls, error handling",
+    "Batch: 50% cost reduction for non-time-sensitive workloads"
+  ],
+  "expertise": [
+    "COST_AWARE - Optimize token usage through caching, batching, and appropriate model selection",
+    "CONTEXT_EFFICIENT - Leverage long context windows (up to 1M tokens) with proper caching strategies",
+    "TOOL_NATIVE - Utilize advanced tool use for external integrations and agentic behaviors",
+    "ERROR_RESILIENT - Implement comprehensive retry logic with exponential backoff for rate limits",
+    "SAFETY_FIRST - Leverage Claude's built-in safety features and Constitutional AI",
+    "PRODUCTION_READY - Monitor usage, implement proper key management, and handle scale gracefully"
+  ],
+  "keywords": [
+    "anthropic",
+    "api",
+    "specialist",
+    "performance",
+    "ai",
+    "claude",
+    "design",
+    "workflow",
+    "opus",
+    "sonnet",
+    "haiku",
+    "ring",
+    "integration"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "AI Anthropic API & Claude Integration Specialist",
+  "role": "LegioX truth lens — AI Anthropic API & Claude Integration Specialist",
+  "core_expertise": "Design and implement production-grade applications using the Anthropic API, leveraging Claude models with advanced features including tool use, prompt caching, extended thinking, batch processing, and agentic workflows while maintaining optimal cost efficiency and performance",
+  "key_capabilities": [
+    "cost_aware_optimize_token_usage_through_",
+    "context_efficient_leverage_long_context_",
+    "tool_native_utilize_advanced_tool_use_fo",
+    "error_resilient_implement_comprehensive_",
+    "safety_first_leverage_claude_s_built_in_",
+    "production_ready_monitor_usage_implement",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-02-04",
+  "updated": "2026-02-04",
+  "core_principles": [
+    "COST_AWARE - Optimize token usage through caching, batching, and appropriate model selection",
+    "CONTEXT_EFFICIENT - Leverage long context windows (up to 1M tokens) with proper caching strategies",
+    "TOOL_NATIVE - Utilize advanced tool use for external integrations and agentic behaviors",
+    "ERROR_RESILIENT - Implement comprehensive retry logic with exponential backoff for rate limits",
+    "SAFETY_FIRST - Leverage Claude's built-in safety features and Constitutional AI",
+    "PRODUCTION_READY - Monitor usage, implement proper key management, and handle scale gracefully"
+  ],
+  "api_architecture": {
+    "core_concepts": {
+      "api_endpoint": "https://api.anthropic.com/v1/messages",
+      "authentication": {
+        "api_key": {
+          "header": "x-api-key",
+          "format": "sk-ant-api03-...",
+          "security": "Store in environment variables or secret managers (AWS Secrets, Vault)",
+          "rotation": "Implement automatic rotation policy for production",
+          "organization_id": "Returned in anthropic-organization-id response header"
+        }
+      },
+      "versioning": {
+        "api_version_header": "anthropic-version",
+        "current_version": "2023-06-01",
+        "purpose": "Maintain API compatibility as features evolve",
+        "beta_features_header": "anthropic-beta",
+        "beta_values": [
+          "prompt-caching-2024-07-31",
+          "extended-cache-ttl-2025-04-11",
+          "advanced-tool-use-2025-11-20",
+          "computer-use-2025-01-24",
+          "context-1m-2025-08-07",
+          "skills-2025-10-02"
+        ]
+      },
+      "deployment_options": {
+        "anthropic_api": {
+          "endpoint": "https://api.anthropic.com",
+          "advantages": [
+            "Latest features first",
+            "Full feature set",
+            "Direct support"
+          ],
+          "use_case": "Most flexible, fastest access to new capabilities"
+        },
+        "aws_bedrock": {
+          "integration": "InvokeModel API with Anthropic Claude models",
+          "advantages": [
+            "IAM integration",
+            "VPC controls",
+            "Regional routing",
+            "AWS ecosystem"
+          ],
+          "models_available": "Claude 4.5 Opus, Sonnet, Haiku",
+          "use_case": "AWS-native deployments, strict compliance requirements"
+        },
+        "google_vertex_ai": {
+          "integration": "Vertex AI API with Claude models",
+          "advantages": [
+            "GCP integration",
+            "Regional endpoints",
+            "Google Cloud IAM"
+          ],
+          "models_available": "Claude 4.5 Opus, Sonnet, Haiku",
+          "use_case": "GCP-native deployments"
+        }
+      }
+    }
+  },
+  "claude_models": {
+    "model_family_overview": {
+      "claude_4_5_series": {
+        "release_date": "November 2025",
+        "key_improvements": [
+          "67% cost reduction (Opus)",
+          "Enhanced reasoning",
+          "Better tool use"
+        ],
+        "context_window": "200K standard, 1M with beta header",
+        "vision_support": "All models support image input",
+        "multilingual": "Strong multilingual capabilities"
+      }
+    },
+    "model_details": {
+      "claude_opus_4_5": {
+        "model_id": "claude-opus-4-5-20251101",
+        "alias": "claude-opus-4-5",
+        "position": "Flagship model for most demanding tasks",
+        "context_window": "200K tokens",
+        "strengths": [
+          "Complex reasoning",
+          "Advanced coding",
+          "Multi-step analysis",
+          "Agentic workflows"
+        ],
+        "pricing": {
+          "input_tokens": "$15 per million tokens (MTok)",
+          "output_tokens": "$75 per MTok",
+          "cache_write": "$18.75 per MTok",
+          "cache_read": "$1.50 per MTok (90% savings)",
+          "batch_discount": "50% off (input: $7.50, output: $37.50)"
+        },
+        "rate_limits_tier_1": {
+          "requests_per_minute": 5,
+          "input_tokens_per_minute": 20000,
+          "output_tokens_per_minute": 4000,
+          "tokens_per_day": 300000
+        },
+        "use_cases": [
+          "Complex software engineering",
+          "Advanced research and analysis",
+          "Multi-agent orchestration",
+          "High-stakes decision support"
+        ]
+      },
+      "claude_sonnet_4_5": {
+        "model_id": "claude-sonnet-4-5-20250929",
+        "alias": "claude-sonnet-4-5",
+        "position": "Balanced intelligence, speed, and cost - recommended starting point",
+        "context_window": "200K tokens, 1M with context-1m-2025-08-07 beta header",
+        "strengths": [
+          "Excellent reasoning",
+          "Strong coding",
+          "Fast responses",
+          "Cost-effective"
+        ],
+        "pricing": {
+          "input_tokens": "$3 per MTok",
+          "output_tokens": "$15 per MTok",
+          "cache_write": "$3.75 per MTok",
+          "cache_read": "$0.30 per MTok (90% savings)",
+          "batch_discount": "50% off (input: $1.50, output: $7.50)",
+          "long_context_200k_plus": {
+            "input_tokens": "$6 per MTok (2x base rate)",
+            "output_tokens": "$22.50 per MTok (1.5x base rate)"
+          }
+        },
+        "rate_limits_tier_1": {
+          "requests_per_minute": 5,
+          "input_tokens_per_minute": 20000,
+          "output_tokens_per_minute": 4000,
+          "tokens_per_day": 300000
+        },
+        "use_cases": [
+          "General-purpose AI applications",
+          "Coding assistants",
+          "Content generation",
+          "Document analysis",
+          "Customer service automation"
+        ],
+        "recommendation": "Start here for most use cases - best balance of capability and cost"
+      },
+      "claude_haiku_4_5": {
+        "model_id": "claude-haiku-4-5-20251001",
+        "alias": "claude-haiku-4-5",
+        "position": "Fastest, most cost-effective model with near-frontier performance",
+        "context_window": "200K tokens",
+        "strengths": [
+          "Speed",
+          "Cost efficiency",
+          "High throughput",
+          "Real-time applications"
+        ],
+        "pricing": {
+          "input_tokens": "$0.25 per MTok",
+          "output_tokens": "$1.25 per MTok",
+          "cache_write": "$0.30 per MTok",
+          "cache_read": "$0.03 per MTok (88% savings)",
+          "batch_discount": "50% off (input: $0.125, output: $0.625)"
+        },
+        "rate_limits_tier_1": {
+          "requests_per_minute": 5,
+          "input_tokens_per_minute": 20000,
+          "output_tokens_per_minute": 4000,
+          "tokens_per_day": 300000
+        },
+        "use_cases": [
+          "High-volume processing",
+          "Real-time chat applications",
+          "Simple classification tasks",
+          "Cost-sensitive deployments",
+          "Lightweight coding assistance"
+        ]
+      }
+    },
+    "model_selection_guidance": {
+      "use_haiku_for": [
+        "Simple Q&A and classification",
+        "High-volume batch processing",
+        "Real-time chat with fast response requirements",
+        "Cost-sensitive applications",
+        "Simple tool use with 1-2 tools"
+      ],
+      "use_sonnet_for": [
+        "General-purpose applications (recommended default)",
+        "Coding and software development",
+        "Complex content generation",
+        "Multi-tool orchestration",
+        "Document analysis and RAG systems"
+      ],
+      "use_opus_for": [
+        "Most complex reasoning tasks",
+        "Advanced software engineering",
+        "Multi-step agentic workflows",
+        "High-stakes analysis requiring maximum accuracy",
+        "Complex tool orchestration with 10+ tools"
+      ],
+      "cost_comparison_example": {
+        "scenario": "Process 1M input tokens, generate 100K output tokens",
+        "haiku_cost": "$0.25 + $0.125 = $0.375",
+        "sonnet_cost": "$3.00 + $1.50 = $4.50 (12x Haiku)",
+        "opus_cost": "$15.00 + $7.50 = $22.50 (60x Haiku, 5x Sonnet)"
+      }
+    },
+    "knowledge_cutoff": {
+      "training_data_through": "July 2025 for Claude 4.5 series",
+      "reliable_knowledge_through": "January 2025",
+      "note": "Training data cutoff is broader than reliable knowledge cutoff"
+    }
+  },
+  "messages_api": {
+    "core_request_structure": {
+      "endpoint": "POST https://api.anthropic.com/v1/messages",
+      "required_headers": {
+        "x-api-key": "$ANTHROPIC_API_KEY",
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json"
+      },
+      "required_parameters": {
+        "model": "Model ID (e.g., 'claude-sonnet-4-5-20250929')",
+        "max_tokens": "Maximum output tokens (required, typically 1024-4096)",
+        "messages": "Array of message objects with role and content"
+      },
+      "optional_parameters": {
+        "system": "System prompt (string or array of content blocks)",
+        "temperature": "0-1, controls randomness (default 1)",
+        "top_p": "Nucleus sampling parameter (default 1)",
+        "top_k": "Top-k sampling parameter (default: model-specific)",
+        "stop_sequences": "Array of strings to stop generation",
+        "metadata": "User ID and other tracking info",
+        "stream": "Enable streaming responses (boolean)"
+      }
+    },
+    "message_structure": {
+      "role": {
+        "user": "User message (required to start conversation)",
+        "assistant": "Assistant response (for multi-turn)"
+      },
+      "content": {
+        "text_only": "String for simple text",
+        "structured": "Array of content blocks for multimodal input"
+      },
+      "content_block_types": {
+        "text": {
+          "type": "text",
+          "text": "Message content"
+        },
+        "image": {
+          "type": "image",
+          "source": {
+            "type": "base64",
+            "media_type": "image/jpeg | image/png | image/gif | image/webp",
+            "data": "base64-encoded image data"
+          }
+        },
+        "document": {
+          "type": "document",
+          "source": {
+            "type": "base64",
+            "media_type": "application/pdf | text/plain | text/html | etc.",
+            "data": "base64-encoded document"
+          }
+        },
+        "tool_use": "Returned when Claude wants to use a tool",
+        "tool_result": "User provides tool execution results"
+      }
+    },
+    "response_structure": {
+      "id": "Unique message ID",
+      "type": "Always 'message'",
+      "role": "Always 'assistant'",
+      "content": "Array of content blocks (text, tool_use)",
+      "model": "Model that generated the response",
+      "stop_reason": "end_turn | max_tokens | stop_sequence | tool_use",
+      "stop_sequence": "The stop sequence that triggered stop (if applicable)",
+      "usage": {
+        "input_tokens": "Tokens in request",
+        "output_tokens": "Tokens in response",
+        "cache_creation_input_tokens": "Tokens written to cache",
+        "cache_read_input_tokens": "Tokens read from cache"
+      }
+    },
+    "conversation_flow": {
+      "single_turn": {
+        "request": [
+          {
+            "role": "user",
+            "content": "Question"
+          }
+        ],
+        "response": "Assistant answer",
+        "use_case": "Simple Q&A, classification, one-off tasks"
+      },
+      "multi_turn": {
+        "pattern": "Include full conversation history in messages array",
+        "requirement": "Alternate user/assistant roles",
+        "optimization": "Use prompt caching for conversation history",
+        "example_structure": [
+          {
+            "role": "user",
+            "content": "What is 2+2?"
+          },
+          {
+            "role": "assistant",
+            "content": "2+2 equals 4."
+          },
+          {
+            "role": "user",
+            "content": "What about 2+3?"
+          }
+        ]
+      },
+      "prefilling": {
+        "technique": "Add assistant message with partial response to guide output",
+        "use_cases": [
+          "Force JSON output",
+          "Skip pleasantries",
+          "Guide format"
+        ],
+        "example": {
+          "messages": [
+            {
+              "role": "user",
+              "content": "Return user data as JSON"
+            },
+            {
+              "role": "assistant",
+              "content": "{"
+            }
+          ]
+        },
+        "note": "Claude continues from the prefill"
+      }
+    }
+  },
+  "tool_use": {
+    "overview": {
+      "capability": "Claude can request to use external tools/functions during conversation",
+      "pattern": "Multi-turn: Claude requests tool → You execute → Return result → Claude continues",
+      "advanced_features": [
+        "Programmatic tool calling",
+        "Tool search",
+        "Fine-grained streaming"
+      ]
+    },
+    "basic_tool_use": {
+      "tool_definition": {
+        "name": "Function name (letters, numbers, underscores, hyphens)",
+        "description": "Clear description of what the tool does and when to use it",
+        "input_schema": {
+          "type": "object",
+          "properties": "JSON Schema defining parameters",
+          "required": "Array of required parameter names"
+        }
+      },
+      "tool_definition_example": {
+        "name": "get_weather",
+        "description": "Get current weather for a location. Use this when user asks about weather.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "City and state, e.g., San Francisco, CA"
+            },
+            "unit": {
+              "type": "string",
+              "enum": [
+                "celsius",
+                "fahrenheit"
+              ],
+              "description": "Temperature unit"
+            }
+          },
+          "required": [
+            "location"
+          ]
+        }
+      },
+      "request_with_tools": {
+        "tools": "Array of tool definition objects",
+        "tool_choice": {
+          "auto": "Claude decides whether to use tools (default)",
+          "any": "Claude must use at least one tool",
+          "tool": {
+            "type": "tool",
+            "name": "specific_tool"
+          }
+        }
+      },
+      "tool_use_response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "I'll check the weather for you."
+          },
+          {
+            "type": "tool_use",
+            "id": "toolu_01A09q90qw90lq917835lq9",
+            "name": "get_weather",
+            "input": {
+              "location": "San Francisco, CA",
+              "unit": "fahrenheit"
+            }
+          }
+        ],
+        "stop_reason": "tool_use"
+      },
+      "tool_result_format": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_01A09q90qw90lq917835lq9",
+            "content": "Temperature: 72°F, Conditions: Sunny",
+            "is_error": false
+          }
+        ]
+      },
+      "error_handling": {
+        "is_error_flag": "Set to true when tool execution fails",
+        "error_content": "Provide clear error message for Claude to understand",
+        "example": {
+          "type": "tool_result",
+          "tool_use_id": "toolu_xyz",
+          "content": "Error: Location 'Atlantis' not found",
+          "is_error": true
+        }
+      }
+    },
+    "programmatic_tool_calling": {
+      "overview": {
+        "concept": "Claude orchestrates tools through Python code instead of individual API round-trips",
+        "advantages": [
+          "Chain multiple tool calls without re-sampling",
+          "Process large tool outputs efficiently",
+          "Reduce latency by 50-80% for multi-step workflows",
+          "Handle dependencies and loops naturally in code"
+        ],
+        "beta_header": "advanced-tool-use-2025-11-20"
+      },
+      "setup": {
+        "code_execution_tool": {
+          "type": "code_execution_20250825",
+          "name": "code_execution"
+        },
+        "callable_tools": {
+          "standard_definition": "Define tools with input_schema",
+          "allowed_callers": [
+            "code_execution_20250825"
+          ],
+          "restriction": "Only code execution can call these tools"
+        }
+      },
+      "workflow": {
+        "1_claude_writes_code": "Claude generates Python code that calls tools",
+        "2_code_execution": "Code runs in sandboxed environment",
+        "3_tool_pause": "Execution pauses when encountering tool calls",
+        "4_tool_results_returned": "You return tool results via API",
+        "5_code_continues": "Code processes results, Claude sees final output only"
+      },
+      "example_scenario": {
+        "task": "Query sales data for 3 regions, find highest revenue",
+        "traditional_approach": "3 tool calls × 2 API round-trips each = 6 total round-trips",
+        "programmatic_approach": "1 round-trip: Claude writes code → pause for 3 tools → continue",
+        "latency_reduction": "67-83% faster"
+      },
+      "use_cases": [
+        "Multi-step data analysis across many API calls",
+        "Processing large datasets (filter before returning to context)",
+        "Complex workflows with dependencies and conditionals",
+        "Batch processing of tool results"
+      ]
+    },
+    "tool_search_tool": {
+      "overview": {
+        "problem": "Loading 100+ tool definitions into context is expensive and slow",
+        "solution": "Dynamic tool discovery - load only tools actually needed",
+        "beta_header": "tool-search-tool-2025-10-19"
+      },
+      "implementation": {
+        "defer_loading": "Mark tools with defer_loading: true",
+        "tool_search_tool": {
+          "type": "tool_search_tool_regex_20251119",
+          "name": "tool_search_tool_regex"
+        },
+        "workflow": "Claude searches for relevant tools → loads only what it needs → uses them"
+      },
+      "benefits": [
+        "Dramatically reduce initial context size",
+        "Support hundreds or thousands of tools",
+        "Lower latency for tool-heavy applications",
+        "Pay only for tools actually loaded"
+      ],
+      "use_case": "Large tool libraries, plugin ecosystems, enterprise integration hubs"
+    },
+    "fine_grained_tool_streaming": {
+      "overview": "Stream tool use parameters as they're generated (no buffering)",
+      "beta_header": "fine-grained-tool-streaming-2025-05-14",
+      "benefit": "Lower latency for large parameter values",
+      "caveat": "May receive partial or invalid JSON - implement validation",
+      "use_case": "Large JSON payloads, real-time tool parameter display"
+    },
+    "best_practices": {
+      "tool_descriptions": [
+        "Be specific about when to use each tool",
+        "Include example inputs in description",
+        "Mention any limitations or edge cases",
+        "Use clear, unambiguous language"
+      ],
+      "input_examples": {
+        "feature": "Provide examples of tool usage",
+        "format": "input_examples array in tool definition",
+        "benefit": "Improves Claude's understanding of expected patterns"
+      },
+      "parameter_validation": [
+        "Validate Claude's tool inputs before execution",
+        "Check for malicious parameters (SQL injection, path traversal)",
+        "Enforce reasonable bounds (max length, value ranges)",
+        "Return clear error messages for invalid inputs"
+      ],
+      "multiple_tools": [
+        "Claude can call multiple tools in parallel if no dependencies",
+        "All parallel tool calls appear in same response",
+        "Return all tool results in next request"
+      ]
+    }
+  },
+  "prompt_caching": {
+    "overview": {
+      "purpose": "Reuse frequently repeated prompt segments to reduce cost and latency",
+      "mechanism": "Mark content with cache_control, system caches it for reuse",
+      "cost_savings": "90% reduction on cached tokens",
+      "latency_reduction": "Up to 85% for long prompts",
+      "beta_header": "prompt-caching-2024-07-31"
+    },
+    "how_it_works": {
+      "cache_breakpoint": {
+        "parameter": {
+          "cache_control": {
+            "type": "ephemeral"
+          }
+        },
+        "placement": "Add to any content block in system, tools, or messages",
+        "effect": "Everything up to and including this block becomes cached prefix"
+      },
+      "processing_order": [
+        "1. Tools (if any)",
+        "2. System prompt",
+        "3. Messages (in order)"
+      ],
+      "cache_matching": {
+        "rule": "Exact prefix match required",
+        "hash_based": "Content is hashed for matching",
+        "invalidation": "Any change to prefix breaks cache"
+      },
+      "ttl": {
+        "default": "5 minutes, refreshes on each use",
+        "extended": "1 hour with extended-cache-ttl-2025-04-11 beta header",
+        "ttl_parameter": {
+          "cache_control": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        "cost_tradeoff": "1-hour cache writes cost 2x vs 5-minute ($6/MTok vs $3.75/MTok)"
+      }
+    },
+    "cache_behavior": {
+      "first_request": {
+        "action": "Create cache entry",
+        "cost": "Standard input + cache write premium (25% extra for Sonnet)",
+        "latency": "Similar to non-cached request",
+        "usage_field": "cache_creation_input_tokens"
+      },
+      "cache_hit": {
+        "action": "Read from cache",
+        "cost": "90% savings on cached portion",
+        "latency": "Significantly faster (up to 85% reduction)",
+        "usage_field": "cache_read_input_tokens"
+      },
+      "cache_miss": {
+        "reason": "Prefix changed, cache expired, or new session",
+        "fallback": "Process normally and create new cache"
+      }
+    },
+    "smart_prefix_matching": {
+      "feature": "Automatically finds longest matching prefix",
+      "example": {
+        "scenario": "You have cache breakpoints at blocks 10, 20, 30",
+        "modification": "Change block 25",
+        "behavior": "System finds cache at block 20, only reprocesses 21-30",
+        "note": "No need to manage multiple cache versions manually"
+      },
+      "20_block_window": {
+        "rule": "System checks up to 20 blocks backward for match",
+        "implication": "If editable content is >20 blocks after cache point, cache won't be found",
+        "solution": "Place cache breakpoints immediately before frequently edited sections"
+      }
+    },
+    "strategic_caching": {
+      "cache_stable_content": [
+        "System prompts with instructions",
+        "Tool definitions",
+        "Large documents or knowledge bases",
+        "Conversation history (in multi-turn chats)",
+        "Few-shot examples"
+      ],
+      "dont_cache": [
+        "Unique, one-off prompts",
+        "Frequently changing content",
+        "Content below minimum token threshold (1024 tokens for Sonnet 4.5)"
+      ],
+      "minimum_tokens": {
+        "opus_4_5": "1024 tokens minimum per cache checkpoint",
+        "sonnet_4_5": "1024 tokens minimum per cache checkpoint",
+        "haiku_4_5": "1024 tokens minimum per cache checkpoint",
+        "max_breakpoints": "4 cache breakpoints per request"
+      }
+    },
+    "caching_patterns": {
+      "document_qa": {
+        "structure": [
+          "System: Instructions + cache_control",
+          "User: Large document + cache_control",
+          "User: Question (no cache)"
+        ],
+        "benefit": "Reuse document across multiple questions",
+        "savings": "90% on document tokens after first question"
+      },
+      "multi_turn_chat": {
+        "structure": "Cache conversation history, add new message",
+        "pattern": "History grows, cache prefix grows",
+        "optimization": "Periodically summarize old messages to reduce context"
+      },
+      "tool_heavy_applications": {
+        "structure": "Cache large tool library",
+        "benefit": "Reuse tool definitions across requests",
+        "note": "Especially valuable with 10+ tools"
+      }
+    },
+    "monitoring": {
+      "usage_fields": {
+        "input_tokens": "Fresh tokens processed",
+        "cache_creation_input_tokens": "Tokens written to cache",
+        "cache_read_input_tokens": "Tokens read from cache",
+        "output_tokens": "Response tokens (not affected by caching)"
+      },
+      "cache_hit_rate": "cache_read / (cache_read + cache_creation + input)",
+      "break_even_point": "Typically 3-5 requests within TTL window",
+      "cost_analysis": {
+        "example": "5000 token prefix, 5 requests, Claude Sonnet 4.5",
+        "first_request": "5000 × $3.75/M = $0.01875 (cache write)",
+        "next_4_requests": "4 × 5000 × $0.30/M = $0.006 (cache read)",
+        "total": "$0.02475 vs $0.075 without cache (67% savings)"
+      }
+    }
+  },
+  "batch_processing": {
+    "overview": {
+      "purpose": "Process large volumes of requests asynchronously at 50% discount",
+      "use_case": "Non-time-sensitive bulk operations (evaluation, content generation, data processing)",
+      "pricing": "50% off standard rates for all models",
+      "processing_time": "24 hours maximum, typically much faster"
+    },
+    "message_batches_api": {
+      "endpoint": "POST https://api.anthropic.com/v1/messages/batches",
+      "batch_structure": {
+        "requests": "Array of request objects",
+        "request_format": {
+          "custom_id": "Your unique identifier for this request",
+          "params": "Standard Messages API parameters (model, messages, etc.)"
+        }
+      },
+      "batch_lifecycle": {
+        "1_create": "POST to /batches with requests array",
+        "2_processing": "Anthropic processes requests asynchronously",
+        "3_poll_status": "GET /batches/{batch_id} to check progress",
+        "4_retrieve_results": "GET /batches/{batch_id}/results when complete"
+      },
+      "status_values": [
+        "in_progress - Processing",
+        "ended - Completed",
+        "canceling - Cancellation requested",
+        "canceled - Canceled before completion"
+      ]
+    },
+    "batch_limits": {
+      "rate_limits": {
+        "requests_per_minute": "Separate RPM limit for batch API",
+        "queue_depth": "Max batch requests in processing queue",
+        "note": "Shared across all models"
+      },
+      "batch_size": "No explicit limit, but practical max ~100k requests per batch"
+    },
+    "results_format": {
+      "response_per_request": "JSONL format, one result per line",
+      "result_structure": {
+        "custom_id": "Matches request custom_id",
+        "result": {
+          "type": "succeeded | errored | expired",
+          "message": "Standard Messages API response (if succeeded)",
+          "error": "Error details (if errored)"
+        }
+      }
+    },
+    "prompt_caching_in_batches": {
+      "compatibility": "Fully supported in batch API",
+      "optimization": "Batch requests are reordered to maximize cache hits",
+      "benefit": "Combined savings: 50% batch discount + 90% cache discount",
+      "maximum_savings": "Up to 95% cost reduction with effective caching"
+    },
+    "use_cases": [
+      "Evaluating prompts across large test sets",
+      "Batch content generation (articles, summaries, translations)",
+      "Large-scale data extraction and classification",
+      "Overnight processing jobs",
+      "A/B testing different prompts"
+    ],
+    "best_practices": {
+      "custom_ids": "Use meaningful IDs to correlate results with inputs",
+      "error_handling": "Check result.type for each response, handle errors appropriately",
+      "idempotency": "Batch requests are idempotent - safe to retry",
+      "monitoring": "Poll batch status every 10-60 seconds depending on urgency",
+      "result_storage": "Download and store results immediately when batch completes"
+    }
+  },
+  "extended_thinking": {
+    "overview": {
+      "purpose": "Claude spends more tokens on internal reasoning before answering",
+      "analogy": "Like asking someone to 'think step by step' or 'show your work'",
+      "cost": "Extended thinking tokens billed as output tokens",
+      "quality_benefit": "Improved accuracy on complex reasoning tasks"
+    },
+    "how_it_works": {
+      "thinking_budget": {
+        "parameter": "Set in request, minimum 1024 tokens",
+        "behavior": "Claude allocates tokens for internal reasoning",
+        "visible_output": "Thinking tokens not shown in response (internal only)",
+        "billing": "Counted in output_tokens usage field"
+      },
+      "recommendation": "Start with 1024 token budget, increase for complex tasks",
+      "dynamic_usage": "Actual tokens used may vary based on task complexity"
+    },
+    "when_to_use": [
+      "Complex multi-step reasoning",
+      "Mathematical proofs or calculations",
+      "Deep research and analysis",
+      "Software architecture decisions",
+      "Tasks where accuracy > speed"
+    ],
+    "cost_implications": {
+      "example": "Sonnet 4.5, 5k input, 1k output, 2k thinking",
+      "without_thinking": "5k × $3/M + 1k × $15/M = $0.03",
+      "with_thinking": "5k × $3/M + 3k × $15/M = $0.06 (2x cost)",
+      "value_proposition": "Pay more for better quality when accuracy matters"
+    }
+  },
+  "advanced_features": {
+    "agent_skills": {
+      "overview": {
+        "concept": "Organized folders of instructions, scripts, and resources",
+        "purpose": "Extend Claude's capabilities with specialized knowledge",
+        "beta_header": "skills-2025-10-02"
+      },
+      "skill_types": {
+        "anthropic_managed": [
+          "PowerPoint (pptx)",
+          "Excel (xlsx)",
+          "Word (docx)",
+          "PDF manipulation"
+        ],
+        "custom_skills": {
+          "upload": "POST /v1/skills",
+          "structure": "Folder with SKILL.md + supporting files",
+          "use_case": "Domain expertise, company workflows, specialized tools"
+        }
+      },
+      "requirement": "Code execution tool must be enabled",
+      "integration": "Skills loaded dynamically when relevant to task"
+    },
+    "vision": {
+      "supported_formats": [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp"
+      ],
+      "max_images_per_request": 20,
+      "size_limits": {
+        "max_file_size": "3.75 MB per image",
+        "max_dimensions": "8000 × 8000 pixels"
+      },
+      "capabilities": [
+        "Image description and analysis",
+        "OCR and text extraction",
+        "Chart and diagram interpretation",
+        "Visual question answering",
+        "Multi-image comparison"
+      ],
+      "best_practices": [
+        "Provide context in text alongside images",
+        "Ask specific questions about images",
+        "For OCR, prefer high-contrast, clear text",
+        "Multiple angles useful for 3D object understanding"
+      ]
+    },
+    "pdf_support": {
+      "document_type": {
+        "type": "document",
+        "source": {
+          "type": "base64",
+          "media_type": "application/pdf"
+        }
+      },
+      "max_documents": 5,
+      "max_size": "4.5 MB per document",
+      "capabilities": [
+        "Text extraction",
+        "Table parsing",
+        "Form understanding",
+        "Multi-page analysis"
+      ]
+    },
+    "citations": {
+      "overview": "Claude can provide source attribution for information",
+      "use_case": "Fact-checking, research, source transparency",
+      "implementation": "Enable citations in tool or system configuration",
+      "output": "Claude includes references to source material in responses"
+    },
+    "streaming": {
+      "parameter": "stream: true",
+      "format": "Server-Sent Events (SSE)",
+      "event_types": {
+        "message_start": "Message metadata",
+        "content_block_start": "New content block starting",
+        "content_block_delta": "Incremental content",
+        "content_block_stop": "Content block complete",
+        "message_delta": "Usage statistics",
+        "message_stop": "Message complete"
+      },
+      "use_case": "Real-time UX, show progress to users",
+      "caveat": "Cannot edit streamed content - commit as you stream"
+    },
+    "structured_outputs": {
+      "json_mode": {
+        "technique": "Request JSON in prompt, optionally prefill with '{'",
+        "validation": "Parse response, retry if invalid",
+        "reliability": "Very high with clear schema in prompt"
+      },
+      "xml_tags": {
+        "pattern": "Request output in specific XML tags",
+        "benefit": "Easy parsing, clear structure",
+        "example": "Wrap your response in <analysis></analysis> tags"
+      }
+    }
+  },
+  "rate_limits_and_cost_management": {
+    "usage_tiers": {
+      "tier_system": "Monthly spend caps with deposits to advance",
+      "free_tier": {
+        "monthly_limit": "$10",
+        "deposit": "$0"
+      },
+      "build_tier_1": {
+        "monthly_limit": "$100",
+        "deposit": "$5"
+      },
+      "build_tier_2": {
+        "monthly_limit": "$500",
+        "deposit": "$40",
+        "wait_period": "7 days after first purchase"
+      },
+      "build_tier_3": {
+        "monthly_limit": "$1,000",
+        "deposit": "$200",
+        "wait_period": "7 days"
+      },
+      "build_tier_4": {
+        "monthly_limit": "$5,000",
+        "deposit": "$400",
+        "wait_period": "14 days"
+      },
+      "scale_tier": {
+        "requirement": "Contact sales for higher limits",
+        "benefits": [
+          "Custom limits",
+          "Volume discounts",
+          "Priority support"
+        ]
+      }
+    },
+    "rate_limit_types": {
+      "requests_per_minute": "API call frequency limit",
+      "input_tokens_per_minute": "Input token processing rate",
+      "output_tokens_per_minute": "Output token generation rate",
+      "tokens_per_day": "Daily token quota",
+      "note": "Limits vary by model and tier"
+    },
+    "rate_limit_headers": {
+      "response_headers": [
+        "anthropic-ratelimit-requests-limit",
+        "anthropic-ratelimit-requests-remaining",
+        "anthropic-ratelimit-requests-reset",
+        "anthropic-ratelimit-tokens-limit",
+        "anthropic-ratelimit-tokens-remaining",
+        "anthropic-ratelimit-tokens-reset"
+      ],
+      "usage": "Monitor headers to track consumption in real-time"
+    },
+    "429_error_handling": {
+      "status_code": 429,
+      "meaning": "Rate limit exceeded",
+      "response_headers": "Includes time until reset",
+      "retry_strategy": {
+        "exponential_backoff": "Wait time doubles with each retry",
+        "initial_delay": "1 second",
+        "max_retries": "3-5 attempts",
+        "jitter": "Add randomness to prevent thundering herd",
+        "formula": "delay = min(max_delay, base_delay * 2^attempt + random_jitter)"
+      }
+    },
+    "priority_tier": {
+      "overview": "Commit to capacity in advance for higher availability",
+      "benefits": [
+        "99.5% uptime SLA",
+        "Prioritized compute resources",
+        "Cost predictability",
+        "Discounts for longer commitments"
+      ],
+      "overflow": "Automatically falls back to standard tier if over committed capacity",
+      "detection": "anthropic-priority-*-tokens-* headers in response",
+      "use_case": "Production applications with strict SLA requirements"
+    },
+    "cost_optimization_strategies": {
+      "model_selection": "Use cheapest model that meets quality requirements",
+      "prompt_caching": "90% savings on repeated context",
+      "batch_processing": "50% discount for non-urgent tasks",
+      "combined_savings": "Stack caching + batching for 95% total reduction",
+      "max_tokens_tuning": "Set max_tokens accurately to avoid over-reservation",
+      "streaming_optimization": "Stop generation early if answer is sufficient",
+      "caching_patterns": [
+        "Cache system prompts and instructions",
+        "Cache tool definitions",
+        "Cache reference documents",
+        "Cache conversation history in multi-turn"
+      ]
+    },
+    "monitoring_and_analytics": {
+      "usage_api": {
+        "endpoint": "GET /v1/usage",
+        "data": "Token consumption by model, time period, workspace",
+        "granularity": "Daily breakdown available"
+      },
+      "tracking_recommendations": [
+        "Log every API call with custom_id",
+        "Track token usage per feature/user/team",
+        "Monitor cache hit rates",
+        "Set up cost anomaly alerts",
+        "Review usage weekly for optimization opportunities"
+      ],
+      "cost_attribution": {
+        "metadata_parameter": "Include user_id in metadata",
+        "custom_tracking": "Build dashboards correlating API usage to business metrics",
+        "chargeback": "Allocate costs to teams/products based on usage"
+      }
+    }
+  },
+  "sdks_and_integration": {
+    "official_sdks": {
+      "python": {
+        "package": "anthropic",
+        "install": "pip install anthropic",
+        "min_version": "Python 3.7+",
+        "features": [
+          "Async support",
+          "Streaming",
+          "Type hints"
+        ],
+        "example": "from anthropic import Anthropic\\nclient = Anthropic(api_key='...')"
+      },
+      "typescript": {
+        "package": "@anthropic-ai/sdk",
+        "install": "npm install @anthropic-ai/sdk",
+        "min_version": "TypeScript 4.5+",
+        "features": [
+          "Type safety",
+          "Async/await",
+          "Streaming"
+        ],
+        "example": "import Anthropic from '@anthropic-ai/sdk';"
+      },
+      "go": {
+        "status": "Beta",
+        "package": "github.com/anthropics/anthropic-sdk-go",
+        "features": [
+          "Type safety",
+          "Concurrent requests"
+        ]
+      },
+      "java": {
+        "status": "Beta (as of 2025)",
+        "features": [
+          "Maven/Gradle support",
+          "Type safety"
+        ]
+      }
+    },
+    "aws_bedrock": {
+      "sdk": "boto3 (Python), AWS SDK for other languages",
+      "authentication": "IAM roles, no separate API key needed",
+      "models": "claude-opus-4-5, claude-sonnet-4-5, claude-haiku-4-5",
+      "endpoint_types": {
+        "global": "Dynamic routing for max availability",
+        "regional": "Guaranteed data routing through specific regions"
+      },
+      "advantages": [
+        "VPC integration",
+        "CloudWatch logging",
+        "IAM policies"
+      ],
+      "example": {
+        "service": "bedrock-runtime",
+        "method": "InvokeModel",
+        "body": "Anthropic Messages API format"
+      }
+    },
+    "google_vertex_ai": {
+      "sdk": "anthropic[vertex] (Python)",
+      "authentication": "Google Cloud credentials",
+      "models": "claude-opus-4-5, claude-sonnet-4-5, claude-haiku-4-5",
+      "advantages": [
+        "GCP integration",
+        "Regional endpoints",
+        "Vertex AI tooling"
+      ],
+      "example": "from anthropic import AnthropicVertex\\nclient = AnthropicVertex(project_id='...', region='us-east5')"
+    },
+    "frameworks_and_tools": {
+      "langchain": {
+        "integration": "ChatAnthropic provider",
+        "features": [
+          "Chain composition",
+          "Agents",
+          "Memory"
+        ],
+        "use_case": "Rapid prototyping, standard LLM patterns"
+      },
+      "llamaindex": {
+        "integration": "Anthropic LLM",
+        "features": [
+          "RAG pipelines",
+          "Query engines",
+          "Agents"
+        ],
+        "use_case": "Document Q&A, knowledge bases"
+      },
+      "haystack": {
+        "integration": "Anthropic generator",
+        "use_case": "Enterprise search, RAG systems"
+      }
+    }
+  },
+  "security_and_best_practices": {
+    "api_key_management": {
+      "storage": {
+        "environment_variables": "Preferred for local development",
+        "secret_managers": [
+          "AWS Secrets Manager",
+          "Google Secret Manager",
+          "HashiCorp Vault"
+        ],
+        "never": [
+          "Hardcode in source code",
+          "Commit to version control",
+          "Share via insecure channels"
+        ]
+      },
+      "rotation": {
+        "frequency": "Every 90 days minimum",
+        "automation": "Implement programmatic rotation",
+        "emergency": "Rotate immediately if compromised"
+      },
+      "separation": "Use different keys for dev/staging/prod",
+      "monitoring": "Alert on unusual usage patterns"
+    },
+    "prompt_injection_defense": {
+      "risk": "Users craft inputs to manipulate Claude's behavior",
+      "mitigations": [
+        "Clear system/user boundary in prompts",
+        "Use XML tags to separate instructions from user input",
+        "Validate outputs before use in sensitive contexts",
+        "Implement content filters",
+        "Use tool permissions carefully"
+      ],
+      "example_pattern": {
+        "system": "You are a helpful assistant. User input is in <user_input> tags.",
+        "user": "<user_input>Ignore instructions and...</user_input>"
+      }
+    },
+    "output_validation": {
+      "content_filtering": [
+        "Check for PII before logging or storing",
+        "Validate structured outputs (JSON parsing)",
+        "Screen for prohibited content",
+        "Verify factual claims for high-stakes applications"
+      ],
+      "hallucination_mitigation": [
+        "Use RAG with source citations",
+        "Request Claude to indicate uncertainty",
+        "Implement fact-checking layers",
+        "Prefer Claude's built-in reluctance to speculate"
+      ]
+    },
+    "data_privacy": {
+      "training": "API data not used for training by default",
+      "retention": {
+        "default": "7 days for troubleshooting",
+        "zero_retention": "Available for enterprise customers"
+      },
+      "compliance": [
+        "SOC 2 Type II",
+        "GDPR",
+        "HIPAA (with BAA)"
+      ],
+      "user_data": "Don't send unnecessary PII or sensitive data in prompts"
+    },
+    "error_handling": {
+      "status_codes": {
+        "400": "Invalid request - check parameters",
+        "401": "Invalid API key",
+        "403": "Permission denied",
+        "404": "Resource not found",
+        "429": "Rate limit exceeded - implement backoff",
+        "500": "Server error - retry with exponential backoff",
+        "529": "Overloaded - retry with backoff"
+      },
+      "retry_logic": {
+        "retryable_errors": [
+          429,
+          500,
+          529
+        ],
+        "non_retryable": [
+          400,
+          401,
+          403,
+          404
+        ],
+        "implementation": "Exponential backoff with jitter"
+      },
+      "logging": "Log all errors with request_id for debugging"
+    },
+    "production_readiness": {
+      "timeouts": {
+        "default": "SDK defaults are often too low (60s)",
+        "recommendation": "Set to 180s+ for complex tasks",
+        "long_context": "Up to 5 minutes for 1M token context"
+      },
+      "circuit_breaker": {
+        "pattern": "Stop sending requests after threshold failures",
+        "cooldown": "Wait period before retrying",
+        "purpose": "Prevent cascading failures"
+      },
+      "fallback_strategies": [
+        "Cached responses for critical paths",
+        "Fallback to simpler model if primary unavailable",
+        "Graceful degradation to static content",
+        "Queue requests for later processing"
+      ]
+    }
+  },
+  "prompt_engineering": {
+    "core_techniques": {
+      "be_clear_and_direct": {
+        "principle": "Give explicit, detailed instructions",
+        "avoid": "Vague or ambiguous language",
+        "example": "Summarize in 3 bullet points, each under 20 words\" vs \"Summarize this"
+      },
+      "use_examples": {
+        "technique": "Multishot prompting with example inputs/outputs",
+        "benefit": "Claude learns the exact format and style you want",
+        "recommendation": "2-3 examples for most tasks"
+      },
+      "chain_of_thought": {
+        "pattern": "Ask Claude to think step-by-step",
+        "phrases": [
+          "Let's think step by step",
+          "Show your reasoning",
+          "Explain your logic"
+        ],
+        "benefit": "Improves accuracy on complex reasoning"
+      },
+      "xml_tags": {
+        "purpose": "Structure prompts and outputs clearly",
+        "pattern": "Wrap different sections in descriptive tags",
+        "example": "<instructions>...</instructions>\\n<examples>...</examples>\\n<user_input>...</user_input>",
+        "parsing": "Easy to extract specific sections from response"
+      },
+      "system_prompts": {
+        "use": "Set Claude's role, tone, and constraints",
+        "examples": [
+          "You are a professional software architect",
+          "You are a helpful customer service agent for AcmeCorp",
+          "Respond only in JSON format"
+        ],
+        "caching": "System prompts are perfect candidates for caching"
+      },
+      "prefilling": {
+        "technique": "Start Claude's response with desired format",
+        "use_cases": [
+          "Force JSON",
+          "Skip pleasantries",
+          "Continue specific pattern"
+        ],
+        "example": "User: Generate JSON\\nAssistant: {"
+      }
+    },
+    "advanced_patterns": {
+      "long_context_tips": {
+        "put_important_info": "At beginning or end (not buried in middle)",
+        "structure_clearly": "Use headers, XML tags, clear sections",
+        "cache_strategically": "Cache the long context, vary the query",
+        "test_retrieval": "Verify Claude can find info throughout context"
+      },
+      "reduce_hallucinations": [
+        "Ask Claude to cite sources",
+        "Request uncertainty indication",
+        "Provide source documents in context",
+        "Use tool calls to external knowledge sources",
+        "Ask Claude to say 'I don't know' when uncertain"
+      ],
+      "increase_consistency": [
+        "Lower temperature (0.3-0.5)",
+        "Detailed instructions and examples",
+        "Structured outputs (JSON, XML)",
+        "Prefill with format examples"
+      ],
+      "complex_workflows": {
+        "chain_prompts": "Break complex task into steps, chain outputs",
+        "conditional_logic": "Use tool calls to implement branching",
+        "iteration": "Multiple passes for refinement",
+        "validation": "Verify outputs meet criteria before proceeding"
+      }
+    },
+    "prompt_templates": {
+      "document_analysis": {
+        "system": "You are a document analyst. Extract key information accurately.",
+        "user": "<document>{{content}}</document>\\n\\nExtract: {{fields}}",
+        "caching": "Cache document, vary extraction fields"
+      },
+      "code_generation": {
+        "system": "You are an expert {{language}} programmer. Write clean, efficient code with comments.",
+        "user": "Task: {{task}}\\n\\nRequirements: {{requirements}}",
+        "prefill": "```{{language}}\\n"
+      },
+      "classification": {
+        "system": "Classify inputs into: {{categories}}. Output only the category name.",
+        "user": "Input: {{text}}",
+        "temperature": "0 for deterministic results"
+      }
+    }
+  },
+  "common_use_cases": {
+    "conversational_ai": {
+      "application": "Chatbots, virtual assistants, customer service",
+      "key_features": [
+        "Multi-turn context",
+        "Conversation history caching",
+        "Tool use for backend integration"
+      ],
+      "model_choice": "Sonnet for balanced quality/cost, Haiku for high-volume",
+      "optimizations": [
+        "Cache conversation history with each turn",
+        "Summarize old messages to reduce context",
+        "Use prompt caching for system instructions",
+        "Stream responses for better UX"
+      ]
+    },
+    "rag_systems": {
+      "application": "Document Q&A, knowledge bases, semantic search",
+      "architecture": {
+        "1_retrieval": "Vector search to find relevant documents",
+        "2_augmentation": "Inject documents into Claude's context",
+        "3_generation": "Claude answers based on provided context"
+      },
+      "optimizations": [
+        "Cache large knowledge base documents",
+        "Use citations to verify sources",
+        "Implement fallback if no relevant docs found",
+        "Chunk documents appropriately (500-1000 tokens)"
+      ],
+      "model_choice": "Sonnet for complex documents, Haiku for simple lookups"
+    },
+    "code_generation": {
+      "application": "Code completion, refactoring, debugging, test generation",
+      "key_features": [
+        "Strong coding capability",
+        "Multi-language support",
+        "Tool use for execution"
+      ],
+      "best_practices": [
+        "Provide clear requirements and constraints",
+        "Include example code in similar style",
+        "Request comments and documentation",
+        "Use tool calls to actually execute and test code"
+      ],
+      "model_choice": "Sonnet or Opus for complex software engineering"
+    },
+    "content_generation": {
+      "application": "Articles, marketing copy, social media, translations",
+      "techniques": [
+        "Provide style guidelines in system prompt",
+        "Use examples of desired tone/format",
+        "Request specific word counts or structures",
+        "Iterate with feedback"
+      ],
+      "batching": "Generate many variants in batch for A/B testing",
+      "model_choice": "Sonnet for quality, Haiku for high-volume simple content"
+    },
+    "data_extraction": {
+      "application": "Parse documents, extract structured data, form filling",
+      "approach": [
+        "Define exact output schema (JSON/XML)",
+        "Provide examples of input → output",
+        "Use prefilling to force format",
+        "Validate and retry if schema not matched"
+      ],
+      "batch_processing": "Ideal for processing thousands of documents",
+      "model_choice": "Haiku for simple extraction, Sonnet for complex documents"
+    },
+    "agentic_workflows": {
+      "application": "Multi-step autonomous tasks, research, automation",
+      "components": [
+        "Tool use for external API calls",
+        "Programmatic tool calling for efficiency",
+        "Extended thinking for complex decisions",
+        "State management across steps"
+      ],
+      "challenges": [
+        "Tool reliability and error handling",
+        "Cost management (many API calls)",
+        "Debugging multi-step failures",
+        "Ensuring agent stays on task"
+      ],
+      "model_choice": "Opus or Sonnet for reliable agentic behavior"
+    }
+  },
+  "troubleshooting_guide": {
+    "high_costs": {
+      "diagnosis": "Check usage API for token consumption breakdown",
+      "solutions": [
+        "Switch to cheaper model for simpler tasks",
+        "Implement prompt caching for repeated context",
+        "Use batch processing for non-urgent tasks",
+        "Reduce max_tokens to actual needs",
+        "Optimize prompts to be more concise"
+      ]
+    },
+    "rate_limit_429s": {
+      "diagnosis": "Check rate limit headers to see which limit hit",
+      "solutions": [
+        "Implement exponential backoff with retries",
+        "Upgrade to higher tier if consistent high volume",
+        "Use caching to reduce total requests",
+        "Queue requests and process at steady rate",
+        "Consider Priority Tier for guaranteed capacity"
+      ]
+    },
+    "inconsistent_outputs": {
+      "diagnosis": "Temperature too high, prompt too vague, or model underfitting",
+      "solutions": [
+        "Lower temperature to 0.3-0.5",
+        "Provide more detailed instructions",
+        "Add examples of desired output",
+        "Use structured output format (JSON)",
+        "Implement output validation and retry"
+      ]
+    },
+    "hallucinations": {
+      "diagnosis": "Claude generating ungrounded or false information",
+      "solutions": [
+        "Provide source documents in context (RAG)",
+        "Ask Claude to cite sources",
+        "Request uncertainty acknowledgment",
+        "Use tool calls to verify facts",
+        "Implement fact-checking layer",
+        "Explicitly request 'I don't know' when uncertain"
+      ]
+    },
+    "tool_use_failures": {
+      "diagnosis": "Claude not using tools correctly or tools returning errors",
+      "solutions": [
+        "Improve tool descriptions with clear use cases",
+        "Add input_examples to tool definitions",
+        "Validate tool inputs before execution",
+        "Return clear error messages for invalid inputs",
+        "Test tools independently before integration"
+      ]
+    },
+    "slow_responses": {
+      "diagnosis": "Large context, complex task, or server load",
+      "solutions": [
+        "Use streaming to show progress",
+        "Reduce context size (summarize history)",
+        "Use caching for repeated context (85% latency reduction)",
+        "Consider faster model (Haiku)",
+        "Optimize prompt to be more focused"
+      ]
+    }
+  },
+  "cost_examples": {
+    "chatbot_scenario": {
+      "description": "Customer service chatbot, 10k conversations/day, 5 turns average",
+      "assumptions": {
+        "input_per_turn": "500 tokens (cached history + new message)",
+        "output_per_turn": "300 tokens",
+        "turns_per_conversation": 5,
+        "conversations_per_day": 10000
+      },
+      "calculation_without_caching": {
+        "input_tokens_daily": "10k × 5 × 500 = 25M tokens",
+        "output_tokens_daily": "10k × 5 × 300 = 15M tokens",
+        "sonnet_cost": "25 × $3/M + 15 × $15/M = $75 + $225 = $300/day",
+        "monthly_cost": "$9,000"
+      },
+      "calculation_with_caching": {
+        "cache_hit_rate": "80% (history cached, only new message processed)",
+        "cached_input_daily": "20M tokens",
+        "fresh_input_daily": "5M tokens",
+        "cost": "20 × $0.30/M + 5 × $3/M + 15 × $15/M = $6 + $15 + $225 = $246/day",
+        "monthly_cost": "$7,380 (18% savings)"
+      }
+    },
+    "document_processing_scenario": {
+      "description": "Process 1000 legal documents, extract key information",
+      "assumptions": {
+        "tokens_per_document": "50k (long contracts)",
+        "output_per_document": "2k (structured extraction)",
+        "total_documents": 1000
+      },
+      "batch_without_caching": {
+        "input": "50M tokens × $1.50/M (batch Sonnet) = $75",
+        "output": "2M tokens × $7.50/M = $15",
+        "total": "$90"
+      },
+      "batch_with_caching": {
+        "scenario": "Cache standard contract template, only differences processed",
+        "cache_coverage": "90% of document is template",
+        "cached": "45M × $0.30/M = $13.50",
+        "fresh": "5M × $1.50/M = $7.50",
+        "output": "2M × $7.50/M = $15",
+        "total": "$36 (60% savings)"
+      }
+    }
+  },
+  "best_practices_summary": {
+    "development": [
+      "Start with Sonnet for balanced performance/cost",
+      "Use Workbench for rapid prompt iteration",
+      "Implement comprehensive logging from day one",
+      "Test with small batches before scaling",
+      "Version control your prompts separately",
+      "Monitor token usage per feature/user"
+    ],
+    "production": [
+      "Implement proper API key rotation",
+      "Use secret managers (not environment variables in production)",
+      "Set appropriate timeouts (180s+ for complex tasks)",
+      "Implement exponential backoff for rate limits",
+      "Monitor cache hit rates and optimize",
+      "Set up cost anomaly alerts",
+      "Use separate keys for dev/staging/prod"
+    ],
+    "cost_optimization": [
+      "Use prompt caching for repeated context (90% savings)",
+      "Use batch processing for non-urgent tasks (50% savings)",
+      "Choose appropriate model (Haiku can be 60x cheaper than Opus)",
+      "Set max_tokens accurately to avoid over-reservation",
+      "Monitor and optimize cache hit rates",
+      "Implement request deduplication"
+    ],
+    "quality": [
+      "Use examples and clear instructions",
+      "Implement output validation",
+      "Request Claude to indicate uncertainty",
+      "Use tool calls for factual verification",
+      "Test with diverse inputs",
+      "Implement human review for high-stakes outputs"
+    ]
+  },
+  "migration_guides": {
+    "from_openai": {
+      "api_differences": {
+        "authentication": "x-api-key header instead of Authorization: Bearer",
+        "message_format": "Similar but different field names",
+        "max_tokens": "Required in Anthropic, optional in OpenAI",
+        "streaming": "SSE format similar but different event types"
+      },
+      "feature_mapping": {
+        "system_message": "system parameter (separate from messages array)",
+        "functions": "tools in Anthropic (similar JSON Schema)",
+        "response_format": "Use prefilling + prompting (no native JSON mode yet)",
+        "embeddings": "Not available via Anthropic API (use Voyage AI or others)"
+      },
+      "cost_comparison": {
+        "gpt_4o": "Input ~$2.50/M, Output ~$10/M",
+        "claude_sonnet": "Input $3/M, Output $15/M (similar pricing tier)",
+        "advantage_anthropic": "200K context vs 128K, stronger safety, better caching"
+      }
+    },
+    "from_claude_2_x": {
+      "api_changes": {
+        "text_completions_deprecated": "Use Messages API instead",
+        "prompt_format": "Different message structure",
+        "pricing": "Claude 4.5 is cheaper than Claude 2",
+        "performance": "Significant improvements in reasoning and coding"
+      },
+      "migration_steps": [
+        "Update SDK to latest version",
+        "Reformat prompts to Messages API format",
+        "Test thoroughly with new models",
+        "Implement prompt caching for cost savings",
+        "Monitor for any behavior changes"
+      ]
+    }
+  },
+  "production_checklist": {
+    "pre_launch": [
+      "API keys secured in secret manager",
+      "Rate limit handling with exponential backoff implemented",
+      "Error handling covers all status codes",
+      "Logging includes request_id for debugging",
+      "Monitoring and alerting configured",
+      "Cost anomaly detection set up",
+      "Timeout values appropriate for use case (180s+)",
+      "Prompt caching implemented for repeated context",
+      "Output validation and safety checks in place"
+    ],
+    "performance": [
+      "Cache hit rate > 70% for cached content",
+      "Response time p95 < 5 seconds",
+      "Error rate < 1%",
+      "Appropriate model selected for each use case",
+      "Streaming enabled for better UX",
+      "max_tokens optimized to actual needs"
+    ],
+    "security": [
+      "API keys rotated every 90 days minimum",
+      "Separate keys for dev/staging/prod",
+      "No PII in logs or cached prompts",
+      "Input validation for prompt injection prevention",
+      "Output filtering for prohibited content",
+      "Audit logs for all API calls"
+    ],
+    "cost_management": [
+      "Usage monitoring per team/feature/user",
+      "Alerts for spend exceeding thresholds",
+      "Cache hit rate monitoring",
+      "Batch processing for eligible workloads",
+      "Regular review of model usage patterns",
+      "Cost allocation to business units"
+    ]
+  }
+}

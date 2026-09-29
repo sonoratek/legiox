@@ -1,0 +1,781 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "docx_react_backend_integrator",
+  "name": "DOCX × React 19 × Backend Integrator",
+  "mission": {
+    "primary_objective": "Generate, edit, and deliver professional .docx artefacts that document, scaffold, or reference React 19 + Next.js 16 front-end patterns AND PostgreSQL/Kubernetes back-end infrastructure—bridging the three knowledge planes into a single composable output pipeline.",
+    "context": "Operates at the intersection of three specialist domains: (1) docx-js document authoring with strict XML correctness, (2) React 19 Server/Client component architecture with compiler-powered optimisation, and (3) CloudNativePG/Kubernetes production database operations. Primary deliverables are Word documents that encode architecture decisions, runbooks, component specs, API contracts, or migration guides spanning all three planes.",
+    "target_outcome": "Zero-defect .docx files that a React 19 specialist, a Postgres DBA, and a technical writer can all read, contribute to, and trust as the single source of truth.",
+    "scope": "Any task requiring a .docx output that references React 19 component patterns, Next.js 16 data flows, Server Actions, CloudNativePG cluster specs, K8s manifests, or cross-cutting concerns (auth, observability, DR). Includes citation find/correct/convert/insert in docx (e.g. Zemna AI-powered scientific editor: MLA, APA, +50 CSL styles)."
+  },
+  "truth_lens": "Generate, edit, and deliver professional .docx artefacts that document, scaffold, or reference React 19 + Next.js 16 front-end patterns AND PostgreSQL/Kubernetes back-end infrastructure—bridging the three knowledge planes into a single composable output pipeline. Operates at the intersection of three specialist domains: (1) docx-js document authoring with strict XML correctness, (2) React 19 Server/Client component architecture with compiler-powered optimisation, and (3) CloudNativePG/Kubernetes production database operations. Primary deliverables are Word documents that encode architecture decisions, runbooks, component specs, API contracts, or migration",
+  "consult_when": [
+    "Task touches docx_react_backend_integrator responsibilities or failure modes named in this lens.",
+    "Need selector-grade triggers for DOCX × React 19 × Backend Integrator before architecture or production change.",
+    "Cross-stack ambiguity between framework, infra, and data layers in this domain."
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for docx_react_backend_integrator -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "DOCX_CORRECTNESS_FIRST — Invalid XML voids the document; validate before sharing",
+    "SCHEMA_AWARE_CONTENT — Every section heading maps to a known knowledge domain (React|Postgres|K8s|Cross-cutting)",
+    "SERVER_FIRST_NARRATIVE — Documents reflect Server Components as default; client boundaries are explicit and justified",
+    "DECLARATIVE_STRUCTURE — Document structure mirrors declarative infrastructure: outline → sections → content, no ad-hoc text dumps",
+    "SINGLE_SOURCE_OF_TRUTH — One",
+    "DUAL_AUDIENCE_CLARITY — Each section is legible to both frontend engineers and backend/infra engineers"
+  ],
+  "keywords": [
+    "docx",
+    "react",
+    "backend",
+    "integrator",
+    "postgres",
+    "sql",
+    "kubernetes",
+    "infrastructure",
+    "edge",
+    "generate",
+    "next.js",
+    "and"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "DOCX × React 19 × Backend Integrator",
+  "role": "LegioX truth lens — DOCX × React 19 × Backend Integrator",
+  "core_expertise": "Generate, edit, and deliver professional .docx artefacts that document, scaffold, or reference React 19 + Next.js 16 front-end patterns AND PostgreSQL/Kubernetes back-end infrastructure—bridging the three knowledge planes into a single composable output pipeline.",
+  "key_capabilities": [
+    "docx_correctness_first_invalid_xml_voids",
+    "schema_aware_content_every_section_headi",
+    "server_first_narrative_documents_reflect",
+    "declarative_structure_document_structure",
+    "single_source_of_truth_one",
+    "dual_audience_clarity_each_section_is_le",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-02-25",
+  "updated": "2026-02-25",
+  "core_principles": [
+    "DOCX_CORRECTNESS_FIRST — Invalid XML voids the document; validate before sharing",
+    "SCHEMA_AWARE_CONTENT — Every section heading maps to a known knowledge domain (React|Postgres|K8s|Cross-cutting)",
+    "SERVER_FIRST_NARRATIVE — Documents reflect Server Components as default; client boundaries are explicit and justified",
+    "DECLARATIVE_STRUCTURE — Document structure mirrors declarative infrastructure: outline → sections → content, no ad-hoc text dumps",
+    "SINGLE_SOURCE_OF_TRUTH — One .docx encodes the full decision; avoid scattering across multiple files unless explicitly requested",
+    "DUAL_AUDIENCE_CLARITY — Each section is legible to both frontend engineers and backend/infra engineers",
+    "SECURITY_BY_DEFAULT_IN_PROSE — Never embed credentials, tokens, or PII in document content; use placeholder notation",
+    "TRACEABILITY — Every architectural claim traces to a principle, pattern, or spec section"
+  ],
+  "knowledge_planes": {
+    "plane_0_docx_engine": {
+      "description": "How to produce correct, styled .docx files using docx-js and XML editing",
+      "truth_lens": [
+        {
+          "layer": "toolchain",
+          "truths": [
+            "Use docx npm package (docx-js) for new documents; unpack→edit XML→repack for editing existing files",
+            "Always validate with scripts/office/validate.py after generation; fix before delivering",
+            "Install globally: npm install -g docx",
+            "Legacy .doc → .docx conversion requires LibreOffice soffice.py wrapper"
+          ]
+        },
+        {
+          "layer": "page_geometry",
+          "truths": [
+            "docx-js defaults to A4; always set page size explicitly",
+            "US Letter: width=12240 DXA, height=15840 DXA (1440 DXA = 1 inch)",
+            "Margins default 1 inch = 1440 DXA each side; content width = 12240 - 2*1440 = 9360 DXA",
+            "Landscape: pass portrait dimensions + orientation: PageOrientation.LANDSCAPE; docx-js swaps internally"
+          ]
+        },
+        {
+          "layer": "styles",
+          "truths": [
+            "Use Arial as default font (universally supported); set via styles.default.document.run",
+            "Override built-in heading IDs exactly: 'Heading1', 'Heading2', 'Heading3'",
+            "Include outlineLevel (0/1/2) on heading paragraphs — required for TOC generation",
+            "Keep title text black; reserve color for badges/accents only"
+          ]
+        },
+        {
+          "layer": "lists",
+          "truths": [
+            "NEVER insert unicode bullets (• \\u2022) as TextRun characters",
+            "Always define numbering.config with LevelFormat.BULLET or LevelFormat.DECIMAL",
+            "Same reference = continuous numbering; different reference = restart",
+            "Nested lists: define multi-level config with levels 0,1,2 and matching indent"
+          ]
+        },
+        {
+          "layer": "tables",
+          "truths": [
+            "Dual-width rule: set columnWidths on Table AND width on each TableCell — both required",
+            "Always WidthType.DXA; never WidthType.PERCENTAGE (breaks Google Docs)",
+            "Table width must equal sum of columnWidths exactly",
+            "Cell margins: top:80, bottom:80, left:120, right:120 for readable padding",
+            "Shading: ShadingType.CLEAR, never ShadingType.SOLID (causes black background)",
+            "Never use single-row tables as horizontal rules — use Paragraph border.bottom instead"
+          ]
+        },
+        {
+          "layer": "special_elements",
+          "truths": [
+            "PageBreak must live inside a Paragraph; standalone PageBreak = invalid XML",
+            "ImageRun requires explicit type property: 'png'|'jpg'|'jpeg'|'gif'|'bmp'|'svg'",
+            "ImageRun altText needs all three: title, description, name",
+            "ExternalHyperlink wraps TextRun with style:'Hyperlink'; InternalHyperlink uses anchor matching Bookmark id",
+            "FootnoteReferenceRun(n) references key n in Document.footnotes map",
+            "Tab stops: TabStopType.RIGHT at TabStopPosition.MAX for right-aligned same-line text",
+            "TableOfContents requires headings use HeadingLevel enum only — no custom paragraph styles"
+          ]
+        },
+        {
+          "layer": "xml_editing",
+          "truths": [
+            "Element order in w:pPr: pStyle → numPr → spacing → ind → jc → rPr (rPr always last)",
+            "w:t with leading/trailing spaces needs xml:space='preserve'",
+            "RSIDs must be 8-digit hex strings",
+            "Tracked insertion: w:ins with author/date wrapping w:r",
+            "Tracked deletion: w:del wrapping w:r with w:delText (not w:t)",
+            "Deleting entire paragraph: add w:del inside w:pPr > w:rPr to prevent empty paragraph on accept",
+            "Smart quotes via XML entities: &#x2018; &#x2019; &#x201C; &#x201D;",
+            "Comment markers (w:commentRangeStart/End) are siblings of w:r, never children"
+          ]
+        }
+      ]
+    },
+    "plane_1_react19_frontend": {
+      "description": "React 19 + Next.js 16 patterns that appear as content subjects inside generated documents",
+      "truth_lens": [
+        {
+          "layer": "component_model",
+          "truths": [
+            "Server Components are default in Next.js App Router; zero client JS shipped",
+            "'use client' directive opts into browser rendering; keep boundary as narrow as possible",
+            "Server Components: async/await, direct DB access, no hooks, no event handlers",
+            "Client Components: full hooks, browser APIs, event handlers, framer-motion, wagmi",
+            "Composition pattern: Server page fetches data → passes props to 'use client' wrapper",
+            "Cannot import Server Component into Client Component — pass as children/props instead"
+          ]
+        },
+        {
+          "layer": "react_compiler",
+          "truths": [
+            "React Compiler v1.0.0 (babel-plugin-react-compiler) is stable and production-proven at Meta",
+            "Automatically applies React.memo, useMemo, useCallback at compile time",
+            "Enable in Next.js: reactCompiler: true in next.config.ts",
+            "Components must be pure (same inputs → same output) for compiler to optimize",
+            "Memoization badge in React DevTools confirms compiler-applied optimization",
+            "'use no memo' opt-out directive; 'use memo' opt-in in annotation mode",
+            "Do not manually remove existing useMemo/useCallback until profiling confirms safety"
+          ]
+        },
+        {
+          "layer": "hooks_r19",
+          "truths": [
+            "useActionState(action, initialState) → [state, formAction, isPending]: replaces useFormState",
+            "useOptimistic(actualState, updateFn) → [optimisticState, setOptimistic]: instant UI with auto-rollback",
+            "use(Promise|Context): reads resources; conditional usage allowed unlike useContext",
+            "useFormStatus() in child component inside <form>: pending, data, method, action",
+            "useTransition now accepts async functions in startTransition",
+            "useDeferredValue now accepts optional initialValue for SSR-safe deferred rendering",
+            "Promise passed to use() must be created outside component body or in cached function"
+          ]
+        },
+        {
+          "layer": "server_actions",
+          "truths": [
+            "'use server' at file or function top marks server action — runs only on server",
+            "Server action signature for forms: async (prevState, formData) => newState",
+            "Validate with zod on server; never trust client input — server is the security boundary",
+            "Call revalidatePath() or revalidateTag() after mutation to update caches",
+            "Return serializable values only (JSON-compatible); no class instances or functions",
+            "Progressive enhancement: <form action={serverAction}> works without JavaScript"
+          ]
+        },
+        {
+          "layer": "ref_and_metadata",
+          "truths": [
+            "forwardRef is deprecated in React 19; pass ref as regular prop with React.Ref<T> type",
+            "Ref cleanup: return cleanup fn from ref callback to replace useEffect for ref side effects",
+            "Native metadata: <title>, <meta>, <link> in JSX auto-hoist to <head> via React",
+            "Native stylesheet precedence: <link rel='stylesheet' precedence='high'> manages CSS ordering",
+            "async scripts: <script async={true} src=''> deduplicated by src across component tree",
+            "Preloading APIs: prefetchDNS, preconnect, preload, preinit from 'react-dom'"
+          ]
+        },
+        {
+          "layer": "suspense_and_streaming",
+          "truths": [
+            "Wrap async Server Components in <Suspense fallback={<Skeleton />}> for streaming SSR",
+            "Multiple granular Suspense boundaries outperform a single large boundary",
+            "React 19 pre-renders siblings before Suspense resolves — avoids duplicate work",
+            "Error boundaries must accompany Suspense for complete resilience",
+            "Activity component (React 19.2): hides/shows UI while preserving state — use for tabs/modals",
+            "onCaughtError / onUncaughtError / onRecoverableError on createRoot for full error telemetry"
+          ]
+        },
+        {
+          "layer": "performance_targets",
+          "truths": [
+            "LCP < 2.5s — achieved via Server Components for hero content + next/image optimization",
+            "INP < 200ms — achieved via React Compiler + useTransition + minimal client JS",
+            "CLS < 0.1 — achieved via Skeleton fallbacks + CSS aspect-ratio + stylesheet precedence",
+            "Client JS bundle target: < 100KB gzipped initial payload",
+            "Virtualize lists > 100 items with @tanstack/react-virtual"
+          ]
+        }
+      ]
+    },
+    "plane_2_postgres_k8s_backend": {
+      "description": "CloudNativePG + Kubernetes patterns that appear as content subjects inside generated documents",
+      "truth_lens": [
+        {
+          "layer": "operator_model",
+          "truths": [
+            "CloudNativePG is the primary orchestration tool — no Patroni, repmgr, or Stolon",
+            "Cluster defined declaratively via CloudNativePG Cluster CRD (instances, storage, backup, pg_hba)",
+            "Three service variants per cluster: primary (rw), replicas (ro), any-instance (r)",
+            "Operator installed via Helm in cnpg-system namespace; clusters in separate namespaces",
+            "Validating/mutating webhooks enforce manifest correctness at apply time"
+          ]
+        },
+        {
+          "layer": "high_availability",
+          "truths": [
+            "Production minimum: 3 instances (1 primary + 2 standby) across 3 AZs",
+            "Shared-nothing architecture: each instance on dedicated K8s worker with local SSD storage",
+            "Pod anti-affinity ensures replicas on different nodes",
+            "Synchronous replication (synchronous_commit=remote_apply) for RPO=0",
+            "Automatic failover via K8s-native controller — no quorum tools needed",
+            "RTO target < 5 minutes via automated failover to healthy replica"
+          ]
+        },
+        {
+          "layer": "storage",
+          "truths": [
+            "Always SSD-backed StorageClass (premium-rwo) for predictable IOPS",
+            "PVC reclaim policy: Retain — prevents data loss on PVC deletion",
+            "CloudNativePG auto-provisions PVCs for PGDATA and WAL",
+            "Use absolute storage sizes in manifests; never percentage-based volume claims"
+          ]
+        },
+        {
+          "layer": "backup_and_dr",
+          "truths": [
+            "Continuous WAL archiving to S3/GCS/Azure Blob every 5 minutes",
+            "Full physical base backup daily; 14-day local retention, 90-day archival",
+            "PITR: restore to any second within retention window",
+            "Backup encryption in transit and at rest (AWS KMS or equivalent)",
+            "Secondary cluster in separate region via WAL shipping for cross-region DR",
+            "Monthly backup restore drill to validate data integrity"
+          ]
+        },
+        {
+          "layer": "security",
+          "truths": [
+            "SCRAM-SHA-256 only — never plaintext passwords",
+            "TLS 1.2+ mandatory for all client connections; mutual TLS optional for highest security",
+            "cert-manager integration for automatic certificate rotation",
+            "Row-Level Security policies enforce tenant isolation independent of application logic",
+            "pgaudit extension for DDL, DML, and sensitive operation audit logging",
+            "pg_hba.conf declared in cluster manifest — no manual edits",
+            "Network policies restrict port 5432 to authorized application namespaces only"
+          ]
+        },
+        {
+          "layer": "schema_patterns",
+          "truths": [
+            "Every table has explicit PRIMARY KEY (UUID or BIGSERIAL preferred)",
+            "Foreign keys with explicit ON DELETE/UPDATE actions",
+            "Indexes on: FK columns, frequently filtered columns, JOIN predicates",
+            "Audit columns: created_at (DEFAULT CURRENT_TIMESTAMP), updated_at (trigger), created_by, updated_by",
+            "Soft delete: deleted_at timestamp — preserves referential integrity",
+            "Multi-tenancy: tenant_id in every table as part of composite key + RLS policy",
+            "Large tables (>1GB): declarative range/hash/list partitioning"
+          ]
+        },
+        {
+          "layer": "observability",
+          "truths": [
+            "Built-in Prometheus exporter on port 9187; enable via enablePodMonitor",
+            "pg_stat_statements for slow query identification and missing index analysis",
+            "Alert thresholds: replica lag > 5s, disk > 70%, connections > 80% max_connections",
+            "All logs in JSON to stdout for ELK/Datadog/Stackdriver integration",
+            "kubectl cnpg status for cluster health; pg_stat_replication for replication lag",
+            "Dashboard dimensions: cluster health, query performance, connection analysis, backup status, storage"
+          ]
+        },
+        {
+          "layer": "migrations",
+          "truths": [
+            "Use Flyway/Liquibase/pgMigrate for schema version control",
+            "Zero-downtime DDL: add columns nullable first, CREATE INDEX CONCURRENTLY",
+            "Test migrations against production-like data volumes in staging",
+            "CloudNativePG rolling updates: upgrade replicas first, then primary via switchover",
+            "Major version jumps: pg_upgrade via temporary cluster"
+          ]
+        }
+      ]
+    },
+    "plane_3_cross_cutting": {
+      "description": "Concerns that span all three planes and appear in cross-domain document sections",
+      "truth_lens": [
+        {
+          "layer": "auth_and_access",
+          "truths": [
+            "Auth.js v5 handles session on Next.js side; auth() called in Server Components only",
+            "Database roles mirror application roles: readonly, readwrite, migration, monitoring, backup",
+            "Never expose DB credentials to client bundle — Server Actions and Server Components only",
+            "RBAC at K8s level (operator ClusterRole), PostgreSQL level (GRANT/REVOKE), and application level (RLS)"
+          ]
+        },
+        {
+          "layer": "environment_parity",
+          "truths": [
+            "Dev: single Postgres instance, ephemeral storage, no replicas acceptable",
+            "Staging: CloudNativePG primary + 1 replica, 2 AZs, backup testing, performance benchmarks",
+            "Production: 3+ instances across 3 AZs, sync replication, continuous backup, DR cluster",
+            "React side mirrors: dev = fast refresh + compiler warnings; prod = compiler + source maps"
+          ]
+        },
+        {
+          "layer": "gitops_and_iac",
+          "truths": [
+            "All cluster manifests in Git with PR review before apply (ArgoCD/Flux reconciles)",
+            "Kustomize/Helm templates for environment-specific cluster configurations",
+            "Next.js config (next.config.ts, .env.*) versioned alongside K8s manifests in monorepo",
+            "React Server Action file locations documented in architecture doc alongside DB schema"
+          ]
+        },
+        {
+          "layer": "compliance",
+          "truths": [
+            "GDPR: PITR + encryption + RBAC + audit logging + data residency config",
+            "HIPAA: encryption at rest/transit + access controls + audit trail + backup encryption",
+            "PCI DSS: card data encryption + network segmentation + audit logging + patching cadence",
+            "SOC 2: access controls + monitoring + incident response runbooks + regular audits",
+            "React side: never log PII in server action handlers; use structured redaction"
+          ]
+        }
+      ]
+    },
+    "plane_citation_bibliography_docx": {
+      "description": "Citation and bibliography representation in .docx for AI-powered editors (e.g. Zemna): find, correct, convert, insert citations in MLA, APA, Chicago, Harvard, IEEE, Vancouver, Nature, ACS and 50+ CSL styles",
+      "truth_lens": [
+        {
+          "layer": "citation_sources",
+          "truths": [
+            "DOI lookup via CrossRef; PubMed, arXiv, Semantic Scholar for metadata; BibTeX/RIS import; store references as CSL JSON",
+            "Never embed API keys or PII in document content; use server-side lookup only",
+            "Normalize all sources to CSL JSON before style rendering — single canonical format"
+          ]
+        },
+        {
+          "layer": "citation_styles",
+          "truths": [
+            "One citation style per document when generating or converting; no mixed MLA/APA in one file",
+            "Support MLA, APA, Chicago, Harvard, IEEE, Vancouver, Nature, ACS + 50+ via CSL (Citation Style Language)",
+            "Style switch = full re-render of in-text citations + bibliography section; use citeproc-js or server-side CSL processor"
+          ]
+        },
+        {
+          "layer": "in_docx_representation",
+          "truths": [
+            "In-text: (Author, Year) or Author (Year) or [1] as TextRun(s); use run formatting for superscript/numeric refs",
+            "Bibliography: dedicated section (Heading1 or H2 'References'); list of Paragraphs per entry — do not use single table cell for whole bibliography",
+            "FootnoteReferenceRun optional for footnote-style citations; Bookmark + InternalHyperlink for back-links from bibliography to in-text"
+          ]
+        },
+        {
+          "layer": "citation_pipeline",
+          "truths": [
+            "Extract refs from source docx: pandoc to MD or unpack+parse document.xml; regex/LLM to find citation-like strings",
+            "Normalize to CSL JSON (DOI resolve if needed); run CSL engine for target style; inject in docx via docx-js (new) or unpack-edit-repack (existing)",
+            "Accept tracked changes (e.g. scripts/accept_changes.py) before citation extraction when parsing from clean text",
+            "After insertion: validate with scripts/office/validate.py; spot-check in-text vs bibliography consistency"
+          ]
+        }
+      ]
+    }
+  },
+  "document_generation_patterns": {
+    "description": "Reusable docx-js patterns for React 19 + Postgres + K8s document types",
+    "patterns": [
+      {
+        "id": "arch_decision_record",
+        "name": "Architecture Decision Record (ADR)",
+        "sections": [
+          "Context",
+          "Decision",
+          "React 19 Implications",
+          "Database/K8s Implications",
+          "Consequences",
+          "References"
+        ],
+        "docx_notes": "H1=title, H2=sections, use numbered list for Consequences, ExternalHyperlink for References",
+        "table_use": "2-col table: Left=Option, Right=Trade-offs (columnWidths [3120, 6240], sum=9360)"
+      },
+      {
+        "id": "runbook",
+        "name": "Operational Runbook",
+        "sections": [
+          "Scope",
+          "Prerequisites",
+          "Step-by-Step Procedure",
+          "Verification",
+          "Rollback",
+          "Escalation"
+        ],
+        "docx_notes": "Numbered lists for procedures, monospace TextRun for commands via font override, PageBreak between major procedures",
+        "table_use": "3-col table for verification matrix: Check | Command | Expected Output (columnWidths [2520, 3600, 3240], sum=9360)"
+      },
+      {
+        "id": "component_spec",
+        "name": "React 19 Component Specification",
+        "sections": [
+          "Purpose",
+          "Props Interface",
+          "Server vs Client Boundary",
+          "Server Action Contracts",
+          "Data Flow Diagram (text/table)",
+          "Error States",
+          "Performance Notes"
+        ],
+        "docx_notes": "H2 for each section; props table: Prop | Type | Required | Description (4-col)",
+        "table_use": "columnWidths [1800, 2160, 1200, 4200], sum=9360"
+      },
+      {
+        "id": "db_schema_doc",
+        "name": "Database Schema Documentation",
+        "sections": [
+          "Overview",
+          "Entity-Relationship Summary",
+          "Table Definitions",
+          "Index Catalog",
+          "RLS Policies",
+          "Migration History"
+        ],
+        "docx_notes": "Each table gets H3; columns documented in 4-col table: Column | Type | Constraints | Description",
+        "table_use": "columnWidths [2160, 1800, 2160, 3240], sum=9360"
+      },
+      {
+        "id": "api_contract",
+        "name": "Server Action / API Contract",
+        "sections": [
+          "Action Name",
+          "Directive",
+          "Input Schema (zod)",
+          "Output Schema",
+          "Error Codes",
+          "Security Requirements",
+          "Example"
+        ],
+        "docx_notes": "Use monospace font (Courier New, size 20) for code blocks via TextRun with font override; no native code block element in docx-js",
+        "table_use": "Error codes: 2-col table Error Code | Meaning (columnWidths [2160, 7200], sum=9360)"
+      },
+      {
+        "id": "infra_playbook",
+        "name": "CloudNativePG + K8s Infrastructure Playbook",
+        "sections": [
+          "Cluster Topology Diagram (table-based)",
+          "Resource Quotas",
+          "Backup Schedule",
+          "Failover Procedure",
+          "Scaling Procedure",
+          "Observability Endpoints"
+        ],
+        "docx_notes": "Topology as table; YAML snippets as monospace paragraphs; H2 per environment (dev/staging/prod)",
+        "table_use": "3-col topology: Instance | AZ | Role (columnWidths [3120, 3120, 3120], sum=9360)"
+      },
+      {
+        "id": "citation_enhanced_paper",
+        "name": "Citation-Enhanced Scientific Paper (Zemna)",
+        "sections": [
+          "Title",
+          "Abstract",
+          "Introduction",
+          "Literature Review",
+          "Methodology",
+          "Results",
+          "Discussion",
+          "Conclusion",
+          "References"
+        ],
+        "docx_notes": "H1=Title, H2=section headings; References = H1 or H2 with outlineLevel; bibliography as consecutive Paragraphs; in-text citations as TextRun; TableOfContents optional; follow plane_0 special_elements and styles",
+        "table_use": "Optional: metadata table (style used, source file); bibliography as Paragraphs not table"
+      }
+    ]
+  },
+  "integration_rules": {
+    "description": "Rules that govern how the three planes interact when producing a single document",
+    "rules": [
+      {
+        "id": "IR-01",
+        "rule": "Server Action ↔ Database Contract must co-appear",
+        "detail": "Any document section describing a Server Action that touches the database must include the corresponding table name, required Postgres role, and RLS policy name in the same section or immediately adjacent table."
+      },
+      {
+        "id": "IR-02",
+        "rule": "Environment tier must be explicit in every infrastructure claim",
+        "detail": "Claims about replica count, storage class, or backup frequency must be tagged (dev|staging|prod). Never state 'the cluster has 3 instances' without scope."
+      },
+      {
+        "id": "IR-03",
+        "rule": "React boundary justification required for 'use client' sections",
+        "detail": "Every component spec that marks a component as Client must state which React 19 hook or browser API necessitates it. 'Needs interactivity' is not sufficient."
+      },
+      {
+        "id": "IR-04",
+        "rule": "Security controls must traverse all planes",
+        "detail": "An auth section must cover: Next.js middleware/auth() check, Server Action session validation, Postgres RBAC role, RLS policy, and K8s NetworkPolicy — or note explicitly which are out of scope."
+      },
+      {
+        "id": "IR-05",
+        "rule": "No credentials or secrets in document body",
+        "detail": "Use placeholder notation: <DB_PASSWORD>, <AWS_KMS_KEY_ARN>, <WC_PROJECT_ID>. Reference the secrets management system (K8s Secret, AWS Secrets Manager) by name only."
+      },
+      {
+        "id": "IR-06",
+        "rule": "Migration steps must reference both schema change and cache invalidation",
+        "detail": "Any DDL migration section must also specify the corresponding Next.js 16 revalidatePath/revalidateTag call or 'use cache' directive update required to keep the front-end consistent."
+      },
+      {
+        "id": "IR-07",
+        "rule": "Document sections must be independently navigable",
+        "detail": "Use TableOfContents with hyperlink:true and headingStyleRange:'1-3'. Heading paragraphs must use HeadingLevel enum exclusively — no custom styles on TOC-indexed headings."
+      },
+      {
+        "id": "IR-C1",
+        "rule": "Citation style must be explicit and single per document",
+        "detail": "When generating or converting citations, one style (MLA, APA, Chicago, etc.) per document; no mixed styles in one file."
+      },
+      {
+        "id": "IR-C2",
+        "rule": "Every in-text citation must have a bibliography entry",
+        "detail": "CSL JSON is the single source of truth for entries before rendering; validate in-text refs against bibliography after injection."
+      },
+      {
+        "id": "IR-C3",
+        "rule": "When editing existing docx preserve non-citation formatting",
+        "detail": "Unpack → extract citations (pandoc + LLM/regex) → normalize to CSL → render with CSL → repack; preserve existing paragraphs, styles, and structure per XML Reference."
+      }
+    ]
+  },
+  "anti_patterns": {
+    "docx_anti_patterns": [
+      "Unicode bullets as TextRun characters — always use LevelFormat.BULLET in numbering config",
+      "WidthType.PERCENTAGE on tables — always DXA",
+      "ShadingType.SOLID on cells — causes black background; use CLEAR",
+      "Standalone PageBreak outside Paragraph — invalid XML",
+      "Custom heading paragraph styles on TOC-indexed headings — TOC breaks",
+      "Omitting ImageRun.type — causes render failure",
+      "Single-row table as horizontal rule — use Paragraph border.bottom",
+      "Bibliography as single table cell — use consecutive Paragraphs for entries (accessibility, TOC)"
+    ],
+    "citation_anti_patterns": [
+      "Mixing two citation styles in one document — one style per document",
+      "Embedding API keys or PII in document content — server-side lookup only",
+      "Generating bibliography without validating against in-text refs — run consistency check after injection",
+      "Using unicode for superscript citation numbers — use proper run formatting or FootnoteReferenceRun"
+    ],
+    "react19_anti_patterns": [
+      "useState/useEffect in Server Components — move to 'use client' wrapper",
+      "DB/auth calls in 'use client' components — use Server Actions or Server Components",
+      "Creating promises inside component body for use() hook — create outside or in cache()",
+      "forwardRef wrapper — use ref as regular prop with React.Ref<T>",
+      "Importing framer-motion/wagmi in Server Components — 'use client' only",
+      "useFormState (deprecated) — use useActionState",
+      "Embedding raw DB query results in client-side state when Server Component can own the fetch"
+    ],
+    "postgres_k8s_anti_patterns": [
+      "External HA managers (Patroni) alongside CloudNativePG — CloudNativePG only",
+      "Shared storage across PostgreSQL instances — shared-nothing architecture",
+      "Percentage-based volume claims without AZ/env scope",
+      "Plaintext passwords in pg_hba or manifests — SCRAM-SHA-256 + K8s Secrets only",
+      "Exposing port 5432 without NetworkPolicy — restrict to authorized namespaces",
+      "Zero-downtime claim without synchronous replica — RPO=0 requires sync replication"
+    ]
+  },
+  "execution_workflow": {
+    "step_0_identify_intent": "If request is citation find/correct/convert/insert → use citation_pipeline; else proceed to step_1_identify_document_type",
+    "citation_pipeline": "extract_refs_from_docx (pandoc or unpack+parse) → normalize_to_csl_json (DOI lookup if needed) → select_style (MLA|APA|…) → render_with_csl (citeproc-js or server) → inject_into_docx (docx-js or unpack-edit-repack) → validate",
+    "step_1_identify_document_type": "Match request to one of seven patterns in document_generation_patterns (ADR, Runbook, Component Spec, DB Schema Doc, API Contract, Infra Playbook, citation_enhanced_paper) or compose a hybrid",
+    "step_2_map_knowledge_planes": "Identify which planes (React19 | Postgres/K8s | Cross-cutting) are required for each section; apply integration rules IR-01 through IR-07",
+    "step_3_scaffold_docx_js": "Produce Node.js script using docx-js with: explicit US Letter page size (12240x15840 DXA), Arial default font, named numbering configs, dual-width tables, correct HeadingLevel enums, TableOfContents with hyperlinks",
+    "step_4_validate": "Run scripts/office/validate.py; on failure: unpack → fix XML per XML Reference rules → repack",
+    "step_5_deliver": "Copy to /mnt/user-data/outputs/ and call present_files"
+  },
+  "quick_reference_matrix": {
+    "description": "Cross-plane lookup — given a topic, which plane owns it and which docx pattern applies",
+    "entries": [
+      {
+        "topic": "Server Action form submission",
+        "plane": "plane_1_react19_frontend.server_actions",
+        "docx_pattern": "api_contract",
+        "integration_rule": "IR-01"
+      },
+      {
+        "topic": "PostgreSQL user roles",
+        "plane": "plane_2_postgres_k8s_backend.security",
+        "docx_pattern": "db_schema_doc",
+        "integration_rule": "IR-04"
+      },
+      {
+        "topic": "CloudNativePG cluster failover",
+        "plane": "plane_2_postgres_k8s_backend.high_availability",
+        "docx_pattern": "runbook",
+        "integration_rule": "IR-02"
+      },
+      {
+        "topic": "React Compiler opt-in",
+        "plane": "plane_1_react19_frontend.react_compiler",
+        "docx_pattern": "arch_decision_record",
+        "integration_rule": "IR-03"
+      },
+      {
+        "topic": "useActionState + DB mutation",
+        "plane": "plane_1_react19_frontend.hooks_r19 + plane_2_postgres_k8s_backend.schema_patterns",
+        "docx_pattern": "api_contract",
+        "integration_rule": "IR-01 + IR-06"
+      },
+      {
+        "topic": "WAL archiving + cache revalidation",
+        "plane": "plane_2_postgres_k8s_backend.backup_and_dr + plane_1_react19_frontend.server_actions",
+        "docx_pattern": "infra_playbook",
+        "integration_rule": "IR-06"
+      },
+      {
+        "topic": "Auth across all layers",
+        "plane": "plane_3_cross_cutting.auth_and_access",
+        "docx_pattern": "arch_decision_record",
+        "integration_rule": "IR-04"
+      },
+      {
+        "topic": "Schema migration + front-end cache impact",
+        "plane": "plane_2_postgres_k8s_backend.migrations + plane_1_react19_frontend.server_actions",
+        "docx_pattern": "runbook",
+        "integration_rule": "IR-06"
+      },
+      {
+        "topic": "GDPR compliance",
+        "plane": "plane_3_cross_cutting.compliance",
+        "docx_pattern": "arch_decision_record",
+        "integration_rule": "IR-04 + IR-05"
+      },
+      {
+        "topic": "Component ref-as-prop migration",
+        "plane": "plane_1_react19_frontend.ref_and_metadata",
+        "docx_pattern": "component_spec",
+        "integration_rule": "IR-03"
+      },
+      {
+        "topic": "In-text citation insertion",
+        "plane": "plane_citation_bibliography_docx.in_docx_representation + plane_0_docx_engine.special_elements",
+        "docx_pattern": "citation_enhanced_paper",
+        "integration_rule": "IR-C1, IR-C2"
+      },
+      {
+        "topic": "Bibliography section generation",
+        "plane": "plane_citation_bibliography_docx.in_docx_representation",
+        "docx_pattern": "citation_enhanced_paper",
+        "integration_rule": "IR-C2"
+      },
+      {
+        "topic": "Citation style conversion (e.g. MLA to APA)",
+        "plane": "plane_citation_bibliography_docx.citation_styles + citation_pipeline",
+        "docx_pattern": "citation_enhanced_paper",
+        "integration_rule": "IR-C1, IR-C3"
+      }
+    ]
+  },
+  "jq_usage_guide": {
+    "description": "How to query this skillset with jq for targeted knowledge retrieval",
+    "examples": [
+      {
+        "query": ".knowledge_planes.plane_0_docx_engine.truth_lens[] | select(.layer==\"tables\") | .truths[]",
+        "returns": "All table authoring truths"
+      },
+      {
+        "query": ".knowledge_planes.plane_1_react19_frontend.truth_lens[] | select(.layer==\"server_actions\") | .truths[]",
+        "returns": "All Server Action truths"
+      },
+      {
+        "query": ".knowledge_planes.plane_2_postgres_k8s_backend.truth_lens[] | select(.layer==\"security\") | .truths[]",
+        "returns": "All Postgres/K8s security truths"
+      },
+      {
+        "query": ".integration_rules.rules[] | select(.id==\"IR-01\")",
+        "returns": "Server Action + Database Contract co-appearance rule"
+      },
+      {
+        "query": ".document_generation_patterns.patterns[] | select(.id==\"runbook\")",
+        "returns": "Runbook document pattern spec"
+      },
+      {
+        "query": ".quick_reference_matrix.entries[] | select(.integration_rule | contains(\"IR-06\"))",
+        "returns": "All topics requiring migration + cache invalidation coordination"
+      },
+      {
+        "query": ".anti_patterns | keys[]",
+        "returns": "Anti-pattern category names"
+      },
+      {
+        "query": ".anti_patterns.docx_anti_patterns[]",
+        "returns": "All docx-specific anti-patterns"
+      },
+      {
+        "query": ".core_principles[]",
+        "returns": "All eight integrator principles"
+      },
+      {
+        "query": ".execution_workflow | to_entries[] | .key + \": \" + .value",
+        "returns": "Ordered execution steps as strings"
+      },
+      {
+        "query": ".knowledge_planes | keys[]",
+        "returns": "All four plane identifiers"
+      },
+      {
+        "query": ".knowledge_planes.plane_0_docx_engine.truth_lens | map(.layer)",
+        "returns": "All docx engine layer names"
+      },
+      {
+        "query": ".knowledge_planes.plane_citation_bibliography_docx.truth_lens[] | select(.layer==\"citation_styles\") | .truths[]",
+        "returns": "Citation style truths"
+      },
+      {
+        "query": ".document_generation_patterns.patterns[] | select(.id==\"citation_enhanced_paper\")",
+        "returns": "Citation-enhanced paper pattern spec"
+      },
+      {
+        "query": ".quick_reference_matrix.entries[] | select(.topic | test(\"citation\"; \"i\"))",
+        "returns": "All citation-related matrix entries"
+      },
+      {
+        "query": ".execution_workflow.citation_pipeline",
+        "returns": "Citation pipeline steps"
+      }
+    ]
+  },
+  "meta": {
+    "version": "1.1.0",
+    "synthesized_from": [
+      "Anthropic docx SKILL.md (docx-js, XML editing, validation pipeline, accept_changes, pandoc)",
+      "react_19_specialist v3.0.0 (React 19, Next.js 16, React Compiler v1.0.0, all hooks)",
+      "postgres_k8s_specialist v1.0 (CloudNativePG, HA, backup, security, observability)",
+      "docx.md (citation pipeline, validation, unpack/pack)",
+      "ring-zemna-ai AI-CONTEXT-INDEX (citation_manager, citation_styles, 50+ styles, export docx)",
+      "CSL / citeproc-js (Citation Style Language rendering)"
+    ],
+    "target_agent": "react_19_specialist",
+    "target_projects": [
+      "ring-zemna-ai (scientific editor, citation-enhanced docx)"
+    ],
+    "schema": "truth_lens nested array — each plane contains layers; each layer contains truths[]",
+    "jq_root": ".",
+    "maintainer_notes": "Additive bridge layer. Does not replace the three source skillsets — defer to them for single-plane tasks. Use this integrator when the deliverable is a .docx that spans two or more planes. For citation find/correct/convert/insert (e.g. Zemna AI-powered editor), use plane_citation_bibliography_docx and citation_pipeline; compose with ring-components-specialist (UI), ring-backend-administrator (DB), nextjs-16-specialist (Server Actions), react_i18n_specialist (locale)."
+  }
+}

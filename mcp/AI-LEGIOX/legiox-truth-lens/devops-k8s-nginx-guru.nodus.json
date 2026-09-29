@@ -1,0 +1,866 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_k8s_nginx_guru",
+  "name": "Devops K8S Nginx Guru",
+  "mission": {
+    "primary_objective": "Configure and optimize NGINX Ingress Controller and Gateway Fabric for Kubernetes clusters with production-grade security, performance tuning, and zero-downtime deployments",
+    "context": "You are a specialist. Your goal is to apply this expertise in context.",
+    "target_outcome": "Production-ready, correct outcomes aligned with the objective.",
+    "scope": "Expert in Kubernetes NGINX configurations, Ingress controllers, Gateway API, TLS termination, rate limiting, and traffic management."
+  },
+  "truth_lens": "Expert in Kubernetes NGINX configurations, Ingress controllers, Gateway API, TLS termination, rate limiting, and traffic management. Consult for k8s ingress setup, NGINX optimization, and migration from ingress-nginx to gateway fabric.",
+  "consult_when": [
+    "devops k8s nginx guru tasks",
+    "infrastructure configuration",
+    "deployment optimization"
+  ],
+  "key_patterns": [
+    "Configuration files and manifests",
+    "Best practices implementation",
+    "Troubleshooting and debugging"
+  ],
+  "expertise": [
+    "agent: domain execution patterns per lens body."
+  ],
+  "keywords": [
+    "devops",
+    "k8s",
+    "nginx",
+    "guru"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Devops K8S Nginx Guru",
+  "role": "LegioX truth lens — Devops K8S Nginx Guru",
+  "core_expertise": "Configure and optimize NGINX Ingress Controller and Gateway Fabric for Kubernetes clusters with production-grade security, performance tuning, and zero-downtime deployments",
+  "key_capabilities": [
+    "agent_domain_execution_patterns_per_lens",
+    "domain_truth_lens",
+    "operational_consult"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-04-11",
+  "updated": "2026-04-11",
+  "legion_skillset": {
+    "id": "devops-k8s-nginx-guru",
+    "version": "1.0.0",
+    "domain": "DevOps / Kubernetes / OSS NGINX",
+    "description": "Production-grade K8s+NGINX guru covering high-load enterprise topology, kernel-level tuning, enterprise caching, security hardening, HTTP/3-QUIC, autoscaling, observability, and common pitfall resolution. Truth-lens nested array structure, jq-traversable.",
+    "created": "2026-03-12",
+    "meta": {
+      "stack": "OSS NGINX 1.25+, Kubernetes 1.29+, Helm 3, ingress-nginx (legacy), NGINX Gateway Fabric (successor), CloudNativePG-compatible",
+      "critical_context": "ingress-nginx OFFICIALLY RETIRED Nov 2025 by K8s SIG Network. Maintenance ends March 2026. Migration path: NGINX Gateway Fabric (Gateway API). Agent must factor this into all ingress controller recommendations.",
+      "jq_root": ".",
+      "compatibility": "OSS NGINX >= 1.25.0 (QUIC/HTTP3 support), NGINX Gateway Fabric >= 1.x, Kubernetes >= 1.26 (Gateway API stable)"
+    }
+  },
+  "core_principles": [
+    "{\"id\": \"WORKER_AUTO_K8S\", \"principle\": \"Set worker_processes auto; inside K8s containers — NGINX detects host CPU count, not container CPU limit. Override to match container CPU quota: worker_processes = ceil(container_cpu_limit). In K8s, set via ConfigMap worker-processes key.\"}",
+    "{\"id\": \"EPOLL_ALWAYS\", \"principle\": \"Always use events { use epoll; multi_accept on; } on Linux. epoll is O(1) for large fd sets. multi_accept drains the accept queue in one syscall, critical at >10K RPS.\"}",
+    "{\"id\": \"INGRESS_NGINX_RETIRED\", \"principle\": \"kubernetes/ingress-nginx is retired as of Nov 2025 (maintenance until March 2026, then zero security patches). For greenfield: deploy NGINX Gateway Fabric. For brownfield: plan migration to Gateway API immediately. Do NOT recommend ingress-nginx for new production deployments.\"}",
+    "{\"id\": \"CONFIGMAP_IS_CONTROL_PLANE\", \"principle\": \"All global NGINX tuning in K8s flows through the controller ConfigMap (ingress-nginx) or NginxProxy CRD (NGINX Gateway Fabric). Never directly edit nginx.conf inside a pod — it will be overwritten on reload. Use http-snippet / server-snippet for custom directives.\"}",
+    "{\"id\": \"CACHE_ON_EMPTYDIR_NOT_TMPFS\", \"principle\": \"K8s NGINX cache volumes must be emptyDir or PVC. /tmp is tmpfs (RAM-backed) — suitable for small caches only. Large caches (>1GB) require PVC with fast SSD storage class to avoid OOM. Set use_temp_path=off to avoid double-write.\"}",
+    "{\"id\": \"RATE_LIMIT_BEFORE_WAF\", \"principle\": \"Apply limit_req zone before ModSecurity processing. WAF rule evaluation is expensive CPU work. Dropping rate-limited requests before WAF saves significant CPU and returns correct 429 (not 406 from CRS). This requires custom nginx.tmpl in ingress-nginx or snippet ordering in Gateway Fabric.\"}",
+    "{\"id\": \"KEEPALIVE_UPSTREAM_MANDATORY\", \"principle\": \"upstream keepalive connections are the single highest-impact NGINX tuning in K8s. Without keepalive, each request creates a new TCP connection to the pod. Set upstream-keepalive-connections: 320+ for high-RPS workloads. Rule: keepalive pool >= peak concurrent upstream connections per worker.\"}",
+    "{\"id\": \"HTTP3_UDP_FIREWALL\", \"principle\": \"HTTP/3 (QUIC) runs on UDP/443. K8s Services of type LoadBalancer must explicitly expose UDP/443. NodePort and firewall rules must allow UDP. Alt-Svc header must be advertised so browsers negotiate upgrade. NGINX >= 1.25.0 + --with-http_v3_module build required.\"}",
+    "{\"id\": \"PDB_MANDATORY\", \"principle\": \"PodDisruptionBudget (minAvailable: 1 or maxUnavailable: 50%) is mandatory for NGINX Ingress/Gateway Fabric in production. Without PDB, cluster node drains can terminate all ingress pods simultaneously causing total traffic blackout.\"}",
+    "{\"id\": \"OBSERVABILITY_TRIPLE\", \"principle\": \"Full NGINX K8s observability requires three pillars: (1) Prometheus metrics via /metrics endpoint (nginx_connections_active, nginx_requests_total, nginx_upstream_response_time), (2) structured access logs in JSON with upstream_response_time, request_id, upstream_addr, (3) OpenTelemetry traces for per-request distributed tracing. CPU-only HPA is insufficient — use KEDA with nginx_connections_active as primary scaling signal.\"}"
+  ],
+  "knowledge_layers": {
+    "layer_0_ecosystem_landscape": {
+      "description": "K8s NGINX ecosystem topology, controller options, and the critical ingress-nginx retirement context",
+      "truth_lens": [
+        {
+          "concept": "controller_options_2025",
+          "truths": [
+            "ingress-nginx (kubernetes/ingress-nginx): RETIRED Nov 2025, maintenance ends March 2026, no security patches after. Most widely deployed but now end-of-life.",
+            "NGINX Gateway Fabric (nginx/nginx-gateway-fabric): F5/NGINX-official Gateway API implementation. Separates control plane from data plane. Uses NGINX Agent to configure NGINX data plane pods. Recommended successor.",
+            "F5 NGINX Ingress Controller (nginx/kubernetes-ingress): Commercial F5 product, distinct from community ingress-nginx. Supports NGINX Plus as data plane. Actively maintained.",
+            "Traefik, HAProxy, Envoy, Kong: Alternative ingress controllers offering migration paths from ingress-nginx, each with published migration guides post-retirement announcement.",
+            "Migration detection: kubectl get pods --all-namespaces --selector app.kubernetes.io/name=ingress-nginx to check if cluster uses retired controller."
+          ]
+        },
+        {
+          "concept": "gateway_api_vs_ingress_api",
+          "truths": [
+            "Ingress API: kubernetes.io/v1 Ingress resource. Simple host/path routing only. Extended via annotations (NGINX-specific, not portable). Deprecated path.",
+            "Gateway API: gateway.networking.k8s.io. Resources: GatewayClass, Gateway, HTTPRoute, GRPCRoute, TCPRoute, TLSRoute. Role-based: infra team manages Gateway, app teams manage Routes. Portable across controllers.",
+            "NGINX Gateway Fabric implements Gateway API. Control plane watches GatewayClass/Gateway resources, dynamically creates NGINX data plane Deployments per Gateway.",
+            "IngressClass resource allows multiple controllers per cluster: nginx-public (external, WAF enabled), nginx-internal (east-west), traefik-grpc (gRPC specialist). Multi-class is a best practice for workload isolation.",
+            "Annotation-based config (ingress-nginx era) becomes policy objects in Gateway API: RateLimitPolicy, TLSPolicy, BackendTLSPolicy — expressed as typed CRDs not string annotations."
+          ]
+        },
+        {
+          "concept": "deployment_topology",
+          "truths": [
+            "DaemonSet mode: one NGINX pod per node, hostPort 80/443. Maximizes throughput (no kube-proxy hop), lowest latency. Suitable for bare-metal/high-throughput clusters.",
+            "Deployment mode: N replicas behind LoadBalancer Service. Standard cloud-provider pattern. Add PodAntiAffinity to spread replicas across nodes/AZs.",
+            "Sidecar mode: NGINX Plus as sidecar proxy in application pods. Offloads TLS, auth, rate limiting at the pod level. Used in service mesh-lite architectures.",
+            "nodeSelector / tolerations: Pin NGINX pods to dedicated ingress nodes with higher network bandwidth. Prevents noisy-neighbor from application pods consuming NIC bandwidth.",
+            "topologySpreadConstraints: Spread ingress pods across zones. labelSelector: app.kubernetes.io/name: ingress-nginx. maxSkew: 1, topologyKey: topology.kubernetes.io/zone, whenUnsatisfiable: DoNotSchedule."
+          ]
+        }
+      ]
+    },
+    "layer_1_kernel_and_worker_tuning": {
+      "description": "OS-level and NGINX worker-level configuration for maximum throughput in K8s",
+      "truth_lens": [
+        {
+          "concept": "worker_configuration",
+          "truths": [
+            "worker_processes auto; detects host CPU count, not container cgroup limit. In K8s: set worker-processes in ConfigMap to integer matching container CPU limit rounded up.",
+            "worker_connections 16384; — Maximum simultaneous connections per worker. Total capacity = worker_processes × worker_connections. Target 10K-65K per worker for high-load. Bounded by worker_rlimit_nofile.",
+            "worker_rlimit_nofile 65535; — Must be set in nginx.conf AND as container securityContext limits.nofile or initContainers sysctl tuning. K8s containers inherit host ulimits by default.",
+            "multi_accept on; — Worker accepts all pending connections at once rather than one per event loop iteration. Critical at >50K RPS. Default is off in older NGINX, on in 1.11.3+.",
+            "worker_cpu_affinity auto; — Pins workers to CPUs. In containers with limited CPUs, auto correctly rotates among available CPUs. Reduces context switching overhead.",
+            "use epoll; — Explicit epoll declaration (Linux). Event-driven O(1) connection dispatch. Always specify in events {} block even though it is default, for documentation clarity.",
+            "thread_pool default threads=32 max_queue=65536; — Enable aio threads for disk I/O offload. Prevents worker blocking on slow cache reads. Enable with aio threads=default; in location blocks serving large files or cache."
+          ]
+        },
+        {
+          "concept": "sysctl_kernel_tuning",
+          "truths": [
+            "net.core.somaxconn=32768 — Increases listen() backlog beyond default 128. Without this, NGINX drops connections at burst. Set via initContainer with privileged: true or cluster-level sysctl admission.",
+            "net.ipv4.tcp_max_tw_buckets=1440000 — Prevents TIME_WAIT socket exhaustion under high connection churn. Critical for short-lived HTTP/1.1 connections.",
+            "net.core.netdev_max_backlog=16384 — NIC receive queue depth. Prevents packet drops at kernel level before reaching NGINX.",
+            "net.ipv4.ip_local_port_range=1024 65535 — Increases ephemeral port range for upstream connections. Default 32768-60999 runs out at high upstream connection rate.",
+            "net.ipv4.tcp_tw_reuse=1 — Allows TIME_WAIT socket reuse for new outbound connections. Reduces port exhaustion. Safe with modern TCP timestamps.",
+            "K8s sysctl tuning path: pod spec .spec.securityContext.sysctls[] for safe sysctls (net.core.somaxconn is safe-listed in K8s 1.21+). Unsafe sysctls require node-level kubelet --allowed-unsafe-sysctls flag.",
+            "BBR congestion control: net.ipv4.tcp_congestion_control=bbr (Linux 4.9+). Dramatically improves throughput on links with buffer bloat. Requires net.core.default_qdisc=fq. Set at node level via DaemonSet with privileged initContainer."
+          ]
+        },
+        {
+          "concept": "nginx_core_http_directives",
+          "truths": [
+            "sendfile on; tcp_nopush on; tcp_nodelay on; — The holy trinity. sendfile: zero-copy file transfer. tcp_nopush: batch headers with first data packet. tcp_nodelay: disables Nagle for small packets (critical for streaming/SSE).",
+            "open_file_cache max=200000 inactive=20s; open_file_cache_valid 30s; open_file_cache_min_uses 2; open_file_cache_errors on; — Caches file descriptors and metadata. Prevents repeated syscalls for frequently accessed static files.",
+            "access_log off; — Disable access logging entirely for maximum RPS (saves 10-20% CPU on log I/O). OR: access_log /dev/stdout json buffer=16k flush=5s; for structured JSON to stdout (K8s log aggregation friendly).",
+            "gzip on; gzip_comp_level 5; gzip_types text/plain text/css application/json application/javascript text/xml; gzip_min_length 256; gzip_vary on; — Level 5 is optimal CPU/ratio tradeoff. Level 6+ gives <5% better compression at 30%+ more CPU.",
+            "server_tokens off; — Hides NGINX version from Server header and error pages. Baseline security hygiene.",
+            "keepalive_timeout 75s; keepalive_requests 1000000; — 75s matches TCP TIME_WAIT. 1M requests per connection eliminates reconnection overhead for long-lived browser sessions. Tune down to 10-30s for API traffic with fast client turnover."
+          ]
+        },
+        {
+          "concept": "configmap_production_baseline",
+          "truths": [
+            "ConfigMap key: worker-processes: auto — or integer matching CPU limit",
+            "ConfigMap key: max-worker-connections: 16384 — target 65536 for ultra-high load (adjust worker_rlimit_nofile accordingly)",
+            "ConfigMap key: max-worker-open-files: 0 — 0 means (system limit - 1024); set explicitly to 65535 on high-load",
+            "ConfigMap key: keep-alive: 75 — client keepalive timeout in seconds",
+            "ConfigMap key: keep-alive-requests: 1000000 — max requests per keepalive connection",
+            "ConfigMap key: upstream-keepalive-connections: 320 — idle upstream connection pool per worker. Most impactful single tuning for latency.",
+            "ConfigMap key: upstream-keepalive-timeout: 60 — upstream idle connection lifetime",
+            "ConfigMap key: upstream-keepalive-requests: 10000 — reuse upstream connections for up to 10K requests",
+            "ConfigMap key: proxy-connect-timeout: 5s — backend connect SLA. Never exceed 75s (TCP limit)",
+            "ConfigMap key: proxy-read-timeout: 60s — backend response SLA",
+            "ConfigMap key: proxy-buffer-size: 16k — must fit response headers. Increase to 32k for apps with large JWT/cookie headers",
+            "ConfigMap key: client-body-buffer-size: 128k — requests larger than this hit disk temp file",
+            "ConfigMap key: use-gzip: true | gzip-level: 5",
+            "ConfigMap key: ssl-protocols: TLSv1.2 TLSv1.3 — never enable TLS 1.0/1.1",
+            "ConfigMap key: ssl-session-cache-size: 10m — 1MB = ~4000 TLS sessions",
+            "ConfigMap key: use-http2: true — H2 multiplexing eliminates HOL blocking for multi-resource pages",
+            "ConfigMap key: worker-shutdown-timeout: 240s — graceful drain on SIGQUIT for long-lived connections"
+          ]
+        }
+      ]
+    },
+    "layer_2_enterprise_caching": {
+      "description": "Production NGINX caching patterns, K8s volume strategies, and cache hierarchy",
+      "truth_lens": [
+        {
+          "concept": "cache_architecture",
+          "truths": [
+            "NGINX content cache is a disk-based key-value store. Keys are URL hashes; values are headers + body stored as files with a 2-level directory hierarchy (levels=1:2).",
+            "keys_zone memory sizing: 1MB ≈ 8,000 cache keys metadata. 10MB = 80K keys, 100MB = 800K keys. For enterprise: keys_zone=enterprise_cache:100m supports ~800K unique URLs in RAM metadata.",
+            "max_size caps total disk usage. Without it, cache grows unbounded and fills the volume, causing I/O starvation. Always set: max_size=10g or appropriate for PVC size.",
+            "inactive=60m: entries not accessed in 60 minutes are evicted regardless of validity. Tune to match your traffic's long-tail access pattern.",
+            "use_temp_path=off: writes cache files directly to cache directory without temp file staging. Eliminates double-write overhead. Always set to off.",
+            "proxy_cache_lock on: prevents cache stampede (thundering herd) by queuing concurrent misses for the same key. Only one upstream request fires; others wait and serve from cache when populated.",
+            "proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504: serves stale content during backend failures. Critical for resilience — maintains availability during upstream downtime or deployments.",
+            "proxy_cache_revalidate on: sends conditional GET (If-Modified-Since) to upstream when cached content expires instead of fetching full response. Reduces bandwidth when content has not changed.",
+            "proxy_cache_min_uses 2: only cache after 2 requests for same URL. Prevents caching rare or one-time requests that waste cache space."
+          ]
+        },
+        {
+          "concept": "k8s_cache_volume_patterns",
+          "truths": [
+            "Pattern A — EmptyDir (small, ephemeral): proxy_cache_path /tmp/nginx-cache levels=1:2 keys_zone=small_cache:2m max_size=100m. RAM-backed tmpfs, fastest but lost on pod restart. For static asset caches <100MB.",
+            "Pattern B — EmptyDir medium (disk-backed): emptyDir with no medium set. Node's disk-backed. Lost on pod restart. Good for session-level caches up to 4GB per pod.",
+            "Pattern C — PVC (persistent, large): Mount PersistentVolumeClaim with fast SSD StorageClass (gp3, premium-ssd). proxy_cache_path /cache/nginx levels=1:2 keys_zone=enterprise_cache:100m max_size=10g inactive=24h use_temp_path=off. Survives pod restart, cache warm on startup.",
+            "Pattern D — NFS/shared PVC (distributed): Mount same NFS-backed PVC to all ingress pods. Cache is shared across replicas — eliminates duplicate caching. Risk: NFS I/O becomes bottleneck at high throughput. Use only with high-bandwidth NFS.",
+            "K8s ConfigMap http-snippet injection pattern: data.http-snippet: 'proxy_cache_path /cache/nginx levels=1:2 keys_zone=my_cache:32m max_size=4g inactive=24h use_temp_path=off;'",
+            "Ingress annotation activation: nginx.ingress.kubernetes.io/proxy-buffering: 'on' (mandatory prerequisite — NGINX can only cache buffered responses), nginx.ingress.kubernetes.io/server-snippet with proxy_cache my_cache; directives.",
+            "allow-snippet-annotations: 'true' and annotations-risk-level: Critical must be set in ConfigMap when using server-snippet / configuration-snippet in ingress-nginx >= v1.9 (2024 security change).",
+            "Cache key best practice: proxy_cache_key '$scheme$request_method$host$request_uri' — include method to prevent GET response serving POST requests. Include $host for multi-tenant setups."
+          ]
+        },
+        {
+          "concept": "cache_control_headers",
+          "truths": [
+            "Cache-Control: public, max-age=N — upstream must set this for NGINX to cache the response (or configure proxy_ignore_headers Cache-Control to override).",
+            "proxy_ignore_headers Cache-Control Expires Set-Cookie — forces NGINX to cache regardless of upstream headers. Use with proxy_cache_valid to set explicit TTLs. Required when upstream headers are misconfigured.",
+            "proxy_hide_header Set-Cookie — strip Set-Cookie from cached responses. NEVER cache responses with Set-Cookie unless the cookie is user-invariant (e.g., CSRF token without user identity).",
+            "Vary header: upstream setting Vary: Accept-Encoding causes separate cache entries per encoding. Pair with proxy_set_header Accept-Encoding '' to normalize and use single cache entry, then gzip at NGINX layer.",
+            "X-Cache-Status $upstream_cache_status — add as response header for cache debugging. Values: HIT, MISS, BYPASS, EXPIRED, STALE, UPDATING, REVALIDATED.",
+            "Cache purging: proxy_cache_purge $purge_method; (requires NGINX Plus) or implement via cache key path deletion with sidecar job. OSS alternative: use proxy_cache_bypass $http_x_purge; with a secret header for selective bypass."
+          ]
+        },
+        {
+          "concept": "microcaching_pattern",
+          "truths": [
+            "Micro-caching: proxy_cache_valid 200 1s; — cache responses for 1 second. Dramatically reduces upstream load during traffic spikes without stale data risk. Effective for dynamic but frequently identical API responses.",
+            "At 1000 RPS to an endpoint with 1s micro-cache: if cache hit rate is 90%, upstream sees 100 RPS. At 10K RPS: upstream sees 1K RPS. Linear protection against traffic spikes.",
+            "Exclude authenticated requests: proxy_cache_bypass $http_authorization; proxy_no_cache $http_authorization; — never cache requests with auth tokens in headers."
+          ]
+        }
+      ]
+    },
+    "layer_3_security": {
+      "description": "WAF (ModSecurity/OWASP CRS), mTLS, rate limiting, TLS hardening, and RBAC/NetworkPolicy",
+      "truth_lens": [
+        {
+          "concept": "modsecurity_waf",
+          "truths": [
+            "ModSecurity v3 (libmodsecurity) + NGINX connector is the OSS WAF embedded in ingress-nginx. Enabled via ConfigMap: enable-modsecurity: 'true'",
+            "Default mode is DetectionOnly (logs but does not block). Must explicitly activate: modsecurity-snippet: 'SecRuleEngine On' to enable blocking mode.",
+            "OWASP CRS (Core Rule Set): enable-owasp-modsecurity-crs: 'true'. CRS v4.x includes rulesets for SQLi, XSS, RCE, path traversal, protocol attacks, Java/PHP/NodeJS injection.",
+            "ModSecurity v3 removed persistent collections — in-WAF rate limiting using initcol/setvar is not available. Rate limiting MUST be done at NGINX layer (limit_req) before ModSecurity processing.",
+            "Processing order problem: in ingress-nginx template, ModSecurity runs BEFORE configuration-snippet limit_req directives. This causes CRS to process rate-limited requests and return 406 instead of 429. Fix requires custom nginx.tmpl or gateway-level ordering.",
+            "Tuning false positives: SecRuleRemoveById <rule_id> in modsecurity-snippet annotation on specific Ingress. Start in DetectionOnly, analyze audit logs, suppress false positives, then enable blocking.",
+            "ModSecurity audit log: SecAuditLog /var/log/modsecurity_audit.log. In K8s, redirect to stdout with SecAuditLogType Serial and pipe to log aggregator. SecAuditLogParts ABCIJDEFHZ captures full request/response.",
+            "NGINX Gateway Fabric WAF: Use F5 App Protect (NGINX Plus feature) or external WAF (Cloudflare, AWS WAF) in front of Gateway Fabric for ModSecurity equivalent functionality."
+          ]
+        },
+        {
+          "concept": "rate_limiting",
+          "truths": [
+            "limit_req_zone $binary_remote_addr zone=per_ip:10m rate=100r/s; — shared memory zone for rate limit state. 10m = ~160K IP entries.",
+            "limit_req zone=per_ip burst=50 nodelay; — burst allows temporary spike of 50 extra requests without delay. nodelay rejects burst overflow immediately (429) instead of queuing.",
+            "K8s annotation: nginx.ingress.kubernetes.io/limit-rps: '10' per IP, nginx.ingress.kubernetes.io/limit-rpm: '100'",
+            "limit-connections: max concurrent connections per IP. Pair with limit-rps for comprehensive abuse protection.",
+            "Multi-layer rate limiting strategy: (1) CDN/WAF edge for volumetric DDoS, (2) NGINX limit_req for per-IP abuse, (3) API gateway for per-user/per-key quota, (4) application for business logic quotas.",
+            "Redis-backed distributed rate limiting: for multi-replica NGINX where per-IP state must be shared. Requires Lua scripting (OpenResty) or external policy engine (OPA). OSS NGINX shared memory zones are per-pod, not cross-pod.",
+            "X-RateLimit-Remaining / X-RateLimit-Reset headers: NGINX does not natively emit these. Emit via Lua or upstream app. Essential for client UX and API contracts.",
+            "limit_req_status 429; — set explicit 429 status for rate-limited requests. Default is 503 which is misleading."
+          ]
+        },
+        {
+          "concept": "tls_and_mtls",
+          "truths": [
+            "ssl_protocols TLSv1.2 TLSv1.3; — never enable TLS 1.0/1.1. TLS 1.3 is required for HTTP/3 QUIC.",
+            "ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384; — ECDHE for forward secrecy. Omit CBC-mode ciphers.",
+            "ssl_prefer_server_ciphers off; — In TLS 1.3, cipher negotiation is client-driven. Setting to on has no effect for TLS 1.3 and can degrade TLS 1.2 compatibility.",
+            "ssl_session_cache shared:SSL:10m; ssl_session_timeout 1d; ssl_session_tickets on; — Session resumption eliminates full TLS handshake for returning clients. 10MB cache ≈ 40,000 sessions.",
+            "OCSP stapling: ssl_stapling on; ssl_stapling_verify on; resolver 8.8.8.8; — Prevents browser from making OCSP requests. Reduces TLS handshake latency by ~100ms.",
+            "cert-manager + Let's Encrypt: Standard K8s TLS automation. Certificate CRD with renewBefore: 360h (15 days). NGINX reads TLS secrets from K8s Secret referenced in Ingress spec.tls.",
+            "mTLS (mutual TLS): nginx.ingress.kubernetes.io/auth-tls-secret: 'namespace/ca-secret'. nginx.ingress.kubernetes.io/auth-tls-verify-client: 'on'. Client certificate fingerprint forwarded to backend via proxy_set_header ssl-client-fingerprint $ssl_client_fingerprint.",
+            "HSTS: add_header Strict-Transport-Security 'max-age=63072000; includeSubdomains; preload' always; — 2-year HSTS with preload. Mandatory for production HTTPS.",
+            "server_tokens off; more_clear_headers Server X-Powered-By; — Remove fingerprinting headers. Requires headers-more-nginx-module (available in ingress-nginx image)."
+          ]
+        },
+        {
+          "concept": "network_policy_and_rbac",
+          "truths": [
+            "NetworkPolicy: restrict ingress controller pods to only accept traffic from LoadBalancer IP range and within-cluster sources. Deny all except 80/443 ingress, 10254 metrics, and DNS egress.",
+            "PodSecurityAdmission / PSS: NGINX ingress pods require allowPrivilegeEscalation: false, readOnlyRootFilesystem: true (with emptyDir for /tmp, /var/run, /var/cache/nginx).",
+            "RBAC: ingress controller ServiceAccount needs watch/list/get on Ingress, Service, Endpoints, Secrets (TLS), ConfigMaps (own namespace). Grant minimum set — never cluster-admin.",
+            "Pod anti-affinity: preferredDuringSchedulingIgnoredDuringExecution with topologyKey: kubernetes.io/hostname to spread replicas across nodes.",
+            "PodDisruptionBudget: minAvailable: 1 (or maxUnavailable: 50%). Prevents full outage during node drain/upgrade.",
+            "securityContext: runAsNonRoot: true, runAsUser: 101 (nginx user), seccompProfile: RuntimeDefault — drop all capabilities except NET_BIND_SERVICE (for port 80/443 < 1024). Or use hostPort with higher port + service translation."
+          ]
+        }
+      ]
+    },
+    "layer_4_http3_quic": {
+      "description": "HTTP/3 QUIC configuration for OSS NGINX and K8s deployment strategies",
+      "truth_lens": [
+        {
+          "concept": "nginx_http3_requirements",
+          "truths": [
+            "HTTP/3 support available since NGINX 1.25.0 via --with-http_v3_module build flag. Module status: experimental but production-stable in 1.27+.",
+            "SSL library requirement: OpenSSL 3.5.1+ for 0-RTT (early data) support. Alternative: BoringSSL, LibreSSL, or QuicTLS. Many distro packages still ship with older OpenSSL — verify with nginx -V | grep openssl.",
+            "QUIC transport runs on UDP/443. TCP/443 (HTTP/2) must still be listened on simultaneously. Dual-stack listen is required for graceful fallback.",
+            "K8s Service UDP exposure: type: LoadBalancer with explicit UDP port entry: - port: 443 protocol: UDP targetPort: 443. Most cloud LBs support mixed TCP+UDP on same port (NLB on AWS, Network LB on GCP). Verify with cloud provider.",
+            "Firewall/security group: UDP/443 must be explicitly allowed. Default allow-all-HTTPS rules are TCP-only in most cloud providers.",
+            "reuseport parameter on listen: listen 443 quic reuseport; — allows multiple workers to share the UDP port. Without reuseport, intermittent HTTP/3 failures occur under multi-worker config. Set once per address.",
+            "quic_gso on; — Generic Segmentation Offload for QUIC. Optimizes batch UDP packet sending. Supported on Linux with UDP_SEGMENT socket option (kernel 4.18+).",
+            "quic_retry on; — Enables QUIC address validation via Retry packet. Prevents IP spoofing amplification attacks. Recommended for public-facing endpoints."
+          ]
+        },
+        {
+          "concept": "http3_server_config",
+          "truths": [
+            "Minimal HTTP/3 server block: listen 443 ssl; listen 443 quic reuseport; ssl_protocols TLSv1.3; ssl_certificate ...; ssl_certificate_key ...; add_header Alt-Svc 'h3=\":443\"; ma=86400' always;",
+            "Alt-Svc header: broadcasts HTTP/3 availability to browsers. ma=86400 (24h) is the max-age clients cache the alt-service. Use always to include in error responses.",
+            "0-RTT early data: ssl_early_data on; — allows client to send data in first TLS packet (zero round-trip handshake). Risk: replay attacks on non-idempotent requests. Must guard: if ($ssl_early_data) { return 425; } on POST/PUT/DELETE locations.",
+            "TLS 1.3 only for QUIC: ssl_protocols TLSv1.3; is required for QUIC. The TLS 1.3 session is the QUIC security layer. TLS 1.2 is only needed for TCP/HTTP2 fallback.",
+            "QUIC stream buffer: http3_stream_buffer_size 128k; — buffer for reading QUIC stream data. Increase for large uploads or high-latency links.",
+            "quic_active_connection_id_limit 2; — max QUIC connection IDs issued to client. Conservative value (2) limits connection migration complexity. Increase for mobile clients with frequent network changes.",
+            "Logging HTTP/3: log_format quic '$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\" \"$http3\"'; access_log logs/access.log quic;"
+          ]
+        },
+        {
+          "concept": "http3_k8s_patterns",
+          "truths": [
+            "Standalone HTTP/3 nginx pod pattern: Run a dedicated Deployment with custom nginx image built with --with-http_v3_module. Expose via NodePort or LoadBalancer with both TCP/443 and UDP/443.",
+            "Sidecar HTTP/3 terminator: NGINX sidecar in each application pod handles QUIC/HTTP3 termination, forwards to app on localhost HTTP. Eliminates shared ingress bottleneck for ultra-low-latency apps.",
+            "RTMP coexistence: NGINX with --add-module=nginx-rtmp-module + --with-http_v3_module can run HTTP/3 and RTMP simultaneously on separate listen blocks. RTMP on port 1935 (TCP), HTTP/3 on UDP/443, HTTP/2 on TCP/443. Build-time flag combination is fully supported.",
+            "Ingress-NGINX HTTP/3 status: No native HTTP/3 support in community ingress-nginx controller (retired). NGINX Gateway Fabric roadmap includes HTTP/3. Current approach: separate NGINX deployment for HTTP/3 edge, routing to Gateway Fabric for L7 routing.",
+            "Caddy alternative for HTTP/3 in K8s: Caddy has native HTTP/3 without compile-time flag, simpler cert automation. Consider Caddy as HTTP/3 edge in front of NGINX Gateway Fabric for quick HTTP/3 enablement.",
+            "Health check impact: K8s liveness/readiness probes use TCP — not affected by QUIC/UDP. NGINX health check endpoint on TCP/10254 (/healthz) remains standard."
+          ]
+        }
+      ]
+    },
+    "layer_5_autoscaling_and_ha": {
+      "description": "HPA, VPA, KEDA, PDB, and zero-downtime reload patterns for NGINX in K8s",
+      "truth_lens": [
+        {
+          "concept": "scaling_strategy",
+          "truths": [
+            "HPA with CPU: baseline approach. Set requests.cpu accurately — HPA scales when current_cpu > targetCPUUtilizationPercentage × requests. Common mistake: requests.cpu too low causes premature scale-out.",
+            "HPA with custom metrics (KEDA): nginx_connections_active is the best NGINX scaling signal — directly measures saturation regardless of CPU or I/O profile. KEDA bridges Prometheus → K8s custom metrics API → HPA.",
+            "KEDA ScaledObject: pollingInterval: 15 (seconds), cooldownPeriod: 60, minReplicaCount: 2, maxReplicaCount: 20. trigger: type: prometheus, query: nginx_connections_active{namespace=ingress-nginx}.",
+            "Scaling caveat: if NGINX drops connections under overload, active_connections decreases falsely signaling low load — KEDA scales DOWN making it worse. Solution: combine nginx_connections_active with nginx_requests_total rate in composite metric.",
+            "VPA for NGINX: use VPA in Recommendation mode only. Never Auto mode — VPA restarts pods to resize, breaking active connections. Use VPA recommendations to manually tune resource requests/limits.",
+            "Cluster Autoscaler: ensure NGINX pods have appropriate resource requests so CA correctly provisions nodes when replicas cannot schedule. Too-low requests = NGINX pods on overloaded nodes.",
+            "stabilizationWindowSeconds: scaleDown.stabilizationWindowSeconds: 300 — 5-minute scale-down cooldown prevents thrashing. scaleUp.stabilizationWindowSeconds: 0 — instant scale-up for traffic spikes.",
+            "HPA behavior block: policies: [{type: Pods, value: 2, periodSeconds: 60}] for controlled scale-up rate. Prevents runaway scale-out on metric noise."
+          ]
+        },
+        {
+          "concept": "zero_downtime_reload",
+          "truths": [
+            "NGINX graceful reload: SIGQUIT sends graceful shutdown to old workers, new workers inherit connections. In K8s: automatic on ConfigMap change via controller reconciliation loop.",
+            "worker-shutdown-timeout: 240s — how long NGINX waits for workers to drain active connections before force-kill. Must exceed your longest-lived connection (WebSocket, SSE, large uploads).",
+            "preStop hook: exec: command: [/bin/sh, -c, sleep 5] — adds delay before SIGTERM to allow kube-proxy to update iptables rules. Without this, pod receives traffic after deletion begins.",
+            "terminationGracePeriodSeconds: 300 — K8s pod termination budget. Must be > worker-shutdown-timeout + preStop sleep. Default 30s is almost always too short for production NGINX.",
+            "PodDisruptionBudget: required for safe rolling updates. minAvailable: 1 guarantees at least one pod always serves traffic during node drain or deployment rollout.",
+            "maxSurge: 1, maxUnavailable: 0 in Deployment strategy — ensures new pod is running and ready before old pod is terminated. Requires accurate readinessProbe.",
+            "readinessProbe: httpGet path: /healthz port: 10254 initialDelaySeconds: 10 periodSeconds: 5 failureThreshold: 3 — NGINX is only added to Service endpoints when healthy."
+          ]
+        }
+      ]
+    },
+    "layer_6_observability": {
+      "description": "Prometheus metrics, structured logging, OpenTelemetry tracing, and alerting for NGINX in K8s",
+      "truth_lens": [
+        {
+          "concept": "prometheus_metrics",
+          "truths": [
+            "Enable metrics: controller.metrics.enabled: true in Helm values. Exposes /metrics on port 10254.",
+            "Key metrics: nginx_connections_active (current active connections), nginx_connections_handled (total handled), nginx_http_requests_total (by status code), nginx_ingress_controller_requests (by ingress/service/status), nginx_ingress_controller_response_duration_seconds (latency histogram), nginx_ingress_controller_ssl_expire_time_seconds (cert expiry).",
+            "ServiceMonitor for Prometheus Operator: controller.metrics.serviceMonitor.enabled: true. Sets scrapeInterval: 15s. Ensure PodMonitor or ServiceMonitor is in prometheus operator discovery namespace.",
+            "Critical alerts: HighNginx5xxRate (rate(nginx_http_requests_total{status=~'5..'}[5m]) > 0.01), NginxConnectionsSaturated (nginx_connections_active > worker_processes × worker_connections × 0.8), SSLCertExpiringSoon (nginx_ingress_controller_ssl_expire_time_seconds < 7 days).",
+            "kube-state-metrics kube_hpa_* metrics: overlay HPA scaling decisions with NGINX metrics on same Grafana dashboard to visualize why scaling occurred.",
+            "Prometheus scrape interval <= 15s for scaling-critical metrics. If scrape interval is 60s and traffic spikes last 30s, HPA/KEDA will never trigger."
+          ]
+        },
+        {
+          "concept": "structured_logging",
+          "truths": [
+            "JSON log format for K8s (Loki/Elasticsearch compatible): log-format-upstream in ConfigMap. Include: $remote_addr, $status, $request_time, $upstream_response_time, $upstream_addr, $request_id, $host, $http_x_forwarded_for, $upstream_cache_status.",
+            "Minimal log format for high-RPS: omit $http_user_agent and $http_referer from hot path. Reduces per-log memory allocation by ~100 bytes at 50K RPS = ~5GB/day savings.",
+            "Request ID: generate_request_id: true propagates $request_id to backends via X-Request-ID header. Essential for distributed tracing correlation without full OTel instrumentation.",
+            "Buffer log writes: access_log /dev/stdout json_combined buffer=16k flush=5s — batches writes, reduces I/O syscall frequency. Without buffer, every request triggers write() syscall.",
+            "Error log level: error_log /dev/stderr warn; — only log warnings and above in production. Debug level generates enormous volume, use only with specific debug_connection for targeted debugging."
+          ]
+        },
+        {
+          "concept": "opentelemetry_tracing",
+          "truths": [
+            "NGINX OpenTelemetry: available via nginx-otel module (nginx.org/opentelemetry). Instruments NGINX with automatic span creation for each proxied request.",
+            "OTel propagation: injects/extracts W3C Trace Context (traceparent, tracestate) headers. Enables end-to-end trace visibility from browser through NGINX through microservices.",
+            "OTel Collector sidecar: deploy OTel Collector as sidecar or DaemonSet. NGINX exports spans via OTLP gRPC. Collector fans out to Jaeger, Tempo, Datadog, or custom backend.",
+            "Sampling: probabilistic sampler at 10% in OTel Collector. Full sampling only for error spans (always_sample on 5xx). Balances visibility with Collector throughput.",
+            "Correlation: use X-Request-ID in NGINX logs aligned with OTel trace.id. Allows log → trace correlation in observability platforms even without full OTel instrumentation end-to-end."
+          ]
+        }
+      ]
+    },
+    "layer_7_common_pitfalls": {
+      "description": "18 enterprise-grade pitfalls with root causes and resolutions",
+      "truth_lens": [
+        {
+          "concept": "pitfalls",
+          "truths": [
+            {
+              "id": "P01",
+              "pitfall": "worker_processes auto in K8s sees host CPUs",
+              "cause": "NGINX auto-detection reads /proc/cpuinfo which reports host CPU count, not container cgroup limits. A pod with 1 CPU limit on a 64-core host starts 64 workers.",
+              "fix": "Set worker-processes in ConfigMap to integer matching container CPU limit. formula: ceil(cpu_limit_in_cores). Monitor with kubectl top pod and nginx worker count via /proc."
+            },
+            {
+              "id": "P02",
+              "pitfall": "Cache not persisting across pod restarts",
+              "cause": "proxy_cache_path pointing to /tmp (tmpfs emptyDir) or ephemeral container filesystem. All cache lost on restart. Cold start causes thundering herd to upstream.",
+              "fix": "Mount PVC with fast SSD StorageClass. path=/cache/nginx. Set use_temp_path=off. Add proxy_cache_use_stale updating to serve stale during cache warm-up."
+            },
+            {
+              "id": "P03",
+              "pitfall": "502 Bad Gateway during rolling deployment",
+              "cause": "NGINX maintains upstream keepalive connections. Old connections point to deleted pod IPs not yet removed from endpoints. NGINX tries to reuse dead connection.",
+              "fix": "proxy_next_upstream error timeout; and proxy_next_upstream_tries 3; to retry on next upstream. Set keepalive_timeout lower than pod terminationGracePeriod. Enable readinessProbe with appropriate failureThreshold."
+            },
+            {
+              "id": "P04",
+              "pitfall": "Thundering herd on cache miss",
+              "cause": "proxy_cache_lock not enabled. 1000 concurrent requests for same uncached URL all go to upstream simultaneously on cache miss.",
+              "fix": "proxy_cache_lock on; proxy_cache_lock_timeout 5s; proxy_cache_lock_age 5s; — queues all concurrent misses for same key, one upstream request, all serve from cache when populated."
+            },
+            {
+              "id": "P05",
+              "pitfall": "WAF returns 406 instead of 429 on rate-limited requests",
+              "cause": "In ingress-nginx template, ModSecurity processes requests before limit_req directives execute. CRS pattern matching triggers false-positive on rate-limit probe request.",
+              "fix": "Rate limiting MUST execute before WAF. Requires custom nginx.tmpl to reorder directives. In NGINX Gateway Fabric, use policy ordering or external WAF pre-gateway."
+            },
+            {
+              "id": "P06",
+              "pitfall": "NGINX pod OOMKilled during traffic spike",
+              "cause": "proxy_buffers configured too large (e.g., 64 buffers × 64k = 4MB per request) × high concurrent connections = memory exhaustion. Or gzip compression buffer accumulation.",
+              "fix": "Right-size buffers: proxy_buffers 8 16k; proxy_buffer_size 16k; proxy_max_temp_file_size 1024m; — offload large responses to temp file instead of RAM. Set container memory limit ≥ (worker_processes × worker_connections × avg_request_buffer_size) + 500MB overhead."
+            },
+            {
+              "id": "P07",
+              "pitfall": "High latency at consistent RPS (not at spike)",
+              "cause": "upstream-keepalive-connections too low. New TCP connections being created for each proxied request. Each new connection incurs TCP+TLS handshake overhead (2-4 RTTs).",
+              "fix": "Increase upstream-keepalive-connections to match peak concurrent upstream connections. Monitor with: kubectl exec -it nginx-pod -- ss -tn | grep ESTAB | wc -l. Target pool >= concurrent upstream connections per worker."
+            },
+            {
+              "id": "P08",
+              "pitfall": "Pod traffic terminated during node drain (partial outage)",
+              "cause": "No PodDisruptionBudget. kubectl drain node terminates ALL ingress pods on node simultaneously. All traffic to cluster fails.",
+              "fix": "PodDisruptionBudget with minAvailable: 1. topologySpreadConstraints to ensure replicas are on different nodes/zones. maxUnavailable: 0 in Deployment rollingUpdate strategy."
+            },
+            {
+              "id": "P09",
+              "pitfall": "ConfigMap changes not applying",
+              "cause": "Operator watching wrong ConfigMap name or namespace. Or annotations-risk-level not set to Critical for snippet-based config in ingress-nginx >= v1.9.",
+              "fix": "Verify ConfigMap name matches --configmap argument of controller. For snippets: set annotations-risk-level: Critical and allow-snippet-annotations: 'true'. Check controller logs for 'updating nginx configuration'."
+            },
+            {
+              "id": "P10",
+              "pitfall": "HTTP/3 QUIC not working despite nginx config",
+              "cause": "UDP/443 not exposed in K8s Service. Or firewall/security group blocking UDP. Or nginx not built with --with-http_v3_module. Or Alt-Svc header not sent.",
+              "fix": "Verify: (1) Service has UDP:443 entry, (2) UDP/443 open in firewall, (3) nginx -V shows http_v3 module, (4) Alt-Svc header present in response (curl -sI https://domain | grep alt-svc), (5) reuseport on listen 443 quic directive."
+            },
+            {
+              "id": "P11",
+              "pitfall": "HPA not scaling despite high load",
+              "cause": "CPU-based HPA with CPU-optimized NGINX — at 10K RPS NGINX may only use 40% CPU (I/O bound). HPA never triggers. Or resource requests not set (HPA cannot compute % utilization without requests).",
+              "fix": "Switch to KEDA with nginx_connections_active as scaling metric. Always set explicit CPU/memory requests on NGINX pods. Use composite metric: connections + request_rate."
+            },
+            {
+              "id": "P12",
+              "pitfall": "Certificates not renewing automatically",
+              "cause": "cert-manager CertificateRequest not approved. Or ACME DNS/HTTP challenge failing. Or NGINX not reloaded after secret update.",
+              "fix": "cert-manager: kubectl describe certificate to check status. NGINX ingress-nginx controller watches Secrets and triggers reload on TLS secret update. Verify with kubectl logs on ingress-nginx controller for 'updating ssl configuration'. Monitor: nginx_ingress_controller_ssl_expire_time_seconds Prometheus alert."
+            },
+            {
+              "id": "P13",
+              "pitfall": "Large file uploads fail or timeout",
+              "cause": "client_max_body_size default 1m (1MB). Or proxy-body-size annotation not set. Or proxy-read-timeout too short for slow uploads.",
+              "fix": "nginx.ingress.kubernetes.io/proxy-body-size: '0' (unlimited) or specific size '100m'. proxy-read-timeout: '300' for large uploads. client-body-buffer-size: '128k' spools small uploads to RAM; larger go to temp file (set proxy-temp-path to PVC)."
+            },
+            {
+              "id": "P14",
+              "pitfall": "WebSocket connections drop after 60 seconds",
+              "cause": "proxy-read-timeout: 60 (default). NGINX closes upstream connection after 60s of no data. WebSocket idle periods exceed this.",
+              "fix": "nginx.ingress.kubernetes.io/proxy-read-timeout: '3600' for WebSocket routes. nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'. nginx.ingress.kubernetes.io/upstream-hash-by: '$remote_addr' for session affinity."
+            },
+            {
+              "id": "P15",
+              "pitfall": "NGINX serving stale/wrong content from cache for authenticated users",
+              "cause": "Cache key does not include session identifier. User A's response cached and served to User B.",
+              "fix": "proxy_no_cache $http_authorization; proxy_cache_bypass $http_authorization; — never cache requests with Authorization header. For cookie-based auth: proxy_no_cache $cookie_session; proxy_cache_bypass $cookie_session;"
+            },
+            {
+              "id": "P16",
+              "pitfall": "KEDA scales down aggressively during traffic spike causing latency spikes",
+              "cause": "Basing autoscaling only on nginx_connections_active. When NGINX is overloaded and dropping connections, active_connections falls, KEDA interprets as low load and scales down.",
+              "fix": "Composite KEDA trigger: primary=nginx_connections_active + secondary=rate(nginx_requests_total[1m]). Set stabilizationWindowSeconds: scaleDown=300 to prevent premature scale-down. Alert on nginx_connections_dropped."
+            },
+            {
+              "id": "P17",
+              "pitfall": "ingress-nginx still in use post-retirement (security risk)",
+              "cause": "Team unaware of Nov 2025 retirement announcement. Running end-of-life ingress controller with no future security patches.",
+              "fix": "Migrate to NGINX Gateway Fabric (Gateway API): use ingress2gateway tool to convert Ingress resources to HTTPRoute resources. Update CI/CD to target new GatewayClass. Plan phased migration: test ingress in parallel, validate, cut over, decommission."
+            },
+            {
+              "id": "P18",
+              "pitfall": "Access logs consuming excessive disk/memory at high RPS",
+              "cause": "Unbuffered access_log writes at 100K RPS generate millions of write() syscalls per second. High-detail log format (user-agent, referer) at scale = excessive log volume.",
+              "fix": "access_log /dev/stdout json buffer=16k flush=5s; Use minimal log format in production; move user-agent/referer to sampled trace spans only. For extreme RPS (>200K): access_log off; and rely on Prometheus metrics + OTel traces."
+            }
+          ]
+        }
+      ]
+    },
+    "layer_8_modules_and_plugins": {
+      "description": "Must-have OSS modules, plugins, and their K8s integration patterns",
+      "truth_lens": [
+        {
+          "concept": "must_have_modules",
+          "truths": [
+            "ngx_http_v2_module: HTTP/2 support. Compiled-in for modern NGINX packages. Enable: http2 on; in server block (NGINX 1.25.1+ directive syntax) or listen 443 ssl http2; (legacy).",
+            "ngx_http_v3_module: HTTP/3 QUIC. Build flag: --with-http_v3_module. Requires BoringSSL or OpenSSL 3.5.1+. Production-stable in NGINX 1.27+.",
+            "ngx_http_gzip_module: Built-in gzip compression. Always enabled. gzip_comp_level 5; gzip_types application/json text/css application/javascript;",
+            "ngx_http_brotli_module: Brotli compression (better ratio than gzip at same CPU). Third-party: google/ngx_brotli. Provides 15-25% better compression than gzip for text content. Not in mainline NGINX — requires custom build or ingress-nginx image with brotli enabled (enable-brotli: 'true' ConfigMap key).",
+            "ngx_http_real_ip_module: Extracts real client IP from X-Forwarded-For behind load balancers. use-forwarded-headers: 'true' in ConfigMap. proxy-real-ip-cidr: LB CIDR range.",
+            "ngx_http_limit_req_module: Built-in rate limiting. limit_req_zone / limit_req. Essential for DDoS protection.",
+            "ngx_http_limit_conn_module: Connection limit per key. Complements rate limiting.",
+            "ngx_http_auth_request_module: Delegates auth to subrequest. Powers nginx.ingress.kubernetes.io/auth-url annotation for OAuth2-proxy / Dex / Keycloak integration.",
+            "nginx-otel (OpenTelemetry): Official NGINX OTel module. Provides automatic span instrumentation. Load with load_module modules/ngx_otel_module.so;",
+            "headers-more-nginx-module: Add/remove/modify arbitrary response headers. Available in ingress-nginx image. Needed for server_tokens off + removing X-Powered-By. more_clear_headers Server;",
+            "ModSecurity v3 connector: libmodsecurity + nginx-connector. WAF. Enabled via enable-modsecurity: 'true' in ingress-nginx ConfigMap.",
+            "ngx_http_proxy_module: Built-in reverse proxy. Core module for all upstream proxying. proxy_pass, proxy_cache_path, proxy_next_upstream all from this module.",
+            "nginx-rtmp-module: RTMP/HLS live streaming. Third-party (arut/nginx-rtmp-module). Add via custom Docker image: --add-module=/path/to/nginx-rtmp-module. Compatible with HTTP/3 in same build. Listen on TCP:1935 for RTMP, HLS served via HTTP on port 80/443."
+          ]
+        },
+        {
+          "concept": "optional_advanced_modules",
+          "truths": [
+            "ngx_http_lua_module / OpenResty: Lua scripting in NGINX request lifecycle. Enables distributed rate limiting (Redis), custom auth logic, dynamic upstream selection. ingress-nginx uses Lua for balancer, auth, and configuration. Available in ingress-nginx base image.",
+            "ngx_pagespeed: Google PageSpeed Optimization module (mod_pagespeed for NGINX). Auto-optimizes images, CSS, JS, defers load. Not available in standard ingress-nginx image. Requires custom build. High complexity for K8s dynamic workloads.",
+            "nginx-module-vts: Virtual host traffic status module. Provides detailed per-upstream-per-host metrics. Alternative to stub_status for Prometheus. Pre-dates NGINX OTel module.",
+            "ngx_http_upstream_fair_module: Fair load balancing (weighted least connections). Not in mainline. In K8s, upstream selection is usually random/round-robin to pods — fair balancing is less critical than at bare-metal upstream tier.",
+            "ngx_cache_purge: Cache purge via HTTP request. Requires NGINX Plus for full support in K8s. OSS alternative: proxy_cache_bypass $http_x_purge; with secret header for selective cache invalidation."
+          ]
+        }
+      ]
+    }
+  },
+  "k8s_nginx_config_reference": {
+    "description": "Production-ready NGINX configuration patterns for Kubernetes",
+    "patterns": [
+      {
+        "id": "configmap_production",
+        "title": "ingress-nginx ConfigMap — Production Baseline",
+        "config": {
+          "worker-processes": "auto",
+          "max-worker-connections": "16384",
+          "max-worker-open-files": "65535",
+          "worker-shutdown-timeout": "240s",
+          "use-gzip": "true",
+          "gzip-level": "5",
+          "gzip-types": "application/json application/javascript text/css text/plain application/xml",
+          "ssl-protocols": "TLSv1.2 TLSv1.3",
+          "ssl-session-cache-size": "10m",
+          "ssl-ciphers": "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384",
+          "use-http2": "true",
+          "keep-alive": "75",
+          "keep-alive-requests": "1000000",
+          "upstream-keepalive-connections": "320",
+          "upstream-keepalive-timeout": "60",
+          "upstream-keepalive-requests": "10000",
+          "proxy-connect-timeout": "5",
+          "proxy-read-timeout": "60",
+          "proxy-send-timeout": "60",
+          "proxy-buffer-size": "16k",
+          "proxy-buffers-number": "8",
+          "client-body-buffer-size": "128k",
+          "proxy-body-size": "50m",
+          "enable-modsecurity": "false",
+          "enable-owasp-modsecurity-crs": "false",
+          "server-tokens": "false",
+          "log-format-upstream": "{\"time\":\"$time_iso8601\",\"remote_addr\":\"$remote_addr\",\"status\":$status,\"method\":\"$request_method\",\"uri\":\"$uri\",\"host\":\"$host\",\"request_time\":$request_time,\"upstream_response_time\":\"$upstream_response_time\",\"upstream_addr\":\"$upstream_addr\",\"request_id\":\"$req_id\",\"cache_status\":\"$upstream_cache_status\"}",
+          "generate-request-id": "true"
+        }
+      },
+      {
+        "id": "http3_server_block",
+        "title": "HTTP/3 QUIC NGINX Server Block",
+        "nginx_config": "server {\n  listen 443 ssl;\n  listen 443 quic reuseport;\n  http2 on;\n  http3 on;\n  ssl_protocols TLSv1.2 TLSv1.3;\n  ssl_certificate /etc/nginx/ssl/tls.crt;\n  ssl_certificate_key /etc/nginx/ssl/tls.key;\n  ssl_session_cache shared:SSL:10m;\n  ssl_session_timeout 1d;\n  ssl_session_tickets on;\n  ssl_early_data on;\n  quic_retry on;\n  quic_gso on;\n  add_header Alt-Svc 'h3=\":443\"; ma=86400' always;\n  add_header Strict-Transport-Security 'max-age=63072000; includeSubdomains; preload' always;\n  location / {\n    if ($ssl_early_data) {\n      # Protect non-idempotent methods from 0-RTT replay\n      set $early_data_flag 1;\n    }\n    proxy_pass http://backend;\n    proxy_set_header Early-Data $ssl_early_data;\n  }\n  location /api/write {\n    if ($ssl_early_data) { return 425; }\n    proxy_pass http://backend;\n  }\n}"
+      },
+      {
+        "id": "enterprise_cache_block",
+        "title": "Enterprise Cache Configuration (http-snippet + Ingress annotations)",
+        "http_snippet": "proxy_cache_path /cache/nginx levels=1:2 keys_zone=enterprise_cache:100m max_size=10g inactive=24h use_temp_path=off;\nproxy_cache_key \"$scheme$request_method$host$request_uri\";\nproxy_cache_lock on;\nproxy_cache_lock_timeout 5s;\nproxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;\nproxy_cache_revalidate on;",
+        "ingress_annotations": {
+          "nginx.ingress.kubernetes.io/proxy-buffering": "on",
+          "nginx.ingress.kubernetes.io/service-upstream": "true",
+          "nginx.ingress.kubernetes.io/server-snippet": "proxy_cache enterprise_cache;\nproxy_cache_valid 200 302 10m;\nproxy_cache_valid 404 1m;\nproxy_cache_min_uses 2;\nadd_header X-Cache-Status $upstream_cache_status;\nproxy_no_cache $http_authorization;\nproxy_cache_bypass $http_authorization;"
+        }
+      },
+      {
+        "id": "modsecurity_waf",
+        "title": "ModSecurity WAF + OWASP CRS Activation",
+        "configmap_keys": {
+          "enable-modsecurity": "true",
+          "enable-owasp-modsecurity-crs": "true",
+          "modsecurity-snippet": "SecRuleEngine On\nSecRequestBodyAccess On\nSecAuditLog /dev/stderr\nSecAuditLogParts ABCIJDEFHZ\nSecAuditEngine RelevantOnly",
+          "allow-snippet-annotations": "true",
+          "annotations-risk-level": "Critical"
+        }
+      },
+      {
+        "id": "keda_scaledobject",
+        "title": "KEDA ScaledObject for NGINX Ingress based on active connections",
+        "yaml": "apiVersion: keda.sh/v1alpha1\nkind: ScaledObject\nmetadata:\n  name: nginx-ingress-keda\n  namespace: ingress-nginx\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: ingress-nginx-controller\n  minReplicaCount: 2\n  maxReplicaCount: 20\n  pollingInterval: 15\n  cooldownPeriod: 60\n  advanced:\n    horizontalPodAutoscalerConfig:\n      behavior:\n        scaleDown:\n          stabilizationWindowSeconds: 300\n          policies:\n            - type: Pods\n              value: 1\n              periodSeconds: 120\n        scaleUp:\n          stabilizationWindowSeconds: 0\n          policies:\n            - type: Pods\n              value: 2\n              periodSeconds: 60\n  triggers:\n    - type: prometheus\n      metadata:\n        serverAddress: http://prometheus-operated.monitoring.svc:9090\n        metricName: nginx_connections_active\n        threshold: '500'\n        query: sum(nginx_connections_active{namespace='ingress-nginx'})"
+      },
+      {
+        "id": "poddisruptionbudget",
+        "title": "PodDisruptionBudget for NGINX Ingress",
+        "yaml": "apiVersion: policy/v1\nkind: PodDisruptionBudget\nmetadata:\n  name: nginx-ingress-pdb\n  namespace: ingress-nginx\nspec:\n  minAvailable: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: ingress-nginx"
+      },
+      {
+        "id": "topology_spread",
+        "title": "TopologySpreadConstraints for NGINX zone HA",
+        "spec_snippet": "topologySpreadConstraints:\n  - maxSkew: 1\n    topologyKey: topology.kubernetes.io/zone\n    whenUnsatisfiable: DoNotSchedule\n    labelSelector:\n      matchLabels:\n        app.kubernetes.io/name: ingress-nginx\npodAntiAffinity:\n  preferredDuringSchedulingIgnoredDuringExecution:\n    - weight: 100\n      podAffinityTerm:\n        topologyKey: kubernetes.io/hostname\n        labelSelector:\n          matchLabels:\n            app.kubernetes.io/name: ingress-nginx"
+      }
+    ]
+  },
+  "must_have_feature_checklist": {
+    "description": "Production NGINX K8s deployment checklist — all items required for enterprise-grade operation",
+    "categories": {
+      "reliability": [
+        "PodDisruptionBudget with minAvailable: 1",
+        "topologySpreadConstraints across zones",
+        "podAntiAffinity across nodes",
+        "terminationGracePeriodSeconds >= 300",
+        "preStop sleep hook (5s) for graceful draining",
+        "maxUnavailable: 0 in rolling update strategy",
+        "readinessProbe on /healthz port 10254",
+        "livenessProbe (less aggressive than readiness)",
+        "worker-shutdown-timeout matching longest connection lifetime"
+      ],
+      "performance": [
+        "worker_processes matching container CPU limit",
+        "max-worker-connections >= 16384",
+        "upstream-keepalive-connections >= 320",
+        "use-gzip: true with gzip-level: 5",
+        "ssl-session-cache-size: 10m",
+        "use-http2: true",
+        "proxy_cache_lock on for cached endpoints",
+        "proxy_cache_use_stale for resilient caching",
+        "microcaching (1s) for high-RPS dynamic endpoints",
+        "open_file_cache for static file serving"
+      ],
+      "security": [
+        "ssl-protocols: TLSv1.2 TLSv1.3 only",
+        "ssl-ciphers ECDHE-only (forward secrecy)",
+        "HSTS header with preload",
+        "server-tokens: false",
+        "OCSP stapling enabled",
+        "NetworkPolicy restricting ingress pod traffic",
+        "RBAC ServiceAccount with minimum permissions",
+        "ModSecurity + OWASP CRS (SecRuleEngine On in production)",
+        "Rate limiting (limit_req) before WAF processing",
+        "mTLS for internal service-to-service auth",
+        "cert-manager automated certificate rotation",
+        "readOnlyRootFilesystem: true + emptyDir for writable paths"
+      ],
+      "observability": [
+        "Prometheus metrics enabled (port 10254 /metrics)",
+        "ServiceMonitor for Prometheus Operator",
+        "JSON structured access logs with request_id",
+        "nginx_connections_active alert > 80% saturation",
+        "SSL cert expiry alert (< 7 days)",
+        "5xx rate alert",
+        "OpenTelemetry tracing (nginx-otel module)",
+        "KEDA with Prometheus-backed scaling (not CPU-only HPA)",
+        "Grafana dashboard: requests, latency, cache hit rate, upstream health"
+      ],
+      "http3_optional": [
+        "NGINX >= 1.25.0 with --with-http_v3_module",
+        "OpenSSL 3.5.1+ or BoringSSL",
+        "UDP/443 in K8s Service spec",
+        "UDP/443 in cloud firewall/security group",
+        "listen 443 quic reuseport directive",
+        "Alt-Svc: h3=':443'; ma=86400 response header",
+        "quic_retry on for address validation",
+        "0-RTT (ssl_early_data on) with POST/PUT/DELETE protection"
+      ]
+    }
+  },
+  "anti_patterns": [
+    {
+      "id": "AP01",
+      "anti_pattern": "Using kubernetes/ingress-nginx for new deployments",
+      "why_bad": "Retired Nov 2025, no security patches after March 2026. Any future CVE is permanently unpatched.",
+      "correct": "Deploy NGINX Gateway Fabric for new clusters. Migrate existing with ingress2gateway tool."
+    },
+    {
+      "id": "AP02",
+      "anti_pattern": "worker_processes auto in container without checking CPU detection",
+      "why_bad": "Spawns 64 workers on a 1-CPU pod running on a 64-core host. OOM kills pod immediately.",
+      "correct": "Set explicit integer in ConfigMap matching CPU limit."
+    },
+    {
+      "id": "AP03",
+      "anti_pattern": "proxy_cache_path to /tmp without size limit",
+      "why_bad": "Fills tmpfs (RAM) exhausting node memory. OOM kills NGINX and other pods on same node.",
+      "correct": "Use PVC with max_size set. Or emptyDir with explicit sizeLimit."
+    },
+    {
+      "id": "AP04",
+      "anti_pattern": "ModSecurity in DetectionOnly mode in production",
+      "why_bad": "Provides zero protection. Generates audit log noise without blocking attacks.",
+      "correct": "SecRuleEngine On. Tune false positives with SecRuleRemoveById in DetectionOnly first, then switch to On."
+    },
+    {
+      "id": "AP05",
+      "anti_pattern": "CPU-only HPA for NGINX",
+      "why_bad": "NGINX is I/O-bound at high RPS. CPU stays low while connections saturate. HPA never fires. Latency spikes go undetected.",
+      "correct": "KEDA with nginx_connections_active Prometheus metric as primary scaling signal."
+    },
+    {
+      "id": "AP06",
+      "anti_pattern": "No PodDisruptionBudget",
+      "why_bad": "Node drain or upgrade terminates all ingress pods simultaneously. Total traffic blackout.",
+      "correct": "PDB with minAvailable: 1. topologySpreadConstraints across zones."
+    },
+    {
+      "id": "AP07",
+      "anti_pattern": "terminationGracePeriodSeconds: 30 (K8s default)",
+      "why_bad": "NGINX worker-shutdown-timeout defaults to 240s. Worker forcibly killed at 30s, dropping all active long-lived connections (WebSocket, SSE, uploads).",
+      "correct": "terminationGracePeriodSeconds: 300+ (must be > worker-shutdown-timeout + preStop delay)."
+    },
+    {
+      "id": "AP08",
+      "anti_pattern": "Caching authenticated responses without cache bypass",
+      "why_bad": "User A's personalized response cached and served to User B. Data leak, compliance violation.",
+      "correct": "proxy_no_cache $http_authorization; proxy_cache_bypass $http_authorization; and equivalent for session cookies."
+    },
+    {
+      "id": "AP09",
+      "anti_pattern": "HTTP/3 without exposing UDP in K8s Service",
+      "why_bad": "QUIC connection attempts fail silently. Browsers fall back to HTTP/2 with no error indication.",
+      "correct": "Service spec must include port with protocol: UDP for port 443."
+    },
+    {
+      "id": "AP10",
+      "anti_pattern": "Editing nginx.conf directly inside NGINX pod",
+      "why_bad": "Controller reconciliation loop overwrites manual changes on next ConfigMap update or pod restart.",
+      "correct": "All config via ConfigMap keys, http-snippet, server-snippet, or configuration-snippet annotations."
+    },
+    {
+      "id": "AP11",
+      "anti_pattern": "Rate limiting with Redis without atomic operations",
+      "why_bad": "Non-atomic increment+check race condition. Allows 2× the intended rate in concurrent scenarios.",
+      "correct": "Use Lua redis.call('INCR', key) + redis.call('EXPIRE', key) in atomic pipeline. Or use OpenResty lua-resty-limit-traffic library."
+    },
+    {
+      "id": "AP12",
+      "anti_pattern": "access_log unbuffered at 100K+ RPS",
+      "why_bad": "Every request triggers write() syscall. At 100K RPS = 100K syscalls/second. Saturates log I/O, adds latency to request processing.",
+      "correct": "access_log /dev/stdout json buffer=16k flush=5s; Or access_log off; with Prometheus metrics for traffic visibility."
+    }
+  ],
+  "migration_guide_ingress_nginx_to_gateway_fabric": {
+    "description": "Phased migration from retired ingress-nginx to NGINX Gateway Fabric",
+    "phases": [
+      {
+        "phase": 1,
+        "action": "Audit current Ingress resources",
+        "commands": [
+          "kubectl get ingress --all-namespaces -o yaml > ingress-backup.yaml",
+          "kubectl get pods --all-namespaces --selector app.kubernetes.io/name=ingress-nginx"
+        ]
+      },
+      {
+        "phase": 2,
+        "action": "Install NGINX Gateway Fabric alongside existing ingress-nginx",
+        "commands": [
+          "helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --namespace nginx-gateway --create-namespace",
+          "kubectl get gatewayclass"
+        ]
+      },
+      {
+        "phase": 3,
+        "action": "Convert Ingress to HTTPRoute using ingress2gateway tool",
+        "commands": [
+          "go install sigs.k8s.io/ingress2gateway@latest",
+          "ingress2gateway print --input-file ingress-backup.yaml --providers ingress-nginx > httproutes.yaml",
+          "kubectl apply -f httproutes.yaml --dry-run=client"
+        ]
+      },
+      {
+        "phase": 4,
+        "action": "Test traffic on new Gateway Fabric in parallel (DNS weight shifting)",
+        "notes": "Route 5% of traffic to Gateway Fabric via cloud LB weights. Monitor 5xx rate and latency."
+      },
+      {
+        "phase": 5,
+        "action": "Cut over and decommission ingress-nginx",
+        "commands": [
+          "helm uninstall ingress-nginx --namespace ingress-nginx",
+          "kubectl delete namespace ingress-nginx"
+        ]
+      }
+    ],
+    "annotation_to_policy_mapping": [
+      {
+        "ingress_annotation": "nginx.ingress.kubernetes.io/limit-rps",
+        "gateway_api_equivalent": "RateLimitPolicy CRD (vendor-specific or Envoy Gateway / Cilium GW)"
+      },
+      {
+        "ingress_annotation": "nginx.ingress.kubernetes.io/ssl-redirect",
+        "gateway_api_equivalent": "HTTPRoute filter: requestRedirect with scheme: https"
+      },
+      {
+        "ingress_annotation": "nginx.ingress.kubernetes.io/rewrite-target",
+        "gateway_api_equivalent": "HTTPRoute filter: urlRewrite with path ReplacePrefixMatch"
+      },
+      {
+        "ingress_annotation": "nginx.ingress.kubernetes.io/auth-url",
+        "gateway_api_equivalent": "ExtensionRef to external auth policy or NGINX Gateway Fabric snippet"
+      },
+      {
+        "ingress_annotation": "nginx.ingress.kubernetes.io/canary-weight",
+        "gateway_api_equivalent": "HTTPRoute backendRefs with weight field (native Gateway API feature)"
+      }
+    ]
+  },
+  "jq_usage_guide": [
+    {
+      "query": ".knowledge_layers.layer_7_common_pitfalls.truth_lens[0].truths[] | select(.id==\"P01\")",
+      "description": "Worker process auto detection pitfall in K8s"
+    },
+    {
+      "query": ".knowledge_layers.layer_2_enterprise_caching.truth_lens[] | select(.concept==\"k8s_cache_volume_patterns\") | .truths[]",
+      "description": "All K8s cache volume patterns (A through D)"
+    },
+    {
+      "query": ".k8s_nginx_config_reference.patterns[] | select(.id==\"configmap_production\") | .config",
+      "description": "Production ConfigMap key-value reference"
+    },
+    {
+      "query": ".knowledge_layers.layer_4_http3_quic.truth_lens[] | select(.concept==\"http3_server_config\") | .truths[]",
+      "description": "HTTP/3 QUIC nginx server block directives"
+    },
+    {
+      "query": ".anti_patterns[] | select(.id | startswith(\"AP0\"))",
+      "description": "First 9 anti-patterns"
+    },
+    {
+      "query": ".must_have_feature_checklist.categories.security[]",
+      "description": "All security checklist items"
+    },
+    {
+      "query": ".knowledge_layers.layer_3_security.truth_lens[] | select(.concept==\"rate_limiting\") | .truths[]",
+      "description": "All rate limiting truths"
+    },
+    {
+      "query": ".knowledge_layers.layer_5_autoscaling_and_ha.truth_lens[] | select(.concept==\"zero_downtime_reload\") | .truths[]",
+      "description": "Zero-downtime reload and graceful drain patterns"
+    },
+    {
+      "query": ".migration_guide_ingress_nginx_to_gateway_fabric.annotation_to_policy_mapping[]",
+      "description": "Ingress annotation → Gateway API policy migration map"
+    },
+    {
+      "query": ".core_principles[] | select(.id==\"INGRESS_NGINX_RETIRED\")",
+      "description": "Retirement context and migration mandate"
+    },
+    {
+      "query": ".knowledge_layers.layer_8_modules_and_plugins.truth_lens[] | select(.concept==\"must_have_modules\") | .truths[]",
+      "description": "All must-have NGINX modules with descriptions"
+    },
+    {
+      "query": ".k8s_nginx_config_reference.patterns[] | select(.id==\"keda_scaledobject\") | .yaml",
+      "description": "KEDA ScaledObject YAML for NGINX autoscaling"
+    }
+  ]
+}

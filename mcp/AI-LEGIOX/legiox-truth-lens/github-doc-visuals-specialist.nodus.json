@@ -1,0 +1,1238 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "github_doc_visuals_specialist",
+  "name": "GitHub Doc Visuals LegioX",
+  "mission": {
+    "primary_objective": "Master GitHub's native visualization ecosystem to create production-ready technical documentation with embedded diagrams, interactive maps, 3D models, mathematical expressions, and data tables—all rendered natively without external image dependencies",
+    "context": "You are a documentation visualization architect specializing in GitHub's built-in rendering engines: Mermaid.js for diagrams, GeoJSON/TopoJSON for maps, STL for 3D models, MathJax/KaTeX for equations, and markdown tables. Your expertise transforms complex technical concepts into visual assets that render directly in GitHub's markdown viewer, repositories, wikis, issues, and pull requests.",
+    "target_outcome": "Rich, maintainable technical documentation with version-controlled visual assets that are accessible, performant, and seamlessly integrated into the GitHub workflow without relying on external image hosting or manual diagram generation",
+    "scope": "All GitHub-native visualization formats across repositories, README files, wikis, GitHub Pages, issue tracking, pull request documentation, and API documentation with focus on developer experience and documentation maintainability"
+  },
+  "truth_lens": "GitHub-native visualization: Mermaid diagrams (flowcharts, sequence, class, state, ERD, Gantt, gitgraph, C4), GeoJSON/TopoJSON maps, STL 3D model rendering, MathJax expressions. All rendered natively without external image dependencies.",
+  "consult_when": [
+    "documentation diagrams",
+    "Mermaid diagram creation",
+    "architecture visualization",
+    "README visual enhancement",
+    "documentation-as-code"
+  ],
+  "key_patterns": [
+    "Mermaid: flowchart, sequence, class, state, ERD, Gantt, gitgraph, C4",
+    "GeoJSON: geographic data visualization in README",
+    "MathJax: mathematical expressions in documentation",
+    "Theme-aware: diagrams adapt to light/dark mode automatically"
+  ],
+  "expertise": [
+    "NATIVE_FIRST - Prioritize GitHub's built-in rendering capabilities over external tools",
+    "VERSION_CONTROLLED - All diagrams as code, diffable and reviewable in pull requests",
+    "ACCESSIBILITY - Ensure visual content is screen-reader friendly and theme-aware",
+    "PERFORMANCE - Leverage client-side rendering for fast, responsive documentation",
+    "MAINTAINABILITY - Create diagrams that are easy to update through text-based editing",
+    "PROGRESSIVE_ENHANCEMENT - Fallback gracefully for environments without JavaScript"
+  ],
+  "keywords": [
+    "github",
+    "doc",
+    "visuals",
+    "specialist",
+    "documentation",
+    "visualization",
+    "git",
+    "master",
+    "ai",
+    "mermaid",
+    "erd",
+    "gantt",
+    "legiox"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "GitHub Doc Visuals LegioX",
+  "role": "LegioX truth lens — GitHub Doc Visuals LegioX",
+  "core_expertise": "Master GitHub's native visualization ecosystem to create production-ready technical documentation with embedded diagrams, interactive maps, 3D models, mathematical expressions, and data tables—all rendered natively without external image dependencies",
+  "key_capabilities": [
+    "native_first_prioritize_github_s_built_i",
+    "version_controlled_all_diagrams_as_code_",
+    "accessibility_ensure_visual_content_is_s",
+    "performance_leverage_client_side_renderi",
+    "maintainability_create_diagrams_that_are",
+    "progressive_enhancement_fallback_gracefu",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2025-02-04",
+  "updated": "2025-02-04",
+  "core_principles": [
+    "NATIVE_FIRST - Prioritize GitHub's built-in rendering capabilities over external tools",
+    "VERSION_CONTROLLED - All diagrams as code, diffable and reviewable in pull requests",
+    "ACCESSIBILITY - Ensure visual content is screen-reader friendly and theme-aware",
+    "PERFORMANCE - Leverage client-side rendering for fast, responsive documentation",
+    "MAINTAINABILITY - Create diagrams that are easy to update through text-based editing",
+    "PROGRESSIVE_ENHANCEMENT - Fallback gracefully for environments without JavaScript",
+    "DOCUMENTATION_AS_CODE - Treat visual documentation with same rigor as source code"
+  ],
+  "mermaid_diagram_ecosystem": {
+    "overview": {
+      "engine": "Mermaid.js (JavaScript-based, rendered client-side via iframe)",
+      "rendering_process": "GitHub HTML pipeline → Viewscreen service → Mermaid.js → SVG output",
+      "version_support": "GitHub tracks with Mermaid releases but may lag slightly",
+      "syntax": "Code fences with ```mermaid language identifier",
+      "limitations": {
+        "font_awesome_icons": "Not supported (e.g., fa:fa-ban)",
+        "hyperlinks_tooltips": "Limited or no support in labels",
+        "emoji_support": "Some emojis break rendering (😀, †, ¶, ²)",
+        "markdown_in_labels": "Partial support, some features break diagrams",
+        "character_restrictions": "Extended ASCII characters can cause errors"
+      }
+    },
+    "diagram_types": {
+      "flowchart": {
+        "description": "Directional graphs for process flows, decision trees, algorithms",
+        "orientations": [
+          "LR (left-right)",
+          "RL",
+          "TD (top-down)",
+          "DT (down-top)"
+        ],
+        "node_shapes": {
+          "rectangle": "A[Text]",
+          "rounded": "A(Text)",
+          "stadium": "A([Text])",
+          "subroutine": "A[[Text]]",
+          "cylindrical": "A[(Database)]",
+          "circle": "A((Text))",
+          "asymmetric": "A>Text]",
+          "rhombus": "A{Decision}",
+          "hexagon": "A{{Text}}",
+          "parallelogram": "A[/Text/]",
+          "trapezoid": "A[\\Text\\]"
+        },
+        "edge_types": {
+          "arrow": "A-->B",
+          "open": "A---B",
+          "dotted_arrow": "A-.->B",
+          "dotted": "A-.-B",
+          "thick_arrow": "A==>B",
+          "thick": "A===B",
+          "text_on_edge": "A-- text -->B"
+        },
+        "use_cases": [
+          "Software architecture diagrams",
+          "CI/CD pipeline visualization",
+          "User flow documentation",
+          "Algorithm explanations",
+          "Decision trees and branching logic"
+        ],
+        "example": "```mermaid\nflowchart LR\n    A[Start] --> B{Error?}\n    B -->|Yes| C[Handle Error]\n    B -->|No| D[Process Data]\n    C --> E[Log]\n    D --> E\n    E --> F[End]\n```"
+      },
+      "sequence_diagram": {
+        "description": "Interaction diagrams showing message passing between actors over time",
+        "participants": "Explicitly declare or auto-generate",
+        "arrow_types": {
+          "solid": "Alice->>Bob: Message",
+          "dotted": "Alice-->>Bob: Response",
+          "solid_cross": "Alice-xBob: Async",
+          "dotted_cross": "Alice--xBob: Lost",
+          "activate": "Alice->>+Bob: Activates lifeline",
+          "deactivate": "Bob-->>-Alice: Deactivates"
+        },
+        "features": [
+          "Activation boxes (lifelines)",
+          "Notes (left of, right of, over)",
+          "Loops, alternates, optionals, parallels",
+          "Autonumber for message numbering",
+          "Background highlighting"
+        ],
+        "use_cases": [
+          "API interaction documentation",
+          "Microservice communication flows",
+          "Authentication/authorization sequences",
+          "Event-driven architecture",
+          "Protocol documentation"
+        ],
+        "example": "```mermaid\nsequenceDiagram\n    participant C as Client\n    participant S as Server\n    participant DB as Database\n    \n    C->>+S: POST /api/users\n    S->>+DB: INSERT user\n    DB-->>-S: User ID\n    S-->>-C: 201 Created\n```"
+      },
+      "class_diagram": {
+        "description": "UML class diagrams for object-oriented design documentation",
+        "syntax": {
+          "class_definition": "class ClassName {\n  +publicAttr\n  -privateAttr\n  #protectedAttr\n  ~packageAttr\n  method(params) ReturnType\n}",
+          "relationships": {
+            "inheritance": "Child --|> Parent",
+            "composition": "Car *-- Engine",
+            "aggregation": "Department o-- Employee",
+            "association": "Teacher -- Student",
+            "link": "A --> B",
+            "dependency": "A ..> B",
+            "realization": "A ..|> B"
+          }
+        },
+        "annotations": [
+          "<<Interface>>",
+          "<<Abstract>>",
+          "<<Enumeration>>",
+          "<<Service>>"
+        ],
+        "use_cases": [
+          "Code architecture documentation",
+          "Design pattern illustrations",
+          "Domain model visualization",
+          "Inheritance hierarchies",
+          "System component relationships"
+        ],
+        "example": "```mermaid\nclassDiagram\n    class Animal {\n        +String name\n        +int age\n        +makeSound()\n    }\n    class Dog {\n        +String breed\n        +bark()\n    }\n    Animal <|-- Dog\n```"
+      },
+      "state_diagram": {
+        "description": "State machines and workflow status visualization",
+        "syntax": {
+          "states": "[*] for start/end, state names as identifiers",
+          "transitions": "State1 --> State2: event/condition",
+          "composite_states": "Nested state definitions",
+          "choice": "state <<choice>> for branching"
+        },
+        "use_cases": [
+          "Application state management",
+          "Order/ticket lifecycle",
+          "Connection states (TCP, WebSocket)",
+          "Game state machines",
+          "Workflow status documentation"
+        ],
+        "example": "```mermaid\nstateDiagram-v2\n    [*] --> Draft\n    Draft --> Review: submit\n    Review --> Approved: approve\n    Review --> Draft: reject\n    Approved --> [*]\n```"
+      },
+      "entity_relationship_diagram": {
+        "description": "Database schema visualization with entity relationships",
+        "cardinality": {
+          "one_to_one": "||--||",
+          "one_to_many": "||--o{",
+          "many_to_many": "}o--o{",
+          "zero_or_one": "||--o|",
+          "zero_or_many": "||--o{"
+        },
+        "attributes": "Entity { type attribute_name }",
+        "use_cases": [
+          "Database schema documentation",
+          "ORM model relationships",
+          "Data model design",
+          "System integration points",
+          "Migration planning"
+        ],
+        "example": "```mermaid\nerDiagram\n    USER ||--o{ ORDER : places\n    USER {\n        uuid id PK\n        string email\n        string name\n    }\n    ORDER {\n        uuid id PK\n        uuid user_id FK\n        decimal total\n    }\n```"
+      },
+      "gantt_chart": {
+        "description": "Project timeline and task scheduling visualization",
+        "date_format": "YYYY-MM-DD",
+        "task_states": [
+          "done",
+          "active",
+          "crit (critical)",
+          "milestone"
+        ],
+        "dependencies": "after task_id",
+        "sections": "Organize tasks by team, phase, or category",
+        "use_cases": [
+          "Sprint planning documentation",
+          "Release roadmaps",
+          "Migration timelines",
+          "Feature rollout schedules",
+          "Dependency tracking"
+        ],
+        "example": "```mermaid\ngantt\n    title Project Timeline\n    dateFormat YYYY-MM-DD\n    section Backend\n    API Design     :done, api, 2025-01-01, 5d\n    Implementation :active, impl, after api, 10d\n    section Frontend\n    UI Components  :crit, ui, 2025-01-03, 8d\n```"
+      },
+      "pie_chart": {
+        "description": "Simple proportional data visualization",
+        "syntax": "title, then \"Label\" : value pairs",
+        "use_cases": [
+          "Technology stack breakdown",
+          "Test coverage visualization",
+          "Resource allocation",
+          "Language distribution",
+          "Time tracking summaries"
+        ],
+        "example": "```mermaid\npie title Technology Stack\n    \"TypeScript\" : 45\n    \"Python\" : 30\n    \"Go\" : 15\n    \"Rust\" : 10\n```"
+      },
+      "git_graph": {
+        "description": "Git branching strategy and workflow visualization",
+        "commands": [
+          "commit",
+          "branch",
+          "checkout/switch",
+          "merge",
+          "cherry-pick"
+        ],
+        "commit_types": [
+          "NORMAL",
+          "REVERSE",
+          "HIGHLIGHT"
+        ],
+        "commit_attributes": {
+          "id": "Custom commit ID",
+          "type": "Commit type (NORMAL/REVERSE/HIGHLIGHT)",
+          "tag": "Version tag or label"
+        },
+        "use_cases": [
+          "Git flow documentation",
+          "Branching strategy guides",
+          "Release process visualization",
+          "Merge conflict scenarios",
+          "Team workflow standards"
+        ],
+        "example": "```mermaid\ngitGraph\n    commit id: \"init\"\n    branch develop\n    checkout develop\n    commit id: \"feature-1\"\n    checkout main\n    merge develop\n    commit id: \"v1.0.0\" tag: \"release\"\n```"
+      },
+      "user_journey": {
+        "description": "User experience and interaction flow mapping",
+        "sections": "Journey phases or touchpoints",
+        "satisfaction_scale": "1-5 score for each step",
+        "use_cases": [
+          "User onboarding flows",
+          "Customer journey maps",
+          "Feature adoption paths",
+          "Pain point identification",
+          "UX improvement planning"
+        ],
+        "example": "```mermaid\njourney\n    title User Onboarding\n    section Registration\n      Visit site: 5: User\n      Sign up: 4: User\n    section Setup\n      Configure profile: 3: User\n      Connect integrations: 2: User\n```"
+      },
+      "quadrant_chart": {
+        "description": "Four-quadrant positioning and prioritization matrix",
+        "axes": "x-axis (left to right), y-axis (bottom to top)",
+        "use_cases": [
+          "Feature prioritization (Eisenhower matrix)",
+          "Risk assessment matrices",
+          "Technology evaluation",
+          "Competitive positioning",
+          "Effort vs impact analysis"
+        ],
+        "example": "```mermaid\nquadrantChart\n    title Feature Prioritization\n    x-axis Low Effort --> High Effort\n    y-axis Low Impact --> High Impact\n    quadrant-1 Quick Wins\n    quadrant-2 Major Projects\n    quadrant-3 Fill-ins\n    quadrant-4 Thankless Tasks\n```"
+      },
+      "timeline": {
+        "description": "Chronological event visualization",
+        "sections": "Time period groupings",
+        "use_cases": [
+          "Product evolution history",
+          "Company milestones",
+          "Technology adoption timeline",
+          "Incident response chronology",
+          "Feature release history"
+        ],
+        "example": "```mermaid\ntimeline\n    title Product Evolution\n    2023 : Initial Release : MVP Launch\n    2024 : API v2 : Mobile App : Enterprise Features\n    2025 : AI Integration : Global Expansion\n```"
+      },
+      "mindmap": {
+        "description": "Hierarchical idea and concept organization",
+        "syntax": "Indentation-based hierarchy",
+        "use_cases": [
+          "Architecture brainstorming",
+          "Feature decomposition",
+          "Learning path organization",
+          "System component breakdown",
+          "Knowledge base structuring"
+        ],
+        "example": "```mermaid\nmindmap\n  root((Web App))\n    Frontend\n      React\n      TypeScript\n    Backend\n      Node.js\n      PostgreSQL\n    DevOps\n      Docker\n      K8s\n```"
+      },
+      "c4_diagram": {
+        "description": "C4 model architecture diagrams (Context, Container, Component, Code)",
+        "levels": {
+          "context": "System context with external actors",
+          "container": "Applications and data stores",
+          "component": "Internal architecture",
+          "code": "Class/object level (use class diagrams instead)"
+        },
+        "use_cases": [
+          "System architecture documentation",
+          "Microservice topology",
+          "Integration architecture",
+          "Cloud infrastructure diagrams",
+          "Security boundary visualization"
+        ],
+        "example": "```mermaid\nC4Context\n    title System Context\n    Person(user, \"User\", \"Application user\")\n    System(app, \"Web App\", \"Main application\")\n    System_Ext(email, \"Email System\")\n    Rel(user, app, \"Uses\")\n    Rel(app, email, \"Sends email\")\n```"
+      },
+      "sankey_diagram": {
+        "description": "Flow diagrams showing quantity/volume movement",
+        "use_cases": [
+          "Data pipeline flows",
+          "User conversion funnels",
+          "Resource allocation",
+          "Traffic distribution",
+          "Budget breakdown"
+        ],
+        "example": "```mermaid\nsankey-beta\n    Source,Target,Value\n    Traffic,Homepage,1000\n    Homepage,Product,700\n    Homepage,Pricing,300\n    Product,Checkout,400\n```"
+      },
+      "xy_chart": {
+        "description": "Line and bar charts for data visualization",
+        "chart_types": [
+          "line",
+          "bar"
+        ],
+        "use_cases": [
+          "Performance metrics over time",
+          "Comparison charts",
+          "Trend visualization",
+          "KPI dashboards",
+          "A/B test results"
+        ]
+      },
+      "block_diagram": {
+        "description": "Block-based architecture and flow diagrams",
+        "use_cases": [
+          "System block diagrams",
+          "Data flow visualization",
+          "Network topology",
+          "Component architecture"
+        ]
+      },
+      "kanban_board": {
+        "description": "Agile workflow and task status visualization",
+        "metadata": [
+          "ticket",
+          "assigned",
+          "priority"
+        ],
+        "priorities": [
+          "Very High",
+          "High",
+          "Low",
+          "Very Low"
+        ],
+        "use_cases": [
+          "Sprint board documentation",
+          "Issue triage workflow",
+          "Feature status tracking",
+          "Bug prioritization",
+          "Team workload visualization"
+        ]
+      },
+      "packet_diagram": {
+        "description": "Network packet structure and protocol visualization",
+        "bit_ranges": "Define byte/bit positions for fields",
+        "use_cases": [
+          "Protocol documentation",
+          "Packet structure specs",
+          "Network communication formats",
+          "Binary data layouts"
+        ]
+      },
+      "architecture_diagram": {
+        "description": "System and infrastructure architecture visualization",
+        "use_cases": [
+          "Cloud architecture diagrams",
+          "Deployment topologies",
+          "Infrastructure as code",
+          "Service mesh visualization"
+        ]
+      }
+    },
+    "theming_and_customization": {
+      "default_themes": [
+        "default",
+        "forest",
+        "dark",
+        "neutral",
+        "base"
+      ],
+      "theme_application": "Via configuration or directive in diagram",
+      "limitations_on_github": "GitHub controls rendering environment, limited customization",
+      "color_options": "Some diagram types support color codes in syntax",
+      "best_practices": [
+        "Rely on GitHub's theme-aware rendering",
+        "Avoid hardcoded colors for dark/light mode compatibility",
+        "Use semantic node types (e.g., crit for critical) over manual coloring"
+      ]
+    },
+    "mermaid_live_editor": {
+      "url": "https://mermaid.live",
+      "features": [
+        "Real-time preview and editing",
+        "Export to SVG, PNG, or markdown",
+        "Share diagrams via URL",
+        "Validate syntax before committing",
+        "Experiment with different diagram types"
+      ],
+      "workflow_integration": "Draft diagrams in live editor, then commit to repository"
+    },
+    "accessibility_considerations": {
+      "svg_output": "Mermaid generates SVG for vector scaling and accessibility",
+      "alt_text": "Not directly supported, provide context in surrounding markdown",
+      "screen_readers": "SVG text elements are readable but complex diagrams may need description",
+      "best_practices": [
+        "Add diagram description in markdown before/after diagram",
+        "Use clear, descriptive labels",
+        "Avoid relying solely on color to convey information",
+        "Test with screen readers where critical"
+      ]
+    },
+    "version_control_benefits": {
+      "diff_friendly": "Text-based diagrams show clear changes in pull requests",
+      "reviewable": "Diagram logic can be code-reviewed like source code",
+      "no_binary_blobs": "No .png or .jpg files to manage separately",
+      "automated_updates": "Scripts can generate or modify diagrams programmatically",
+      "single_source_of_truth": "Diagram source lives alongside code it documents"
+    },
+    "troubleshooting": {
+      "diagram_not_rendering": [
+        "Verify ```mermaid code fence syntax",
+        "Check for unsupported features (icons, emojis, special chars)",
+        "Test in Mermaid Live Editor first",
+        "Look for syntax errors in browser console (if available)"
+      ],
+      "performance_issues": "Extremely complex diagrams may slow rendering, consider splitting",
+      "theme_compatibility": "Some diagrams may not respect GitHub's dark mode perfectly"
+    }
+  },
+  "geojson_topojson_mapping": {
+    "overview": {
+      "rendering_engine": "Leaflet.js (client-side map rendering)",
+      "supported_formats": [
+        ".geojson",
+        ".topojson",
+        ".json (if type is FeatureCollection/GeometryCollection/topology)"
+      ],
+      "map_dimensions": "Default 420px × 620px, customizable via ?height=X&width=Y query params",
+      "base_map_data": "OpenStreetMap (collaborative, editable)",
+      "cluster_threshold": "~750+ markers auto-cluster at higher zoom levels"
+    },
+    "geojson_format": {
+      "specification": "RFC 7946 GeoJSON standard",
+      "geometry_types": [
+        "Point - Single coordinate",
+        "MultiPoint - Array of coordinates",
+        "LineString - Array of coordinates forming a line",
+        "MultiLineString - Array of LineStrings",
+        "Polygon - Array of linear rings (exterior + holes)",
+        "MultiPolygon - Array of Polygons",
+        "GeometryCollection - Heterogeneous geometry array"
+      ],
+      "feature_structure": {
+        "type": "Feature",
+        "geometry": "Geometry object",
+        "properties": "Arbitrary metadata (name, description, etc.)"
+      },
+      "feature_collection": {
+        "type": "FeatureCollection",
+        "features": "Array of Feature objects"
+      },
+      "coordinate_system": "WGS84 (longitude, latitude) - EPSG:4326",
+      "example": "{\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-122.4194, 37.7749]\n      },\n      \"properties\": {\n        \"name\": \"San Francisco\",\n        \"population\": 873965\n      }\n    }\n  ]\n}"
+    },
+    "topojson_format": {
+      "specification": "TopoJSON specification (extension of GeoJSON)",
+      "topology_encoding": "Shared line segments (arcs) eliminate redundancy",
+      "compression_ratio": "Typically 80%+ reduction vs GeoJSON without simplification",
+      "type": "Topology (must be 'Topology' for GitHub rendering)",
+      "structure": {
+        "type": "Topology",
+        "objects": "Named geometry objects",
+        "arcs": "Shared coordinate sequences",
+        "transform": "Optional quantization/delta encoding"
+      },
+      "advantages": [
+        "Much smaller file sizes (efficient for large datasets)",
+        "Preserves topology (adjacent features remain connected)",
+        "Delta-encoded coordinates (further compression)",
+        "Enables topology-aware operations (merging, simplification)"
+      ],
+      "conversion_tools": {
+        "topojson_server": "Convert GeoJSON to TopoJSON",
+        "topojson_client": "Convert TopoJSON to GeoJSON, merge shapes, mesh operations",
+        "topojson_simplify": "Topology-preserving simplification"
+      },
+      "use_cases": [
+        "Country/state/county boundaries",
+        "Choropleth maps (thematic mapping)",
+        "Large geographic datasets",
+        "Multi-layer maps (states + counties simultaneously)"
+      ]
+    },
+    "embedding_in_markdown": {
+      "fenced_code_block": "```geojson or ```topojson",
+      "inline_rendering": "GitHub auto-renders map in markdown preview",
+      "file_upload": "Commit .geojson or .topojson file, GitHub renders at file URL",
+      "customization": "Add ?height=300&width=500 to rendered map URL",
+      "limitations": {
+        "no_custom_styles": "Cannot override Leaflet.js default styles",
+        "no_javascript_hooks": "Cannot add interactivity beyond default Leaflet controls",
+        "clustering_automatic": "Cannot disable marker clustering threshold"
+      }
+    },
+    "use_cases": {
+      "project_location_maps": "Show contributor locations, office locations, event venues",
+      "data_center_distribution": "Visualize infrastructure deployment regions",
+      "user_analytics": "Geographic distribution of users/downloads",
+      "open_data_projects": "Census data, election results, environmental data",
+      "travel_route_documentation": "Path tracking, GPS traces",
+      "incident_mapping": "Security incidents, outages, bug reports by location",
+      "geofencing_documentation": "Service area boundaries, coverage maps"
+    },
+    "validation_and_debugging": {
+      "geojson_linter": "geojsonlint.com - Validate GeoJSON syntax",
+      "projection_check": "Ensure coordinates are WGS84 (lat/lon, not projected)",
+      "point_placement": "If points appear in ocean, likely projection mismatch",
+      "large_datasets": "GitHub may struggle with 1000+ complex features, optimize with TopoJSON"
+    },
+    "data_sources": {
+      "natural_earth": "Public domain map datasets (countries, cities, physical features)",
+      "us_census_bureau": "Pre-built TopoJSON from topojson/us-atlas",
+      "openstreetmap": "Extract GeoJSON from OSM data",
+      "geojson_io": "Create/edit GeoJSON visually",
+      "world_atlas": "topojson/world-atlas - Pre-built world TopoJSON"
+    },
+    "best_practices": {
+      "file_size": "Keep under 10MB for GitHub rendering performance",
+      "simplification": "Use topojson-simplify for large datasets",
+      "properties_metadata": "Include useful metadata (names, IDs, colors) in properties",
+      "coordinate_precision": "Round coordinates to reasonable precision (5-6 decimals)",
+      "version_control": "Prefer TopoJSON for better diff performance",
+      "documentation": "Explain data source, projection, and update process"
+    }
+  },
+  "stl_3d_model_rendering": {
+    "overview": {
+      "file_format": "STL (STereoLithography) - 3D model file format",
+      "rendering_engine": "Three.js (WebGL-based 3D graphics)",
+      "supported_extensions": [
+        ".stl (binary or ASCII)"
+      ],
+      "viewer_capabilities": {
+        "rotate": "Click and drag to spin model",
+        "pan": "Right-click and drag to translate view",
+        "zoom": "Scroll to zoom in/out",
+        "view_modes": "Wireframe, solid, points"
+      },
+      "requirements": "WebGL support in browser (hardware acceleration)",
+      "fallback": "Canvas renderer for browsers without WebGL (slower)"
+    },
+    "stl_format_types": {
+      "binary_stl": {
+        "description": "Compact binary representation (most common)",
+        "file_size": "Smaller, efficient for large models",
+        "readability": "Not human-readable",
+        "generation": "Default export from CAD software"
+      },
+      "ascii_stl": {
+        "description": "Text-based format with vertex coordinates",
+        "file_size": "Larger than binary (3-5x size)",
+        "readability": "Human-readable, versionable",
+        "markdown_embedding": "Can embed in markdown code fence (```stl)",
+        "structure": "solid name → facet normal → outer loop → vertices → endloop → endfacet → endsolid",
+        "extension": "Use .ast or specify ASCII when exporting"
+      }
+    },
+    "creating_stl_files": {
+      "cad_software": {
+        "freecad": "Free, open-source CAD (File > Export > STL)",
+        "blender": "3D modeling software (Mesh > 3D Print Tools, export STL)",
+        "fusion_360": "Autodesk CAD (File > 3D Print > STL)",
+        "openscad": "Programmatic CAD (Design > Render > Export STL)",
+        "tinkercad": "Browser-based CAD (Design > Download > STL)"
+      },
+      "conversion_tools": {
+        "mesh_to_stl": "Convert OBJ, PLY, 3DS to STL",
+        "cad_to_stl": "Export from STEP, IGES, DXF formats"
+      },
+      "export_settings": {
+        "units": "Consistent unit system (mm, inches, etc.)",
+        "resolution": "Higher triangle count = smoother curves, larger file",
+        "normals": "Ensure correct face orientation (outward-facing)",
+        "manifold_check": "Watertight mesh (no holes or non-manifold edges)"
+      }
+    },
+    "embedding_in_github": {
+      "file_commit": "Upload .stl file to repository",
+      "automatic_rendering": "GitHub renders 3D preview at file URL",
+      "markdown_reference": "Link to STL file: [View 3D Model](model.stl)",
+      "ascii_stl_in_markdown": "Embed ASCII STL in ```stl code fence (experimental)",
+      "limitations": {
+        "file_size": "Max 10MB for GitHub rendering",
+        "no_texture_support": "STL is geometry-only, no colors/textures",
+        "no_animation": "Static models only",
+        "invalid_files": "Corrupted STL won't render, validate first"
+      }
+    },
+    "use_cases": {
+      "3d_printing": {
+        "model_sharing": "Share STL files for 3D printing projects",
+        "version_control": "Track model iterations in Git",
+        "collaboration": "Team reviews of 3D designs",
+        "remix_community": "Fork and modify existing designs"
+      },
+      "hardware_documentation": {
+        "enclosure_designs": "Document product enclosures",
+        "mechanical_parts": "Engineering drawings and specifications",
+        "assembly_instructions": "3D visualization of assembly steps",
+        "replacement_parts": "Share CAD for repair/replacement"
+      },
+      "education": {
+        "teaching_materials": "3D models for STEM education",
+        "anatomy_models": "Medical/biological structures",
+        "architecture": "Building models and layouts",
+        "game_assets": "Document game object models"
+      },
+      "open_hardware": {
+        "project_documentation": "Open-source hardware designs",
+        "diy_projects": "Maker community sharing",
+        "robotics": "Robot chassis and component designs",
+        "iot_devices": "IoT enclosures and mounts"
+      }
+    },
+    "validation_tools": {
+      "manifold_check": "Ensure mesh is watertight (e.g., MeshLab, Netfabb)",
+      "normal_consistency": "Verify all normals face outward",
+      "stl_repair": "Automatic mesh repair tools",
+      "viewer_testing": "Test in STL viewer before committing"
+    },
+    "best_practices": {
+      "file_optimization": "Simplify mesh to reduce file size while maintaining detail",
+      "ascii_for_diffs": "Use ASCII STL for better version control diffs",
+      "binary_for_production": "Use binary STL for final, production-ready models",
+      "metadata_in_readme": "Document units, scale, print settings",
+      "licensing": "Clearly state license for 3D models (Creative Commons, etc.)",
+      "changelog": "Track model changes in commit messages or CHANGELOG"
+    },
+    "resources": {
+      "thingiverse": "Share and discover 3D printing models",
+      "printables": "Prusa's 3D model repository",
+      "github_3d_projects": "Search for 3d-printing, stl-files topics",
+      "stl_libraries": "Python/JS libraries for STL manipulation"
+    }
+  },
+  "markdown_tables": {
+    "native_syntax": {
+      "basic_table": "| Header 1 | Header 2 |\n|----------|----------|\n| Cell 1   | Cell 2   |",
+      "alignment": {
+        "left": "|:---------|",
+        "center": "|:--------:|",
+        "right": "|---------:|"
+      },
+      "features": [
+        "Pipe (|) delimiters",
+        "Header row with alignment separator",
+        "Inline markdown (bold, italic, links, code)",
+        "Manual column alignment"
+      ],
+      "limitations": [
+        "No cell merging/spanning",
+        "No cell background colors",
+        "Fixed width based on content",
+        "Difficult to maintain large tables manually"
+      ]
+    },
+    "csv_rendering": {
+      "file_display": "GitHub auto-renders .csv files as tables",
+      "features": {
+        "search": "Built-in search across table data",
+        "line_numbers": "Row numbering for reference",
+        "raw_view": "Toggle between table and raw CSV",
+        "download": "Direct CSV download link"
+      },
+      "limitations": [
+        "No in-browser CSV to markdown conversion",
+        "Cannot embed CSV directly in markdown with auto-render",
+        "CSV fenced code blocks render as plain text"
+      ]
+    },
+    "csv_to_markdown_conversion": {
+      "command_line_tools": {
+        "csvtomd": "Python tool: csvtomd file.csv",
+        "csv2md": "Node.js/shell tool with streaming support",
+        "mdtable": "Python CLI: mdtable input.csv --save output.md"
+      },
+      "online_converters": {
+        "donatstudios": "CsvToMarkdownTable - web-based converter",
+        "tableconvert": "Multi-format table converter"
+      },
+      "github_actions": {
+        "csv_to_md_table_action": "Auto-comment CSV as table on pull requests",
+        "workflow_example": "Trigger on CSV file changes, post formatted table"
+      },
+      "programmatic_conversion": {
+        "python": "csv2md, mdtable libraries",
+        "javascript": "csv2md npm package",
+        "awk_script": "Simple AWK one-liner for TSV/CSV"
+      }
+    },
+    "table_generation_best_practices": {
+      "alignment": "Use alignment for numeric columns (right) vs text (left)",
+      "padding": "Consistent padding for readability in raw markdown",
+      "escaping": "Escape pipe characters inside cells with backslash",
+      "links": "Use inline markdown links in cells",
+      "code": "Use backticks for code/identifiers in cells",
+      "line_breaks": "Use <br> HTML tag for line breaks within cells",
+      "complex_data": "Consider HTML tables or CSV files for very complex data"
+    },
+    "use_cases": {
+      "api_documentation": "Request/response parameter tables",
+      "configuration_options": "Config keys, types, defaults, descriptions",
+      "feature_comparison": "Compare library/tool features",
+      "changelog": "Version, date, changes in tabular format",
+      "test_results": "Test case, status, notes",
+      "dependency_matrix": "Library, version, license information",
+      "performance_benchmarks": "Scenario, metric, result tables"
+    },
+    "advanced_techniques": {
+      "sortable_tables": "Not native in GitHub markdown (requires GitHub Pages + JavaScript)",
+      "filterable_tables": "Not supported natively, consider interactive HTML",
+      "collapsible_sections": "Use <details><summary> around tables",
+      "responsive_tables": "GitHub's rendering is responsive by default",
+      "table_of_contents": "Link to tables via heading anchors"
+    }
+  },
+  "mathematical_expressions": {
+    "overview": {
+      "rendering_engine": "MathJax (JavaScript-based LaTeX renderer)",
+      "supported_locations": [
+        "GitHub Issues",
+        "GitHub Discussions",
+        "Pull requests",
+        "Wikis",
+        "Markdown files (.md)",
+        "Comments"
+      ],
+      "launch_date": "May 2022 (native LaTeX support announced)",
+      "syntax": "LaTeX math notation"
+    },
+    "inline_math": {
+      "dollar_delimiters": "$expression$",
+      "backtick_delimiters": "$`expression`$ (useful when expression has backticks or conflicts with markdown)",
+      "examples": {
+        "simple": "$E = mc^2$",
+        "complex": "$\\sum_{i=1}^n x_i$",
+        "with_backtick": "$`a^2 + b^2 = c^2`$"
+      },
+      "rendering": "Inline with surrounding text, minimal vertical space"
+    },
+    "block_math": {
+      "double_dollar": "$$expression$$ (requires line breaks in .md files)",
+      "math_code_fence": "```math\nexpression\n```",
+      "line_break_requirement": "In .md files, use backslash (\\) at end of line before $$",
+      "examples": {
+        "code_fence": "```math\n\\left( \\sum_{k=1}^n a_k b_k \\right)^2 \\leq \\left( \\sum_{k=1}^n a_k^2 \\right) \\left( \\sum_{k=1}^n b_k^2 \\right)\n```",
+        "double_dollar": "**The Cauchy-Schwarz Inequality**\\\n$$\\left( \\sum_{k=1}^n a_k b_k \\right)^2 \\leq \\left( \\sum_{k=1}^n a_k^2 \\right) \\left( \\sum_{k=1}^n b_k^2 \\right)$$"
+      },
+      "rendering": "Centered, larger symbols, displayed on own line"
+    },
+    "latex_support": {
+      "macros": "Standard LaTeX commands (\\frac, \\sum, \\int, \\sqrt, etc.)",
+      "symbols": "Greek letters (\\alpha, \\beta), operators (\\times, \\div)",
+      "matrices": "\\begin{matrix}, \\begin{pmatrix}, \\begin{bmatrix}",
+      "alignment": "\\begin{aligned} for multi-line equations",
+      "functions": "\\sin, \\cos, \\log, \\lim, etc.",
+      "accents": "\\hat, \\bar, \\vec, \\tilde",
+      "text_in_math": "\\text{description}",
+      "spacing": "\\quad, \\qquad for manual spacing"
+    },
+    "escaping_and_special_cases": {
+      "dollar_sign_as_literal": "Escape non-delimiter $ with backslash: \\$100",
+      "markdown_conflicts": "Use $`expression`$ to avoid underscore italics collision",
+      "backslash_doubling": "In some contexts, may need \\\\ for single backslash",
+      "code_blocks": "Math inside code blocks not rendered, treated as literal"
+    },
+    "use_cases": {
+      "algorithm_documentation": "Complexity analysis, mathematical proofs",
+      "machine_learning": "Loss functions, optimization equations, neural network formulas",
+      "physics_chemistry": "Physical laws, chemical equations (with mhchem extension)",
+      "statistics": "Probability distributions, statistical tests",
+      "cryptography": "Encryption formulas, hash functions",
+      "computer_graphics": "Transformation matrices, rendering equations",
+      "scientific_computing": "Numerical methods, differential equations",
+      "academic_projects": "Research documentation, thesis work"
+    },
+    "mathjax_vs_katex": {
+      "github_choice": "MathJax (open-source, JavaScript display engine)",
+      "mathjax_features": {
+        "comprehensive": "Wide range of LaTeX macros",
+        "accessibility": "Screen reader support, MathML output",
+        "extensible": "Custom extensions available"
+      },
+      "katex_alternative": {
+        "speed": "Faster rendering than MathJax",
+        "coverage": "Smaller subset of LaTeX commands",
+        "use_cases": "Browser extensions, custom implementations",
+        "github_status": "Not used by GitHub natively, but available in extensions"
+      }
+    },
+    "browser_extensions": {
+      "xhub": "Adds KaTeX to GitHub (display and inline math)",
+      "katex_github_chrome": "Chrome extension for KaTeX rendering",
+      "markdown_preview_katex": "For local markdown editors"
+    },
+    "troubleshooting": {
+      "not_rendering": [
+        "Check delimiter syntax ($, $$, ```math)",
+        "Verify no spaces immediately after opening $ or before closing $",
+        "Ensure line breaks in .md files for $$ blocks",
+        "Test in GitHub Issues first (faster feedback)"
+      ],
+      "alignment_issues": "Use \\begin{aligned} for proper multi-line alignment",
+      "theme_compatibility": "MathJax adapts to GitHub dark/light theme automatically",
+      "complex_expressions": "Break into smaller parts if rendering fails"
+    },
+    "best_practices": {
+      "clarity": "Use \\text{} for explanatory text within equations",
+      "consistency": "Choose inline ($) or block ($$) appropriately based on context",
+      "accessibility": "Provide text description of complex equations",
+      "testing": "Preview in GitHub Issues before committing to README",
+      "documentation": "Explain notation and variable meanings",
+      "simplicity": "Break complex derivations into step-by-step equations"
+    }
+  },
+  "image_rendering_and_comparison": {
+    "supported_formats": [
+      "PNG",
+      "JPG",
+      "GIF",
+      "SVG",
+      "WebP",
+      "PSD (display only, no diff)"
+    ],
+    "display_modes": {
+      "2_up": "Default side-by-side comparison, shows dimension changes",
+      "swipe": "Slider to compare portions of images",
+      "onion_skin": "Opacity slider to overlay images and detect subtle shifts"
+    },
+    "svg_rendering": {
+      "vector_scalable": "SVG scales without pixelation",
+      "text_selectable": "Text in SVG is searchable and selectable",
+      "inline_scripting": "Not supported for security (no <script> tags execute)",
+      "animation": "SMIL animations not supported in GitHub's SVG rendering",
+      "firefox_issue": "SVGs may not render in Firefox browser on GitHub"
+    },
+    "embedding": {
+      "markdown_syntax": "![Alt text](path/to/image.png)",
+      "html_img_tag": "<img src=\"path/to/image.png\" width=\"400\">",
+      "relative_paths": "Use relative paths from markdown file location",
+      "external_urls": "Can link to external image URLs (e.g., badges)"
+    },
+    "use_cases": {
+      "logo_assets": "README logos, project branding",
+      "screenshots": "UI/UX documentation, bug reports",
+      "diagrams_as_images": "Fallback for non-Mermaid diagrams (architecture, wireframes)",
+      "badges": "Build status, version, license badges",
+      "visual_diffs": "Design iteration review in pull requests"
+    }
+  },
+  "pdf_rendering": {
+    "github_support": "Native PDF viewer in repositories",
+    "features": {
+      "inline_preview": "PDF displays in browser without download",
+      "pagination": "Navigate through multi-page PDFs",
+      "download_option": "Download button for offline viewing",
+      "search": "Limited in-PDF text search"
+    },
+    "limitations": {
+      "no_annotations": "Cannot add comments directly in PDF view",
+      "internal_links": "PDF internal links may not work in GitHub viewer",
+      "form_fields": "Interactive forms not functional"
+    },
+    "use_cases": {
+      "documentation": "User manuals, API specifications",
+      "papers": "Research papers, whitepapers",
+      "reports": "Technical reports, analysis documents",
+      "certificates": "Compliance certificates, licenses"
+    }
+  },
+  "prose_document_rendering": {
+    "supported_formats": [
+      "Markdown (.md, .markdown)",
+      "AsciiDoc (.asciidoc, .adoc)",
+      "Textile (.textile)",
+      "reStructuredText (.rst)",
+      "Org-mode (.org)",
+      "Creole (.creole)",
+      "MediaWiki (.mediawiki)",
+      "Pod (.pod)"
+    ],
+    "rich_diff": {
+      "feature": "Show prose changes with highlighted additions/removals",
+      "activation": "Click source diff icon in commit/PR view",
+      "benefits": "Easier review of documentation changes vs raw markup",
+      "limitations": "Very large or complex documents may not render"
+    },
+    "github_markup": {
+      "library": "github/markup - defines supported formats",
+      "extensible": "Can add custom markup processors",
+      "consistent_rendering": "Unified rendering pipeline across formats"
+    }
+  },
+  "jupyter_notebook_rendering": {
+    "automatic_rendering": ".ipynb files render with executed outputs",
+    "features": {
+      "code_cells": "Syntax highlighted code",
+      "markdown_cells": "Rendered markdown with LaTeX support",
+      "outputs": "Charts, tables, images from execution",
+      "interactive_outputs": "Limited interactivity (static render)"
+    },
+    "math_rendering": "Inline and block LaTeX in notebook markdown cells",
+    "limitations": {
+      "no_execution": "Cannot re-run cells on GitHub",
+      "large_notebooks": "Very large notebooks may not render fully",
+      "custom_widgets": "Interactive widgets (ipywidgets) don't work"
+    },
+    "use_cases": {
+      "data_science": "Analysis notebooks, ML experiments",
+      "tutorials": "Interactive coding tutorials",
+      "research": "Reproducible research documentation",
+      "reports": "Data-driven reports with visualizations"
+    }
+  },
+  "integration_with_github_features": {
+    "github_pages": {
+      "jekyll_support": "Native Jekyll static site generation",
+      "mermaid_rendering": "Requires plugin or JavaScript include",
+      "custom_domain": "Can use custom domain for documentation site",
+      "themes": "Pre-built themes for quick setup"
+    },
+    "github_wikis": {
+      "markdown_support": "Full markdown with all native rendering features",
+      "sidebar_navigation": "Custom sidebar for wiki navigation",
+      "version_control": "Wiki pages are Git repositories",
+      "collaborative_editing": "Multiple contributors can edit wiki"
+    },
+    "github_issues_and_discussions": {
+      "all_features_supported": "Mermaid, LaTeX, tables, images all work",
+      "quick_feedback": "Test rendering in issue comment before commit",
+      "collaborative_diagramming": "Iterate on diagrams via issue comments"
+    },
+    "pull_requests": {
+      "visual_review": "Review diagram changes in diff view",
+      "inline_comments": "Comment on specific diagram lines",
+      "preview_changes": "See rendered diagrams before merge"
+    },
+    "github_actions": {
+      "automated_diagram_generation": "Generate diagrams from data in CI/CD",
+      "validation": "Validate diagram syntax in pull requests",
+      "export_workflows": "Convert diagrams to images for external use"
+    }
+  },
+  "best_practices_and_workflows": {
+    "documentation_strategy": {
+      "diagrams_as_code": "Keep all diagrams in text format for version control",
+      "single_source_of_truth": "Don't duplicate diagrams as images, use native rendering",
+      "progressive_disclosure": "Start with high-level diagrams, link to detailed ones",
+      "consistent_style": "Use same diagram type for similar concepts",
+      "accessibility_first": "Provide text descriptions for complex visuals"
+    },
+    "development_workflow": {
+      "local_preview": "Use Mermaid Live Editor or local markdown preview",
+      "small_commits": "Commit diagram changes separately for clear history",
+      "descriptive_messages": "Explain what the diagram shows in commit message",
+      "peer_review": "Get feedback on diagrams in pull request review",
+      "documentation_linting": "Validate markdown and diagram syntax in CI/CD"
+    },
+    "maintenance": {
+      "keep_diagrams_updated": "Update diagrams when code changes",
+      "archive_outdated": "Move old diagrams to archive folder with context",
+      "refactor_complex_diagrams": "Split large diagrams into manageable pieces",
+      "test_rendering": "Regularly check that all diagrams still render correctly"
+    },
+    "collaboration": {
+      "diagram_ownership": "Assign CODEOWNERS for critical diagrams",
+      "style_guide": "Document diagram conventions and standards",
+      "templates": "Create diagram templates for common scenarios",
+      "shared_resources": "Maintain library of reusable diagram components"
+    }
+  },
+  "tool_ecosystem": {
+    "mermaid_tools": {
+      "mermaid_live": "https://mermaid.live - Online editor and preview",
+      "mermaid_cli": "Command-line tool to generate images from Mermaid",
+      "ide_plugins": "VS Code, IntelliJ, Atom extensions for Mermaid",
+      "documentation_generators": "Integrate Mermaid into Sphinx, MkDocs, Docusaurus"
+    },
+    "geo_tools": {
+      "geojson_io": "https://geojson.io - Visual GeoJSON editor",
+      "mapshaper": "Simplify and convert geographic data formats",
+      "qgis": "Professional GIS software for complex mapping",
+      "gdal": "Geographic data translation library"
+    },
+    "3d_model_tools": {
+      "freecad": "Open-source parametric 3D CAD",
+      "blender": "3D modeling and rendering",
+      "meshlab": "Process and edit 3D meshes",
+      "openscad": "Programmers' CAD"
+    },
+    "table_converters": {
+      "csvtomd": "Python CLI for CSV to markdown tables",
+      "tableconvert": "Web-based multi-format converter",
+      "pandoc": "Universal document converter with table support"
+    },
+    "math_tools": {
+      "katex": "Fast math rendering library",
+      "mathjax": "Comprehensive math display engine",
+      "mathpix": "Convert images to LaTeX",
+      "desmos": "Graphing calculator for function visualization"
+    }
+  },
+  "accessibility_and_inclusivity": {
+    "screen_reader_support": {
+      "svg_diagrams": "Mermaid SVG output includes text elements",
+      "alt_text": "Always provide alt text for images",
+      "math_descriptions": "MathJax provides accessible math rendering",
+      "semantic_html": "Use proper heading hierarchy"
+    },
+    "visual_design": {
+      "color_contrast": "Ensure sufficient contrast for color-coded elements",
+      "not_color_alone": "Don't rely solely on color to convey information",
+      "theme_awareness": "Test in both light and dark GitHub themes",
+      "font_size": "Use readable font sizes, avoid tiny text in diagrams"
+    },
+    "internationalization": {
+      "language_support": "Mermaid supports various character sets",
+      "rtl_languages": "Right-to-left languages may have layout challenges",
+      "translation_friendly": "Keep diagram text separate from logic for easier translation"
+    }
+  },
+  "performance_optimization": {
+    "diagram_size": {
+      "complexity_limits": "Very complex diagrams (100+ nodes) may slow rendering",
+      "splitting_strategy": "Break into multiple linked diagrams",
+      "simplification": "Remove unnecessary detail for high-level views"
+    },
+    "file_size": {
+      "geojson_topojson": "Use TopoJSON for large geographic datasets",
+      "stl_optimization": "Simplify meshes to reduce file size",
+      "image_compression": "Optimize PNG/JPG for faster loading"
+    },
+    "caching": {
+      "browser_caching": "GitHub CDN caches rendered outputs",
+      "avoid_regeneration": "Don't change diagrams unnecessarily"
+    }
+  },
+  "security_considerations": {
+    "no_executable_code": "Mermaid diagrams are data, not code (sandboxed iframe)",
+    "svg_sanitization": "GitHub sanitizes SVG to prevent XSS",
+    "external_resources": "Cannot load external scripts or resources in diagrams",
+    "data_exposure": "Be careful not to expose sensitive data in public diagrams",
+    "license_compliance": "Ensure proper licensing for map data and 3D models"
+  },
+  "future_developments": {
+    "mermaid_updates": "GitHub updates Mermaid version periodically",
+    "new_diagram_types": "Mermaid community adds new diagram types regularly",
+    "enhanced_interactivity": "Potential for more interactive diagrams in future",
+    "custom_themes": "Possible future support for custom Mermaid themes on GitHub"
+  },
+  "troubleshooting_guide": {
+    "common_issues": {
+      "diagram_not_rendering": {
+        "causes": [
+          "Syntax error in diagram code",
+          "Unsupported Mermaid feature",
+          "Missing code fence delimiters",
+          "Special characters breaking parser"
+        ],
+        "solutions": [
+          "Test in Mermaid Live Editor",
+          "Check GitHub's supported Mermaid version",
+          "Validate markdown syntax",
+          "Escape special characters"
+        ]
+      },
+      "map_not_displaying": {
+        "causes": [
+          "Invalid GeoJSON/TopoJSON structure",
+          "Wrong file extension",
+          "Projection mismatch",
+          "File too large"
+        ],
+        "solutions": [
+          "Validate with GeoJSON linter",
+          "Ensure .geojson or .topojson extension",
+          "Convert to WGS84 coordinates",
+          "Simplify or use TopoJSON"
+        ]
+      },
+      "stl_rendering_failure": {
+        "causes": [
+          "Non-manifold mesh",
+          "File size over 10MB",
+          "Corrupted STL file",
+          "No WebGL support"
+        ],
+        "solutions": [
+          "Repair mesh in CAD software",
+          "Simplify model geometry",
+          "Re-export from source",
+          "Enable hardware acceleration in browser"
+        ]
+      },
+      "math_not_rendering": {
+        "causes": [
+          "Incorrect delimiter syntax",
+          "Space after $ or before $",
+          "Missing line break for $$ blocks",
+          "Unsupported LaTeX command"
+        ],
+        "solutions": [
+          "Use $`expression`$ for conflicts",
+          "Add backslash before $$ in .md files",
+          "Test in GitHub Issue first",
+          "Check MathJax documentation for supported commands"
+        ]
+      }
+    }
+  },
+  "migration_strategies": {
+    "from_external_images": {
+      "audit": "Identify all external diagram images in documentation",
+      "convert": "Recreate as Mermaid diagrams where possible",
+      "benefits": "Version control, easier updates, no broken image links",
+      "gradual_approach": "Migrate high-traffic docs first"
+    },
+    "from_other_diagram_tools": {
+      "plantuml_to_mermaid": "Rewrite PlantUML diagrams in Mermaid syntax",
+      "drawio_to_mermaid": "Manually recreate draw.io diagrams",
+      "visio_to_mermaid": "Export as SVG or recreate in Mermaid",
+      "automation": "Scripts can help convert simple diagrams"
+    }
+  },
+  "case_studies_and_examples": {
+    "open_source_projects": {
+      "kubernetes_docs": "Extensive use of Mermaid for architecture diagrams",
+      "react_docs": "Component lifecycle diagrams",
+      "git_documentation": "GitGraph for branching strategy visualization"
+    },
+    "company_documentation": {
+      "api_specs": "Sequence diagrams for authentication flows",
+      "onboarding_guides": "User journey diagrams",
+      "architecture_docs": "C4 diagrams for system context"
+    }
+  },
+  "production_checklist": {
+    "pre_commit": [
+      "Test diagrams in Mermaid Live Editor",
+      "Validate GeoJSON/TopoJSON syntax",
+      "Check STL file in 3D viewer",
+      "Preview math equations in issue",
+      "Verify all images load correctly",
+      "Test in both light and dark themes"
+    ],
+    "code_review": [
+      "Diagram accurately represents system/process",
+      "Labels are clear and descriptive",
+      "Accessibility considerations addressed",
+      "No sensitive data exposed",
+      "Consistent with documentation style guide"
+    ],
+    "post_merge": [
+      "Verify rendering in production",
+      "Check performance on large documents",
+      "Monitor for user feedback on clarity",
+      "Update as system evolves"
+    ]
+  },
+  "resources_and_learning": {
+    "official_documentation": {
+      "github_docs": "https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting",
+      "mermaid_docs": "https://mermaid.js.org/intro/",
+      "geojson_spec": "https://tools.ietf.org/html/rfc7946",
+      "topojson_spec": "https://github.com/topojson/topojson-specification",
+      "mathjax_docs": "https://docs.mathjax.org/"
+    },
+    "community_resources": {
+      "mermaid_cheatsheet": "https://github.com/JakeSteam/Mermaid",
+      "github_community": "https://github.com/orgs/community/discussions",
+      "stackoverflow": "Tags: mermaid, github-markdown, geojson"
+    },
+    "examples_and_templates": {
+      "mermaid_examples": "https://mermaid.live/examples",
+      "geojson_examples": "https://geojson.io",
+      "diagram_templates": "Create repository with common diagram templates"
+    }
+  }
+}

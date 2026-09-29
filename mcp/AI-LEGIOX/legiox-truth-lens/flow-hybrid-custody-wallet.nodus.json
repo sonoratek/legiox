@@ -1,0 +1,118 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "flow_hybrid_custody_wallet",
+  "name": "Flow Hybrid Custody Wallet (Child Accounts & Account Linking)",
+  "mission": {
+    "primary_objective": "Enable progressive Ring onboarding: app-created Flow child accounts with shared custody, later linked to the user's primary wallet via Hybrid Custody without forcing FLOW gas on first touch.",
+    "context": "Ring `ensureWallet` creates or assigns a child account funded and controlled by the app service account, then delegates scoped access to the user's parent account when they connect Flow Wallet. Hybrid Custody uses Manager, OwnedAccount, and ChildAccount resources with capability filters — not full key handoff on day one.",
+    "target_outcome": "Users receive instant on-chain identity at login; assets live in child accounts; parent wallet gains mediated access via account linking; app retains policy-bound control where required for marketplace compliance.",
+    "scope": "Hybrid Custody Cadence patterns, account linking transactions, capability factories/filters — not Postgres user mapping (see flow_ensure_wallet_server) or React wiring (see flow_react_next_integration)."
+  },
+  "truth_lens": "Hybrid Custody is Flow's answer to walletless Web3: the app is not fully custodial nor fully non-custodial — it publishes capability-scoped child accounts to a parent Manager. Ring must treat linking as a security-sensitive transaction set; never grant unrestricted &Account to users when marketplace policy requires app-side gates.",
+  "core_principles": [
+    "Child account per user (or pooled factory) with OwnedAccount resource initialized on creation.",
+    "Parent account holds HybridCustody.Manager; claims ChildAccount or OwnedAccount capabilities after user auth.",
+    "Use CapabilityFilter and CapabilityFactory hosted deployments — do not roll custom filter logic unless audited.",
+    "Revocation path: child capabilities can be unlinked without destroying user primary wallet.",
+    "Progressive linking: walletless first session → Flow Wallet connect → claim published capability."
+  ],
+  "anti_patterns": [
+    "Giving users unrestricted &Account on app treasury or minter accounts.",
+    "Skipping CapabilityFilter when sharing app-managed resources with parent wallets.",
+    "Reusing one child account for multiple Ring users.",
+    "Account linking transactions without user wallet signature on parent side.",
+    "Storing child account keys in client localStorage without encryption policy."
+  ],
+  "key_patterns": [
+    "Create account → save HybridCustody.OwnedAccount on child → publish capability to parent address.",
+    "Parent tx: borrow Manager → addOwnedAccount or accept ChildAccount capability.",
+    "Walletless onboarding: backend signs creation; user later authenticates parent wallet to claim.",
+    "Blockchain-native onboarding: user wallet exists first; still create child for app-scoped assets.",
+    "Verify ownership: HybridCustody.isChildOf(parent, child) before UI displays linked state.",
+    "flow dependencies install for HybridCustody contract imports via Flow CLI dependency manager."
+  ],
+  "consult_when": [
+    "Designing Ring ensureWallet with instant on-chain address before user installs Flow Wallet",
+    "Implementing account linking when user connects Flow Wallet post-signup",
+    "Scoping which NFT/FT capabilities parent wallet may borrow from child",
+    "Revoking or rotating child account access after abuse or account recovery",
+    "Choosing between OwnedAccount (broader) vs ChildAccount (filtered) delegation"
+  ],
+  "expertise": [
+    "HYBRID_CUSTODY_MANAGER — parent-side capability graph",
+    "CHILD_ACCOUNT_LIFECYCLE — create, fund, link, revoke",
+    "CAPABILITY_FILTER — type-scoped sharing with hosted factories",
+    "PROGRESSIVE_ONBOARDING — walletless to self-custody path"
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/flow-ensure-wallet-server.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-sponsored-transactions.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-cadence-ft-mint.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/flow-cadence-nft-marketplace.nodus.json"
+  ],
+  "hybrid_custody_resources": {
+    "Manager": "Stored on parent; entry point for linked child accounts.",
+    "OwnedAccount": "On child; unrestricted &Account capability envelope for trusted linking.",
+    "ChildAccount": "On child; filtered access via CapabilityFilter rules.",
+    "CapabilityDelegator": "Optional extra public/private caps delegated to parent."
+  },
+  "account_linking_flow": {
+    "steps": [
+      "Backend creates child account with service account payer",
+      "Initialize OwnedAccount or ChildAccount on child",
+      "Publish capability targeted at parent address (when known) or hold until claim",
+      "Parent wallet signs accept/link transaction",
+      "Both parties retain keys per hybrid model"
+    ],
+    "doc": "https://developers.flow.com/blockchain-development-tutorials/cadence/account-management/child-accounts"
+  },
+  "hosted_capability_infrastructure": {
+    "note": "onflow/hybrid-custody documents hosted CapabilityFactory.Manager and CapabilityFilter.AllowAllFilter on mainnet/testnet — verify addresses in repo README before import.",
+    "repo": "https://github.com/onflow/hybrid-custody"
+  },
+  "jq_topic_index": {
+    "child_account": "hybrid_custody_resources; account_linking_flow",
+    "manager": "hybrid_custody_resources.Manager",
+    "account_linking": "account_linking_flow",
+    "capability_filter": "hosted_capability_infrastructure",
+    "owned_account": "hybrid_custody_resources.OwnedAccount"
+  },
+  "keywords": [
+    "flow",
+    "hybrid_custody",
+    "child_account",
+    "account_linking",
+    "walletless",
+    "Manager",
+    "OwnedAccount",
+    "capabilities",
+    "ring",
+    "ensureWallet",
+    "jq_topic_index"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "role": "LegioX truth lens — Flow Hybrid Custody and child account linking",
+  "version": "1.0.0",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "tier": "web3_blockchain",
+  "web_references": [
+    {
+      "topic": "Building walletless apps with child accounts",
+      "url": "https://developers.flow.com/blockchain-development-tutorials/cadence/account-management/child-accounts"
+    },
+    {
+      "topic": "Working with parent accounts / Manager",
+      "url": "https://developers.flow.com/blockchain-development-tutorials/cadence/account-management/parent-accounts"
+    },
+    {
+      "topic": "Hybrid Custody GitHub",
+      "url": "https://github.com/onflow/hybrid-custody"
+    },
+    {
+      "topic": "Cadence security best practices",
+      "url": "https://developers.flow.com/build/cadence/smart-contracts/best-practices/security-best-practices"
+    }
+  ]
+}

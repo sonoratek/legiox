@@ -1,0 +1,82 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "hooks_use_auth",
+  "name": "Ring hooks/use-auth SSOT",
+  "agent_name": "Ring hooks/use-auth SSOT",
+  "role": "LegioX truth lens — client authentication hook (ring-platform.org)",
+  "version": "1.0.0",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "priority": "high",
+  "priority_level": "high",
+  "status": "active",
+  "mission": {
+    "primary_objective": "Enforce ring-platform.org/hooks/use-auth.ts as the single client-side auth hook for session mapping, RBAC, KYC navigation, session refresh, and sign-out with FCM device cleanup.",
+    "context": "Auth.js v5 client code often imports useSession and signOut from next-auth/react directly, which bypasses Ring side-effects (FCM token unregister on logout). useAuth centralizes AuthUser typing, role helpers, and logout lifecycle.",
+    "target_outcome": "Zero client components import signOut from next-auth/react; all logout flows call useAuth().signOut(); FCM tokens invalidated per deviceFingerprint before session ends.",
+    "scope": "ring-platform.org hooks/use-auth.ts, navigation and profile logout UI, fcm-client-cleanup.ts; excludes server auth() from auth.ts"
+  },
+  "truth_lens": "File hooks/use-auth.ts ('use client'). Export useAuth() only. Session from useSession(); user mapped to AuthUser with resolveSessionUserRole. signOut: await unregisterCurrentDeviceFcmToken() then nextAuthSignOut(options). Forbidden in UI: import { signOut } from 'next-auth/react'. Allowed server-only: export { signOut } from auth.ts for route handlers. Pair with useSession only when update() needed alongside useAuth (e.g. profile refresh). Kebab filename use-auth.ts matches hooks/use-wallet-actions.ts convention.",
+  "consult_when": [
+    "client logout or sign out button",
+    "role check in client component",
+    "KYC status navigation",
+    "migrating useSession-only auth to typed AuthUser",
+    "FCM token cleanup on session end",
+    "auditing next-auth/react imports"
+  ],
+  "key_patterns": [
+    "SSOT_SIGNOUT — useAuth().signOut(); never next-auth/react signOut in components",
+    "FCM_PRE_LOGOUT — unregisterCurrentDeviceFcmToken before signOut",
+    "HAS_ROLE — hasRole(UserRole.member) via hasRoleAtLeast",
+    "AUTH_STATUS_NAV — navigateToAuthStatus(action, status, { returnTo })",
+    "KEBAB_FILE — hooks/use-auth.ts export useAuth"
+  ],
+  "expertise": [
+    "AuthUser session mapping from Auth.js session",
+    "Role hierarchy confidential access",
+    "SignOutParams redirectTo for locale login routes",
+    "FCM unregister Server Action via deviceFingerprint"
+  ],
+  "keywords": [
+    "use-auth",
+    "useAuth",
+    "signOut",
+    "authjs",
+    "client-hook",
+    "fcm",
+    "logout",
+    "ring-platform.org"
+  ],
+  "core_principles": [
+    "ONE_CLIENT_AUTH_HOOK — useAuth for app auth state and logout",
+    "NO_RAW_SIGNOUT — next-auth/react signOut only inside use-auth.ts",
+    "FCM_ON_LOGOUT — always unregister device token before session clear",
+    "SERVER_AUTH_SEPARATE — auth() from @/auth on server; signOut export server-only"
+  ],
+  "file_contract": {
+    "path": "ring-platform.org/hooks/use-auth.ts",
+    "exports": ["useAuth"],
+    "return_keys": [
+      "user",
+      "role",
+      "loading",
+      "hasRole",
+      "isAuthenticated",
+      "navigateToAuthStatus",
+      "getKycStatus",
+      "refreshSession",
+      "signOut"
+    ],
+    "consumers": [
+      "components/navigation/navigation.tsx",
+      "features/auth/components/profile-content.tsx"
+    ]
+  },
+  "anti_patterns": [
+    "import { signOut } from 'next-auth/react' in any 'use client' component",
+    "hooks/useSignOut.ts duplicate hook",
+    "Logout without FCM unregister",
+    "Passing userId from client for token unregister"
+  ]
+}

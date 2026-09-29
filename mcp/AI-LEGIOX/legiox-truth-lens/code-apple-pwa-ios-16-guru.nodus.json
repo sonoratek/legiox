@@ -1,0 +1,237 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "code_apple_pwa_ios_16_guru",
+  "name": "Apple PWA iOS 16+ Guru",
+  "created": "2026-05-19",
+  "updated": "2026-05-19",
+  "mission": {
+    "primary_objective": "Prevent iOS Safari and Home Screen PWA crashes while correctly implementing Web Push, Notifications API, manifest/install UX, and APNs-backed delivery for Ring Platform clones.",
+    "context": "Apple deliberately limits Web Push on iOS to Home Screen web apps (iOS/iPadOS 16.4+). Safari tabs and WKWebView sessions often lack the Notification and PushManager globals entirely — unguarded access causes ReferenceError white-screen crashes. macOS Safari 16.1+ supports Web Push in browser tabs. Ring rings use k8s-postgres-fcm (Auth.js + PostgreSQL for auth; Firebase client SDK for FCM only).",
+    "target_outcome": "Production-safe PWA + push architecture: feature-detected, never-throwing client code; valid web manifest and install path for iOS push; VAPID/APNs-compliant server payloads; optional Declarative Web Push on iOS 18.4+ Home Screen apps.",
+    "scope": "iOS/iPadOS 16.4+ Home Screen web apps, Safari on iOS/macOS, Web Push (Push API + Notifications API + Service Workers), Badging API, web app manifest, Add to Home Screen UX, APNs endpoint requirements, Ring FCM client patterns, WSOD prevention."
+  },
+  "truth_lens": "On iOS, Web Push is NOT a Safari-tab feature — it ships for Home Screen web apps starting iOS/iPadOS 16.4 (WebKit blog 13878). In Safari tabs, PushManager is absent and the Notification global is often undefined; code that reads Notification.permission without `'Notification' in window` throws ReferenceError and can white-screen React apps mounted globally (e.g. FCMProvider). macOS Safari 16.1+ supports standards-based Web Push in browser tabs. Home Screen web apps require HTTPS, a manifest with display standalone or fullscreen, service worker registration, user-gesture permission prompts, and VAPID-identified pushes to APNs (*.push.apple.com). Safari/WebKit forbids silent push: show a user-visible notification immediately when a push arrives or permission/subscription may be revoked. iOS 18.4 adds Declarative Web Push for Home Screen web apps (window.pushManager, declarative JSON payload, SW optional for display). Without a qualifying manifest, Add to Home Screen creates a bookmark that opens in the default browser (iOS 16.4+), not a standalone web app — push APIs remain unavailable. Ring clones must treat push as progressive enhancement: guard every Notification/PushManager touch, lazy-init Firebase for FCM only, and never block app shell on missing push APIs.",
+  "consult_when": [
+    "iOS Safari white screen or WSOD on production",
+    "ReferenceError Can't find variable Notification",
+    "PWA push notifications iOS home screen",
+    "Web Push iOS 16.4 standalone manifest",
+    "FCMProvider or useFCM crash on iPhone",
+    "PushManager undefined Safari iOS",
+    "Add to Home Screen web app manifest display standalone",
+    "APNs web push VAPID Apple *.push.apple.com",
+    "Declarative Web Push iOS 18.4",
+    "Safari web push macOS vs iOS differences",
+    "Home Screen web app badging setAppBadge",
+    "iOS PWA notification permission user gesture",
+    "Ring Platform FCM-only firebase-client iOS",
+    "feature detection Notification in window PushManager"
+  ],
+  "key_patterns": [
+    "IOS_TAB_NO_PUSH — Safari tab on iPhone/iPad does not expose Web Push; PushManager and often Notification are undefined. Never assume browser notification APIs exist on iOS.",
+    "HOME_SCREEN_ONLY_IOS — Web Push + Notifications API on iOS/iPadOS require the site added to Home Screen as a web app (manifest display: standalone | fullscreen), iOS 16.4+.",
+    "GUARD_NOTIFICATION_GLOBAL — Always `'Notification' in window` before Notification.permission, requestPermission(), or `new Notification()`. typeof window check alone is insufficient.",
+    "GUARD_PUSH_MANAGER — Use `'PushManager' in window` or ServiceWorkerRegistration.pushManager after SW register; false in Safari tab does not mean unsupported forever — user may need Install to Home Screen.",
+    "USER_GESTURE_PERMISSION — iOS requires notification permission request in direct response to user interaction (button tap), not on mount or setTimeout without recent gesture.",
+    "MANIFEST_STANDALONE — Web app manifest must set display to standalone or fullscreen; link rel=manifest in document; apple-touch-icon recommended. Without it, Home Screen icon is a bookmark, not a web app.",
+    "NO_SILENT_PUSH_WEBKIT — Service worker must call showNotification promptly on push; invisible/silent-only pushes are not supported; violations can revoke subscription.",
+    "APNS_VAPID_ENDPOINT — Server pushes use RFC8030 over HTTPS to subscription endpoint; VAPID JWT + public key; allow egress to https://*.push.apple.com; no Apple Developer Program required for web push.",
+    "MACOS_TAB_PUSH_OK — macOS Safari 16.1+ (Ventura+) supports Web Push in browser tabs — do not copy iOS-only guards into macOS-specific UX without feature detection.",
+    "DECLARATIVE_WEB_PUSH_18_4 — iOS/iPadOS 18.4+ Home Screen apps: window.pushManager.subscribe, push payload with web_push:8030 + notification object; SW optional for display; navigate URL on click.",
+    "RING_FCM_LAZY — k8s-postgres-fcm: Firebase client is FCM-only with lazy getFirebaseApp(); invalid API key must not throw on import. Push UX is optional; app shell must render without Notification API.",
+    "STANDALONE_DETECT — Detect installed PWA: window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true (legacy iOS). Use to show Install-for-push CTA vs Enable-notifications CTA."
+  ],
+  "expertise": [
+    "IOS_WEB_PUSH_MATRIX — Platform/version/install-mode availability table",
+    "NOTIFICATION_API_GUARDS — WSOD-safe feature detection and wrappers",
+    "WEB_APP_MANIFEST — display, icons, id, theme_color for Home Screen",
+    "APNS_WEB_PUSH — VAPID, TTL, urgency, error reason codes",
+    "DECLARATIVE_WEB_PUSH — iOS 18.4+ JSON payload and window.pushManager",
+    "SERVICE_WORKER_PUSH — firebase-messaging-sw.js, push event handlers",
+    "RING_FCM_INTEGRATION — FCMProvider, useFCM, k8s-postgres-fcm stack",
+    "INSTALL_UX — Add to Home Screen education for iOS push enablement"
+  ],
+  "keywords": [
+    "apple",
+    "pwa",
+    "ios",
+    "ios 16.4",
+    "ios 18.4",
+    "safari",
+    "webkit",
+    "web push",
+    "declarative web push",
+    "home screen web app",
+    "notification api",
+    "pushmanager",
+    "service worker",
+    "manifest",
+    "standalone",
+    "apns",
+    "vapid",
+    "fcm",
+    "wsod",
+    "referenceerror notification",
+    "add to home screen",
+    "badging api",
+    "wkwebview",
+    "ring platform"
+  ],
+  "priority": "high",
+  "status": "active",
+  "core_principles": [
+    "NEVER_CRASH_ON_MISSING_API — Push is optional; app shell must render when Notification/PushManager are absent.",
+    "FEATURE_DETECT_NOT_UA_SNIFF — Use `'Notification' in window`, `'PushManager' in window`, `'serviceWorker' in navigator`; avoid brittle iOS user-agent parsing for capability gates.",
+    "INSTALL_BEFORE_PUSH_IOS — On iOS Safari tab, guide users to Add to Home Screen before offering push subscription.",
+    "GESTURE_GATED_PERMISSION — Request notification permission only from explicit user actions.",
+    "MANIFEST_IS_GATE — No qualifying manifest → no standalone Home Screen web app → no iOS Web Push path.",
+    "PROGRESSIVE_ENHANCEMENT — In-app toasts (e.g. sonner) remain the fallback for foreground messages when system notifications unavailable."
+  ],
+  "platform_matrix": {
+    "ios_ipados_safari_tab": {
+      "web_push": false,
+      "push_manager": "typically absent",
+      "notification_global": "typically undefined — unguarded access throws ReferenceError",
+      "service_worker": "limited; push path not available for notifications",
+      "notes": "Users browsing in Safari are not eligible for Web Push on iOS. Show Install PWA CTA instead of Enable Push."
+    },
+    "ios_ipados_home_screen_web_app": {
+      "minimum_os": "16.4",
+      "web_push": true,
+      "requires": [
+        "Added via Share → Add to Home Screen",
+        "Web manifest with display standalone or fullscreen",
+        "HTTPS",
+        "Service worker (classic Web Push); Declarative Web Push 18.4+ can reduce SW requirement for display",
+        "User-gesture permission grant"
+      ],
+      "apis": ["Push API", "Notifications API", "Service Workers", "Badging API (16.4+)"],
+      "delivery": "Apple Push Notification service (APNs) via subscription endpoint on *.push.apple.com"
+    },
+    "macos_safari_tab": {
+      "minimum_safari": "16.1",
+      "minimum_macos": "Ventura 13",
+      "web_push": true,
+      "notes": "Same W3C stack as other browsers; feature detection still required for older Safari."
+    },
+    "ios_18_4_declarative": {
+      "minimum_os": "18.4",
+      "scope": "Home Screen web apps only",
+      "window_push_manager": true,
+      "declarative_payload_key": "web_push: 8030",
+      "sources": ["WebKit blog 16574", "WebKit blog 16535"]
+    }
+  },
+  "api_feature_detection": {
+    "safe_notification_permission": "return typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'denied'",
+    "safe_push_supported": "'serviceWorker' in navigator && 'PushManager' in window",
+    "standalone_installed": "window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true",
+    "anti_patterns": [
+      "typeof window !== 'undefined' && Notification.permission — CRASH when Notification undefined",
+      "Import-time Firebase init that throws on bad API key — breaks entire client bundle",
+      "FCMPermissionPrompt useEffect reading Notification.permission on mount without guard",
+      "Assuming FCM web SDK works identically to Android Chrome on iOS Safari tab"
+    ],
+    "ring_reference_impl": "lib/browser/notification-api.ts — isBrowserNotificationSupported(), getBrowserNotificationPermission(), requestBrowserNotificationPermission(), showBrowserNotification()"
+  },
+  "manifest_and_install": {
+    "required_manifest_fields": {
+      "display": "standalone | fullscreen (required for Home Screen web app mode on iOS)",
+      "name_or_short_name": "Home Screen label",
+      "icons": "192+ PNG via manifest icons and/or link rel=apple-touch-icon",
+      "start_url": "Launch URL (prefer locale-aware or root with client routing)",
+      "id": "Optional but recommended (manifest id) — iOS 16.4+ uses for Focus sync across devices"
+    },
+    "html_head": [
+      "<link rel=\"manifest\" href=\"/manifest.json\" />",
+      "<link rel=\"apple-touch-icon\" href=\"/icons/apple-touch-icon.png\" />",
+      "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\" /> (legacy; manifest display preferred)"
+    ],
+    "without_manifest": "iOS 16.4+: Add to Home Screen saves a bookmark opening in the user's default browser — not a standalone web app; Web Push APIs unavailable.",
+    "ring_clone_pitfall": "ring-greenfood-live app/layout.tsx had manifest link commented out and no manifest.json — blocks iOS PWA push path entirely until fixed."
+  },
+  "apns_and_server": {
+    "endpoint_host": "*.push.apple.com",
+    "auth": "VAPID key pair — public key passed to PushManager.subscribe({ applicationServerKey })",
+    "headers": ["Authorization (VAPID JWT)", "TTL", "Content-Encoding", "Urgency", "Topic (optional)"],
+    "payload_max": "4 KB",
+    "no_apple_dev_program": true,
+    "silent_push": false,
+    "revocation_risk": "Failing to display user-visible notification after push can revoke permission/subscription on WebKit",
+    "firebase_fcm_note": "Firebase Cloud Messaging for web still depends on browser push stack; on iOS only works in eligible Home Screen web app context with valid Firebase web config."
+  },
+  "declarative_web_push": {
+    "available": "iOS/iPadOS 18.4+ Home Screen web apps; macOS Safari 18.5+",
+    "subscribe": "await window.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey })",
+    "payload_shape": {
+      "web_push": 8030,
+      "notification": {
+        "title": "required non-empty",
+        "body": "optional",
+        "navigate": "required URL opened on notification click",
+        "lang": "optional",
+        "dir": "ltr|rtl|auto",
+        "app_badge": "optional badge count string"
+      }
+    },
+    "backwards_compatible": "Same JSON can be parsed by legacy service worker PushEvent handlers on older browsers",
+    "benefits": ["No silent-push penalty when declarative fallback displays", "Lower battery/CPU vs mandatory SW for every push", "SW removal by ITP does not block declarative display"]
+  },
+  "wsod_prevention_checklist": [
+    "Audit all Notification. and new Notification( references in client components loaded from root layout",
+    "FCMPermissionPrompt: use getBrowserNotificationPermission() not bare Notification.permission",
+    "useFCM / useFCMMessages: guard before permission read, requestPermission, and showBrowserNotification",
+    "FCMProvider mounts globally — any throw in its subtree crashes entire app",
+    "Treat analytics/fetch CORS console noise as non-fatal unless it throws uncaught in React tree",
+    "Test on iPhone Safari tab (expect no push) AND Home Screen installed PWA (iOS 16.4+)"
+  ],
+  "ring_integration": {
+    "stack_mode": "k8s-postgres-fcm",
+    "auth": "Auth.js + PostgreSQL — not Firebase Auth client",
+    "firebase_client": "FCM-only lazy getFirebaseApp() in lib/firebase-client.ts",
+    "providers": "FCMProvider + FCMPermissionPrompt in root-providers.tsx",
+    "service_worker": "public/firebase-messaging-sw.js",
+    "env_vars": [
+      "NEXT_PUBLIC_FIREBASE_VAPID_KEY",
+      "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+      "NEXT_PUBLIC_FIREBASE_API_KEY",
+      "NEXT_PUBLIC_APP_URL"
+    ],
+    "recommended_ux": {
+      "safari_tab_ios": "Show 'Install app to enable push' with Add to Home Screen instructions",
+      "standalone_pwa": "Show Enable Notifications button (user gesture → requestPermission)",
+      "unsupported": "Hide push UI; rely on in-app notification center + toasts"
+    }
+  },
+  "sources": [
+    {
+      "title": "Web Push for Web Apps on iOS and iPadOS",
+      "url": "https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/",
+      "facts": ["iOS 16.4 beta 1", "Home Screen web apps only", "Push + Notifications + Service Workers", "User gesture for permission", "APNs", "Badging API", "Manifest display standalone/fullscreen"]
+    },
+    {
+      "title": "Sending web push notifications in web apps and browsers (Apple Developer)",
+      "url": "https://developer.apple.com/documentation/usernotifications/sending-web-push-notifications-in-web-apps-and-browsers",
+      "facts": ["iOS 16.4+ Home Screen web apps", "macOS Safari 16+ webpages", "VAPID", "No silent push", "Allow *.push.apple.com"]
+    },
+    {
+      "title": "WebKit Features in Safari 18.4 — Declarative Web Push",
+      "url": "https://webkit.org/blog/16574/webkit-features-in-safari-18-4/",
+      "facts": ["Declarative Web Push on iOS/iPadOS 18.4 Home Screen web apps"]
+    },
+    {
+      "title": "Meet Declarative Web Push",
+      "url": "https://webkit.org/blog/16535/meet-declarative-web-push/",
+      "facts": ["window.pushManager", "Declarative JSON format", "SW optional for display", "navigate on click"]
+    },
+    {
+      "title": "Apple Developer Forums — PWA push notifications on iOS",
+      "url": "https://developer.apple.com/forums/thread/732594",
+      "facts": ["PushManager absent in Safari tab", "Feature detection with PushManager in window"]
+    },
+    {
+      "title": "Ring production incident — ring-greenfood-live WSOD",
+      "facts": ["ReferenceError Notification in FCMPermissionPrompt", "Fixed via lib/browser/notification-api.ts guards", "2026-05-19"]
+    }
+  ]
+}

@@ -1,0 +1,1081 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "llm_qwen35_apple_specialist",
+  "name": "LLM Specialist — Qwen3.5/3.6/Coder × Apple M4 Max × LM Studio / llmster",
+  "mission": {
+    "primary_objective": "Configure, deploy, and operate Qwen3.5, Qwen3.6, and Qwen3-Coder family models on Apple M4 Max (36–128 GB unified memory) using LM Studio 0.4.x / llmster daemon, maximising throughput for TypeScript codemods, JSON-only pipelines, and agentic coding workloads, with hardware-aware quantisation selection and MLX-LM / Unsloth fine-tuning paths.",
+    "context": "Apple M4 Max is a memory-bandwidth–bound inference machine: 546 GB/s peak bandwidth (40-core full die) or 410 GB/s (32-core binned) with fully unified CPU/GPU memory. Qwen3.6 (April 2026) supersedes Qwen3.5 for general and coding tasks at ~1.75× higher tok/s on the same M4 Max quant. Qwen3-Coder-30B-A3B is the purpose-built coding MoE (3.3B active, 256K context, no thinking overhead) — ideal for TypeScript codemods and Reggie propagation. LM Studio 0.4.x provides llmster, continuous batching, json_schema structured output, and MLX engine. On 36 GB: Qwen3.6-35B-A3B at Q6_K (~28 GB) or Qwen3-Coder-30B-A3B at UD-Q6_K (~24 GB) are the primary codemod targets.",
+    "target_outcome": "Reliable, deterministic JSON/text/codemod inference from Qwen3.6 or Qwen3-Coder on a local M4 Max 36 GB; optimal quantisation and model selection for TypeScript AST transforms; full parameter catalogue with Apple/llama.cpp/MLX support flags.",
+    "scope": "Inference (GGUF via llama.cpp, MLX), TypeScript codemod agent configs, structured output, headless server (llmster), quantisation selection, fine-tuning (MLX-LM LoRA on-device; Unsloth on CUDA), Qwen3.5/3.6/Coder model family selection for 36 GB unified memory."
+  },
+  "truth_lens": "Configure, deploy, and operate Qwen3.5, Qwen3.6, and Qwen3-Coder family models on Apple M4 Max (36–128 GB unified memory) using LM Studio 0.4.x / llmster. Qwen3.6 (Apr 2026) supersedes Qwen3.5 at ~1.75× tok/s on M4 Max; Qwen3-Coder-30B-A3B is the primary TypeScript codemod model on 36 GB (UD-Q6_K ~24 GB, 256K context, no thinking overhead). Use json_schema grammar for JSON pipelines; temperature=0.6 for precise coding; MLX for interactive throughput, GGUF for schema-constrained decoding. Qwen3-Coder-Next needs 42+ GB — use Coder-30B on 36 GB configs.",
+  "consult_when": [
+    "Task touches llm_qwen3_5_apple_specialist responsibilities or failure modes named in this lens.",
+    "Need selector-grade triggers for Qwen × Apple M4 Max × LM Studio / llmster before architecture or production change.",
+    "Choosing local LLM for TypeScript codemods, jscodeshift/ts-morph transforms, or Reggie ring propagation on M4 Max 36 GB.",
+    "Qwen3.6 vs Qwen3.5 vs Qwen3-Coder-30B-A3B vs Qwen3-Coder-Next model selection for coding workloads.",
+    "Cross-stack ambiguity between framework, infra, and data layers in this domain."
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for llm_qwen3_5_apple_specialist -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "CODER30B_FOR_CODEMODS — Qwen3-Coder-30B-A3B-Instruct is the primary TypeScript codemod model on M4 Max 36 GB: 3.3B active, 256K context, no thinking mode, UD-Q6_K ~24 GB",
+    "QWEN36_SUPERSEDES_QWEN35 — Qwen3.6-35B-A3B released Apr 2026; ~1.75× faster than Qwen3.5 on M4 Max; Q6_K is quality ceiling on 36 GB (~28 GB footprint)",
+    "BANDWIDTH_IS_THE_BOTTLENECK — Token generation on Apple Silicon is memory-bandwidth–bound at batch-size 1; 546 GB/s on M4 Max (40-core) directly sets throughput ceiling",
+    "UNIFIED_MEMORY_ADVANTAGE — GPU and CPU share the same pool; model weights never cross PCIe; 36 GB usable LLM headroom ~28–32 GB on loaded system",
+    "THINKING_OFF_FOR_JSON_PIPELINES — Disable chain-of-thought for JSON-only and codemod output; Coder-30B has no thinking mode by design",
+    "GRAMMAR_BEATS_PROMPT_FOR_STRUCTURE — LM Studio JSON-schema structured output uses llama.cpp GBNF grammar; hard-constraint for propagation manifests"
+  ],
+  "keywords": [
+    "llm",
+    "qwen3.5",
+    "qwen3.6",
+    "qwen3-coder",
+    "apple",
+    "specialist",
+    "qwen35",
+    "qwen36",
+    "typescript",
+    "codemod",
+    "configure",
+    "qwen3",
+    "max",
+    "studio",
+    "json",
+    "mlx",
+    "llmster",
+    "reggie"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "LLM Specialist — Qwen3.5 × Apple M4 Max × LM Studio / llmster",
+  "role": "LegioX truth lens — LLM Specialist — Qwen3.5 × Apple M4 Max × LM Studio / llmster",
+  "core_expertise": "Configure, deploy, and operate Qwen3.5 family models on Apple M4 Max (36–128 GB unified memory) using LM Studio 0.4.x / llmster daemon, maximising throughput for JSON-only and text-only inference workloads, with a complete parameter reference, hardware-aware quantisation selection, and practical fine-tuning options via MLX-LM and Unsloth.",
+  "key_capabilities": [
+    "bandwidth_is_the_bottleneck_token_genera",
+    "unified_memory_advantage_gpu_and_cpu_sha",
+    "backend_choice_is_architecture_for_qwen3",
+    "quantisation_is_free_lunch_unsloth_dynam",
+    "thinking_off_for_json_pipelines_disable_",
+    "grammar_beats_prompt_for_structure_lm_st",
+    "domain_truth_lens"
+  ],
+  "version": "1.1.0",
+  "priority_level": "high",
+  "created": "2026-03-03",
+  "updated": "2026-06-18",
+  "core_principles": [
+    "BANDWIDTH_IS_THE_BOTTLENECK — Token generation on Apple Silicon is memory-bandwidth–bound at batch-size 1; 546 GB/s on M4 Max (40-core) directly sets throughput ceiling independent of GPU core count",
+    "UNIFIED_MEMORY_ADVANTAGE — GPU and CPU share the same pool; model weights never cross PCIe; 36 GB of usable LLM memory vs. RTX-4090's 24 GB VRAM (lower bandwidth but more capacity)",
+    "BACKEND_CHOICE_IS_ARCHITECTURE — For Qwen3.5 MoE (35B-A3B), llama.cpp GGUF is the proven path; MLX engine in LM Studio delivers 5–15% better throughput on dense models, does not yet support GGUF MoE specialist routing",
+    "QUANTISATION_IS_FREE_LUNCH — Unsloth Dynamic 2.0 Q4_K_XL and Q4_K_M keep accuracy within <1 PPL point of BF16; always prefer UD quants over plain bartowski Q4_K_M for quality-per-GB",
+    "THINKING_OFF_FOR_JSON_PIPELINES — Disable chain-of-thought (<think>) tags for JSON-only output; they consume context, inflate latency, and produce tokens that break schema-constrained decoding",
+    "GRAMMAR_BEATS_PROMPT_FOR_STRUCTURE — LM Studio JSON-schema structured output (response_format + json_schema) uses llama.cpp GBNF grammar internally; this is hard-constraint, not soft-prompt; always use it for pipeline JSON",
+    "TEMPERATURE_ZERO_FOR_DETERMINISM — For JSON-only extraction and agentic tool calls, temperature=0 maximises schema adherence and reproducibility",
+    "LLMSTER_FOR_PRODUCTION — Use llmster daemon (lms daemon up + lms server start) for headless / always-on operation; GUI-free, supports systemctl on Linux and launchd on macOS",
+    "MOE_QLORA_DISCOURAGED — QLoRA on MoE models (35B-A3B, 122B-A10B) is not recommended by Unsloth; use bf16 LoRA or switch to dense 27B for on-device fine-tuning; MoE router layers must not be trained",
+    "MLX_FOR_ON_DEVICE_FINETUNE — On Apple Silicon, fine-tuning runs via mlx-lm LoRA (for text) and mlx-vlm (for vision); Unsloth requires CUDA (Linux/Windows) for Qwen3.5/3.6 fine-tuning",
+    "QWEN36_SUPERSEDES_QWEN35 — Qwen3.6-35B-A3B (April 2026, Apache 2.0) is the default general+coding upgrade on 36 GB; ~1.75× faster than Qwen3.5-35B-A3B at same quant on M4 Max; use Q6_K on 36 GB for quality ceiling",
+    "CODER30B_FOR_CODEMODS — Qwen3-Coder-30B-A3B-Instruct is purpose-built for agentic coding: 3.3B active, 256K context, no thinking mode, tool-calling fixed in Unsloth GGUFs; primary model for TypeScript codemods and Reggie propagation at UD-Q6_K (~24 GB) on 36 GB",
+    "CODER_NEXT_NEEDS_42GB — Qwen3-Coder-Next (80B MoE, 3B active) requires 42 GB minimum system memory per LM Studio; borderline on 36 GB with mmap/SSD offload — prefer Coder-30B-A3B on 36 GB configs"
+  ],
+  "knowledge_layers": {
+    "layer_0_hardware_profile": {
+      "description": "Apple M4 Max specifications relevant to LLM inference — what matters and what doesn't",
+      "truth_lens": [
+        {
+          "concept": "m4_max_specs",
+          "truths": [
+            "M4 Max configurations: 14-core CPU / 32-core GPU / 36 GB unified memory (410 GB/s bandwidth — binned die) OR 16-core CPU / 40-core GPU / 36–128 GB unified memory (546 GB/s bandwidth — full die)",
+            "MacBook Pro M4 Max standard config: 14-core CPU, 32-core GPU, 36 GB, 410 GB/s — NOT the full-bandwidth chip",
+            "Mac Studio / MacBook Pro CTO with 40-core GPU: 546 GB/s — the correct spec when maximising LLM throughput",
+            "Neural Engine: 16 cores, ~38 TOPS — used by Core ML / Apple Intelligence; llama.cpp and MLX do NOT use the Neural Engine for LLM inference (they use GPU shader cores + ANE for specific ops)",
+            "LPDDR5X unified memory: CPU and GPU share the same physical RAM pool; no PCIe transfer overhead between CPU inference and Metal GPU compute",
+            "36 GB usable capacity: macOS wiredMemory + active processes typically consume 4–8 GB; effective LLM headroom is ~28–32 GB on a loaded system",
+            "Thunderbolt 5 (40 Gb/s): Not relevant for inference; relevant for NVMe expansion or multi-Mac setups via LM Link"
+          ]
+        },
+        {
+          "concept": "throughput_expectations_36gb",
+          "truths": [
+            "Benchmark reference (M4 Max 40-core GPU, 546 GB/s): Llama 3.1 8B Q4_K_M → ~58 tok/s generation; 13B Q4_K_M → ~27 tok/s",
+            "Qwen3.5-35B-A3B is MoE with 3B active parameters — decoding is nearly as fast as a 3B dense model in compute; memory footprint is ~22 GB at Q4, so bandwidth usage is the 35B weight load pattern",
+            "Expected Qwen3.6-35B-A3B Q6_K on M4 Max 36GB: ~42–48 tok/s generation (community/MLX estimates); Q4_K_M ~35–42 tok/s",
+            "Expected Qwen3-Coder-30B-A3B UD-Q6_K on M4 Max 36GB: ~35–45 tok/s generation; faster prefill than dense 27B due to 3.3B active params",
+            "Expected Qwen3.5-35B-A3B Q4_K_M on M4 Max 36GB: ~25–35 tok/s generation (legacy baseline; upgrade to Qwen3.6 for ~1.75× speedup)",
+            "Qwen3.5-27B (dense) Q4_K_M on 36 GB: ~17 GB footprint; ~15–22 tok/s generation — lower than 35B-A3B due to dense activation of all 27B params each token",
+            "Context window vs speed trade-off: each doubling of n_ctx roughly halves KV-cache reuse efficiency but does not materially affect tok/s for generation on Apple Silicon",
+            "Batch inference (n_parallel > 1): LM Studio 0.4 supports continuous batching; useful for parallel agent requests; expect ~linear throughput degradation per additional concurrent slot on M4 Max at 36 GB due to bandwidth saturation",
+            "Prefill (prompt processing) speed: M4 Max is compute-bound here; expect 300–600 tok/s for prefill on Qwen3.5-35B-A3B"
+          ]
+        },
+        {
+          "concept": "backend_selection",
+          "truths": [
+            "llama.cpp (GGUF) via Metal: primary engine for Qwen3.5 MoE models in LM Studio; all GPU layers offloaded with n_gpu_layers=-1 (or ngl=all in LM Studio UI)",
+            "MLX engine (LM Studio native): superior throughput for dense models (5–15% faster than llama.cpp Metal on Qwen3.5-27B); as of LM Studio 0.4.6 MLX continuous batching is text-only (VLM in progress)",
+            "mlx-lm CLI: Apple's framework directly; use for inference outside LM Studio and for fine-tuning; install via pip install mlx-lm",
+            "mlx-vlm: required for vision inference on Apple Silicon with Qwen3.5 multimodal (Qwen3.5-397B-A17B vision features); install pip install mlx-vlm",
+            "Ollama + Qwen3.6 GGUFs: Qwen3.6-35B-A3B Q4_K_M works in Ollama as of Apr 2026; Qwen3.5 DeltaNet GGUFs still not supported in Ollama — use LM Studio or llama.cpp for Qwen3.5",
+            "vLLM / SGLang: Linux/CUDA only for Qwen3.5; not applicable on macOS/Metal"
+          ]
+        }
+      ]
+    },
+    "layer_1_qwen35_model_family": {
+      "description": "Qwen3.5 architecture, model sizes, and which variants fit 36 GB",
+      "truth_lens": [
+        {
+          "concept": "architecture",
+          "truths": [
+            "Qwen3.5 is a hybrid architecture: Gated Delta Networks (linear attention, O(n) sequence scaling) alternating with standard full attention in a 3:1 ratio (3 linear : 1 full per 4 transformer blocks)",
+            "MoE router: 256 total experts, 8 routed + 1 shared active per token in 35B-A3B; total params 35B, active per token 3B",
+            "27B is fully dense (no MoE) — all 27B parameters activate every token; highest reasoning density per forward pass but slower token generation than 35B-A3B",
+            "Native context: 262,144 tokens (256K); extensible to 1,010,000 via YaRN RoPE scaling (accuracy degrades beyond 512K without additional tuning)",
+            "Natively multimodal (vision-language): early fusion training; text, image, UI screenshots, video all tokenised into unified embedding space",
+            "201 language support (up from 119 in Qwen3); 250K vocabulary enables multi-token prediction reducing token cost 10–60% on non-English tasks",
+            "Gated DeltaNet eliminates attention sinks and massive activations via gated output — improves training stability and long-context throughput vs full attention",
+            "Qwen3.5 Small family (0.8B, 2B, 4B, 9B): dense models, thinking disabled by default, ideal for multi-agent secondary roles on M4 Max"
+          ]
+        },
+        {
+          "concept": "memory_requirements_36gb",
+          "truths": [
+            "Qwen3.5-0.8B: 3–9 GB (3-bit to BF16) — trivially fits; useful as secondary agent or critic",
+            "Qwen3.5-2B: 3–9 GB — same as above",
+            "Qwen3.5-4B: 4.5–14 GB — fits at all quantisations; good JSON extraction model",
+            "Qwen3.5-9B: 5.5–19 GB — fits at all quantisations; sweet spot for instruction following",
+            "Qwen3.5-27B: 14–30 GB at 3–8 bit — Q4 (17 GB) fits well with ~15 GB headroom for KV cache and system; Q8 (30 GB) is tight on 36 GB",
+            "Qwen3.5-35B-A3B: 17–38 GB at 3–8 bit — Q4_K_M (22 GB) is the primary target for 36 GB; Q6 (30 GB) fits; Q8 (38 GB) does NOT fit — will use SSD offload",
+            "Qwen3.5-122B-A10B: 60–132 GB — does not fit in 36 GB at any quantisation without heavy SSD offloading",
+            "Qwen3.5-397B-A17B: 180–810 GB — requires 128 GB M4 Max or multi-machine setup",
+            "FOR 36 GB: Primary recommendation is Qwen3.6-35B-A3B at Q6_K or UD-Q4_K_XL; for TypeScript codemods specifically use Qwen3-Coder-30B-A3B at UD-Q6_K; legacy Qwen3.5-35B-A3B remains valid fallback"
+          ]
+        },
+        {
+          "concept": "model_selection_matrix",
+          "truths": [
+            "TypeScript codemods, ts-morph/jscodeshift transforms, Reggie propagation → Qwen3-Coder-30B-A3B-Instruct UD-Q6_K (~24 GB) or UD-Q4_K_XL (~18 GB); thinking OFF by design; n_ctx=32768 for repo-scale context",
+            "General coding + multimodal on 36 GB → Qwen3.6-35B-A3B Q6_K (~28 GB) or UD-Q4_K_XL (~23 GB); thinking OFF for JSON pipelines; temperature=0.6 for precise coding per Qwen3.6 official settings",
+            "JSON-only pipeline, speed priority → Qwen3.6-35B-A3B UD-Q4_K_XL (preferred) or Qwen3.5-35B-A3B Q4_K_M (legacy; thinking OFF, grammar enforced)",
+            "Reasoning-heavy tasks, quality priority → Qwen3.6-27B Q4_K_M (~17 GB) or Qwen3.5-27B Q4_K_M (dense, thinking ON or budget_tokens=512)",
+            "Long-horizon coding agents with tool recovery → Qwen3-Coder-Next (80B MoE, 3B active) if 48+ GB available; on 36 GB use Coder-30B-A3B instead",
+            "Multi-agent secondary/critic role → Qwen3.5-4B or 9B Q4; run simultaneously with main model within 36 GB",
+            "Vision + text agent → Qwen3.5-35B-A3B MLX variant via mlx-vlm; requires MLX model (HuggingFace IDs ending in -MLX)",
+            "Fine-tune target on-device → Qwen3.5-4B or 9B via mlx-lm LoRA; 27B bf16 LoRA requires ~56 GB (needs 48+ GB config)",
+            "35B-A3B vs 27B decision rule: choose 35B-A3B (Qwen3.6 preferred) for faster inference (3B active vs 27B active); choose 27B for marginally higher reasoning accuracy when latency is less critical",
+            "Qwen3.6 vs Qwen3.5 on M4 Max: Qwen3.6-35B-A3B IQ4 runs ~46.5 tok/s vs Qwen3.5 ~26.6 tok/s (BatiAI field report, same M4 Max); upgrade Qwen3.5 deployments when stable",
+            "Flagship model (hosted, not local) → Qwen3.6-Plus or Qwen3.5-397B-A17B via Alibaba Cloud Model Studio; Qwen3.5-Max-Preview on LM Arena (Mar 2026)"
+          ]
+        },
+        {
+          "concept": "quantisation_guide",
+          "truths": [
+            "Unsloth Dynamic 2.0 (UD) quants: selectively upcast critical layers (embeddings, attention, certain MLP layers) to 8-bit or 16-bit while quantising less-sensitive layers more aggressively — SOTA accuracy on Pareto frontier",
+            "Best quality for 36 GB: unsloth/Qwen3.5-35B-A3B-GGUF → UD-Q4_K_XL (~22 GB); less than 0.1 PPL increase vs BF16 per Benjamin Marie benchmarks",
+            "Good quality, smaller footprint: UD-Q4_K_M (~20 GB) or Q4_K_M from bartowski — equivalent for most practical tasks; bartowski Q4_K_M scores slightly lower on agentic coding (19/24 vs 22/24 in community tests)",
+            "MXFP4 layers issue (Mar 2026): Unsloth retired MXFP4 from Q2_K_XL, Q3_K_XL, Q4_K_XL after discovery that some tensors were incorrectly quantised — always re-download if obtained before Mar 2 2026 update",
+            "IQ-series quants (IQ3_XXS, IQ4_XS): imatrix-quantised; excellent PPL but slower to load; useful if squeezing under 18 GB for dual-model setups",
+            "Q2_K: quality degrades noticeably for coding and agentic tasks; only use if SSD offload is acceptable",
+            "MXFP4_MOE pure quant: ~15 GB, fastest MoE inference but lower accuracy; treat as development-only"
+          ]
+        }
+      ]
+    },
+    "layer_1b_qwen36_coder_family": {
+      "description": "Qwen3.6 (April 2026) and Qwen3-Coder family — successor models and TypeScript codemod specialists for M4 Max 36 GB",
+      "truth_lens": [
+        {
+          "concept": "qwen36_release",
+          "truths": [
+            "Qwen3.6 open weights released April 16–22, 2026 (Apache 2.0): Qwen3.6-35B-A3B (MoE, 3B active) and Qwen3.6-27B (dense)",
+            "Architecture: hybrid thinking model with Gated DeltaNet + MoE; 256K native context, 1M via YaRN; 201 languages; multimodal (vision-language)",
+            "Qwen3.6 MTP (Multi-Token Prediction): 1.4–2.2× faster inference without accuracy loss; supported in Unsloth Studio and mlx-lm",
+            "Official GGUF: unsloth/Qwen3.6-35B-A3B-GGUF and unsloth/Qwen3.6-27B-GGUF; bartowski quants follow within 24–48h",
+            "Qwen3.6 improves tool-calling nested object parsing over Qwen3.5; supports developer role for Codex/OpenCode agentic tools",
+            "Thinking mode coding settings (official): temperature=0.6, top_p=0.95, top_k=20, min_p=0.0, presence_penalty=0.0, repetition_penalty=1.0",
+            "Instruct (non-thinking) settings: temperature=0.7, top_p=0.8, top_k=20, min_p=0.0, presence_penalty=1.5, repetition_penalty=1.0",
+            "Preserve Thinking: Qwen3.6 feature to retain reasoning context across multi-turn sessions"
+          ]
+        },
+        {
+          "concept": "qwen36_memory_36gb",
+          "truths": [
+            "Qwen3.6-35B-A3B Q4_K_M: ~21.4 GB — fits M4 Max 36 GB with comfortable KV headroom",
+            "Qwen3.6-35B-A3B Q5_K_M: ~24.2 GB — fits 36 GB; good balance",
+            "Qwen3.6-35B-A3B Q6_K: ~28.4 GB — quality ceiling on 36 GB; ~8 GB headroom for KV at n_ctx=8192 (recommended codemod quant)",
+            "Qwen3.6-35B-A3B Q8_0: ~37.5 GB — does NOT fit 36 GB without SSD mmap offload",
+            "Qwen3.6-27B Q4_K_M: ~16.8 GB — dense alternative; slower generation than 35B-A3B but higher per-token reasoning density",
+            "Community M4 Max 36 GB benchmark: Q6_K estimated ~48 tok/s via MLX; Q4_K_M ~42 tok/s; ~1.75× faster than Qwen3.5-35B-A3B at same quant",
+            "Ollama support: Qwen3.6-35B-A3B Q4_K_M works via Ollama as of Apr 2026 (qwen3.6:35b-a3b-q4_K_M); Qwen3.5 DeltaNet GGUFs still problematic in Ollama"
+          ]
+        },
+        {
+          "concept": "qwen3_coder_family",
+          "truths": [
+            "Qwen3-Coder-30B-A3B-Instruct (Qwen3-Coder-Flash): 30.5B total, 3.3B active, 128 experts (8 routed), 256K native context, 1M via YaRN",
+            "Purpose-built for agentic coding, browser automation, repository-scale understanding; does NOT support thinking mode (no  blocks)",
+            "LM Studio ID: qwen/qwen3-coder-30b; minimum system memory 15 GB; MLX variants: 4bit (17 GB), 6bit (25 GB), 8bit (32 GB)",
+            "Unsloth GGUF: unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF; UD-Q4_K_XL ~18 GB; UD-Q6_K ~24 GB; UD-Q8_K_XL ~32.5 GB",
+            "Official coding inference params: temperature=0.7, top_p=0.8, top_k=20, repeat_penalty=1.05; tool calling fixed via llama.cpp --jinja",
+            "Qwen3-Coder-Next: 80B MoE, 3B active; designed for long-horizon coding agents, complex tool usage, execution failure recovery",
+            "Qwen3-Coder-Next LM Studio minimum: 42 GB system memory; GGUF + MLX-4bit/6bit/8bit available; borderline on 36 GB — use Coder-30B-A3B instead",
+            "Qwen3-Coder-480B-A35B: cloud/hosted only; not for local 36 GB deployment"
+          ]
+        },
+        {
+          "concept": "typescript_codemod_model_matrix",
+          "truths": [
+            "Primary (36 GB, TypeScript codemods): Qwen3-Coder-30B-A3B-Instruct UD-Q6_K — coding-specialised, no thinking overhead, 256K context for large Ring monorepos",
+            "Secondary (36 GB, JSON schema + codemod orchestration): Qwen3.6-35B-A3B Q6_K — better general reasoning + multimodal; use for mixed JSON extraction + code generation pipelines",
+            "Budget (36 GB, dual-model): Coder-30B-A3B Q4 (~18 GB) + Qwen3.6-4B/9B Q4 (~5 GB) for validator/critic role",
+            "Stretch (48+ GB): Qwen3-Coder-Next MLX-6bit — best local coding agent for multi-file refactors with tool recovery",
+            "Reggie default alignment: update reggie-backfill and propagation scripts from qwen/qwen3-coder-30b or qwen3.6-35b-a3b when upgrading from qwen3-coder-30b legacy naming",
+            "MLX preferred over GGUF for single-user codemod throughput on Apple Silicon: 20–40% faster token generation; use GGUF for llama.cpp json_schema grammar pipelines",
+            "Context for codemods: n_ctx=32768 minimum for multi-file Ring clone propagation; n_ctx=8192 sufficient for single-file ts-morph transforms",
+            "IQ3 quants on Qwen3.6: can fail function-call JSON on tool-calling pipelines — use IQ4 or Q6 for codemod agents that emit structured tool calls"
+          ]
+        }
+      ]
+    },
+    "layer_2_all_inference_parameters": {
+      "description": "Complete inference parameter catalogue — every parameter Qwen3.5 responds to, with M4 Max / llama.cpp Metal / MLX support status",
+      "truth_lens": [
+        {
+          "concept": "sampling_parameters",
+          "parameters": [
+            {
+              "name": "temperature",
+              "type": "float",
+              "range": "0.0 – 2.0",
+              "default": "0.6 (thinking+coding), 1.0 (thinking+general), 0.0 (non-thinking)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX",
+                "LM Studio API"
+              ],
+              "notes": "For JSON-only output: use 0.0. For thinking mode general tasks: 1.0. For thinking mode coding: 0.6. Temperature=0 maximises schema adherence with grammar-constrained decoding."
+            },
+            {
+              "name": "top_p",
+              "type": "float",
+              "range": "0.0 – 1.0",
+              "default": "0.95 (thinking), 0.8 (non-thinking)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX",
+                "LM Studio API"
+              ],
+              "notes": "Nucleus sampling. Qwen official: 0.95 for thinking mode. Combine with top_k for tighter sampling. Set 1.0 when temperature=0 (has no effect when greedy)."
+            },
+            {
+              "name": "top_k",
+              "type": "int",
+              "range": "0 – unlimited (0 = disabled)",
+              "default": "20 (thinking mode), 20 (non-thinking)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX",
+                "LM Studio API"
+              ],
+              "notes": "Qwen official recommendation: top_k=20 for all modes. Lower than typical Llama defaults (40). Set 1 for greedy (same as temperature=0)."
+            },
+            {
+              "name": "min_p",
+              "type": "float",
+              "range": "0.0 – 1.0",
+              "default": "0.0 (thinking mode), 0.05 (non-thinking, some sources)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX",
+                "LM Studio API"
+              ],
+              "notes": "Minimum probability threshold. Qwen official: 0.0 for thinking mode. Use 0.05 for non-thinking to trim low-probability noise. Not available in all OpenAI-compat clients."
+            },
+            {
+              "name": "repetition_penalty",
+              "type": "float",
+              "range": "1.0 – 1.5",
+              "default": "1.0 (no penalty)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX",
+                "LM Studio API"
+              ],
+              "notes": "For JSON output: keep at 1.0 — repetition penalty can break repeated keys/values in structured output. For long text: 1.05–1.1."
+            },
+            {
+              "name": "presence_penalty",
+              "type": "float",
+              "range": "0.0 – 2.0",
+              "default": "0.0",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "LM Studio API"
+              ],
+              "notes": "OpenAI-compatible. Reduces repetition of already-present tokens. Unsloth recommends 0.0 for Qwen3.5; higher values cause slight performance decrease."
+            },
+            {
+              "name": "frequency_penalty",
+              "type": "float",
+              "range": "0.0 – 2.0",
+              "default": "0.0",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "LM Studio API"
+              ],
+              "notes": "OpenAI-compatible. Penalises tokens by frequency of appearance. Keep 0.0 for JSON pipelines."
+            }
+          ]
+        },
+        {
+          "concept": "context_and_generation_parameters",
+          "parameters": [
+            {
+              "name": "max_tokens / max_new_tokens",
+              "type": "int",
+              "range": "1 – 32768",
+              "default": "32768",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX",
+                "LM Studio API"
+              ],
+              "notes": "Unsloth recommends 32,768 for most queries. For JSON extraction: set to 2x expected JSON length. KV cache size grows linearly with max_tokens allocation."
+            },
+            {
+              "name": "n_ctx / context_length",
+              "type": "int",
+              "range": "1 – 262144 (1010000 with YaRN)",
+              "default": "8192 (LM Studio default), up to 262144",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX"
+              ],
+              "notes": "On 36 GB: Qwen3.5-35B-A3B Q4_K_M at n_ctx=8192 uses ~23 GB; at n_ctx=32768 adds ~4 GB KV cache; at n_ctx=65536 adds ~8 GB. Set context based on actual task length. KV cache scales as: (n_ctx × n_layers × n_heads × head_dim × 2 × 2 bytes). For 36 GB device, cap n_ctx at 32768 for comfortable headroom with the 35B model."
+            },
+            {
+              "name": "n_gpu_layers / ngl",
+              "type": "int",
+              "range": "-1 (all) or 0 – N",
+              "default": "-1 (all GPU) in LM Studio",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp"
+              ],
+              "notes": "ALWAYS set -1 on M4 Max; partial GPU offload (mixed CPU/GPU) is slower due to PCIe-equivalent paging between ANE and GPU compute queues. LM Studio default is all-GPU."
+            },
+            {
+              "name": "n_batch / batch_size",
+              "type": "int",
+              "range": "1 – 4096",
+              "default": "512 (llama.cpp default)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp"
+              ],
+              "notes": "Controls prompt processing batch size (prefill). Larger values improve prefill speed but increase memory peaks. 512–2048 is practical on M4 Max. Does not affect generation speed."
+            },
+            {
+              "name": "n_parallel / max_concurrent_predictions",
+              "type": "int",
+              "range": "1 – 8 (practical on 36 GB)",
+              "default": "4 (LM Studio 0.4 default with unified KV)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX (0.4.2+)"
+              ],
+              "notes": "LM Studio 0.4 continuous batching. At n_parallel=4, unified KV cache is shared (no additional memory overhead per slot per LM Studio docs). For JSON pipelines with multiple agents, set 4–8. MLX continuous batching is text-only as of 0.4.6; VLM batching in progress."
+            },
+            {
+              "name": "seed",
+              "type": "int",
+              "range": "any integer, -1 for random",
+              "default": "-1",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX",
+                "LM Studio API"
+              ],
+              "notes": "Set a fixed seed for reproducible JSON output during development. With temperature=0 and fixed seed, output is deterministic."
+            },
+            {
+              "name": "stream",
+              "type": "bool",
+              "range": "true/false",
+              "default": "true",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp",
+                "MLX",
+                "LM Studio API"
+              ],
+              "notes": "For JSON pipeline consumers: set false to receive complete JSON in one response_format-validated payload. Streaming delivers partial JSON tokens which may not parse mid-stream."
+            }
+          ]
+        },
+        {
+          "concept": "thinking_reasoning_parameters",
+          "parameters": [
+            {
+              "name": "enable_thinking",
+              "type": "bool",
+              "range": "true/false",
+              "default": "true (Medium models), false (Small 0.8B–9B models)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp chat template",
+                "MLX chat template"
+              ],
+              "notes": "Controls whether <think>...</think> reasoning chain is generated. Set false for JSON-only pipelines to eliminate thinking tokens (which are NOT included in structured output but consume context and latency). Pass as: --chat-template-kwargs '{\"enable_thinking\":false}' in llama.cpp CLI, or via system prompt instruction '/no_think'."
+            },
+            {
+              "name": "thinking_budget / budget_tokens",
+              "type": "int",
+              "range": "0 – 32768",
+              "default": "unbounded",
+              "m4_supported": "partial",
+              "backend": [
+                "llama.cpp (via chat template kwargs)",
+                "not in standard OpenAI API"
+              ],
+              "notes": "Limits thinking token budget. Use budget_tokens=512–2048 for light reasoning; 8192+ for hard math/code. Not a standard API param — passed via chat_template_kwargs or system prompt. LM Studio 0.4 supports via advanced settings."
+            },
+            {
+              "name": "thinking_mode_toggle (system prompt)",
+              "type": "string",
+              "range": "/think | /no_think in user message",
+              "default": "model default",
+              "m4_supported": true,
+              "backend": [
+                "all backends that respect Qwen3.5 chat template"
+              ],
+              "notes": "Append /no_think to user message to suppress thinking for that turn. Append /think to enable it. Simpler than chat_template_kwargs for single-turn toggling."
+            }
+          ]
+        },
+        {
+          "concept": "structured_output_parameters",
+          "parameters": [
+            {
+              "name": "response_format.type = 'json_schema'",
+              "type": "object",
+              "m4_supported": true,
+              "backend": [
+                "LM Studio API /v1/chat/completions",
+                "llama.cpp server --json-schema"
+              ],
+              "notes": "LM Studio uses llama.cpp GBNF grammar internally. Pass response_format: { type: 'json_schema', json_schema: { name: 'my_schema', strict: true, schema: {...} } }. The JSON object is returned as a string in choices[0].message.content and must be parsed. Schema must be valid JSON Schema draft 7."
+            },
+            {
+              "name": "response_format.type = 'json_object'",
+              "type": "object",
+              "m4_supported": true,
+              "backend": [
+                "LM Studio API",
+                "llama.cpp server"
+              ],
+              "notes": "Looser than json_schema — constrains output to valid JSON but does not enforce a specific schema. Use json_schema for agent pipelines where exact field shapes are required."
+            },
+            {
+              "name": "--grammar / grammar_str",
+              "type": "string (GBNF)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp CLI",
+                "llama_cpp Python"
+              ],
+              "notes": "GBNF (GGML BNF) grammar string directly constrains token sampling via FSM. More flexible than json_schema for custom formats (enums, fixed strings, regex patterns). LM Studio exposes this as json_schema (it converts internally)."
+            }
+          ]
+        },
+        {
+          "concept": "memory_and_performance_parameters",
+          "parameters": [
+            {
+              "name": "flash_attention / -fa",
+              "type": "bool",
+              "range": "true/false",
+              "default": "true (LM Studio default for supported models)",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp (Metal FlashAttention)"
+              ],
+              "notes": "Metal FlashAttention reduces memory footprint of KV cache by ~2x vs naive attention, enabling longer context on 36 GB. Always enable."
+            },
+            {
+              "name": "mmap / use_mmap",
+              "type": "bool",
+              "default": "true",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp"
+              ],
+              "notes": "Memory-mapped model loading; enables faster load times and allows macOS VM to page model weights from SSD. Keep true on Apple Silicon — allows models slightly over RAM limit to run with SSD backing (with throughput penalty)."
+            },
+            {
+              "name": "numa",
+              "type": "bool",
+              "default": "false",
+              "m4_supported": "N/A",
+              "backend": [
+                "llama.cpp (Linux multi-socket only)"
+              ],
+              "notes": "Not applicable on Apple Silicon (single unified memory controller). Ignore."
+            },
+            {
+              "name": "kv_cache_type / --cache-type-k / --cache-type-v",
+              "type": "string",
+              "range": "f32 | f16 | q8_0 | q4_0",
+              "default": "f16",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp ≥ b3000"
+              ],
+              "notes": "Quantised KV cache reduces memory per context token. q8_0 saves ~50% vs f16 KV cache; q4_0 saves ~75%. On 36 GB with n_ctx=65536, q8_0 KV cache is strongly recommended for Qwen3.5-35B-A3B."
+            },
+            {
+              "name": "cpu_moe_slider",
+              "type": "int percentage",
+              "range": "0 – 100%",
+              "default": "0 (all GPU)",
+              "m4_supported": true,
+              "backend": [
+                "LM Studio UI only"
+              ],
+              "notes": "LM Studio-specific: controls what percentage of MoE expert layers run on CPU vs GPU. DO NOT max out — LM Studio has a known bug where setting this to max causes model loading to get stuck (fixed in 0.4.0). Keep at 0 for full GPU on M4 Max."
+            },
+            {
+              "name": "split_mode",
+              "type": "string",
+              "range": "none | layer | row",
+              "default": "layer",
+              "m4_supported": "N/A (single device)",
+              "backend": [
+                "llama.cpp multi-GPU"
+              ],
+              "notes": "Irrelevant on a single M4 Max device. Relevant for multi-Mac setups connected via LM Link."
+            }
+          ]
+        },
+        {
+          "concept": "qwen35_multimodal_parameters",
+          "parameters": [
+            {
+              "name": "image input (content type image_url or base64)",
+              "type": "object",
+              "m4_supported": true,
+              "backend": [
+                "llama.cpp GGUF with vision adapter",
+                "mlx-vlm"
+              ],
+              "notes": "Qwen3.5 is natively multimodal. For llama.cpp: use GGUF with embedded vision encoder (model must be a VLM GGUF). For MLX: use mlx-vlm library with Qwen3.5 MLX VLM models from HuggingFace."
+            },
+            {
+              "name": "image_token / image resolution",
+              "type": "auto",
+              "m4_supported": true,
+              "backend": [
+                "mlx-vlm",
+                "llama.cpp VLM"
+              ],
+              "notes": "Qwen3.5 uses dynamic resolution; images are tiled into patches. Higher resolution increases prefill token count and memory. Resize images before passing for throughput-sensitive pipelines."
+            },
+            {
+              "name": "video input",
+              "type": "frame array or video_url",
+              "m4_supported": "partial",
+              "backend": [
+                "mlx-vlm (limited)",
+                "vLLM (CUDA only, full)"
+              ],
+              "notes": "Video understanding supported in the 397B-A17B (full model). Local video inference on 36 GB requires frame sampling and is not officially supported in LM Studio 0.4.x. Use frame-by-frame image analysis as workaround."
+            }
+          ]
+        }
+      ]
+    },
+    "layer_3_lmstudio_llmster": {
+      "description": "LM Studio 0.4.x specifics, llmster headless daemon, and server configuration for production JSON pipelines",
+      "truth_lens": [
+        {
+          "concept": "lmstudio_0_4_key_features",
+          "truths": [
+            "LM Studio 0.4.0 (Jan 28 2026): introduced llmster daemon, parallel requests via continuous batching (n_parallel=4 default), new stateful REST API POST /v1/chat, MCP server support, Anthropic-compatible /v1/messages endpoint",
+            "LM Studio 0.4.2 (Feb 6 2026): parallel requests + MLX engine (text-only continuous batching); MLX VLM batching in progress",
+            "LM Studio 0.4.4 (Feb 20 2026): fixed thinking tag emission bug in /v1/chat/completions (affects Qwen3.5 thinking mode responses)",
+            "LM Studio 0.4.5 (Feb 25 2026): improved tool calling for Qwen3.5 model family; introduced LM Link (encrypted remote instance connection via Tailscale)",
+            "LM Studio 0.4.6 (Feb 27 2026): fixed Qwen3.5 RAG jinja rendering bug ('No user query found in messages'); DGX Spark Direct I/O; LM Link GA",
+            "LM Studio 0.4.3 (Feb 19 2026): fixed Qwen3-Coder-Next GGUF detection bug affecting context length; same fix applies to Qwen3.5 GGUF files detected as wrong architecture"
+          ]
+        },
+        {
+          "concept": "llmster_headless_daemon",
+          "truths": [
+            "llmster is LM Studio's headless daemon — runs LM Studio server without GUI; ideal for macOS always-on server or Mac Studio deployments",
+            "Install: curl -fsSL https://lmstudio.ai/install.sh | bash",
+            "Start daemon: lms daemon up",
+            "Load model: lms load qwen/qwen3.5-35b-a3b --yes",
+            "Start server: lms server start (default port 1234)",
+            "Stop: lms daemon down",
+            "Load with parallel slots: lms load qwen/qwen3.5-35b-a3b --parallel 4",
+            "macOS launchd auto-start: create LaunchAgent plist pointing to lms daemon up + lms load + lms server start",
+            "Linux systemd: create /etc/systemd/system/lmstudio.service with ExecStartPre for daemon + load, ExecStart for server start",
+            "API endpoint: http://localhost:1234/v1/chat/completions (OpenAI-compatible)",
+            "Anthropic-compatible: http://localhost:1234/v1/messages (added 0.4.1)",
+            "Check status: lms ls (list loaded models); curl http://localhost:1234/v1/models"
+          ]
+        },
+        {
+          "concept": "structured_output_usage",
+          "truths": [
+            "LM Studio implements json_schema via llama.cpp GBNF grammar — token-level hard constraint, not soft prompting",
+            "API call pattern: POST /v1/chat/completions with response_format: { type: 'json_schema', json_schema: { name: 'my_schema', strict: true, schema: { ... } } }",
+            "All standard completion params (temperature, top_k, max_tokens, seed, stream) are honoured alongside response_format",
+            "For deterministic JSON extraction: { temperature: 0, top_p: 1, seed: 42, stream: false, response_format: json_schema }",
+            "The JSON object is returned as a string in choices[0].message.content — always JSON.parse() the content field",
+            "Grammar constraints slightly reduce token generation speed (FSM evaluation per token); impact is minor for schemas with <20 fields",
+            "Thinking tokens are still generated internally when enable_thinking=true even with json_schema — use /no_think or enable_thinking=false to fully suppress",
+            "Nested schemas, arrays of objects, required fields, enum constraints all supported; recursive schemas are not supported in GBNF"
+          ]
+        },
+        {
+          "concept": "lm_link",
+          "truths": [
+            "LM Link (0.4.5+): connect to remote LM Studio instances over encrypted Tailscale tunnel",
+            "Use case: M4 Max Mac Studio as inference node; MacBook Pro as client; consume remote model as if local",
+            "Setup: install LM Link connector on server Mac, authenticate with Tailscale, connect from client Mac",
+            "Enables Ring Platform agent nodes to delegate heavy inference to a dedicated Mac Studio while agents run on MacBook"
+          ]
+        },
+        {
+          "concept": "mcp_integration",
+          "truths": [
+            "LM Studio 0.4.0 includes native MCP server support via POST /v1/chat stateful API",
+            "MCPs are loaded on-demand (not at startup as of 0.4.5) to reduce startup overhead",
+            "Qwen3.5 tool calling works with MCP tools; LM Studio 0.4.5 improved Qwen3.5-specific tool call parsing",
+            "Use MCP filesystem, git, or custom servers directly in LM Studio chat or via API",
+            "Claude Code can connect to LM Studio via Anthropic-compatible endpoint (0.4.3+ fix for Claude Code invalid discriminator error)"
+          ]
+        }
+      ]
+    },
+    "layer_4_json_text_inference_configs": {
+      "description": "Optimal parameter configurations for JSON-only and text-only workloads on M4 Max 36 GB",
+      "truth_lens": [
+        {
+          "concept": "typescript_codemod_config",
+          "use_case": "TypeScript codemods, ts-morph/jscodeshift transforms, Reggie ring propagation, multi-file AST refactors",
+          "recommended_model": "Qwen3-Coder-30B-A3B-Instruct UD-Q6_K (primary) or Qwen3.6-35B-A3B Q6_K (mixed JSON+code)",
+          "config": {
+            "temperature": 0.6,
+            "top_p": 0.8,
+            "top_k": 20,
+            "min_p": 0,
+            "repeat_penalty": 1.05,
+            "seed": 42,
+            "max_tokens": 8192,
+            "stream": true,
+            "enable_thinking": false,
+            "n_gpu_layers": -1,
+            "n_ctx": 32768,
+            "flash_attention": true,
+            "kv_cache_type_k": "q8_0",
+            "kv_cache_type_v": "q8_0"
+          },
+          "notes": "Coder-30B has no thinking mode — no /no_think needed. Qwen3.6 uses temperature=0.6 for precise coding per official settings. n_ctx=32768 for repo-scale Ring monorepo context. Use json_schema when output must be structured diff/patch JSON; use plain text when emitting full file rewrites. MLX backend preferred for interactive codemod iteration; GGUF+grammar for schema-enforced propagation manifests."
+        },
+        {
+          "concept": "json_extraction_config",
+          "use_case": "Structured data extraction, agent tool call outputs, schema-enforced generation",
+          "recommended_model": "Qwen3.6-35B-A3B UD-Q4_K_XL (preferred) or Qwen3.5-35B-A3B UD-Q4_K_XL (legacy)",
+          "config": {
+            "temperature": 0,
+            "top_p": 1,
+            "top_k": 1,
+            "min_p": 0,
+            "seed": 42,
+            "max_tokens": 2048,
+            "stream": false,
+            "enable_thinking": false,
+            "response_format": {
+              "type": "json_schema"
+            },
+            "n_gpu_layers": -1,
+            "n_ctx": 8192,
+            "flash_attention": true
+          },
+          "notes": "Temperature=0 + grammar = deterministic valid JSON. Disable thinking to eliminate latency overhead. seed=42 gives reproducibility across runs."
+        },
+        {
+          "concept": "agentic_tool_call_config",
+          "use_case": "Multi-step agent reasoning with tool calls, moderate JSON structure",
+          "recommended_model": "Qwen3.5-35B-A3B UD-Q4_K_XL (thinking ON, budget limited)",
+          "config": {
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "top_k": 20,
+            "min_p": 0,
+            "seed": -1,
+            "max_tokens": 4096,
+            "stream": true,
+            "enable_thinking": true,
+            "budget_tokens": 1024,
+            "response_format": {
+              "type": "json_object"
+            },
+            "n_gpu_layers": -1,
+            "n_ctx": 16384,
+            "flash_attention": true
+          },
+          "notes": "Light thinking (budget=1024) improves tool selection quality without excessive latency. json_object format ensures valid JSON without rigid schema constraint — useful when tool output shape varies."
+        },
+        {
+          "concept": "text_generation_config",
+          "use_case": "Long-form text generation, creative writing, documentation",
+          "recommended_model": "Qwen3.5-27B Q4_K_M or Qwen3.5-35B-A3B",
+          "config": {
+            "temperature": 1,
+            "top_p": 0.95,
+            "top_k": 20,
+            "min_p": 0,
+            "presence_penalty": 0.1,
+            "frequency_penalty": 0.1,
+            "seed": -1,
+            "max_tokens": 8192,
+            "stream": true,
+            "enable_thinking": true,
+            "n_gpu_layers": -1,
+            "n_ctx": 32768,
+            "flash_attention": true
+          },
+          "notes": "Dense 27B gives the richest per-token reasoning for long-form text. Slight presence/frequency penalty reduces repetition in long outputs. Thinking ON improves coherence on complex topics."
+        },
+        {
+          "concept": "long_context_rag_config",
+          "use_case": "RAG pipelines with large document context, 256K token context tasks",
+          "recommended_model": "Qwen3.5-35B-A3B Q4_K_M",
+          "config": {
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "top_k": 20,
+            "n_ctx": 65536,
+            "max_tokens": 2048,
+            "kv_cache_type_k": "q8_0",
+            "kv_cache_type_v": "q8_0",
+            "flash_attention": true,
+            "n_gpu_layers": -1,
+            "enable_thinking": false
+          },
+          "notes": "q8_0 KV cache quantisation halves KV memory overhead — critical at 65K context on 36 GB. At n_ctx=65536, Qwen3.5-35B-A3B Q4_K_M uses ~22 GB model + ~6 GB KV = 28 GB; within headroom. LM Studio 0.4.6 fixed the Qwen3.5 RAG jinja rendering bug — ensure updated."
+        },
+        {
+          "concept": "multi_agent_dual_model_config",
+          "use_case": "Primary + secondary agent running simultaneously on 36 GB",
+          "primary": "Qwen3.6-35B-A3B Q6_K (~28 GB) or Qwen3-Coder-30B-A3B UD-Q6_K (~24 GB)",
+          "secondary": "Qwen3.6-4B Q4_K_M (~5 GB) or Qwen3.5-4B Q4_K_M (~5 GB)",
+          "total_footprint": "~27 GB + ~4 GB KV = ~31 GB — comfortable on 36 GB",
+          "notes": "Load both via lmstudio or two lms load commands. Route primary agent to 35B-A3B (complex reasoning, tool orchestration); secondary to 4B (classification, validation, JSON parsing of structured fields). Secondary can use thinking=false and temperature=0 at all times."
+        }
+      ]
+    },
+    "layer_5_finetuning_on_apple_silicon": {
+      "description": "Fine-tuning Qwen3.5 on M4 Max 36 GB — what works, what requires CUDA, and how to export",
+      "truth_lens": [
+        {
+          "concept": "mlx_lm_lora_on_device",
+          "truths": [
+            "MLX-LM is Apple's first-party framework for LoRA fine-tuning on Apple Silicon; works on M4 Max 36 GB",
+            "Install: pip install mlx-lm (or pip install mlx mlx-lm)",
+            "Supported Qwen3.5 models via MLX: look for HuggingFace IDs ending in -MLX (e.g. mlx-community/Qwen3.5-9B-8bit)",
+            "Command: python -m mlx_lm.lora --model mlx-community/Qwen3.5-9B-Instruct --train --data ./data --iters 500 --batch-size 2 --learning-rate 1e-5 --adapter-path ./adapters --grad-checkpoint",
+            "Max trainable model on 36 GB via mlx-lm LoRA: Qwen3.5-9B at Q4/Q8; 27B bf16 LoRA requires ~56 GB — does NOT fit 36 GB",
+            "--grad-checkpoint flag enables gradient checkpointing — reduces memory at cost of 30% slower training; essential for 9B on 36 GB",
+            "Export fused model: python -m mlx_lm.fuse --model ./base --adapter-path ./adapters --save-path ./fused-model",
+            "Convert to GGUF: python llama.cpp/convert_hf_to_gguf.py ./fused-model --outfile model.gguf --outtype f16 (then quantise with llama-quantize)"
+          ]
+        },
+        {
+          "concept": "unsloth_on_cuda_for_qwen35",
+          "truths": [
+            "Unsloth fine-tuning for Qwen3.5 requires CUDA (Linux/Windows) — does NOT run on macOS/Metal as of Mar 2026",
+            "Unsloth supports: SFT, DPO, GRPO, PPO, Reward Modelling for Qwen3.5 family",
+            "Qwen3.5-9B (dense): QLoRA on 8–10 GB VRAM; bf16 LoRA on 22 GB VRAM via Unsloth",
+            "Qwen3.5-27B: 4-bit QLoRA on 28 GB VRAM; bf16 LoRA on 56 GB VRAM",
+            "Qwen3.5-35B-A3B (MoE): QLoRA NOT recommended (Unsloth: 'MoE QLoRA not recommended'); use bf16 LoRA on 74 GB VRAM; do not train router layers",
+            "Unsloth makes Qwen3.5 fine-tuning 1.5× faster and uses 50% less VRAM than FA2 setups",
+            "Vision fine-tuning: Unsloth supports Qwen3.5 vision layers; can selectively finetune vision layers, language layers, or attention/MLP independently",
+            "Export after Unsloth training: model.save_pretrained_gguf(quantisation='q4_k_m') exports directly to GGUF for LM Studio import",
+            "Colab notebooks available for Qwen3.5-27B and 35B-A3B with A100; free Colab covers 4B and 9B"
+          ]
+        },
+        {
+          "concept": "swift_llama_factory",
+          "truths": [
+            "Qwen official recommends: UnSloth, Swift (ModelScope), Llama-Factory for SFT/DPO/GRPO",
+            "Swift: pip install ms-swift; supports Qwen3.5 natively; some Metal support (experimental)",
+            "Llama-Factory: CUDA-first but has experimental MLX support; good for curriculum training setups",
+            "GRPO (group relative policy optimisation): Qwen3.5 reasoning improvement via RL; Unsloth GRPO notebook available; requires A100 for 27B+ models"
+          ]
+        },
+        {
+          "concept": "on_device_finetune_summary",
+          "truths": [
+            "M4 Max 36 GB CAN fine-tune: Qwen3.5-0.8B, 2B, 4B (any), 9B (with gradient checkpointing) via mlx-lm LoRA",
+            "M4 Max 36 GB CANNOT fine-tune: 27B+ due to memory requirements for activations + gradients + model weights",
+            "Practical on-device use case: fine-tune 9B on domain-specific JSON schema adherence examples (50–200 examples), export to GGUF, deploy in LM Studio",
+            "Preserve thinking: mix 75%+ reasoning-style examples with direct answer examples; otherwise thinking capability degrades",
+            "LoRA rank recommendation: r=16, alpha=32 for domain adaptation; r=64 for larger behavioural changes",
+            "Training data format for JSON tuning: { instruction: 'Extract the following fields...', input: '...', output: '{valid json...}' } in alpaca format"
+          ]
+        }
+      ]
+    },
+    "layer_6_common_pitfalls": {
+      "description": "Failure modes specific to Qwen3.5 on M4 Max in LM Studio — compiled from community reports and release notes",
+      "truth_lens": [
+        {
+          "problem": "double_think_tags_in_api_response",
+          "cause": "LM Studio < 0.4.4 bug: thinking tags not emitted correctly through /v1/chat/completions",
+          "fix": "Upgrade to LM Studio 0.4.4+. If you need to suppress thinking tokens in output, add enable_thinking=false or pass /no_think."
+        },
+        {
+          "problem": "rag_jinja_error_no_user_query",
+          "cause": "LM Studio < 0.4.6 Qwen3.5 RAG jinja rendering bug",
+          "fix": "Upgrade to LM Studio 0.4.6 (released Feb 27 2026). Re-download model files if they were obtained before Mar 2 2026 Unsloth update."
+        },
+        {
+          "problem": "wrong_architecture_detected_context_length_limited",
+          "cause": "LM Studio 0.4.2 and earlier: some GGUFs (including unsloth/Qwen3-Coder-Next and early Qwen3.5 GGUFs) detected incorrectly, showing '?? arch' and limited context",
+          "fix": "Upgrade to LM Studio 0.4.3+. Re-download the GGUF if the issue persists after upgrade."
+        },
+        {
+          "problem": "model_load_stuck_when_cpu_moe_slider_maxed",
+          "cause": "LM Studio bug (fixed in 0.4.0 build 13+): setting CPU MoE slider to 100% causes model loading to hang",
+          "fix": "Keep CPU MoE slider at 0% on M4 Max (all GPU). Never max this slider."
+        },
+        {
+          "problem": "mxfp4_quant_accuracy_regression",
+          "cause": "Unsloth accidentally included MXFP4 tensors in Q2_K_XL, Q3_K_XL, Q4_K_XL quants prior to Mar 2 2026",
+          "fix": "Re-download from unsloth/Qwen3.5-35B-A3B-GGUF after Mar 2 2026. Unsloth has retired MXFP4 from all non-pure-MXFP4_MOE quants."
+        },
+        {
+          "problem": "ollama_not_working_with_qwen35_gguf",
+          "cause": "Qwen3.5 DeltaNet hybrid architecture GGUFs do not work in Ollama as of Mar 2026. Qwen3.6 GGUFs DO work in Ollama.",
+          "fix": "Use Qwen3.6 via Ollama (qwen3.6:35b-a3b-q4_K_M) or LM Studio/llama.cpp for Qwen3.5 legacy weights."
+        },
+        {
+          "problem": "qwen36_iq3_tool_call_json_failure",
+          "cause": "IQ3_XXS quants on Qwen3.6 can fail function-call JSON parsing on agentic codemod pipelines",
+          "fix": "Use IQ4_XS or Q6_K quantisations for any pipeline emitting structured tool calls or JSON-schema codemod manifests."
+        },
+        {
+          "problem": "coder_next_oom_on_36gb",
+          "cause": "Qwen3-Coder-Next requires 42 GB minimum system memory per LM Studio; 36 GB configs OOM or fall back to slow SSD mmap",
+          "fix": "Use Qwen3-Coder-30B-A3B UD-Q6_K on 36 GB; reserve Coder-Next for 48+ GB Mac Studio configs."
+        },
+        {
+          "problem": "json_schema_breaks_with_thinking_tokens",
+          "cause": "When enable_thinking=true, thinking tokens (<think>...</think>) appear before the schema-constrained output; some clients fail to parse",
+          "fix": "Set enable_thinking=false (or /no_think) for all JSON pipeline calls. LM Studio 0.4.4 fixed the tag emission; the content field contains only post-thinking output."
+        },
+        {
+          "problem": "tool_calling_malformed_in_agentic_loop",
+          "cause": "LM Studio < 0.4.5 had incomplete Qwen3.5 tool call format parsing",
+          "fix": "Upgrade to LM Studio 0.4.5+. Unsloth also fixed the universal chat template issue for tool calling on Mar 2 2026 — re-download model if using older weights."
+        },
+        {
+          "problem": "context_overflow_oom_at_high_n_ctx",
+          "cause": "Setting n_ctx > 32768 on Qwen3.5-35B-A3B Q4_K_M exhausts 36 GB when KV cache uses f16 format",
+          "fix": "Enable KV cache quantisation: --cache-type-k q8_0 --cache-type-v q8_0 in llama.cpp, or enable Flash Attention. For n_ctx=65536, q8_0 KV reduces cache from ~8 GB to ~4 GB."
+        },
+        {
+          "problem": "inference_very_slow_mixed_cpu_gpu",
+          "cause": "n_gpu_layers set to partial value; some layers running on CPU across memory bus",
+          "fix": "Always use n_gpu_layers=-1 (all GPU) on M4 Max. Mixed CPU/GPU on Apple Silicon is slower than pure CPU inference in some configurations due to scheduling overhead."
+        },
+        {
+          "problem": "mlx_finetuning_fused_model_performance_loss",
+          "cause": "mlx_lm.fuse can introduce accuracy degradation if quantised adapters are merged into quantised base",
+          "fix": "Add --de-quantize flag to mlx_lm.fuse command. Re-quantise the fused model after de-quantisation if needed."
+        }
+      ]
+    }
+  },
+  "quick_reference_configs": {
+    "description": "Copy-paste API request bodies for common Qwen3.5 × LM Studio scenarios",
+    "configs": [
+        {
+          "id": "typescript_codemod",
+          "label": "TypeScript codemod (Coder-30B-A3B, repo-scale)",
+          "body": "{ \"model\": \"qwen/qwen3-coder-30b\", \"messages\": [{\"role\":\"system\",\"content\":\"You are a TypeScript codemod specialist. Apply precise AST-aware transforms. Output only the transformed code or valid JSON patch per instructions.\"},{\"role\":\"user\",\"content\":\"Transform the following files...\"}], \"temperature\": 0.6, \"top_p\": 0.8, \"top_k\": 20, \"repeat_penalty\": 1.05, \"seed\": 42, \"max_tokens\": 8192, \"stream\": true }"
+        },
+        {
+          "id": "json_strict",
+        "label": "Strict JSON extraction (deterministic)",
+        "body": "{ \"model\": \"unsloth/qwen3.6-35b-a3b\", \"messages\": [{\"role\":\"system\",\"content\":\"You are a data extraction assistant. Output only valid JSON matching the schema.\"},{\"role\":\"user\",\"content\":\"Extract: ...\"}], \"temperature\": 0, \"top_k\": 1, \"seed\": 42, \"max_tokens\": 2048, \"stream\": false, \"response_format\": {\"type\":\"json_schema\",\"json_schema\":{\"name\":\"extraction\",\"strict\":true,\"schema\":{...YOUR SCHEMA...}}} }"
+      },
+      {
+        "id": "agentic_tool",
+        "label": "Agentic reasoning with limited thinking",
+        "body": "{ \"model\": \"qwen/qwen3.5-35b-a3b\", \"messages\": [{\"role\":\"user\",\"content\":\"...\"}], \"temperature\": 0.6, \"top_p\": 0.95, \"top_k\": 20, \"max_tokens\": 4096, \"stream\": true, \"response_format\": {\"type\":\"json_object\"} }"
+      },
+      {
+        "id": "no_think_fast",
+        "label": "Non-thinking fast text (lowest latency)",
+        "body": "{ \"model\": \"qwen/qwen3.5-35b-a3b\", \"messages\": [{\"role\":\"user\",\"content\":\"...\\/no_think\"}], \"temperature\": 0.7, \"top_p\": 0.8, \"top_k\": 20, \"max_tokens\": 1024, \"stream\": true }"
+      },
+        {
+          "id": "llmster_load",
+          "label": "llmster startup sequence (macOS / Linux)",
+          "commands": [
+            "lms daemon up",
+            "lms load qwen/qwen3-coder-30b --yes --parallel 4",
+            "lms server start",
+            "curl http://localhost:1234/v1/models"
+          ]
+        },
+        {
+          "id": "llmster_load_qwen36",
+          "label": "llmster startup — Qwen3.6 general+coding",
+          "commands": [
+            "lms daemon up",
+            "lms load unsloth/qwen3.6-35b-a3b --yes --parallel 4",
+            "lms server start",
+            "curl http://localhost:1234/v1/models"
+          ]
+        }
+    ]
+  },
+  "jq_usage_guide": {
+    "examples": [
+      {
+        "query": ".knowledge_layers.layer_1b_qwen36_coder_family.truth_lens[] | select(.concept==\"typescript_codemod_model_matrix\") | .truths[]",
+        "returns": "TypeScript codemod model selection matrix for 36 GB M4 Max"
+      },
+      {
+        "query": ".knowledge_layers.layer_4_json_text_inference_configs.truth_lens[] | select(.concept==\"typescript_codemod_config\")",
+        "returns": "Optimal TypeScript codemod inference config"
+      },
+      {
+        "query": ".knowledge_layers.layer_1b_qwen36_coder_family.truth_lens[] | select(.concept==\"qwen36_memory_36gb\") | .truths[]",
+        "returns": "Qwen3.6 memory requirements for 36 GB"
+      },
+      {
+        "query": ".knowledge_layers.layer_2_all_inference_parameters.truth_lens[] | select(.concept==\"sampling_parameters\") | .parameters[] | {name, default, m4_supported}",
+        "returns": "All sampling params with defaults and M4 support"
+      },
+      {
+        "query": ".knowledge_layers.layer_2_all_inference_parameters.truth_lens[] | select(.concept==\"thinking_reasoning_parameters\") | .parameters[]",
+        "returns": "All thinking/reasoning params"
+      },
+      {
+        "query": ".knowledge_layers.layer_2_all_inference_parameters.truth_lens[] | select(.concept==\"memory_and_performance_parameters\") | .parameters[] | select(.m4_supported != \"N/A\")",
+        "returns": "Applicable memory params for M4 Max"
+      },
+      {
+        "query": ".knowledge_layers.layer_1_qwen35_model_family.truth_lens[] | select(.concept==\"memory_requirements_36gb\") | .truths[]",
+        "returns": "All model memory requirements for 36 GB"
+      },
+      {
+        "query": ".knowledge_layers.layer_1_qwen35_model_family.truth_lens[] | select(.concept==\"quantisation_guide\") | .truths[]",
+        "returns": "Quantisation selection guide"
+      },
+      {
+        "query": ".knowledge_layers.layer_4_json_text_inference_configs.truth_lens[] | select(.concept==\"json_extraction_config\")",
+        "returns": "Optimal JSON extraction config"
+      },
+      {
+        "query": ".knowledge_layers.layer_6_common_pitfalls.truth_lens[]",
+        "returns": "All pitfalls with causes and fixes"
+      },
+      {
+        "query": ".knowledge_layers.layer_3_lmstudio_llmster.truth_lens[] | select(.concept==\"llmster_headless_daemon\") | .truths[]",
+        "returns": "llmster daemon commands"
+      },
+      {
+        "query": ".knowledge_layers.layer_5_finetuning_on_apple_silicon.truth_lens[] | select(.concept==\"on_device_finetune_summary\") | .truths[]",
+        "returns": "What fits on 36 GB for fine-tuning"
+      },
+      {
+        "query": ".quick_reference_configs.configs[] | select(.id==\"json_strict\")",
+        "returns": "JSON strict extraction API body"
+      },
+      {
+        "query": ".core_principles[]",
+        "returns": "All core principles"
+      },
+      {
+        "query": ".knowledge_layers | keys[]",
+        "returns": "All layer names"
+      }
+    ]
+  },
+  "anti_patterns": [
+    "Setting enable_thinking=true for JSON extraction pipelines — thinking tokens inflate latency and do nothing for schema-constrained output",
+    "Setting n_gpu_layers to a partial value on M4 Max — always use -1 (all GPU); split Metal/CPU is slower than either pure mode",
+    "Deploying Qwen3.5-35B-A3B as default when Qwen3.6-35B-A3B is available — Qwen3.6 is ~1.75× faster on M4 Max at same quant with better coding benchmarks",
+    "Using Qwen3.6-35B-A3B for dedicated TypeScript codemods when Qwen3-Coder-30B-A3B is available — Coder-30B is purpose-trained for agentic coding with no thinking overhead",
+    "Loading Qwen3-Coder-Next on 36 GB M4 Max — 42 GB minimum; will OOM or mmap-throttle; use Coder-30B-A3B instead",
+    "Using IQ3 quants for codemod tool-calling pipelines — IQ3 can fail function-call JSON on Qwen3.6; use IQ4 or Q6",
+    "Downloading Qwen3.5-35B-A3B quants from Unsloth before Mar 2 2026 — MXFP4 tensor contamination in Q2_K_XL, Q3_K_XL, Q4_K_XL; re-download fixed versions",
+    "QLoRA fine-tuning on Qwen3.5 MoE (35B-A3B, 122B-A10B) — not recommended; use bf16 LoRA or switch to dense 27B",
+    "Maxing out CPU MoE slider in LM Studio — causes model loading hang; keep at 0% for full GPU operation",
+    "Requesting Q8 quantisation of Qwen3.5-35B-A3B (38 GB) on 36 GB — does not fit; will fall back to SSD mmap and lose throughput; use Q4 instead",
+    "Using json_object format when exact field validation is required — use json_schema with strict: true instead",
+    "Not upgrading to LM Studio 0.4.4+ when using Qwen3.5 with thinking mode via API — thinking tags emitted incorrectly in older versions",
+    "Setting f16 KV cache with n_ctx > 32768 on 36 GB — causes OOM; use q8_0 or q4_0 KV cache for long contexts",
+    "Fine-tuning Qwen3.5 27B+ on M4 Max 36 GB with mlx-lm — requires 48+ GB; 27B bf16 LoRA needs ~56 GB activation + gradient memory",
+    "Using temperature > 0 with response_format json_schema for extraction tasks — introduces unnecessary randomness into constrained decoding",
+    "Not calling /no_think or setting enable_thinking=false when using per-turn thinking toggle — consistent mode selection prevents unexpected context inflation"
+  ],
+  "meta": {
+    "version": "1.1.0",
+    "research_sources": [
+      "lmstudio.ai/changelog (0.4.0 through 0.4.6, Feb 2026)",
+      "lmstudio.ai/models/qwen/qwen3-coder-30b (Coder-30B-A3B specs, MLX variants)",
+      "lmstudio.ai/models/qwen/qwen3-coder-next (80B MoE, 42 GB minimum)",
+      "unsloth.ai/docs/models/qwen3.6 (Qwen3.6 inference, MTP, coding temperature settings, Apr 2026)",
+      "unsloth.ai/docs/models/qwen3.5 (legacy inference guide, Mar 2 update)",
+      "unsloth.ai/docs/models/tutorials/qwen3-coder-how-to-run-locally (Coder tool-calling fix, UD quants)",
+      "huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF (quant sizes, 256K context)",
+      "huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF (official GGUF, Apr 2026)",
+      "willitrunai.com/blog/qwen-3-6-vram-requirements (Q6_K ~28 GB, Q4_K_M ~21 GB)",
+      "siliconscore.com/models/qwen3-6-35b-a3b/ (M4 Max 36 GB MLX benchmarks ~42–48 tok/s)",
+      "ollama.com/batiai/qwen3.6-35b (IQ4 vs Q6 on M4 Max, 1.75× vs Qwen3.5)",
+      "simonwillison.net/2025/Jul/31/qwen3-coder-flash/ (Coder-30B MLX 6bit on 64 GB Mac)",
+      "news.ycombinator.com/item?id=47796844 (Qwen3.6 vs Qwen3.5 community benchmarks, Ollama support)",
+      "github.com/dmitryryabkov/local-ai-mac (M4 Max 36 GB MoE deployment guide)",
+      "alibabacloud.com/blog/qwen3-5-towards-native-multimodal-agents (Qwen3.5 release)",
+      "en.wikipedia.org/wiki/Qwen (Qwen3.6 April 2026 release timeline)"
+    ],
+    "compatible_with": [
+      "LM Studio 0.4.5 / 0.4.6",
+      "llmster (llama.cpp engine 2.5.1+)",
+      "Qwen3.6 family (27B, 35B-A3B) — primary upgrade path Apr 2026",
+      "Qwen3-Coder family (30B-A3B-Instruct, Coder-Next 48+ GB)",
+      "Qwen3.5 family (0.8B–397B-A17B) — legacy fallback",
+      "Apple M4 Max (32-core 410 GB/s and 40-core 546 GB/s variants, 36 GB)",
+      "mlx-lm (Apple MLX fine-tuning and inference)",
+      "Ollama (Qwen3.6 GGUFs; not Qwen3.5 DeltaNet)",
+      "Unsloth (CUDA fine-tuning, GGUF export)",
+      "Reggie MCP (reggie_ringdom_propagate codemod backend)"
+    ],
+    "schema": "truth_lens nested array per layer; parameter objects include name, type, range, default, m4_supported, backend, notes",
+    "jq_root": ".",
+    "maintainer_notes": "For M4 Max 36 GB TypeScript codemods: primary model is Qwen3-Coder-30B-A3B-Instruct UD-Q6_K via LM Studio llmster (qwen/qwen3-coder-30b), temperature=0.6, n_ctx=32768, thinking OFF by design. For mixed JSON+coding pipelines upgrade to Qwen3.6-35B-A3B Q6_K. Legacy Qwen3.5-35B-A3B remains valid but ~1.75× slower. Always use json_schema response_format for structured propagation manifests; MLX for interactive iteration, GGUF+grammar for deterministic JSON."
+  }
+}

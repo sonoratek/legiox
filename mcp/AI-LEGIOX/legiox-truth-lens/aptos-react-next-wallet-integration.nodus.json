@@ -1,0 +1,81 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "aptos_react_next_wallet_integration",
+  "name": "Aptos React & Next.js Wallet Integration",
+  "mission": {
+    "primary_objective": "Wire Ring Next.js 15/16 App Router apps to Aptos via wallet adapter and optional JS-Pro hooks with correct RSC client boundaries.",
+    "context": "Ring uses React 19 Server Components by default; wallet provider and hooks live in client components. AptosWalletAdapterProvider supports Petra, Connect, and AIP-62 wallets.",
+    "target_outcome": "Production WalletProvider layout, useWallet for signAndSubmitTransaction, optional AptosJSCoreProvider + TanStack Query for data fetching.",
+    "scope": "Frontend wallet integration. Server fee payer and ensureWallet are separate lenses."
+  },
+  "truth_lens": "Wrap app with AptosWalletAdapterProvider in a 'use client' module; pass dappConfig network and aptosApiKeys; use useWallet for account, connected, signAndSubmitTransaction. JS-Pro layers AptosJSCoreProvider atop adapter for opinionated hooks. Next.js examples live in aptos-wallet-adapter monorepo.",
+  "core_principles": [
+    "Wallet code only in client components — never import adapter in Server Components.",
+    "autoConnect with explicit onError logging.",
+    "Pass aptosConnect dappId for Connect / gas station pluginParams when used.",
+    "Prefer wallet signAndSubmitTransaction for user-signed; server for fee payer only."
+  ],
+  "anti_patterns": [
+    "Importing @aptos-labs/wallet-adapter-react in server actions or RSC pages.",
+    "Missing 'use client' on provider wrapper.",
+    "Bundling fee payer private key in frontend."
+  ],
+  "key_patterns": [
+    "AptosWalletAdapterProvider autoConnect dappConfig network aptosApiKeys.",
+    "useWallet: account, connected, signAndSubmitTransaction, wallet, network.",
+    "WalletSelector from @aptos-labs/wallet-adapter-ant-design optional.",
+    "AptosJSCoreProvider + useWalletAdapterCore for JS-Pro stack.",
+    "signAndSubmitTransaction({ data, withFeePayer, pluginParams }) for gas station."
+  ],
+  "consult_when": [
+    "Adding Aptos wallet to ring-platform.org layout.",
+    "Fixing Module not found aptos in wallet adapter.",
+    "Integrating Connect SIWA with Ring auth.",
+    "Combining Auth.js session with useWallet account."
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/aptos-keyless-ensure-wallet.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/aptos-ts-sdk-core.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/devops-aptos-gas-station-ops.nodus.json"
+  ],
+  "expertise": [
+    "WALLET_ADAPTER_PROVIDER — React context setup.",
+    "NEXT_RSC_BOUNDARY — client-only wallet modules.",
+    "JS_PRO_STACK — optional hooks layer.",
+    "GAS_STATION_CLIENT — withFeePayer via adapter."
+  ],
+  "keywords": [
+    "wallet-adapter-react",
+    "useWallet",
+    "Next.js",
+    "React 19",
+    "AptosWalletAdapterProvider",
+    "JS-Pro",
+    "use client",
+    "signAndSubmitTransaction"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "role": "LegioX truth lens — Aptos React/Next wallet",
+  "version": "1.0.0",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "tier": "web3_blockchain",
+  "packages": {
+    "adapter": "@aptos-labs/wallet-adapter-react",
+    "js_pro": "@aptos-labs/react",
+    "ts_sdk": "@aptos-labs/ts-sdk",
+    "monorepo": "https://github.com/aptos-labs/aptos-wallet-adapter"
+  },
+  "jq_topic_index": {
+    "adapter_provider": ["packages", "key_patterns"],
+    "use_wallet": ["key_patterns"],
+    "rsc_boundary": ["core_principles", "anti_patterns"],
+    "js_pro": ["packages.js_pro", "key_patterns"]
+  },
+  "web_references": [
+    "https://aptos.dev/build/sdks/wallet-adapter/dapp",
+    "https://js-pro.aptos.dev/react/introduction/quick-start",
+    "https://github.com/aptos-labs/aptos-wallet-adapter/tree/main/apps/nextjs-example"
+  ]
+}

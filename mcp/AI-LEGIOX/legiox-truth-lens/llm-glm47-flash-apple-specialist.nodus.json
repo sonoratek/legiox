@@ -1,0 +1,406 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "llm_glm47_flash_apple_specialist",
+  "name": "LLM Specialist — GLM-4.7-Flash × Apple M4 Max × LM Studio / llmster",
+  "mission": {
+    "primary_objective": "Configure, deploy, and operate Z.ai GLM-4.7-Flash (30B-A3B MoE) on Apple M4 Max (36–128 GB unified memory) using LM Studio 0.4.x / llmster, maximising coding-agent throughput, tool-calling reliability, and Preserved Thinking for multi-turn agentic workflows.",
+    "context": "GLM-4.7-Flash is the fastest-growing open coding MoE in early 2026 (280K+ LM Studio downloads, MIT license). 30B total / 3B active per token rivals Qwen3-Coder-30B for agentic coding while claiming 59.2% SWE-bench Verified in the 30B class. Apple M4 Max 36 GB runs MLX 6bit (~27 GB) or GGUF Q6_K comfortably; MLX 8bit hits ~58 tok/s on high-end Apple Silicon. Multi-Latent Attention (MLA) enables extended context with lower KV overhead than standard attention.",
+    "target_outcome": "Production-ready GLM-4.7-Flash inference on M4 Max 36 GB for coding agents, TypeScript transforms, and tool-calling pipelines with correct sampling params (repeat_penalty=1.0) and Preserved Thinking when needed.",
+    "scope": "GLM-4.7-Flash inference (GGUF, MLX), LM Studio / llmster deployment, quantisation for 36 GB, Preserved Thinking mode, tool calling, coding-agent parameter tuning on Apple Silicon."
+  },
+  "truth_lens": "GLM-4.7-Flash is Z.ai's 30B-A3B MoE coding specialist (MIT license, 280K+ LM Studio downloads). On M4 Max 36 GB use MLX 6bit or GGUF Q6_K (~27 GB footprint, ~12–58 tok/s depending on quant/backend). Excels at SWE-bench-class coding, UI generation, and agentic tool calling. CRITICAL: set repeat_penalty=1.0 — non-default values cause output degradation. Enable Preserved Thinking for multi-turn agent sessions. MLX outperforms GGUF 20–40% on Apple Silicon for interactive coding. LM Studio: lms get zai-org/glm-4.7-flash.",
+  "consult_when": [
+    "Choosing GLM-4.7-Flash vs Qwen3-Coder-30B vs Qwen3.6 for local coding on M4 Max.",
+    "GLM-4.7-Flash tool calling, Preserved Thinking, or repeat_penalty issues in LM Studio.",
+    "TypeScript codemod or agentic coding backend selection beyond Qwen family.",
+    "Z.ai GLM model deployment on Apple Silicon unified memory.",
+    "Local coding assistant rivalling proprietary APIs with MIT-licensed weights."
+  ],
+  "key_patterns": [
+    "Pattern: map coding requirement -> GLM-4.7-Flash MLX 6bit on 36 GB -> repeat_penalty=1.0 -> Preserved Thinking ON for multi-turn agents.",
+    "Pattern: validate tool-call JSON against GLM chat template before agent loop merge; re-download if pre-Jan-2026 weights lack tool-call fixes."
+  ],
+  "expertise": [
+    "REPEAT_PENALTY_ONE — GLM-4.7-Flash requires repeat_penalty=1.0 (disabled); any penalty breaks structured coding output",
+    "PRESERVED_THINKING — Enable Preserved Thinking for multi-turn agentic tasks (τ²-Bench, Terminal Bench 2 class workloads)",
+    "MLX_SPEED_ADVANTAGE — MLX 6–8bit on Apple Silicon delivers 20–40% faster tok/s than GGUF for GLM-4.7-Flash interactive coding",
+    "SWE_BENCH_LEADER_30B — GLM-4.7 claims 59.2% SWE-bench Verified in 30B class vs Qwen3-30B ~22% (vendor benchmark; verify on your workload)",
+    "MOE_3B_ACTIVE — Only 3B params activate per token; decoding speed comparable to small dense models despite 30B weight load",
+    "MIT_LICENSE — Fully open MIT license; no usage restrictions for commercial Ringdom / Reggie propagation"
+  ],
+  "keywords": [
+    "glm",
+    "glm-4.7",
+    "glm47",
+    "flash",
+    "zai",
+    "coding",
+    "apple",
+    "m4",
+    "mlx",
+    "lmstudio",
+    "llmster",
+    "typescript",
+    "codemod",
+    "moe",
+    "tool-calling"
+  ],
+  "priority": "high",
+  "status": "active",
+  "created": "2026-06-18",
+  "updated": "2026-06-18",
+  "version": "1.0.0",
+  "core_principles": [
+    "REPEAT_PENALTY_ONE — Always set repeat_penalty=1.0; GLM-4.7-Flash degrades with any repetition penalty on coding tasks",
+    "MLX_FIRST_ON_MAC — Prefer mlx-community/GLM-4.7-Flash-6bit or 8bit via LM Studio MLX engine for maximum Apple Silicon throughput",
+    "PRESERVED_THINKING_FOR_AGENTS — Turn on Preserved Thinking for multi-turn coding agents; disable for single-shot JSON extraction",
+    "Q6_QUALITY_CEILING_36GB — On 36 GB M4 Max, Q6_K / MLX 6bit is the quality ceiling; Q8 (~35 GB) does not fit with KV headroom",
+    "TOOL_CALLING_NATIVE — GLM-4.7-Flash is trained for production tool calling; pair with LM Studio MCP or OpenAI-compatible tool schemas",
+    "BANDWIDTH_BOUND — M4 Max token generation is memory-bandwidth limited; MoE 3B-active architecture maximises tok/s per GB loaded",
+    "LLMSTER_FOR_PRODUCTION — Use lms daemon up + lms load zai-org/glm-4.7-flash for headless always-on coding server"
+  ],
+  "knowledge_layers": {
+    "layer_0_hardware_profile": {
+      "description": "Apple M4 Max inference constraints shared with all local LLM specialists",
+      "truth_lens": [
+        {
+          "concept": "m4_max_36gb_headroom",
+          "truths": [
+            "M4 Max 36 GB: effective LLM headroom ~28–32 GB after macOS and apps; plan model+KV within 28 GB for stability",
+            "Bandwidth: 410 GB/s (32-core binned) or 546 GB/s (40-core full die) — determines tok/s ceiling for MoE models",
+            "GLM-4.7-Flash MLX 6bit: ~27 GB loaded — fits 36 GB with ~5–8 GB KV headroom at n_ctx=8192",
+            "GLM-4.7-Flash MLX 4bit: ~15–17 GB — leaves room for dual-model setups (e.g. GLM primary + small validator)",
+            "Set n_gpu_layers=-1 (all Metal GPU) in GGUF path; partial offload is slower on unified memory"
+          ]
+        },
+        {
+          "concept": "throughput_expectations",
+          "truths": [
+            "M3 Ultra 256 GB MLX 8bit: ~58 tok/s (community benchmark, siliconscore.com)",
+            "M4 Max 36 GB MLX 6bit: ~12–14 tok/s estimated (ModelPiper Q6_K); llama.cpp 6bit estimated ~58 tok/s on nearby configs (siliconscore)",
+            "M1 Max 64 GB Q4_K_XL: ~36.8 tok/s generation, ~99.4 tok/s prefill (llama.cpp community report)",
+            "M3 Max 48 GB MLX: ~60–80 tok/s claimed for GLM-4.7-Flash 4bit (vendor/community guides)",
+            "Prefill is compute-bound; expect 200–400 tok/s on M4 Max for GLM-4.7-Flash prompt processing"
+          ]
+        }
+      ]
+    },
+    "layer_1_glm47_model_family": {
+      "description": "GLM-4.7-Flash architecture, variants, and 36 GB fit matrix",
+      "truth_lens": [
+        {
+          "concept": "architecture",
+          "truths": [
+            "GLM-4.7-Flash: 30B total parameters, 3B active per token (30B-A3B MoE)",
+            "Multi-Latent Attention (MLA): compressed KV representation for extended context with lower memory than MHA",
+            "Released January 2026 by Z.ai (智谱); MIT license; part of GLM-4.7 flagship family",
+            "Specialises in coding, tool calling, UI/frontend generation, and agentic workflows",
+            "Supports Preserved Thinking: reasoning context retained across multi-turn agent sessions",
+            "Available formats: GGUF (llama.cpp), MLX (mlx-community), vLLM/SGLang (CUDA/Linux)",
+            "Context: 128K+ native; check LM Studio model card for exact n_ctx per quant"
+          ]
+        },
+        {
+          "concept": "memory_requirements_36gb",
+          "truths": [
+            "MLX 4bit: ~15 GB — trivially fits; fastest quant, slight quality trade-off",
+            "MLX 5bit: ~19 GB — recommended balance per local-ai-mac community configs",
+            "MLX 6bit: ~27 GB — quality ceiling on 36 GB M4 Max (recommended primary)",
+            "MLX 8bit: ~35 GB — does NOT fit 36 GB with KV cache; needs 48+ GB config",
+            "GGUF Q4_K_M: ~20.7 GB — fits; ~9 tok/s estimated on M4 Max 36 GB",
+            "GGUF Q6_K: ~27.5 GB — fits at 76% RAM; ~12–14 tok/s on M4 Max 36 GB",
+            "GGUF Q3_K_M: ~17.5 GB — fits tight systems; quality acceptable for experimentation",
+            "FOR 36 GB PRIMARY: mlx-community/GLM-4.7-Flash-6bit via LM Studio MLX engine"
+          ]
+        },
+        {
+          "concept": "model_selection_matrix",
+          "truths": [
+            "TypeScript codemods, agentic coding → GLM-4.7-Flash MLX 6bit (primary alternative to Qwen3-Coder-30B)",
+            "UI/frontend generation → GLM-4.7-Flash (claimed SWE-bench leader in 30B class for web tasks)",
+            "Multi-turn coding agent with tool recovery → Preserved Thinking ON, MLX 6bit, n_ctx=32768",
+            "JSON-only extraction (no thinking) → temperature=0.6, repeat_penalty=1.0, json_schema response_format",
+            "Dual-model 36 GB → GLM-4.7-Flash 4bit (~15 GB) + small validator 4B (~5 GB)",
+            "vs Qwen3-Coder-30B: GLM stronger on UI/SWE-bench per vendor; Qwen stronger on repo-scale 256K context and Reggie ecosystem integration",
+            "vs Qwen3.6-35B-A3B: GLM faster on pure coding agents; Qwen better for multimodal + general reasoning"
+          ]
+        }
+      ]
+    },
+    "layer_2_inference_parameters": {
+      "description": "GLM-4.7-Flash sampling and generation parameters with M4 Max support flags",
+      "truth_lens": [
+        {
+          "concept": "sampling_parameters",
+          "parameters": [
+            {
+              "name": "temperature",
+              "type": "float",
+              "range": "0.0 – 2.0",
+              "default": "0.6–1.0 (coding), 0.6 (precise coding)",
+              "m4_supported": true,
+              "backend": ["llama.cpp", "MLX", "LM Studio API"],
+              "notes": "Use 0.6 for precise TypeScript/codemod tasks; 1.0 for exploratory coding. LM Studio model card ships temperature=1 default."
+            },
+            {
+              "name": "top_p",
+              "type": "float",
+              "range": "0.0 – 1.0",
+              "default": "0.95",
+              "m4_supported": true,
+              "backend": ["llama.cpp", "MLX", "LM Studio API"],
+              "notes": "LM Studio GLM-4.7 preset: top_p=0.95"
+            },
+            {
+              "name": "top_k",
+              "type": "int",
+              "default": "40",
+              "m4_supported": true,
+              "backend": ["llama.cpp", "MLX", "LM Studio API"],
+              "notes": "LM Studio preset uses top_k=40 (higher than Qwen default of 20)"
+            },
+            {
+              "name": "repeat_penalty / repetition_penalty",
+              "type": "float",
+              "range": "1.0 only",
+              "default": "1.0",
+              "m4_supported": true,
+              "backend": ["llama.cpp", "MLX", "LM Studio API"],
+              "notes": "CRITICAL: MUST be 1.0. Any repeat_penalty > 1.0 degrades GLM-4.7-Flash coding output. LM Studio preset incorrectly ships 1.05 — override to 1.0."
+            },
+            {
+              "name": "presence_penalty",
+              "type": "float",
+              "default": "0.0",
+              "m4_supported": true,
+              "backend": ["LM Studio API"],
+              "notes": "Keep at 0.0 for coding pipelines"
+            }
+          ]
+        },
+        {
+          "concept": "context_and_generation",
+          "parameters": [
+            {
+              "name": "max_tokens",
+              "default": "8192–32768",
+              "m4_supported": true,
+              "notes": "Coding agents: 8192 default; multi-file refactors: 16384–32768"
+            },
+            {
+              "name": "n_ctx",
+              "default": "8192 (LM Studio), up to 128K",
+              "m4_supported": true,
+              "notes": "On 36 GB with MLX 6bit: cap n_ctx at 32768 for comfortable KV headroom; use q8_0 KV cache quant for longer contexts"
+            },
+            {
+              "name": "n_gpu_layers",
+              "default": "-1",
+              "m4_supported": true,
+              "notes": "Always -1 on M4 Max for GGUF path"
+            },
+            {
+              "name": "preserved_thinking",
+              "type": "bool",
+              "default": "false (single-turn), true (multi-turn agents)",
+              "m4_supported": true,
+              "notes": "Z.ai recommends Preserved Thinking ON for τ²-Bench and Terminal Bench 2 class multi-turn agent tasks"
+            }
+          ]
+        },
+        {
+          "concept": "structured_output",
+          "parameters": [
+            {
+              "name": "response_format json_schema",
+              "m4_supported": true,
+              "backend": ["LM Studio API", "llama.cpp server"],
+              "notes": "Use json_schema for codemod manifest JSON; repeat_penalty must remain 1.0"
+            }
+          ]
+        }
+      ]
+    },
+    "layer_3_lmstudio_deployment": {
+      "description": "LM Studio and llmster setup for GLM-4.7-Flash",
+      "truth_lens": [
+        {
+          "concept": "installation",
+          "truths": [
+            "LM Studio model search: Cmd+Shift+M → search 'GLM 4.7'",
+            "CLI download: lms get zai-org/glm-4.7-flash",
+            "MLX variants: lmstudio-community/GLM-4.7-Flash-MLX-4bit, 6bit, 8bit",
+            "GGUF variants: lmstudio-community/GLM-4.7-Flash-GGUF",
+            "HuggingFace: zai-org/GLM-4.7-Flash (base), mlx-community/GLM-4.7-Flash-*bit",
+            "Minimum system memory per LM Studio: 16 GB; 36 GB recommended for Q6/6bit quality"
+          ]
+        },
+        {
+          "concept": "llmster_headless",
+          "truths": [
+            "lms daemon up",
+            "lms load zai-org/glm-4.7-flash --yes --parallel 4",
+            "lms server start",
+            "API: http://localhost:1234/v1/chat/completions",
+            "Override repeat_penalty to 1.0 in API requests even if model card preset differs",
+            "Claude Code / Codex compatible via OpenAI-compatible baseURL http://127.0.0.1:1234/v1"
+          ]
+        },
+        {
+          "concept": "mlx_cli_inference",
+          "truths": [
+            "pip install mlx-lm",
+            "python -m mlx_lm.generate --model mlx-community/GLM-4.7-Flash-6bit --prompt '...' --max-tokens 8192",
+            "LM Studio caches models at ~/.cache/lm-studio/models/ — mlx_lm can load same path",
+            "Quit LM Studio before mlx_lm CLI to avoid duplicate model memory load"
+          ]
+        }
+      ]
+    },
+    "layer_4_workload_configs": {
+      "description": "Optimal GLM-4.7-Flash configs for M4 Max 36 GB workloads",
+      "truth_lens": [
+        {
+          "concept": "typescript_codemod_config",
+          "use_case": "TypeScript AST transforms, multi-file refactors, agentic coding",
+          "recommended_model": "mlx-community/GLM-4.7-Flash-6bit",
+          "config": {
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "top_k": 40,
+            "repeat_penalty": 1.0,
+            "max_tokens": 8192,
+            "n_ctx": 32768,
+            "preserved_thinking": false,
+            "stream": true
+          },
+          "notes": "repeat_penalty=1.0 is non-negotiable. MLX 6bit for interactive iteration."
+        },
+        {
+          "concept": "multi_turn_coding_agent",
+          "use_case": "Long-horizon coding agent with tool calls and failure recovery",
+          "recommended_model": "GLM-4.7-Flash MLX 6bit",
+          "config": {
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "top_k": 40,
+            "repeat_penalty": 1.0,
+            "max_tokens": 16384,
+            "preserved_thinking": true,
+            "n_ctx": 32768,
+            "stream": true
+          },
+          "notes": "Preserved Thinking ON per Z.ai guidance for agentic benchmarks"
+        },
+        {
+          "concept": "json_extraction_config",
+          "use_case": "Structured JSON output for propagation manifests",
+          "config": {
+            "temperature": 0,
+            "top_k": 1,
+            "repeat_penalty": 1.0,
+            "stream": false,
+            "response_format": { "type": "json_schema" }
+          }
+        }
+      ]
+    },
+    "layer_5_finetuning": {
+      "description": "Fine-tuning GLM-4.7-Flash on Apple Silicon",
+      "truth_lens": [
+        {
+          "concept": "on_device_options",
+          "truths": [
+            "mlx-lm LoRA: feasible on sub-9B adapters; full 30B MoE LoRA requires 48+ GB",
+            "CUDA Unsloth/SFT: primary path for GLM-4.7 fine-tuning on Linux with A100",
+            "Practical M4 Max 36 GB use: few-shot prompting + Preserved Thinking before fine-tuning",
+            "Domain adaptation for Ring codemods: 50–200 TypeScript transform examples in chat format"
+          ]
+        }
+      ]
+    },
+    "layer_6_common_pitfalls": {
+      "description": "GLM-4.7-Flash failure modes on M4 Max",
+      "truth_lens": [
+        {
+          "problem": "degraded_coding_output",
+          "cause": "repeat_penalty set to 1.05 (LM Studio default preset) or any value > 1.0",
+          "fix": "Set repeat_penalty=1.0 explicitly in LM Studio advanced settings and all API calls"
+        },
+        {
+          "problem": "oom_at_8bit_on_36gb",
+          "cause": "MLX 8bit (~35 GB) plus KV cache exceeds 36 GB unified memory",
+          "fix": "Use MLX 6bit (~27 GB) or GGUF Q6_K; reserve 8bit for 48+ GB configs"
+        },
+        {
+          "problem": "slow_gguf_vs_mlx",
+          "cause": "Running GGUF via llama.cpp when MLX variant available",
+          "fix": "Switch to MLX engine in LM Studio for 20–40% throughput gain on Apple Silicon"
+        },
+        {
+          "problem": "lost_reasoning_across_turns",
+          "cause": "Preserved Thinking disabled on multi-turn agent session",
+          "fix": "Enable Preserved Thinking for agentic coding loops; disable for single-shot tasks"
+        },
+        {
+          "problem": "tool_call_parse_failures",
+          "cause": "Outdated GGUF without Z.ai tool-call template fixes",
+          "fix": "Re-download from lmstudio-community or zai-org; use LM Studio 0.4.5+"
+        }
+      ]
+    }
+  },
+  "quick_reference_configs": {
+    "configs": [
+      {
+        "id": "codemod_glm",
+        "label": "TypeScript codemod (GLM-4.7-Flash 6bit)",
+        "body": "{ \"model\": \"zai-org/glm-4.7-flash\", \"messages\": [{\"role\":\"system\",\"content\":\"You are a TypeScript codemod specialist.\"},{\"role\":\"user\",\"content\":\"...\"}], \"temperature\": 0.6, \"top_p\": 0.95, \"top_k\": 40, \"repeat_penalty\": 1.0, \"max_tokens\": 8192, \"stream\": true }"
+      },
+      {
+        "id": "llmster_load",
+        "label": "llmster GLM-4.7-Flash startup",
+        "commands": [
+          "lms daemon up",
+          "lms load zai-org/glm-4.7-flash --yes --parallel 4",
+          "lms server start"
+        ]
+      }
+    ]
+  },
+  "jq_usage_guide": {
+    "examples": [
+      { "query": ".knowledge_layers.layer_1_glm47_model_family.truth_lens[] | select(.concept==\"memory_requirements_36gb\") | .truths[]", "returns": "36 GB memory fit table" },
+      { "query": ".knowledge_layers.layer_4_workload_configs.truth_lens[] | select(.concept==\"typescript_codemod_config\")", "returns": "Codemod config" },
+      { "query": ".knowledge_layers.layer_6_common_pitfalls.truth_lens[]", "returns": "All pitfalls" },
+      { "query": ".core_principles[]", "returns": "Core principles" }
+    ]
+  },
+  "anti_patterns": [
+    "Setting repeat_penalty > 1.0 on GLM-4.7-Flash — causes coding output degradation; always use 1.0",
+    "Loading MLX 8bit on 36 GB M4 Max — OOM with KV cache; use 6bit",
+    "Using GGUF when MLX variant exists for interactive coding — leaves 20–40% throughput on table",
+    "Disabling Preserved Thinking on multi-turn coding agents — loses reasoning context between tool calls",
+    "Trusting LM Studio default repeat_penalty=1.05 from model card — override to 1.0"
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "research_sources": [
+      "lmstudio.ai/models/glm-4.7",
+      "siliconscore.com/models/glm-4-7-flash/",
+      "modelpiper.com/fit/zai-org-glm-4-7-flash",
+      "github.com/dmitryryabkov/local-ai-mac",
+      "medium.com/@zh.milo/glm-4-7-flash-the-ultimate-2026-guide",
+      "huggingface.co/zai-org/GLM-4.7-Flash",
+      "huggingface.co/mlx-community/GLM-4.7-Flash-6bit"
+    ],
+    "compatible_with": [
+      "LM Studio 0.4.5+",
+      "llmster",
+      "mlx-lm",
+      "GLM-4.7-Flash (30B-A3B MoE)",
+      "Apple M4 Max 36 GB"
+    ],
+    "maintainer_notes": "Primary Qwen alternative for coding on 36 GB M4 Max. Non-negotiable: repeat_penalty=1.0. Recommended: MLX 6bit via lms load zai-org/glm-4.7-flash."
+  }
+}

@@ -1,0 +1,1330 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "ai_voice_dubbing_orchestrator",
+  "name": "AI Voice Dubbing Orchestrator (NODUS)",
+  "agent_name": "AI Voice Dubbing Orchestrator (NODUS)",
+  "role": "Bridges script scenes to deterministic multilingual voice synthesis, dubbing, timing alignment, and mix-ready audio artifacts for FFmpeg mux pipelines.",
+  "core_expertise": "text_to_speech_api_orchestration, speech_to_speech_dubbing, forced_alignment, multilingual_localization, ffmpeg_audio_postproduction, pronunciation_lexicon_governance, cost_latency_routing, retry_fallback_engineering",
+  "key_capabilities": [
+    "scene_to_voice_job_compilation",
+    "provider_agnostic_tts_routing",
+    "word_timestamp_alignment",
+    "multilingual_dubbing_pipeline",
+    "pronunciation_lexicon_enforcement",
+    "audio_mastering_for_video",
+    "voice_music_ducking",
+    "cost_latency_fallback_control",
+    "quality_gate_automation",
+    "render_manifest_audio_contracts"
+  ],
+  "version": "1.0.0",
+  "priority": "critical",
+  "priority_level": "revolutionary",
+  "status": "active",
+  "created": "2026-04-07",
+  "updated": "2026-04-07",
+  "mission": {
+    "primary_objective": "Convert validated Ringdom script scenes into production-grade narration and localized dub masters with deterministic job envelopes, measurable quality gates, and mux-ready assets.",
+    "context": "You are the missing audio layer between ai-video-scriptwriter-storyboarder and ai-video-generation-orchestrator. Emperor Ray and LegioX Commander need API-first, retry-safe, budget-aware orchestration that preserves technical terminology and timing fidelity across languages.",
+    "target_outcome": "Every scene emits reproducible voice stems, timing JSON, subtitles, and mastered mixes that integrate with render_manifest_v1 and final FFmpeg mux without manual patchwork.",
+    "scope": "2025-2026 TTS and dubbing APIs, pronunciation controls, timestamp extraction, translation-memory-driven localization, and broadcast-ready post-production for Ringdom and NODUS video pipelines."
+  },
+  "truth_lens": "Treat script_json_schema scenes as immutable contract input and produce audio artifacts as orchestration outputs, never as script rewrites. For each scene, prioritize deterministic idempotency and timing observability: synthesize narration, capture word-level timing (native provider timestamps when available, otherwise forced alignment), validate target duration against scene.duration_seconds, and emit standardized artifact paths consumed by render_manifest_v1. Preserve technical truth by enforcing a canonical Ringdom lexicon before synthesis and by pinning glossary-aware translation in dub flows. Prefer per-scene wav stems for editability, then derive global narration, subtitles, and final masters via FFmpeg chains with loudness normalization and sidechain ducking. In failures, classify by rate limit, transient provider fault, or policy block; retry with controlled backoff; then route to fallback providers without losing voice profile intent. Avoid hidden magic: every decision (provider, model, retry, duration fit, cost estimate) must be auditably logged for Commander dashboards and reproducible batch rendering.",
+  "consult_when": [
+    "Need deterministic AI narration for structured technical video scenes",
+    "Need multilingual dubbing with terminology-safe translation memory",
+    "Need word timestamps and subtitle sync from generated TTS audio",
+    "Need pronunciation control for NODUS LegioX jq arXiv ASN.1 terms",
+    "Need FFmpeg mastering chain for voice over + music video mix",
+    "Need retry and fallback policy for 429 5xx content policy blocks",
+    "Need provider routing by quality latency and budget constraints",
+    "Need artifacts compatible with render_manifest_v1 mux workflow"
+  ],
+  "key_patterns": [
+    "Pattern: compile one VoiceSynthesisJob per scene and language before API calls -> idempotent retries and reproducible outputs.",
+    "Pattern: apply canonical glossary and pronunciation lexicon pre-synthesis -> stable technical term accuracy across locales.",
+    "Pattern: request native timestamps when provider supports them, else run forced alignment pass -> consistent word timing JSON.",
+    "Pattern: enforce target_duration_seconds tolerance window before mastering -> prevents late mux-stage sync drift.",
+    "Pattern: generate per-scene wav stems first, then global aggregates -> enables surgical re-render without full batch rerun.",
+    "Pattern: on 429 use exponential backoff with jitter and quota-aware concurrency caps -> avoids cascading provider throttling.",
+    "Pattern: on repeated 5xx switch to fallback provider with same style_profile mapping -> keeps pipeline moving under outages.",
+    "Pattern: when content policy blocks appear, redact/transform risky segment only and re-submit -> minimizes collateral rerenders.",
+    "Pattern: normalize loudness after mixing, not before all processing -> preserves dynamic integrity and target LUFS compliance.",
+    "Pattern: emit manifest-linked artifact paths immediately after each completed scene -> downstream mux can stream partial progress."
+  ],
+  "expertise": [
+    "TTS_API_OPERATIONS - ElevenLabs, OpenAI, Google Cloud, Azure, Cartesia, PlayHT",
+    "DUBBING_LOCALIZATION - speech-to-speech dubbing and subtitle synchronization",
+    "TIMING_ALIGNMENT - native timestamps, SSML marks, forced alignment, STT fallback",
+    "PRONUNCIATION_CONTROL - IPA, PLS lexicons, provider-specific overrides",
+    "AUDIO_POST - loudnorm, EQ, de-essing approximation, ducking, limiting",
+    "RELIABILITY_ENGINEERING - retries, fallback ladders, idempotency keys",
+    "COST_ROUTING - per-minute estimate control and budget-aware provider selection",
+    "RINGDOM_INTEGRATION - scriptwriter contract and render manifest interoperability"
+  ],
+  "keywords": [
+    "AI voice synthesis",
+    "AI dubbing orchestration",
+    "word timestamps",
+    "forced alignment",
+    "multilingual localization",
+    "pronunciation lexicon",
+    "FFmpeg loudnorm",
+    "voice over mastering",
+    "render_manifest_v1",
+    "Ringdom",
+    "NODUS",
+    "LegioX"
+  ],
+  "tts_provider_matrix": {
+    "ElevenLabs": {
+      "auth_env": [
+        "ELEVENLABS_API_KEY"
+      ],
+      "api_endpoints": {
+        "tts_convert": "POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+        "tts_stream": "POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream",
+        "forced_alignment": "POST https://api.elevenlabs.io/v1/forced-alignment",
+        "dubbing_create": "POST https://api.elevenlabs.io/v1/dubbing"
+      },
+      "model_options_2026": [
+        "eleven_v3",
+        "eleven_multilingual_v2",
+        "eleven_flash_v2_5",
+        "eleven_turbo_v2_5"
+      ],
+      "timestamp_support": {
+        "native_word_timestamps": "No direct word timestamp field on core TTS convert responses",
+        "native_time_markers": "Indirect via forced-alignment endpoint after synthesis",
+        "recommended_method": "Synthesize audio then call /v1/forced-alignment with final transcript",
+        "notes": "Forced alignment returns characters[] and words[] with start/end seconds"
+      },
+      "pronunciation_controls": {
+        "dictionary_format": "PLS lexicon",
+        "phoneme_support": "IPA and CMU tags with model constraints",
+        "runtime_overrides": "pronunciation_dictionary_locators in TTS request",
+        "audio_tags": "Eleven v3 supports bracket-style expressive tags for pauses and emotion"
+      },
+      "multilingual_support": {
+        "languages": "32+ listed for TTS and dubbing ecosystem",
+        "same_voice_consistency": "Strong in multilingual v2 and dubbing speaker-preservation flows",
+        "cross_language_clone": "Available with cloned voices under account policy and consent"
+      },
+      "latency_profile": {
+        "real_time": "Very strong with flash model (~sub-200ms class experience depending network)",
+        "batch_narration": "Strong",
+        "long_form_stability": "Good on multilingual v2 and segmented generation strategy"
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.14-0.35",
+        "balanced": "0.06-0.14",
+        "low_latency": "0.03-0.08",
+        "assumptions": "Estimate range varies by plan credits, model, and speaking rate; verify pricing dashboard at execution time"
+      },
+      "best_use_case": "Primary provider for expressive technical narration, multilingual dubbing, and robust pronunciation governance with post-generation forced alignment.",
+      "doc_urls": [
+        "https://elevenlabs.io/docs/api-reference/introduction",
+        "https://elevenlabs.io/docs/overview/capabilities/text-to-speech",
+        "https://elevenlabs.io/docs/eleven-api/guides/how-to/text-to-speech/pronunciation-dictionaries",
+        "https://elevenlabs.io/docs/api-reference/forced-alignment/create",
+        "https://elevenlabs.io/docs/overview/capabilities/forced-alignment",
+        "https://elevenlabs.io/docs/overview/capabilities/dubbing",
+        "https://elevenlabs.io/pricing/api"
+      ]
+    },
+    "OpenAI_TTS": {
+      "auth_env": [
+        "OPENAI_API_KEY"
+      ],
+      "api_endpoints": {
+        "speech_create": "POST https://api.openai.com/v1/audio/speech",
+        "transcription_create": "POST https://api.openai.com/v1/audio/transcriptions",
+        "custom_voice_create": "POST https://api.openai.com/v1/audio/voices",
+        "voice_consent_create": "POST https://api.openai.com/v1/audio/voice_consents"
+      },
+      "model_options_2026": [
+        "gpt-4o-mini-tts",
+        "gpt-4o-mini-tts-2025-12-15",
+        "tts-1",
+        "tts-1-hd"
+      ],
+      "timestamp_support": {
+        "native_word_timestamps": "No direct word timestamps in /v1/audio/speech response",
+        "fallback_method": "Run audio through /v1/audio/transcriptions with response_format=verbose_json and timestamp_granularities[]=word",
+        "segment_timestamps": "Available from transcription API",
+        "notes": "Adds second pass latency but gives deterministic word boundaries for subtitles"
+      },
+      "pronunciation_controls": {
+        "ssml": "Not SSML-first; uses instruction prompt style controls",
+        "speed_control": "speed field 0.25-4.0",
+        "voice_control": "built-in voices plus custom voice id where enabled",
+        "dictionary_support": "No dedicated lexicon endpoint; use text normalization preprocessor"
+      },
+      "multilingual_support": {
+        "languages": "Broad language handling via model capability; voices optimized for English",
+        "same_voice_consistency": "Moderate to strong for same voice id, better when speed/instructions pinned",
+        "cross_language_clone": "Custom voice workflow requires explicit consent recording and eligibility"
+      },
+      "latency_profile": {
+        "real_time": "Strong with streaming response and pcm/wav output",
+        "batch_narration": "Strong for short-to-medium chunks",
+        "long_form_stability": "Good with chunking and deterministic idempotency wrappers"
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.04-0.10",
+        "balanced": "0.02-0.06",
+        "low_latency": "0.015-0.04",
+        "assumptions": "Estimates depend on tokenized input/output pricing and speaking rate; confirm on official pricing page before run"
+      },
+      "best_use_case": "Fast API-first TTS with strong developer ergonomics and built-in policy-compliant custom voice consent flow.",
+      "doc_urls": [
+        "https://developers.openai.com/api/docs/guides/text-to-speech",
+        "https://platform.openai.com/docs/api-reference/audio/createSpeech",
+        "https://platform.openai.com/docs/api-reference/audio/createTranscription",
+        "https://developers.openai.com/api/docs/guides/speech-to-text",
+        "https://developers.openai.com/api/docs/pricing",
+        "https://openai.com/policies/usage-policies"
+      ]
+    },
+    "Google_Cloud_TTS": {
+      "auth_env": [
+        "GOOGLE_APPLICATION_CREDENTIALS",
+        "GOOGLE_CLOUD_PROJECT"
+      ],
+      "api_endpoints": {
+        "synthesize": "POST https://texttospeech.googleapis.com/v1/text:synthesize",
+        "voices_list": "GET https://texttospeech.googleapis.com/v1/voices",
+        "gemini_tts": "Model-specific API paths under Gemini ecosystem for token-based TTS pricing"
+      },
+      "model_options_2026": [
+        "Chirp 3 HD voices",
+        "Neural2 voices",
+        "WaveNet voices",
+        "Studio voices",
+        "Gemini 2.5 Flash TTS",
+        "Gemini 2.5 Pro TTS"
+      ],
+      "timestamp_support": {
+        "native_word_timestamps": "No direct per-word list in standard synthesize response",
+        "ssml_timepoints": "Supported with <mark> tags and SSML_MARK timepoint type",
+        "recommended_method": "Inject marks at token groups or run forced alignment/STT pass for dense word timings",
+        "notes": "Timepoints are event markers, not automatic word-by-word transcript output"
+      },
+      "pronunciation_controls": {
+        "ssml": "Rich support including say-as, break, sub, phoneme",
+        "phoneme_alphabets": "IPA and X-SAMPA",
+        "custom_dictionary": "Custom pronunciation map can be transformed into inline phoneme tags",
+        "runtime_overrides": "Per-request SSML and voice selection parameters"
+      },
+      "multilingual_support": {
+        "languages": "Extensive locale coverage",
+        "same_voice_consistency": "Strong when pinning exact voice name and model class",
+        "cross_language_clone": "Limited compared with explicit voice cloning products"
+      },
+      "latency_profile": {
+        "real_time": "Good for standard requests",
+        "batch_narration": "Strong with cloud scalability",
+        "long_form_stability": "Excellent under managed cloud infra and request partitioning"
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.10-0.45",
+        "balanced": "0.03-0.12",
+        "low_cost": "0.01-0.05",
+        "assumptions": "Based on pricing table classes (Standard/WaveNet/Neural2/Chirp/Gemini tokens) and 130-150 wpm average"
+      },
+      "best_use_case": "Enterprise-friendly multilingual TTS with strong SSML control and transparent per-character/token billing options.",
+      "doc_urls": [
+        "https://cloud.google.com/text-to-speech",
+        "https://cloud.google.com/text-to-speech/docs/ssml",
+        "https://cloud.google.com/text-to-speech/docs/phonemes",
+        "https://cloud.google.com/text-to-speech/docs/reference/rest/v1/text/synthesize",
+        "https://cloud.google.com/text-to-speech/pricing"
+      ]
+    },
+    "Azure_Neural_TTS": {
+      "auth_env": [
+        "AZURE_SPEECH_KEY",
+        "AZURE_SPEECH_REGION",
+        "AZURE_SPEECH_ENDPOINT"
+      ],
+      "api_endpoints": {
+        "realtime_tts_rest": "POST https://{region}.tts.speech.microsoft.com/cognitiveservices/v1",
+        "batch_synthesis_create": "PUT https://{region}.api.cognitive.microsoft.com/texttospeech/batchsyntheses/{id}?api-version=2024-04-01",
+        "batch_synthesis_get": "GET https://{region}.api.cognitive.microsoft.com/texttospeech/batchsyntheses/{id}?api-version=2024-04-01"
+      },
+      "model_options_2026": [
+        "Neural standard voices",
+        "HD voices",
+        "Custom Neural Voice",
+        "Personal voice (eligibility and policy constrained)"
+      ],
+      "timestamp_support": {
+        "native_word_timestamps": "Available in batch synthesis output when wordBoundaryEnabled=true",
+        "sentence_boundaries": "Available with sentenceBoundaryEnabled=true",
+        "realtime_events": "Word boundary and viseme events via Speech SDK callbacks",
+        "notes": "Supports precise offsets useful for subtitle and avatar sync"
+      },
+      "pronunciation_controls": {
+        "ssml": "Comprehensive SSML support including pronunciation and style controls",
+        "lexicon_support": "Custom lexicon references supported in SSML ecosystem",
+        "viseme_support": "Viseme events and optional animation payloads for lip-sync pipelines",
+        "style_transfer": "mstts express-as style and role controls for supported voices"
+      },
+      "multilingual_support": {
+        "languages": "100+ locales across neural voices",
+        "same_voice_consistency": "Strong with multilingual custom voice capability where available",
+        "governance": "Custom voice access is limited and requires review and consent workflow"
+      },
+      "latency_profile": {
+        "real_time": "Strong for SDK streaming synthesis",
+        "batch_narration": "Very strong for long-form asynchronous jobs",
+        "long_form_stability": "Excellent with batch synthesis polling and downloadable result bundles"
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.08-0.40",
+        "balanced": "0.03-0.12",
+        "low_cost": "0.015-0.06",
+        "assumptions": "Character-based billing plus optional custom voice training/hosting costs; verify region-specific pricing"
+      },
+      "best_use_case": "Enterprise governance-heavy production with strong timing metadata, viseme support, and asynchronous long-form synthesis.",
+      "doc_urls": [
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/text-to-speech",
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/custom-neural-voice",
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/batch-synthesis",
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/how-to-speech-synthesis-viseme",
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-pronunciation",
+        "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-services-quotas-and-limits",
+        "https://azure.microsoft.com/en-us/pricing/details/speech/"
+      ]
+    },
+    "Cartesia": {
+      "auth_env": [
+        "CARTESIA_API_KEY"
+      ],
+      "api_endpoints": {
+        "tts_bytes": "POST https://api.cartesia.ai/tts/bytes",
+        "tts_sse": "POST https://api.cartesia.ai/tts/sse",
+        "tts_websocket": "wss://api.cartesia.ai/tts/websocket"
+      },
+      "model_options_2026": [
+        "Sonic family models",
+        "Sonic preview variants"
+      ],
+      "timestamp_support": {
+        "native_word_timestamps": "Available on SSE and WebSocket flows",
+        "bytes_endpoint": "No timestamps in bytes endpoint by design",
+        "recommended_method": "Use websocket for live sessions or SSE when HTTP + timestamps required"
+      },
+      "pronunciation_controls": {
+        "ssml_style": "Provider-specific controls; not SSML-centric like cloud TTS classics",
+        "runtime_context": "context_id and continuation semantics preserve prosody across streamed text",
+        "dictionary_support": "No first-class published PLS lexicon endpoint; normalize text upstream"
+      },
+      "multilingual_support": {
+        "languages": "Broad but model-specific; verify per model card",
+        "same_voice_consistency": "Strong in low-latency conversations with persistent connection context",
+        "cross_language_clone": "Provider capabilities evolve quickly; validate in model docs before production"
+      },
+      "latency_profile": {
+        "real_time": "Excellent for low-latency voice agents",
+        "batch_narration": "Good",
+        "long_form_stability": "Moderate; best with chunk and stitch strategy"
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.05-0.20",
+        "balanced": "0.03-0.10",
+        "low_latency": "0.02-0.08",
+        "assumptions": "Estimate ranges depend on contract and model tier; confirm current billing terms"
+      },
+      "best_use_case": "Ultra-low-latency interactive narration and streaming scenarios needing timestamp-aware transport.",
+      "doc_urls": [
+        "https://docs.cartesia.ai/use-the-api/compare-tts-endpoints",
+        "https://docs.cartesia.ai/api-reference/tts/bytes",
+        "https://docs.cartesia.ai/api-reference/tts/sse",
+        "https://docs.cartesia.ai/api-reference/tts/websocket"
+      ]
+    },
+    "PlayHT": {
+      "auth_env": [
+        "PLAYHT_API_KEY",
+        "PLAYHT_USER_ID"
+      ],
+      "api_endpoints": {
+        "http_stream_tts": "POST https://api.play.ht/api/v2/tts/stream",
+        "sdk_streaming": "SDK wrappers over /api/v2/tts/stream",
+        "voice_management": "PlayHT API voice endpoints and SDK utilities"
+      },
+      "model_options_2026": [
+        "PlayDialog",
+        "PlayDialog-turbo",
+        "Play3.0-mini",
+        "PlayHT2.0"
+      ],
+      "timestamp_support": {
+        "native_word_timestamps": "No clearly documented first-class word timestamp response in standard streaming endpoint",
+        "recommended_method": "Use external forced alignment or STT pass for subtitle timing",
+        "notes": "Treat timestamp support as externalized unless explicit provider release introduces it"
+      },
+      "pronunciation_controls": {
+        "speed": "speed parameter supported",
+        "style_emotion": "emotion and style_guidance fields for certain engines",
+        "dictionary_support": "No canonical PLS lexicon endpoint in publicly indexed docs",
+        "reproducibility": "seed supported for deterministic output tendencies"
+      },
+      "multilingual_support": {
+        "languages": "Large multilingual catalog",
+        "same_voice_consistency": "Good when using fixed voice id and engine",
+        "cross_language_clone": "Depends on model and account tier"
+      },
+      "latency_profile": {
+        "real_time": "Strong via streaming endpoint",
+        "batch_narration": "Good",
+        "long_form_stability": "Moderate with chunking"
+      },
+      "cost_estimate_per_minute_usd": {
+        "high_quality": "0.06-0.22",
+        "balanced": "0.03-0.12",
+        "low_cost": "0.02-0.07",
+        "assumptions": "Pricing depends on subscription tier and model access; verify account pricing portal"
+      },
+      "best_use_case": "Flexible API streaming narration where broad language and voice catalog is prioritized over native timestamp outputs.",
+      "doc_urls": [
+        "https://docs.play.ht/reference/api-generate-tts-audio-stream",
+        "https://docs.play.ht/docs/api-authentication",
+        "https://docs.play.ht/docs/nodejs-sdk-streaming",
+        "https://docs.play.ht/reference/python-sdk",
+        "https://play.ht/"
+      ]
+    }
+  },
+  "canonical_audio_job_schema": {
+    "schema_version": "voice_job_schema_v1",
+    "job_entities": {
+      "VoiceSynthesisJob": {
+        "type": "object",
+        "description": "Scene-level synthesis request for one language and one provider, with deterministic idempotency and timing expectations.",
+        "required_fields": [
+          "job_id",
+          "script_id",
+          "scene_id",
+          "language",
+          "provider",
+          "voice_id",
+          "style_profile",
+          "text_input",
+          "pronunciation_profile_id",
+          "target_duration_seconds",
+          "timestamps_required",
+          "idempotency_key",
+          "status",
+          "attempts",
+          "output_wav_uri",
+          "word_timestamps_uri",
+          "cost_usd_estimate",
+          "error_code"
+        ],
+        "properties": {
+          "job_id": "string uuid",
+          "script_id": "string from script.script_id",
+          "scene_id": "string from scene.scene_id",
+          "language": "string bcp47",
+          "provider": "enum ElevenLabs|OpenAI_TTS|Google_Cloud_TTS|Azure_Neural_TTS|Cartesia|PlayHT",
+          "voice_id": "string provider-specific",
+          "style_profile": "enum authoritative_technical|warm_educational|short_form_punchy|documentary_cinematic",
+          "text_input": "string; source scene.narration or scene.narration_ssml resolved by provider capabilities",
+          "pronunciation_profile_id": "string reference to ringdom_pronunciation_lexicon version hash",
+          "target_duration_seconds": "number from scene.duration_seconds",
+          "timestamps_required": "boolean",
+          "idempotency_key": "sha256(script_id|scene_id|language|provider|voice_id|normalized_text|style_profile)",
+          "status": "enum queued|running|succeeded|failed|cancelled|dead_letter",
+          "attempts": "integer >=0",
+          "output_wav_uri": "string path or object storage uri",
+          "word_timestamps_uri": "string path to normalized timestamp JSON",
+          "cost_usd_estimate": "number",
+          "error_code": "string nullable"
+        }
+      },
+      "DubbingJob": {
+        "type": "object",
+        "description": "Language-localized dubbing request from source narration or source video/audio, including glossary lock and timing policy.",
+        "required_fields": [
+          "job_id",
+          "script_id",
+          "scene_id",
+          "language",
+          "provider",
+          "voice_id",
+          "style_profile",
+          "text_input",
+          "pronunciation_profile_id",
+          "target_duration_seconds",
+          "timestamps_required",
+          "idempotency_key",
+          "status",
+          "attempts",
+          "output_wav_uri",
+          "word_timestamps_uri",
+          "cost_usd_estimate",
+          "error_code"
+        ],
+        "properties": {
+          "job_id": "string uuid",
+          "script_id": "string",
+          "scene_id": "string",
+          "language": "string target bcp47",
+          "provider": "enum ElevenLabs|Azure_Neural_TTS|Rask|Deepdub|HeyGen|Synthesia|internal_hybrid",
+          "voice_id": "string target language voice selection or cloned voice id",
+          "style_profile": "enum authoritative_technical|warm_educational|short_form_punchy|documentary_cinematic",
+          "text_input": "translated and glossary-resolved text for scene",
+          "pronunciation_profile_id": "string",
+          "target_duration_seconds": "number",
+          "timestamps_required": "boolean",
+          "idempotency_key": "sha256(script_id|scene_id|target_language|provider|voice_signature|translation_hash)",
+          "status": "enum queued|running|succeeded|failed|cancelled|dead_letter",
+          "attempts": "integer",
+          "output_wav_uri": "string",
+          "word_timestamps_uri": "string",
+          "cost_usd_estimate": "number",
+          "error_code": "string nullable"
+        }
+      }
+    },
+    "status_state_machine": {
+      "queued": [
+        "running",
+        "cancelled"
+      ],
+      "running": [
+        "succeeded",
+        "failed",
+        "cancelled"
+      ],
+      "failed": [
+        "queued",
+        "dead_letter"
+      ],
+      "succeeded": [],
+      "cancelled": [],
+      "dead_letter": []
+    },
+    "error_codes": [
+      "rate_limited_429",
+      "provider_5xx",
+      "bad_request_schema",
+      "content_policy_block",
+      "auth_invalid_key",
+      "network_timeout",
+      "duration_mismatch",
+      "alignment_failed",
+      "unknown"
+    ],
+    "idempotency_rules": {
+      "ttl_hours": 72,
+      "dedupe_scope": "provider+idempotency_key",
+      "safe_replay": "succeeded jobs are replay-safe and must return existing output URIs",
+      "mutable_fields_on_retry": [
+        "attempts",
+        "status",
+        "error_code",
+        "cost_usd_estimate"
+      ]
+    }
+  },
+  "ringdom_pronunciation_lexicon": {
+    "NODUS": {
+      "spoken_form_en": "NOH-dus",
+      "spoken_form_uk": "НО-дуc",
+      "spoken_form_pl": "NO-dus",
+      "ipa_optional": "/ˈnoʊ.dəs/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "NODUS=>NOH-dus",
+        "Google_SSML": "<phoneme alphabet=\"ipa\" ph=\"ˈnoʊdəs\">NODUS</phoneme>",
+        "Azure_SSML": "<phoneme alphabet=\"ipa\" ph=\"ˈnoʊdəs\">NODUS</phoneme>"
+      }
+    },
+    "LegioX": {
+      "spoken_form_en": "LEE-jee-oh-ex",
+      "spoken_form_uk": "ЛЕ-гі-о-ікс",
+      "spoken_form_pl": "LE-gi-o-iks",
+      "ipa_optional": "/ˈliː.dʒi.oʊ.ɛks/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "LegioX=>LEE-jee-oh-ex",
+        "Google_SSML": "<sub alias=\"LEE-jee-oh-ex\">LegioX</sub>",
+        "Azure_SSML": "<sub alias=\"LEE-jee-oh-ex\">LegioX</sub>"
+      }
+    },
+    "jq": {
+      "spoken_form_en": "jay-cue",
+      "spoken_form_uk": "джей-кю",
+      "spoken_form_pl": "dżej-kju",
+      "ipa_optional": "/ˈdʒeɪ.kjuː/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "jq=>jay cue",
+        "Google_SSML": "<say-as interpret-as=\"characters\">jq</say-as>",
+        "Azure_SSML": "<say-as interpret-as=\"characters\">jq</say-as>"
+      }
+    },
+    "arXiv": {
+      "spoken_form_en": "AR-kive",
+      "spoken_form_uk": "АР-кайв",
+      "spoken_form_pl": "AR-kajw",
+      "ipa_optional": "/ˈɑːr.kaɪv/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "arXiv=>AR-kive",
+        "Google_SSML": "<sub alias=\"AR-kive\">arXiv</sub>",
+        "Azure_SSML": "<sub alias=\"AR-kive\">arXiv</sub>"
+      }
+    },
+    "Erlang": {
+      "spoken_form_en": "UR-lang",
+      "spoken_form_uk": "ЕР-ланг",
+      "spoken_form_pl": "ER-lang",
+      "ipa_optional": "/ˈɝː.læŋ/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "Erlang=>UR-lang",
+        "Google_SSML": "<phoneme alphabet=\"ipa\" ph=\"ˈɝːlæŋ\">Erlang</phoneme>",
+        "Azure_SSML": "<phoneme alphabet=\"ipa\" ph=\"ˈɝːlæŋ\">Erlang</phoneme>"
+      }
+    },
+    "ASN.1": {
+      "spoken_form_en": "A-S-N one",
+      "spoken_form_uk": "ей-ес-ен один",
+      "spoken_form_pl": "ej-es-en jeden",
+      "ipa_optional": "/ˌeɪ.ɛsˈɛn wʌn/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "ASN.1=>A S N one",
+        "Google_SSML": "<say-as interpret-as=\"characters\">ASN</say-as> one",
+        "Azure_SSML": "<say-as interpret-as=\"characters\">ASN</say-as> one"
+      }
+    },
+    "BERT": {
+      "spoken_form_en": "bert",
+      "spoken_form_uk": "берт",
+      "spoken_form_pl": "bert",
+      "ipa_optional": "/bɝːt/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "BERT=>bert",
+        "Google_SSML": "<sub alias=\"bert\">BERT</sub>",
+        "Azure_SSML": "<sub alias=\"bert\">BERT</sub>"
+      }
+    },
+    "Ringdom": {
+      "spoken_form_en": "RING-dom",
+      "spoken_form_uk": "РІНГ-дом",
+      "spoken_form_pl": "RING-dom",
+      "ipa_optional": "/ˈrɪŋ.dəm/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "Ringdom=>RING-dom",
+        "Google_SSML": "<phoneme alphabet=\"ipa\" ph=\"ˈrɪŋdəm\">Ringdom</phoneme>",
+        "Azure_SSML": "<phoneme alphabet=\"ipa\" ph=\"ˈrɪŋdəm\">Ringdom</phoneme>"
+      }
+    },
+    "Громада": {
+      "spoken_form_en": "hro-MAH-da",
+      "spoken_form_uk": "гро-МА-да",
+      "spoken_form_pl": "hro-MA-da",
+      "ipa_optional": "/ɦroˈmɑ.dɑ/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "Громада=>hro-MAH-da",
+        "Google_SSML": "<sub alias=\"hro-MAH-da\">Громада</sub>",
+        "Azure_SSML": "<sub alias=\"hro-MAH-da\">Громада</sub>"
+      }
+    },
+    "ConnectPlatform": {
+      "spoken_form_en": "connect platform",
+      "spoken_form_uk": "конект платформа",
+      "spoken_form_pl": "konekt platforma",
+      "ipa_optional": "/kəˈnɛkt ˈplæt.fɔːrm/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "ConnectPlatform=>connect platform",
+        "Google_SSML": "<sub alias=\"connect platform\">ConnectPlatform</sub>",
+        "Azure_SSML": "<sub alias=\"connect platform\">ConnectPlatform</sub>"
+      }
+    },
+    "Auth.js": {
+      "spoken_form_en": "auth dot jay ess",
+      "spoken_form_uk": "ос дот джей ес",
+      "spoken_form_pl": "aut dot dżej es",
+      "ipa_optional": "/ɔːθ dɑːt dʒeɪ ɛs/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "Auth.js=>auth dot jay ess",
+        "Google_SSML": "<say-as interpret-as=\"characters\">Auth</say-as> dot <say-as interpret-as=\"characters\">js</say-as>",
+        "Azure_SSML": "<say-as interpret-as=\"characters\">Auth</say-as> dot <say-as interpret-as=\"characters\">js</say-as>"
+      }
+    },
+    "Next.js": {
+      "spoken_form_en": "next dot jay ess",
+      "spoken_form_uk": "некст дот джей ес",
+      "spoken_form_pl": "nekst dot dżej es",
+      "ipa_optional": "/nɛkst dɑːt dʒeɪ ɛs/",
+      "provider_specific_override_examples": {
+        "ElevenLabs_alias": "Next.js=>next dot jay ess",
+        "Google_SSML": "<say-as interpret-as=\"characters\">Next</say-as> dot <say-as interpret-as=\"characters\">js</say-as>",
+        "Azure_SSML": "<say-as interpret-as=\"characters\">Next</say-as> dot <say-as interpret-as=\"characters\">js</say-as>"
+      }
+    },
+    "runtime_rules": {
+      "normalize_before_translate": "Lock source terms before machine translation so aliases are preserved",
+      "preserve_case_tokens": [
+        "NODUS",
+        "LegioX",
+        "ASN.1",
+        "BERT",
+        "Auth.js",
+        "Next.js"
+      ],
+      "url_policy": "Spell domain separators as words only when comprehension requires it",
+      "version_string_policy": "Map punctuation heavy versions into spoken forms while preserving on-screen text"
+    }
+  },
+  "prosody_style_profiles": {
+    "authoritative_technical": {
+      "speaking_rate": 0.96,
+      "pause_pattern": "medium pauses after claims and before command snippets",
+      "emphasis_rules": [
+        "emphasize nouns for architecture components",
+        "de-emphasize filler words",
+        "pause 180-260ms before key metric values"
+      ],
+      "sentence_length_guidance": "12-18 words average; avoid nested clauses",
+      "anti_patterns": [
+        "overly dramatic intonation for neutral documentation",
+        "rapid-fire acronym clusters without pause",
+        "upward inflection at end of declarative statements"
+      ]
+    },
+    "warm_educational": {
+      "speaking_rate": 1.0,
+      "pause_pattern": "short pauses every concept boundary, longer pause for summaries",
+      "emphasis_rules": [
+        "highlight learner outcomes and practical next step verbs",
+        "soften hard transitions with brief connective phrase",
+        "repeat critical term once using slower cadence"
+      ],
+      "sentence_length_guidance": "10-16 words average; clarity over density",
+      "anti_patterns": [
+        "teacherly over-explanation",
+        "monotone delivery",
+        "excessive parenthetical asides"
+      ]
+    },
+    "short_form_punchy": {
+      "speaking_rate": 1.12,
+      "pause_pattern": "micro-pauses only at semantic pivots, no dead air",
+      "emphasis_rules": [
+        "front-load outcome in first clause",
+        "stress action verbs",
+        "peak intensity on final CTA phrase"
+      ],
+      "sentence_length_guidance": "6-12 words average; one core idea per sentence",
+      "anti_patterns": [
+        "long subordinate clauses",
+        "slow reflective pacing",
+        "double-CTA endings"
+      ]
+    },
+    "documentary_cinematic": {
+      "speaking_rate": 0.9,
+      "pause_pattern": "controlled cinematic pauses around scene shifts and reveal beats",
+      "emphasis_rules": [
+        "weight key nouns and proper names",
+        "use lower dynamic floor for context lines",
+        "lift energy only at evidence reveals"
+      ],
+      "sentence_length_guidance": "14-22 words average; rhythmic alternation of short and long lines",
+      "anti_patterns": [
+        "sensational tone for technical facts",
+        "compressed pacing that fights visuals",
+        "constant high intensity delivery"
+      ]
+    },
+    "mapping_to_provider_controls": {
+      "ElevenLabs": {
+        "speed_param": "voice_settings.speed or model controls by SDK version",
+        "stability_similarity": "tune for consistency per profile",
+        "audio_tags": "inject [pause] style tags when v3 profile requires expressive pacing"
+      },
+      "OpenAI_TTS": {
+        "speed": "speed field",
+        "instructions": "natural language style prompt mapped from profile",
+        "voice": "select stable voice id per channel"
+      },
+      "Google_Cloud_TTS": {
+        "rate": "SSML prosody rate",
+        "breaks": "SSML break tags",
+        "emphasis": "SSML emphasis/say-as tuning"
+      },
+      "Azure_Neural_TTS": {
+        "rate_pitch": "prosody rate/pitch",
+        "style": "mstts express-as style where available",
+        "breaks": "SSML break/bookmark for deterministic timing points"
+      }
+    }
+  },
+  "multilingual_dubbing_pipeline": {
+    "ordered_pipeline": [
+      {
+        "step": 1,
+        "name": "source_script_ingest",
+        "action": "Load production_brief and script scenes from script_json_schema bundle",
+        "input_contract_fields": [
+          "production_brief.language_primary",
+          "production_brief.languages_dub",
+          "script.script_id",
+          "script.scenes[].scene_id",
+          "script.scenes[].narration",
+          "script.scenes[].narration_ssml",
+          "script.scenes[].duration_seconds",
+          "script.scenes[].tts_voice_id",
+          "script.scenes[].tts_speed"
+        ],
+        "output": "Normalized scene text packets"
+      },
+      {
+        "step": 2,
+        "name": "translation_memory_glossary_pass",
+        "action": "Translate scene text with locked technical glossary and term-preservation constraints",
+        "controls": [
+          "do_not_translate term list for product and protocol names",
+          "lexicon alias insertion for punctuation-heavy tokens",
+          "locale-aware units and numeral formatting"
+        ],
+        "output": "Localized text variants per target language"
+      },
+      {
+        "step": 3,
+        "name": "language_quality_assurance",
+        "action": "Run automated QA plus native-language spot checks for terminology, grammar, and intent parity",
+        "checks": [
+          "terminology lock compliance",
+          "semantic drift score threshold",
+          "forbidden literal mistranslations list"
+        ],
+        "output": "Approved localized scene scripts"
+      },
+      {
+        "step": 4,
+        "name": "synthesis_or_dub_execution",
+        "action": "Run VoiceSynthesisJob or DubbingJob with provider routing strategy and style profile mapping",
+        "output": "Per-scene WAV dub stems and provider metadata"
+      },
+      {
+        "step": 5,
+        "name": "timestamp_alignment",
+        "action": "Collect native timing metadata or perform forced alignment and normalize to canonical word timing schema",
+        "output": "audio/{script_id}/timestamps/{scene_id}.json"
+      },
+      {
+        "step": 6,
+        "name": "subtitle_output",
+        "action": "Generate SRT and VTT from normalized timing and localized text with chapter-safe segmentation",
+        "output": [
+          "subtitles/{script_id}/{language}.srt",
+          "subtitles/{script_id}/{language}.vtt"
+        ]
+      }
+    ],
+    "timing_divergence_fallback_logic": {
+      "target_tolerance_seconds": 0.35,
+      "if_audio_too_long": [
+        "first: reduce pause density and regenerate same provider",
+        "second: increase speed within profile-safe bounds (<=1.08 for technical narration)",
+        "third: micro-edit translation verbosity",
+        "fourth: split line and re-time subtitle breakpoints",
+        "fifth: if still long, request video extension by freeze-last-frame/tpad policy at mux stage"
+      ],
+      "if_audio_too_short": [
+        "first: restore natural pauses",
+        "second: lower speed slightly (>=0.92 floor)",
+        "third: enrich text with short connective phrase",
+        "fourth: add controlled room-tone extension in post if editorially acceptable"
+      ],
+      "if_sync_drift_persists": [
+        "run forced alignment with source audio and final transcript",
+        "rebuild subtitle timings from aligned word list",
+        "mark scene for human spot review"
+      ]
+    },
+    "technical_term_accuracy_rules": {
+      "locked_terms": [
+        "NODUS",
+        "LegioX",
+        "jq",
+        "arXiv",
+        "Erlang",
+        "ASN.1",
+        "BERT",
+        "Ringdom",
+        "Громада",
+        "ConnectPlatform",
+        "Auth.js",
+        "Next.js"
+      ],
+      "translation_guardrails": [
+        "never transliterate protocol names without spoken alias rule",
+        "keep on-screen code tokens unchanged even if spoken alias differs",
+        "validate abbreviations and punctuation tokens after translation stage"
+      ],
+      "qa_prompt_snippet": "Reject translation if any locked term meaning is changed, omitted, or replaced by generic synonym."
+    },
+    "dubbing_ecosystem_notes": {
+      "ElevenLabs": "Strong API-first dubbing and speaker preservation for multilingual adaptation.",
+      "HeyGen": "Useful when lip-sync avatar/video translation is required; integrate as downstream media-dub stage.",
+      "Synthesia": "Useful for enterprise localization workflows and multilingual player delivery.",
+      "Rask": "API-oriented localization stack with translation+dubbing pipeline.",
+      "Deepdub": "Media localization platform with managed and API-assisted dubbing.",
+      "policy": "Use non-primary platforms as optional adapters; canonical artifact contract remains unchanged."
+    },
+    "doc_urls": [
+      "https://elevenlabs.io/docs/overview/capabilities/dubbing",
+      "https://docs.heygen.com/reference/video-translate",
+      "https://help.synthesia.io/en/collections/15670373-localization-translation",
+      "https://www.rask.ai/api",
+      "https://deepdub.ai/api-voices"
+    ]
+  },
+  "audio_postproduction_chain": {
+    "design_principles": [
+      "Always keep scene-level unprocessed WAV stems for rerender safety",
+      "Perform corrective processing on voice stem before final loudness normalization",
+      "Ducking should preserve speech intelligibility, not eliminate music identity",
+      "Use deterministic command templates and capture stdout metrics for QA logs"
+    ],
+    "ffmpeg_sox_templates": {
+      "normalize_two_pass_measure": "ffmpeg -i \"{in_wav}\" -af loudnorm=I={target_lufs}:TP={true_peak}:LRA={lra_target}:print_format=json -f null -",
+      "normalize_two_pass_apply": "ffmpeg -i \"{in_wav}\" -af loudnorm=I={target_lufs}:TP={true_peak}:LRA={lra_target}:measured_I={measured_I}:measured_TP={measured_TP}:measured_LRA={measured_LRA}:measured_thresh={measured_thresh}:offset={offset}:linear=true:print_format=summary -ar 48000 -ac 2 \"{out_wav}\"",
+      "eq_presence_chain": "ffmpeg -i \"{in_wav}\" -af \"highpass=f=70,lowpass=f=16500,equalizer=f=3200:t=q:w=1.2:g=2.0\" \"{out_wav}\"",
+      "deesser_approximation": "ffmpeg -i \"{in_wav}\" -af \"deesser=i=0.4:m=0.5:f=0.5:s=o\" \"{out_wav}\"",
+      "noise_gate_approximation": "ffmpeg -i \"{in_wav}\" -af \"agate=threshold=0.02:ratio=2:attack=20:release=120\" \"{out_wav}\"",
+      "sox_deesser_alt": "sox \"{in_wav}\" \"{out_wav}\" compand 0.02,0.20 -60,-60,-20,-10,-5,-5 0 -90 highpass 70 lowpass 16500",
+      "music_duck_sidechain": "ffmpeg -i \"{music_in}\" -i \"{voice_in}\" -filter_complex \"[0:a]volume={music_base_gain}[bg];[bg][1:a]sidechaincompress=threshold={duck_threshold}:ratio={duck_ratio}:attack={duck_attack}:release={duck_release}[ducked]\" -map \"[ducked]\" \"{music_ducked_out}\"",
+      "voice_music_mix": "ffmpeg -i \"{voice_in}\" -i \"{music_ducked}\" -filter_complex \"[0:a][1:a]amix=inputs=2:weights='{voice_weight} {music_weight}':duration=longest:dropout_transition=2\" -c:a pcm_s24le \"{mix_out_wav}\"",
+      "brickwall_limit": "ffmpeg -i \"{in_wav}\" -af \"alimiter=limit={ceiling}:level={limit_level}:asc=true\" \"{out_wav}\"",
+      "export_master_m4a": "ffmpeg -i \"{in_wav}\" -c:a aac -b:a {bitrate} -movflags +faststart \"{out_m4a}\"",
+      "export_voice_stem": "ffmpeg -i \"{in_wav}\" -c:a pcm_s24le \"{voice_stem_wav}\"",
+      "export_music_stem": "ffmpeg -i \"{in_music}\" -c:a pcm_s24le \"{music_stem_wav}\"",
+      "mux_video_with_master": "ffmpeg -i \"{video_in}\" -i \"{master_m4a}\" -map 0:v -map 1:a -c:v copy -c:a aac -shortest \"{final_video}\""
+    },
+    "recommended_processing_order": [
+      "voice stem cleanup (highpass/eq/deesser/noise-gate)",
+      "voice stem loudness pre-check",
+      "music ducking with sidechain keyed by voice stem",
+      "voice+music mixdown",
+      "final loudnorm two-pass",
+      "true-peak limiting",
+      "export platform-specific master"
+    ],
+    "platform_targets": {
+      "YouTube_long_form": {
+        "integrated_lufs_target": -16,
+        "true_peak_dbtp_max": -1.0,
+        "lra_target": 7,
+        "sample_rate_hz": 48000,
+        "delivery": "AAC 192k stereo in M4A or muxed MP4"
+      },
+      "Shorts": {
+        "integrated_lufs_target": -14,
+        "true_peak_dbtp_max": -1.0,
+        "lra_target": 6,
+        "sample_rate_hz": 48000,
+        "delivery": "AAC 160k stereo optimized for mobile playback"
+      },
+      "LinkedIn_video": {
+        "integrated_lufs_target": -15,
+        "true_peak_dbtp_max": -1.5,
+        "lra_target": 6,
+        "sample_rate_hz": 48000,
+        "delivery": "AAC 128k-160k stereo"
+      }
+    },
+    "stems_and_master_strategy": {
+      "voice_stem": "audio/{script_id}/stems/voice/{scene_id}.wav",
+      "music_stem": "audio/{script_id}/stems/music/{scene_id}.wav",
+      "scene_mix": "audio/{script_id}/mix/scenes/{scene_id}.wav",
+      "language_master": "audio/{script_id}/mix/{language}/master.m4a",
+      "primary_master": "audio/{script_id}/mix/master.m4a",
+      "dubbed_master_pattern": "audio/{script_id}/mix/{language}/master.m4a"
+    },
+    "doc_urls": [
+      "https://ffmpeg.org/ffmpeg-filters.html#loudnorm",
+      "https://ffmpeg.org/ffmpeg-filters.html#sidechaincompress",
+      "https://ffmpeg.org/ffmpeg-filters.html#alimiter",
+      "https://en.wikipedia.org/wiki/EBU_R_128"
+    ]
+  },
+  "quality_gates_audio": {
+    "automated_checks": [
+      {
+        "name": "pronunciation_accuracy",
+        "method": "Lexicon conformance scan + STT back-transcription term match",
+        "threshold": ">= 98% locked-term correctness",
+        "fail_condition": "Any critical term from ringdom_pronunciation_lexicon misread"
+      },
+      {
+        "name": "clipping_detection",
+        "method": "ffmpeg astats and true-peak analysis",
+        "threshold": "No sample clipping; TP <= -1.0 dBTP",
+        "fail_condition": "Max sample >= 0 dBFS or true peak violation"
+      },
+      {
+        "name": "loudness_range",
+        "method": "loudnorm summary parse",
+        "threshold": "Integrated LUFS within +/-1.0 of target; LRA within profile target +/-2",
+        "fail_condition": "Out-of-range integrated loudness"
+      },
+      {
+        "name": "intelligibility_score",
+        "method": "ASR confidence + silence ratio + spectral masking check",
+        "threshold": ">= 0.92 composite score",
+        "fail_condition": "Muffled speech or over-ducked articulation"
+      },
+      {
+        "name": "sync_drift",
+        "method": "Compare scene.duration_seconds vs final aligned word end",
+        "threshold": "absolute drift <= 220 ms per scene, <= 500 ms cumulative per video",
+        "fail_condition": "Drift exceeds tolerance"
+      },
+      {
+        "name": "artifact_detection",
+        "method": "Detect clicks/pops/noise bursts via transient scan",
+        "threshold": "No forbidden artifacts",
+        "fail_condition": "Burst count > 0 in speech-active region"
+      }
+    ],
+    "human_spot_checks": [
+      {
+        "step": 1,
+        "focus": "First and last sentence per scene",
+        "goal": "Catch cadence and trailing cutoff errors"
+      },
+      {
+        "step": 2,
+        "focus": "All locked technical terms",
+        "goal": "Validate pronunciation and translation fidelity"
+      },
+      {
+        "step": 3,
+        "focus": "Music under voice moments",
+        "goal": "Confirm ducking does not suppress key consonants"
+      },
+      {
+        "step": 4,
+        "focus": "Subtitle sync at chapter boundaries",
+        "goal": "Ensure readability and timing confidence"
+      }
+    ],
+    "release_gate_policy": {
+      "all_automated_checks_must_pass": true,
+      "human_review_minimum_scenes": 3,
+      "critical_term_zero_tolerance": true,
+      "waiver_rule": "Only Commander-approved waiver for non-critical stylistic issues"
+    }
+  },
+  "cost_latency_fallback_router_audio": {
+    "routing_profiles": {
+      "high_quality": {
+        "selection_goal": "Best perceived naturalness and multilingual identity consistency",
+        "primary_order": [
+          "ElevenLabs",
+          "Azure_Neural_TTS",
+          "Google_Cloud_TTS",
+          "OpenAI_TTS",
+          "PlayHT",
+          "Cartesia"
+        ],
+        "max_scene_cost_usd": 0.9,
+        "expected_latency_seconds_per_scene": "2-14"
+      },
+      "balanced": {
+        "selection_goal": "Quality and speed equilibrium for batch explainers",
+        "primary_order": [
+          "OpenAI_TTS",
+          "ElevenLabs",
+          "Google_Cloud_TTS",
+          "PlayHT",
+          "Azure_Neural_TTS",
+          "Cartesia"
+        ],
+        "max_scene_cost_usd": 0.45,
+        "expected_latency_seconds_per_scene": "1-8"
+      },
+      "low_cost": {
+        "selection_goal": "Minimize spend while preserving intelligibility and glossary fidelity",
+        "primary_order": [
+          "Google_Cloud_TTS",
+          "OpenAI_TTS",
+          "PlayHT",
+          "Azure_Neural_TTS",
+          "Cartesia",
+          "ElevenLabs"
+        ],
+        "max_scene_cost_usd": 0.2,
+        "expected_latency_seconds_per_scene": "1-10"
+      }
+    },
+    "retry_matrix": {
+      "429": {
+        "strategy": "exponential_backoff_with_jitter",
+        "base_delay_ms": 800,
+        "max_delay_ms": 120000,
+        "max_attempts": 6,
+        "fallback_after_attempt": 3,
+        "notes": "Reduce worker concurrency before cross-provider failover"
+      },
+      "5xx": {
+        "strategy": "fast_retry_then_fallback",
+        "base_delay_ms": 500,
+        "max_delay_ms": 30000,
+        "max_attempts": 4,
+        "fallback_after_attempt": 2,
+        "notes": "Persist provider incident flag for 15 minutes to avoid thrash"
+      },
+      "content_policy": {
+        "strategy": "segment_rewrite_then_fallback",
+        "max_attempts": 3,
+        "rewrite_actions": [
+          "remove disallowed phrase",
+          "replace risky token with neutral equivalent",
+          "split text into smaller requests"
+        ],
+        "fallback_after_attempt": 2,
+        "notes": "Do not silently drop semantic meaning of technical claims"
+      }
+    },
+    "provider_fallback_order": {
+      "default_narration": [
+        "ElevenLabs",
+        "OpenAI_TTS",
+        "Google_Cloud_TTS",
+        "Azure_Neural_TTS",
+        "PlayHT",
+        "Cartesia"
+      ],
+      "real_time_low_latency": [
+        "Cartesia",
+        "OpenAI_TTS",
+        "PlayHT",
+        "ElevenLabs",
+        "Google_Cloud_TTS",
+        "Azure_Neural_TTS"
+      ],
+      "dubbing_priority": [
+        "ElevenLabs",
+        "Azure_Neural_TTS",
+        "Rask",
+        "Deepdub",
+        "HeyGen",
+        "Synthesia"
+      ]
+    },
+    "concurrency_controls": {
+      "global_max_parallel_jobs": 24,
+      "per_provider_default_parallel": {
+        "ElevenLabs": 8,
+        "OpenAI_TTS": 8,
+        "Google_Cloud_TTS": 12,
+        "Azure_Neural_TTS": 10,
+        "Cartesia": 12,
+        "PlayHT": 8
+      },
+      "adaptive_throttle_rule": "On repeated 429 events in a rolling 60s window, cut provider concurrency by 40% and recover linearly."
+    }
+  },
+  "integration_map_audio_video": {
+    "upstream_contract_with_ai_video_scriptwriter_storyboarder": {
+      "source_agent": "ai-video-scriptwriter-storyboarder.nodus.json",
+      "required_input_fields": {
+        "production_brief": [
+          "language_primary",
+          "languages_dub",
+          "target_duration_seconds",
+          "music_bed.uri"
+        ],
+        "script": [
+          "script_id",
+          "title",
+          "version",
+          "scenes[].scene_id",
+          "scenes[].duration_seconds",
+          "scenes[].narration",
+          "scenes[].narration_ssml",
+          "scenes[].tts_voice_id",
+          "scenes[].tts_speed",
+          "scenes[].chapter_timestamp_mmss"
+        ]
+      },
+      "input_validation_rule": "Reject if scene_id or duration_seconds missing; reject if narration and narration_ssml both empty."
+    },
+    "downstream_contract_with_ai_video_generation_orchestrator": {
+      "target_agent": "ai-video-generation-orchestrator.nodus.json",
+      "output_manifest_contracts": [
+        "render_manifest_v1",
+        "job_log",
+        "final_mux"
+      ],
+      "audio_manifest_extension": {
+        "audio_manifest_v1": {
+          "script_id": "string",
+          "language_primary": "string",
+          "languages_dubbed": "array",
+          "scene_audio": "array of {scene_id, wav_uri, duration_seconds_measured, word_timestamps_uri, subtitle_slice_uri, cost_usd_estimate}",
+          "mixes": "object with voice_stem_uri, music_stem_uri, master_m4a_uri, dubbed_master_map",
+          "quality_gate_summary": "object with pass/fail metrics",
+          "created_at": "iso8601"
+        }
+      }
+    },
+    "artifact_paths": {
+      "scene_wav": "audio/{script_id}/{scene_id}.wav",
+      "scene_timestamps": "audio/{script_id}/timestamps/{scene_id}.json",
+      "primary_master": "audio/{script_id}/mix/master.m4a",
+      "language_master": "audio/{script_id}/mix/{language}/master.m4a",
+      "voice_stem": "audio/{script_id}/stems/voice/{scene_id}.wav",
+      "music_stem": "audio/{script_id}/stems/music/{scene_id}.wav",
+      "subtitle_srt": "subtitles/{script_id}/{language}.srt",
+      "subtitle_vtt": "subtitles/{script_id}/{language}.vtt"
+    },
+    "ffmpeg_mux_consumption": {
+      "precondition": [
+        "video concat output exists from render_manifest_v1",
+        "master audio for selected language exists",
+        "subtitle file exists when burn-in or sidecar requested"
+      ],
+      "mux_command_template": "ffmpeg -i \"dist/{script_id}/video_concat.mp4\" -i \"audio/{script_id}/mix/{language}/master.m4a\" -map 0:v -map 1:a -c:v copy -c:a aac -shortest \"dist/{script_id}/master_{language}.mp4\"",
+      "optional_subtitle_burn_template": "ffmpeg -i \"dist/{script_id}/master_{language}.mp4\" -vf \"subtitles=subtitles/{script_id}/{language}.srt:force_style='FontName=Inter,FontSize=22,MarginV=36'\" -c:a copy \"dist/{script_id}/master_{language}_subs.mp4\"",
+      "duration_rule": "If audio exceeds video by <=3s, allow tpad clone; otherwise trigger timing divergence remediation before final publish."
+    },
+    "observability_links": {
+      "audio_job_log": "renders/{script_id}/audio/jobs/*.json",
+      "audio_manifest": "renders/{script_id}/audio_manifest_v1.json",
+      "qa_reports": "renders/{script_id}/audio/qa/*.json"
+    }
+  },
+  "nodus_specific_action_plan": {
+    "metadata_examples": {
+      "repo": "https://github.com/connectplatform/NODUS",
+      "contact_email": "ray@ringdom.org",
+      "note": "Human-facing metadata may reference repo and contact, but never burn contact data into generated visual frames."
+    },
+    "week_1": {
+      "goal": "Bootstrap deterministic Ringdom audio pipeline in one primary language and one provider fallback.",
+      "concrete_actions": [
+        "Implement canonical_audio_job_schema in worker code and persistence layer",
+        "Create ringdom_pronunciation_lexicon JSON store with version hash and lock list",
+        "Integrate primary synthesis route (ElevenLabs or OpenAI_TTS) for script.scenes[].narration",
+        "Emit scene artifacts to audio/{script_id}/{scene_id}.wav and timestamps path",
+        "Generate first audio_manifest_v1 and validate jq queries",
+        "Run one end-to-end NODUS video with FFmpeg mux using master.m4a"
+      ],
+      "deliverables": [
+        "audio job worker with idempotency key",
+        "lexicon governance file and tests",
+        "working muxed master for one script_id"
+      ]
+    },
+    "week_2": {
+      "goal": "Enable multilingual pass for EN -> UK and EN -> PL with terminology-safe translation.",
+      "concrete_actions": [
+        "Integrate translation memory with locked term map",
+        "Add language QA stage and blocked-term alerts",
+        "Generate dubbed scene stems for two target languages",
+        "Produce synchronized SRT and VTT per language",
+        "Validate sync drift tolerance and correction logic"
+      ],
+      "deliverables": [
+        "Two dubbed masters in audio/{script_id}/mix/{language}/master.m4a",
+        "Subtitle sidecars and QA report"
+      ]
+    },
+    "month_1": {
+      "goal": "Ship first production multilingual NODUS explainer and establish repeatable batch rendering.",
+      "concrete_actions": [
+        "Connect audio router to render_manifest_v1 generation orchestration",
+        "Implement 429/5xx/content policy retry matrix with fallback routing",
+        "Add automated quality gates and release gate policy",
+        "Publish one multilingual video batch for Ringdom and NODUS channels"
+      ],
+      "deliverables": [
+        "Batch runner command for multi-script render",
+        "Quality-gate dashboard JSON export",
+        "Documented runbook for operators"
+      ]
+    },
+    "month_3": {
+      "goal": "Optimize cost and throughput for weekly content cadence.",
+      "concrete_actions": [
+        "Add adaptive concurrency throttling and provider health scoring",
+        "Tune profile-based routing (high_quality/balanced/low_cost)",
+        "Track per-scene spend and per-language spend in manifests",
+        "Integrate retention feedback to style profile tuning"
+      ],
+      "deliverables": [
+        "Cost and latency analytics report",
+        "Stable weekly batch generation with rollback safety"
+      ]
+    },
+    "month_6": {
+      "goal": "Operate mature, low-touch voice+dubbing factory for Ringdom ecosystem.",
+      "concrete_actions": [
+        "Add optional speech-to-speech dubbing adapters for enterprise partners",
+        "Expand lexicon coverage and locale nuances for additional markets",
+        "Automate compliance checks for consent and licensing evidence retention",
+        "Enable campaign-level batch rendering for Ring Platform, ConnectPlatform, and Громада Academy"
+      ],
+      "deliverables": [
+        "Cross-project audio orchestration standard",
+        "Policy-compliant archive of consent and license artifacts",
+        "Monthly reliability SLO >= 99.5% successful scene renders"
+      ]
+    }
+  },
+  "compliance_and_licensing_guardrails": {
+    "voice_cloning_consent_requirements": [
+      "Explicit documented consent is mandatory before cloning or custom voice creation",
+      "Store consent artifact ID and provider request ID alongside job records",
+      "Reject clone requests missing legal owner affirmation"
+    ],
+    "commercial_usage_rights": [
+      "Verify plan tier allows commercial usage for generated audio",
+      "Retain proof of tier and date for audit snapshots",
+      "If rights unclear, route to non-cloned licensed stock voices"
+    ],
+    "music_and_sfx_constraints": [
+      "Only use licensed music beds with redistribution rights",
+      "Attach license id to each music stem path",
+      "Do not blend restricted SFX into reusable master without license chain"
+    ],
+    "disclosure_policy": [
+      "Where platform policy requires disclosure, mark narration as AI-generated",
+      "Keep disclosure in metadata/description, not intrusive overlays unless mandatory"
+    ],
+    "doc_urls": [
+      "https://openai.com/policies/usage-policies",
+      "https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/speech-service/text-to-speech/limited-access",
+      "https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/speech-service/text-to-speech/disclosure-voice-talent",
+      "https://elevenlabs.io/docs/overview/capabilities/text-to-speech",
+      "https://elevenlabs.io/docs/overview/capabilities/dubbing"
+    ]
+  },
+  "operational_playbooks_audio": {
+    "scene_duration_resolution_algorithm": [
+      "Start with scene.duration_seconds as hard target",
+      "Generate draft synthesis with selected profile",
+      "Measure actual duration via ffprobe",
+      "If abs(delta) <= tolerance, accept",
+      "Else apply timing_divergence_fallback_logic and regenerate once",
+      "If still outside tolerance, escalate to video pad/trim strategy and flag QA"
+    ],
+    "deterministic_chunking_strategy": {
+      "per_scene_stem": "Always required for rerender granularity",
+      "global_narration": "Optional aggregate for long-form distribution and archive",
+      "timestamp_json": "One canonical per scene plus optional aggregate timeline",
+      "subtitle_timing": "Derived from canonical word timestamp files only"
+    },
+    "failure_recovery": {
+      "resume_policy": "Resume from first non-succeeded scene",
+      "dead_letter_policy": "After max attempts, persist dead_letter record and continue batch",
+      "human_intervention_trigger": "More than 5% scenes in dead_letter state"
+    }
+  }
+}

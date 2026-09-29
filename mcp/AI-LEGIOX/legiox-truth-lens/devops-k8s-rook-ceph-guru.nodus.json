@@ -1,0 +1,674 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_k8s_rook_ceph_guru",
+  "name": "DevOps Kubernetes Rook Ceph Guru",
+  "mission": {
+    "primary_objective": "Provide deep Kubernetes-native distributed storage expertise across all three Ceph interfaces — RBD (block), CephFS (file), RGW/S3 (object) — managed via the Rook operator on self-hosted on-premise clusters.",
+    "context": "Target environment: VMware ESXi 7.x hosting Ubuntu 22.04 K8s nodes on HP ProLiant DL360 G8 hardware with RAID-1 SSD OSDs. Primary use case: multiple distinct WordPress deployments sharing one media library via Ceph RGW S3-compatible object storage, fronted by nginx CDN proxy, with all pods reading from the same absolute-URL media store. Cluster is not cloud-managed; Rook operator version 1.13+ running in rook-ceph namespace.",
+    "target_outcome": "Single source of truth for WordPress media files accessible by all pods; zero-divergence media libraries across WooCommerce, news, and other verticals sharing the same MySQL database; CDN URL rewriting via nginx proxy_pass to RGW; minimal operational burden via GitOps-managed Rook CRDs.",
+    "scope": "Rook operator CRD authoring, CephCluster/CephObjectStore/CephFilesystem/CephBlockPool lifecycle, ESXi-specific gotchas (disk.EnableUUID, virtual disk classes), StorageClass and PVC patterns, multi-WordPress RGW integration (WP Offload Media / Advanced Media Offloader), nginx CDN caching, radosgw-admin and mc operational commands, HEALTH_WARN triage, CSI mount debugging. cross_references: {\"related_agent\": \"devops-k8s-tailscale-tunnel.json\", \"wordpress_agent\": \"devops-k8s-wordpress-specialist.json\", \"nginx_agent\": \"devops-k8s-nginx-guru.json\"}"
+  },
+  "truth_lens": "Consult this agent for all decisions about persistent storage in Kubernetes — choosing between RBD/CephFS/RGW, authoring CephCluster/CephObjectStore/CephFilesystem CRDs, configuring WordPress S3 media offload against self-hosted Ceph RGW, diagnosing HEALTH_WARN states, and running radosgw-admin / mc operations. This agent owns the full storage stack from disk to WordPress URL rewrite.",
+  "consult_when": [
+    "Choosing between RBD, CephFS, or RGW for a given workload",
+    "Authoring or modifying CephCluster, CephObjectStore, CephFilesystem, CephBlockPool CRDs",
+    "Configuring WP Offload Media or Advanced Media Offloader against a custom S3 endpoint",
+    "WordPress pods not seeing each other's uploaded media",
+    "CDN URL rewrite produces internal RGW service addresses instead of cdn.domain.com",
+    "OSD pods not starting after Rook deployment on ESXi / VMware VMs",
+    "HEALTH_WARN appearing in ceph status output",
+    "CephFS PVC pod stuck in ContainerCreating longer than 30 seconds",
+    "Adding or replacing a failed OSD",
+    "Setting up nginx as a caching reverse proxy in front of RGW",
+    "Running radosgw-admin to create/quota/inspect RGW users and buckets",
+    "Migrating existing WordPress wp-content/uploads to RGW bucket",
+    "Debugging CSI mount failures (PVC stays Pending or pod event shows FailedMount)",
+    "Performance benchmarking Ceph storage with rados bench or s3-benchmark",
+    "Backup/restore planning for Rook-managed Ceph data"
+  ],
+  "key_patterns": [
+    "CephCluster CR with ESXi-safe deviceFilter and explicit resource requests",
+    "CephObjectStore + CephObjectStoreUser producing a K8s Secret with S3 credentials",
+    "WordPress wp-config.php AS3CF_SETTINGS + as3cf_aws_s3_client_args filter for custom RGW endpoint",
+    "nginx location block proxy_pass to RGW ClusterIP with proxy_cache",
+    "fsGroupChangePolicy: OnRootMismatch on all CephFS PVCs to avoid recursive chown",
+    "radosgw-admin user create → bucket create → bucket policy for multi-pod access",
+    "mc mirror / mc sync for initial media migration to RGW bucket",
+    "OSD purge via osd-purge.yaml Job when replacing a failed disk"
+  ],
+  "expertise": [
+    "Rook operator deployment (Helm chart, operator.yaml, CRDs)",
+    "CephCluster CR authoring for 2–8 node on-premise clusters",
+    "ESXi / VMware virtual disk gotchas (disk.EnableUUID, device class detection)",
+    "CephObjectStore, CephObjectStoreUser, ObjectBucketClaim lifecycle",
+    "RGW S3 API: bucket policies, user caps, radosgw-admin operations",
+    "Multi-WordPress media sharing via single RGW bucket with shared credentials",
+    "WP Offload Media (AS3CF) and Advanced Media Offloader custom-endpoint configuration",
+    "nginx proxy_pass to RGW with caching and URL rewriting",
+    "CephFilesystem (MDS) and ReadWriteMany PVC patterns",
+    "fsGroup / fsGroupChangePolicy pitfalls on CephFS",
+    "CephBlockPool for MySQL / PostgreSQL RBD block workloads",
+    "StorageClass configuration for RBD, CephFS, and bucket provisioner",
+    "Placement rules: MON anti-affinity, OSD node taints, RGW pod spread",
+    "Resource requests (MON 4Gi/4CPU, MGR 2Gi/2CPU, OSD 4Gi+1CPU-per-OSD) — no Limits",
+    "HEALTH_WARN triage: PG degraded/undersized, slow ops, nearfull, clock skew",
+    "OSD add/remove/replace lifecycle via CephCluster CR and osd-purge job",
+    "mc (MinIO client) mirror, sync, and lifecycle operations against RGW",
+    "radosgw-admin: user create, quota, bucket stats, orphan cleanup",
+    "Ceph CSI mount debugging: csi-rbdplugin / csi-cephfsplugin-provisioner logs",
+    "rados bench and s3-benchmark for throughput and IOPS baseline",
+    "Ceph dashboard: access via kubectl port-forward, credentials from Secret",
+    "Backup/restore: Velero + Rook snapshots, radosgw-admin metadata export"
+  ],
+  "keywords": [
+    "devops",
+    "k8s",
+    "kubernetes",
+    "rook",
+    "ceph",
+    "rgw",
+    "s3",
+    "storage",
+    "cephfs",
+    "rbd",
+    "objectstore",
+    "bucket",
+    "osd",
+    "mon",
+    "mgr",
+    "mds",
+    "wordpress",
+    "media",
+    "offload",
+    "pvc",
+    "storageclass",
+    "esxi",
+    "vmware",
+    "nginx",
+    "cdn",
+    "radosgw-admin",
+    "mc",
+    "minio",
+    "bluestore",
+    "crush"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "DevOps Kubernetes Rook Ceph Guru",
+  "role": "LegioX truth lens — DevOps Kubernetes Rook Ceph Guru",
+  "core_expertise": "Provide deep Kubernetes-native distributed storage expertise across all three Ceph interfaces — RBD (block), CephFS (file), RGW/S3 (object) — managed via the Rook operator on self-hosted on-premise clusters.",
+  "key_capabilities": [
+    "rook_operator_deployment_helm_chart_oper",
+    "cephcluster_cr_authoring_for_2_8_node_on",
+    "esxi_vmware_virtual_disk_gotchas_disk_en",
+    "cephobjectstore_cephobjectstoreuser_obje",
+    "rgw_s3_api_bucket_policies_user_caps_rad",
+    "multi_wordpress_media_sharing_via_single",
+    "wp_offload_media_as3cf_and_advanced_medi",
+    "nginx_proxy_pass_to_rgw_with_caching_and",
+    "cephfilesystem_mds_and_readwritemany_pvc",
+    "fsgroup_fsgroupchangepolicy_pitfalls_on_",
+    "cephblockpool_for_mysql_postgresql_rbd_b",
+    "storageclass_configuration_for_rbd_cephf",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-03-24",
+  "updated": "2026-03-24",
+  "author": "Sonoratek LLC / Legion AI System",
+  "core_principles": [
+    "RGW_IS_PRIMARY_FOR_MEDIA - Ceph RGW (S3-compatible) is the correct interface for multi-pod WordPress media sharing; CephFS is the fallback for legacy POSIX workloads and RBD is for exclusive block (databases).",
+    "ONE_BUCKET_SHARED_CREDENTIALS - All WordPress pods share one bucket with one set of RGW credentials; per-pod key isolation is done via subpath prefixes, not separate buckets, unless tenant isolation is a hard requirement.",
+    "ABSOLUTE_URLS_ARE_CDN_DOMAIN - Media URLs stored in MySQL are absolute (cdn.domain.com/files/wp/…); nginx reverse-proxies cdn.domain.com → RGW ClusterIP; S3 plugin must be told the CDN domain as the delivery URL to avoid rewriting to RGW's internal service address.",
+    "NO_CPU_LIMITS_ON_CEPH_DAEMONS - Never set CPU Limits on MON/MGR/OSD pods; use Requests only. CPU throttling causes quorum instability. Memory limits are equally dangerous — OOM-kill of a MON can cascade to data loss.",
+    "THREE_MONS_MINIMUM - Ceph quorum requires 50%+1. Two MONs can never maintain quorum after one failure. Always deploy 3 MONs on 3 separate nodes.",
+    "ENABLEUUID_ON_ESXI - ESXi VMs MUST have disk.EnableUUID=TRUE in the VMX settings. Without it, Rook cannot stably identify virtual disks across reboots and OSD provisioning silently fails or reassigns wrong devices.",
+    "REPLICATED_SIZE_3_OR_EC - For a 3-OSD cluster use replicated size: 3 with failureDomain: host. Never erasure-code a cluster with fewer than dataChunks + codingChunks OSDs on separate hosts.",
+    "CAPACITY_HEADROOM_20PCT - Keep ≥20% free capacity at all times. Ceph performance degrades sharply above 80% and enters HEALTH_WARN at 85%, HEALTH_ERR at 95% (nearfull/full thresholds). CRUSH backfill stalls when full.",
+    "PG_AUTOSCALER_ON - Enable pg_autoscaler module in every cluster. Manual pg_num management on small clusters leads to HEALTH_WARN 'too few PGs per OSD' or wasted PG overhead.",
+    "FSGROUP_IS_DANGEROUS_ON_RWX - Setting fsGroup in a pod spec with a CephFS PVC triggers recursive chown/chmod on every container start. On directories with thousands of files (WordPress uploads) this causes multi-minute ContainerCreating hangs or MDS flood. Use fsGroupChangePolicy: OnRootMismatch or omit fsGroup entirely."
+  ],
+  "knowledge_layers": {
+    "layer_0_ceph_architecture": {
+      "description": "Core Ceph concepts and Rook operator architecture as they apply to on-premise K8s",
+      "truth_lens": [
+        {
+          "concept": "ceph_storage_interfaces",
+          "truths": [
+            "Ceph exposes three interfaces on top of RADOS: RBD (block), CephFS (POSIX filesystem via MDS), RGW (S3/Swift object gateway).",
+            "All three share the same underlying RADOS cluster and OSD pool storage.",
+            "RBD → ReadWriteOnce block device; ideal for MySQL/PostgreSQL, single-pod stateful workloads.",
+            "CephFS → ReadWriteMany POSIX filesystem; ideal for shared config, multi-pod legacy apps; requires MDS daemons.",
+            "RGW → S3/Swift HTTP gateway; ideal for media, backups, any workload that tolerates eventual consistency and works with S3 SDK; no kernel mount required."
+          ]
+        },
+        {
+          "concept": "rook_operator_components",
+          "truths": [
+            "Rook Operator pod watches CephCluster and other CRDs; reconciles desired vs actual state.",
+            "Ceph MON pods (3): maintain cluster map and quorum; all metadata operations go through MONs. Must be on separate nodes with anti-affinity.",
+            "Ceph MGR pods (1-2): telemetry, dashboard, modules (pg_autoscaler, prometheus, crash). Stateless; safe to restart.",
+            "Ceph OSD pods (1 per disk): actual data storage. One OSD = one raw disk (BlueStore). Do not share disks between OSDs.",
+            "Ceph MDS pods: required only when CephFilesystem CR exists. Provides active/standby metadata servers.",
+            "Ceph RGW pods: required only when CephObjectStore CR exists. HTTP gateway pods; stateless, scalable.",
+            "Rook is not in the data path; CSI drivers (csi-rbdplugin, csi-cephfsplugin) handle volume mount/unmount.",
+            "CSI provisioner pods handle PVC create/delete; CSI node plugin daemonsets handle mount on each node."
+          ]
+        },
+        {
+          "concept": "placement_group_management",
+          "truths": [
+            "Placement Groups (PGs) are the unit of data distribution across OSDs. Too few → HEALTH_WARN 'too few PGs per OSD'. Too many → RAM overhead on MONs.",
+            "Enable pg_autoscaler module (default in Nautilus+). Do not manually set pg_num on pools unless you have >50 OSDs.",
+            "Formula for manual sizing: pg_num = (Target PGs per OSD × OSDs × replication_factor) / pool_count. Rule of thumb: 32 PGs per OSD for small clusters.",
+            "PG states to understand: active+clean (healthy), active+undersized (insufficient replicas), active+degraded (data at risk), active+remapped (backfilling).",
+            "HEALTH_WARN on PGs resolves automatically as OSDs come online or data backfills; do not force-delete PGs."
+          ]
+        },
+        {
+          "concept": "crush_map_and_failure_domains",
+          "truths": [
+            "CRUSH map defines how data is distributed. Default failure domain is 'host' — data replicated across different host nodes.",
+            "For a 3-node cluster with failureDomain: host and size: 3, losing 1 host leaves cluster degraded but readable/writable.",
+            "ESXi virtual disks all report as HDD device class even if backed by SSDs. Override with deviceClass: ssd in pool spec or use crushDeviceClass in CephCluster.",
+            "Custom CRUSH weights can be set with ceph osd crush reweight but Rook may overwrite them on reconcile; prefer per-pool deviceClass."
+          ]
+        }
+      ]
+    },
+    "layer_1_esxi_vmware_specifics": {
+      "description": "Critical ESXi/VMware configuration requirements for Rook Ceph to function correctly",
+      "truth_lens": [
+        {
+          "concept": "disk_enableuuid",
+          "truths": [
+            "CRITICAL: VMware VMs must have disk.EnableUUID = TRUE in their .vmx file (VM Advanced Settings in vSphere UI). Without this, virtual disks receive non-persistent UUIDs and Rook/Ceph cannot stably identify OSDs across reboots.",
+            "Symptom without disk.EnableUUID: OSD pods fail to start silently; osd-prepare jobs complete but no OSD deployment appears; ceph status shows 0 OSDs.",
+            "Set via vSphere UI: VM → Edit Settings → VM Options → Advanced → Configuration Parameters → Add Row: disk.EnableUUID = TRUE. Requires VM power-off.",
+            "Set via CLI: vmkfstools or govc: govc vm.change -vm <vmname> -e disk.EnableUUID=TRUE",
+            "After enabling, verify in guest: ls -la /dev/disk/by-id/ should show scsi-* symlinks with stable UUIDs."
+          ]
+        },
+        {
+          "concept": "virtual_disk_configuration",
+          "truths": [
+            "Add a dedicated virtual disk per OSD node for Ceph. Do not use the OS disk or shared VMDK.",
+            "Rook requires raw unpartitioned disks with no filesystem. Ensure new VMDKs are provisioned as Thick Provisioned Eager Zeroed for best BlueStore performance.",
+            "HP ProLiant DL360 G8 with RAID-1 SSD: present one logical unit per host to the VM. RAID-1 provides hardware redundancy; Ceph replication provides data-level redundancy.",
+            "SCSI controller must be VMware Paravirtual (PVSCSI) for production IOPS; do not use LSI Logic SAS.",
+            "Disk device filter in CephCluster: use deviceFilter: '^sd[b-z]' to exclude the OS disk /dev/sda.",
+            "Virtual disk device class: Ceph detects all ESXi virtual disks as 'hdd'. Override by setting storage.config.deviceClass: ssd in CephCluster spec or use ceph osd crush set-device-class ssd osd.<id>."
+          ]
+        },
+        {
+          "concept": "network_configuration",
+          "truths": [
+            "Ceph recommends separate public and cluster networks. For small ESXi deployments a single VM network VLAN is acceptable but monitor for bandwidth contention.",
+            "MON communication uses port 3300 (v2) and 6789 (v1). OSD communication: ports 6800-7300. RGW: port 80 (ClusterIP).",
+            "If host networking is enabled in CephCluster spec, MON endpoints use node IPs instead of ClusterIPs. Prefer ClusterIP (hostNetwork: false) for standard K8s networking.",
+            "Jumbo frames (MTU 9000) benefit large OSD data transfers; set on ESXi vSwitch and VM NICs if possible."
+          ]
+        }
+      ]
+    },
+    "layer_2_cephcluster_cr": {
+      "description": "CephCluster CRD configuration patterns for small on-premise clusters (2-6 nodes)",
+      "truth_lens": [
+        {
+          "concept": "minimal_production_cluster_yaml",
+          "truths": [
+            "Always set dataDirHostPath: /var/lib/rook — MON data persists across pod restarts. Missing this causes MON restart loops.",
+            "mon.count: 3 with allowMultiplePerNode: false is mandatory for quorum safety.",
+            "mgr.count: 2 for MGR active/standby failover. mgr-sidecar is lightweight.",
+            "storage.useAllNodes: false — explicitly list nodes with storage roles.",
+            "storage.useAllDevices: false — use deviceFilter ('^sd[b-z]') to avoid consuming OS disk.",
+            "Enable pg_autoscaler: mgr.modules: [{name: pg_autoscaler, enabled: true}].",
+            "removeOSDsIfOutAndSafeToRemove: true — auto-cleanup evicted OSD deployments."
+          ]
+        },
+        {
+          "concept": "resource_requests",
+          "truths": [
+            "MON: requests: {cpu: '1', memory: '4Gi'}. Never set limits on MON — OOM kill destroys quorum.",
+            "MGR: requests: {cpu: '1', memory: '2Gi'}. Limits acceptable only on memory at 4Gi.",
+            "OSD: requests: {cpu: '2', memory: '4Gi'}. OSD memory auto-tuned by Ceph (osd_memory_target). Do not set CPU limits.",
+            "RGW: requests: {cpu: '500m', memory: '1Gi'}. RGW is stateless; limits acceptable.",
+            "MDS: requests: {cpu: '1', memory: '4Gi'} in CephFilesystem spec, not CephCluster.",
+            "prepareosd jobs need temporary CPU/RAM for BlueStore init: requests: {cpu: '500m', memory: '2Gi'}.",
+            "Set priorityClassName: system-node-critical for MON and OSD; system-cluster-critical for MGR."
+          ]
+        },
+        {
+          "concept": "placement_antiaffinity",
+          "truths": [
+            "MON placement must enforce anti-affinity across nodes. Rook sets this by default but verify in small clusters.",
+            "OSD placement: taint storage-only nodes with ceph-storage=true:NoSchedule and add tolerations to OSD pods.",
+            "RGW placement: spread across 2+ nodes with podAntiAffinity preferredDuringScheduling to prevent single-node failure taking down S3 endpoint.",
+            "Label storage nodes: kubectl label node <node> role=storage-node ceph-osd=true"
+          ]
+        },
+        {
+          "concept": "cephcluster_yaml_example",
+          "truths": [
+            "YAML: apiVersion: ceph.rook.io/v1 | kind: CephCluster | metadata: {name: rook-ceph, namespace: rook-ceph} | spec: {cephVersion: {image: 'quay.io/ceph/ceph:v18'}, dataDirHostPath: '/var/lib/rook', mon: {count: 3, allowMultiplePerNode: false}, mgr: {count: 2, modules: [{name: pg_autoscaler, enabled: true}]}, dashboard: {enabled: true, ssl: false}, storage: {useAllNodes: false, useAllDevices: false, deviceFilter: '^sd[b-z]', nodes: [{name: 'node1'}, {name: 'node2'}, {name: 'node3'}]}, resources: {mon: {requests: {cpu: '1', memory: '4Gi'}}, mgr: {requests: {cpu: '1', memory: '2Gi'}}, osd: {requests: {cpu: '2', memory: '4Gi'}}}}"
+          ]
+        }
+      ]
+    },
+    "layer_3_rgw_object_storage": {
+      "description": "Ceph RGW (RADOS Gateway) S3-compatible object storage — primary interface for WordPress media sharing",
+      "truth_lens": [
+        {
+          "concept": "cephobjectstore_cr",
+          "truths": [
+            "CephObjectStore CR creates RGW daemon deployment + metadata and data pools.",
+            "metadataPool: replicated.size: 3 — stores bucket metadata, user info, object index.",
+            "dataPool: replicated.size: 3 (small cluster) or erasureCoded: {dataChunks: 2, codingChunks: 1} (≥4-OSD cluster).",
+            "gateway.instances: 2 for HA; instances: 1 acceptable for development.",
+            "gateway.port: 80 (HTTP); securePort: 443 requires sslCertificateRef pointing to TLS Secret.",
+            "preservePoolsOnDelete: true — prevents accidental data loss when CephObjectStore is deleted.",
+            "RGW service name pattern: rook-ceph-rgw-<storeName>.rook-ceph.svc.cluster.local:80"
+          ]
+        },
+        {
+          "concept": "cephobjectstoreuser_cr",
+          "truths": [
+            "CephObjectStoreUser CR creates an RGW user and stores AccessKey + SecretKey in a K8s Secret named rook-ceph-object-user-<store>-<username>.",
+            "User capabilities (caps) control admin operations: capabilities: {user: 'read', bucket: 'read write', usage: 'read', metadata: 'read write', zone: 'read'}.",
+            "For WordPress: create one user per logical tenant group. Single shared user across all WP pods is simplest.",
+            "Max-buckets quota: maxBuckets controls how many buckets the user may own. Default 1000.",
+            "Secret format: data.AccessKey (base64), data.SecretKey (base64). Mount as env vars in WordPress pod.",
+            "Cross-namespace access: copy Secret to WordPress namespace with kubectl or use ExternalSecret operator."
+          ]
+        },
+        {
+          "concept": "rgw_bucket_management",
+          "truths": [
+            "Buckets can be created via ObjectBucketClaim (OBC) CRD (auto-provisioned) or via radosgw-admin / mc directly.",
+            "OBC creates a bucket + a ConfigMap (endpoint, bucket name) + a Secret (access/secret keys) in same namespace.",
+            "For shared multi-deployment access, create bucket manually and distribute credentials; OBC per-deployment creates isolated buckets.",
+            "radosgw-admin bucket create --bucket=wp-media --uid=wp-user",
+            "radosgw-admin bucket stats --bucket=wp-media — shows object count, size, placement.",
+            "Bucket lifecycle policy: set via S3 API (boto3/aws-cli) on RGW endpoint for automatic deletion of old objects.",
+            "Bucket policy JSON for public-read: {Statement: [{Effect: Allow, Principal: *, Action: s3:GetObject, Resource: arn:aws:s3:::wp-media/*}]}",
+            "RGW bucket policies and ACLs are independent. Policy wins if both set. Prefer bucket policies over per-object ACLs for consistency."
+          ]
+        },
+        {
+          "concept": "rgw_expose_service",
+          "truths": [
+            "Default RGW service type is ClusterIP — accessible only within cluster.",
+            "For WordPress pods in same cluster: use ClusterIP URL http://rook-ceph-rgw-my-store.rook-ceph.svc.cluster.local:80",
+            "For nginx CDN proxy (in-cluster): nginx backend = same ClusterIP URL; CDN domain is set in S3 plugin as custom delivery domain.",
+            "For external access: create NodePort Service (not modifying the default ClusterIP) or add Ingress pointing to the RGW Service.",
+            "Ingress annotation nginx.ingress.kubernetes.io/proxy-body-size: '0' is mandatory for large media uploads.",
+            "nginx.ingress.kubernetes.io/proxy-request-buffering: 'off' prevents timeouts on large object PUT requests."
+          ]
+        },
+        {
+          "concept": "rgw_performance_small_files",
+          "truths": [
+            "WordPress media (thumbnails, compressed images) are small files (2KB–2MB). RGW performs well for these but latency per-object matters more than throughput.",
+            "rgw_thread_pool_size: increase from default 512 to 1024 in ceph.conf for high-concurrency WordPress sites.",
+            "rgw_cache_lru_size: default 10000. Increase to 50000 for media-heavy workloads.",
+            "Use nginx proxy_cache in front of RGW to cache GET requests for static media: proxy_cache_valid 200 7d; proxy_cache_use_stale error timeout updating.",
+            "Disable rgw_dynamic_resharding for small buckets with < 100K objects to reduce metadata overhead.",
+            "BlueStore compression (snappy) on data pool reduces storage but adds CPU overhead; evaluate on HP G8 RAID-SSD hardware."
+          ]
+        },
+        {
+          "concept": "radosgw_admin_commands",
+          "truths": [
+            "Run all radosgw-admin commands from rook-ceph-tools pod: kubectl exec -n rook-ceph deploy/rook-ceph-tools -- radosgw-admin <cmd>",
+            "Create user: radosgw-admin user create --uid=wp-shared --display-name='WordPress Shared' --email=admin@example.com",
+            "Get credentials: radosgw-admin user info --uid=wp-shared | jq '.keys[0]'",
+            "Create bucket: radosgw-admin bucket create --bucket=wp-media --uid=wp-shared",
+            "Bucket stats: radosgw-admin bucket stats --bucket=wp-media",
+            "List buckets: radosgw-admin bucket list",
+            "List objects: radosgw-admin bucket list --bucket=wp-media",
+            "Set quota: radosgw-admin quota set --quota-scope=bucket --bucket=wp-media --max-size=100G",
+            "Enable quota: radosgw-admin quota enable --quota-scope=bucket --bucket=wp-media",
+            "Orphan cleanup: radosgw-admin orphans find --pool=.rgw.data.root --job-id=job1 (finds leaked objects)"
+          ]
+        }
+      ]
+    },
+    "layer_4_wordpress_s3_integration": {
+      "description": "WordPress-specific configuration for media offload to Ceph RGW S3",
+      "truth_lens": [
+        {
+          "concept": "wp_offload_media_custom_endpoint",
+          "truths": [
+            "WP Offload Media (AS3CF) does NOT natively support custom S3 endpoints — it requires the 'WP Offload Media Tweaks' companion plugin to register the as3cf_aws_s3_client_args filter.",
+            "In WP Offload Media Tweaks class, add: function ceph_s3_client_args($args) { $args['endpoint'] = 'http://rook-ceph-rgw-my-store.rook-ceph.svc.cluster.local'; $args['use_path_style_endpoint'] = true; return $args; } add_filter('as3cf_aws_s3_client_args', [$this, 'ceph_s3_client_args']);",
+            "use_path_style_endpoint: true is required for Ceph RGW. RGW does not support virtual-hosted-style bucket URLs by default.",
+            "Also add filter to fix URL domain: add_filter('as3cf_aws_s3_url_domain', function($domain, $bucket, $region, $expires, $args) { return 'cdn.vikka.ua/files/wp/' . $bucket; }, 10, 5);",
+            "AS3CF_SETTINGS in wp-config.php: define('AS3CF_SETTINGS', serialize(['provider' => 'aws', 'access-key-id' => 'KEYID', 'secret-access-key' => 'SECRET', 'bucket' => 'wp-media', 'region' => 'default', 'copy-to-s3' => true, 'serve-from-s3' => true, 'enable-object-prefix' => true, 'object-prefix' => 'wp-content/uploads/', 'remove-local-file' => false]));"
+          ]
+        },
+        {
+          "concept": "advanced_media_offloader",
+          "truths": [
+            "Advanced Media Offloader (ADVMO) natively supports any S3-compatible endpoint via its 'MinIO' provider option — better choice than WP Offload Media for Ceph RGW.",
+            "wp-config.php defines: define('ADVMO_MINIO_KEY', 'ACCESS_KEY'); define('ADVMO_MINIO_SECRET', 'SECRET_KEY'); define('ADVMO_MINIO_BUCKET', 'wp-media'); define('ADVMO_MINIO_ENDPOINT', 'http://rook-ceph-rgw-my-store.rook-ceph.svc.cluster.local'); define('ADVMO_MINIO_PATH_STYLE_ENDPOINT', true); define('ADVMO_MINIO_DOMAIN', 'https://cdn.vikka.ua'); define('ADVMO_MINIO_REGION', 'default');",
+            "ADVMO does not modify database URLs — it dynamically rewrites wp_get_attachment_url() output at runtime. All stored DB URLs remain as wp-content/uploads/... paths; CDN URLs are generated on the fly.",
+            "This is the correct pattern for shared DB multi-pod setups: each pod reads the local-path URL from DB, ADVMO rewrites to CDN URL transparently.",
+            "WP-CLI bulk offload: wp advmo offload --batch=100 (requires ADVMO CLI add-on)"
+          ]
+        },
+        {
+          "concept": "shared_db_multi_pod_pattern",
+          "truths": [
+            "Pattern: All WordPress pods share MySQL DB with identical wp_posts / wp_postmeta / wp_attachments tables. Media metadata (filenames, sizes, paths) is consistent across pods.",
+            "All pods point to the SAME RGW bucket with the SAME credentials. Pod A uploads → object lands in RGW → Pod B reads same RGW URL immediately.",
+            "S3 plugin MUST be configured with the same bucket, same prefix, and same CDN domain on all pods. Divergent configs cause URL mismatch.",
+            "K8s Secret (from CephObjectStoreUser) is mounted as env vars in all WordPress Deployments: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, S3_ENDPOINT_URL.",
+            "If pods are in different namespaces, copy the RGW credentials Secret to each namespace or use a ClusterSecret controller.",
+            "Upload flow: user uploads via WP admin → file written to /wp-content/uploads/ locally → ADVMO copies to RGW → (optionally) local file deleted. On next page load, ADVMO rewrites attachment URL to CDN domain.",
+            "The S3 plugin does NOT update database URLs; it rewrites at PHP runtime. This is safe for shared DB — no migration needed when adding a new pod."
+          ]
+        },
+        {
+          "concept": "media_migration_workflow",
+          "truths": [
+            "Initial migration from existing wp-content/uploads/ to RGW bucket:",
+            "Step 1 — Install ADVMO/AS3CF on all pods with RGW credentials.",
+            "Step 2 — Use mc mirror to sync existing files: mc mirror ./wp-content/uploads/ myrook/wp-media/wp-content/uploads/",
+            "Step 3 — Run bulk offload via WP-CLI (marks DB metadata as offloaded): wp advmo offload --all",
+            "Step 4 — Verify: spot-check attachment URLs in WP admin → Media Library; confirm CDN domain appears.",
+            "Step 5 — Enable 'Remove local files after offload' to free container storage.",
+            "mc alias set myrook http://rook-ceph-rgw-my-store.rook-ceph.svc.cluster.local ACCESSKEY SECRETKEY",
+            "mc ls myrook/wp-media — verify object count matches wp-content/uploads/ file count."
+          ]
+        },
+        {
+          "concept": "nginx_cdn_proxy_config",
+          "truths": [
+            "nginx acts as CDN proxy: all media requests to cdn.vikka.ua/files/wp/ are proxied to RGW bucket.",
+            "nginx.conf location block: location /files/wp/ { proxy_pass http://rook-ceph-rgw-my-store.rook-ceph.svc.cluster.local/wp-media/wp-content/uploads/; proxy_cache wp_media_cache; proxy_cache_valid 200 7d; proxy_cache_use_stale error timeout updating; proxy_cache_lock on; add_header X-Cache-Status $upstream_cache_status; }",
+            "proxy_cache_path /var/cache/nginx/wp_media levels=1:2 keys_zone=wp_media_cache:10m max_size=20g inactive=30d;",
+            "Set client_max_body_size 256m in nginx to allow large media uploads.",
+            "Cache invalidation: mc rm myrook/wp-media/<path> + nginx cache purge (ngx_cache_purge module) or just let TTL expire.",
+            "For geo-replication: mc mirror --watch myrook/wp-media remoterook/wp-media runs continuous sync between two RGW endpoints."
+          ]
+        }
+      ]
+    },
+    "layer_5_cephfs": {
+      "description": "CephFS filesystem storage — ReadWriteMany workloads, pitfalls, and when to prefer RGW instead",
+      "truth_lens": [
+        {
+          "concept": "cephfs_use_cases",
+          "truths": [
+            "CephFS is appropriate for: multi-pod shared config files, shared code directories, legacy apps that require POSIX filesystem semantics (rename, hard links, directory listing).",
+            "CephFS is NOT appropriate for: high-throughput media serving (latency per-request too high vs RGW with nginx cache), databases (use RBD), pure object workloads (use RGW).",
+            "For WordPress: CephFS RWX can replace shared NFS for wp-content/plugins/ and wp-content/themes/ sync — but NOT for uploads/ (use RGW instead).",
+            "CephFS PVCs in RWX mode can be shared across pods in the SAME namespace directly. Cross-namespace sharing requires static PV clone pattern (copy PV, create PVC pointing to it)."
+          ]
+        },
+        {
+          "concept": "fsgroup_pitfall",
+          "truths": [
+            "CRITICAL: Setting fsGroup in a pod's securityContext when a CephFS volume is mounted triggers Kubernetes to recursively chown/chmod ALL files in the volume on every container start.",
+            "With thousands of WordPress media files, this causes pods to hang in ContainerCreating for minutes or indefinitely, flooding MDS with setxattr syscalls.",
+            "Fix: set securityContext.fsGroupChangePolicy: OnRootMismatch — kubelet only changes ownership if root directory ownership doesn't match. This avoids recursive walk.",
+            "Alternative: omit fsGroup entirely and set file permissions in the container via initContainer or dockerfile.",
+            "SELinux relabeling causes the same symptom (recursive setxattr). Disable SELinux on CephFS mount nodes or use CSI_FORCE_CEPHFS_KERNEL_CLIENT: false to switch to FUSE client."
+          ]
+        },
+        {
+          "concept": "cephfilesystem_cr",
+          "truths": [
+            "CephFilesystem CR: metadata pool (replicated size 3) + one or more data pools (replicated size 3).",
+            "metadataServer.activeCount: 1 for small clusters; activeStandby: true for fast failover.",
+            "MDS resources in CephFilesystem spec (not CephCluster): resources: {requests: {cpu: '1', memory: '4Gi'}}.",
+            "StorageClass: provisioner: rook-ceph.cephfs.csi.ceph.com | parameters: {fsName: myfs, pool: myfs-data0, csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner}.",
+            "CephFS quotas require kernel ≥ 4.17. On Ubuntu 22.04 with kernel 5.15 quotas work natively.",
+            "CephFilesystemSubVolumeGroup CRD: creates an isolated namespace within the filesystem for tenant separation — OSDs shared, but namespaces isolated."
+          ]
+        }
+      ]
+    },
+    "layer_6_rbd_block_storage": {
+      "description": "Ceph RBD block storage for databases and single-pod workloads",
+      "truth_lens": [
+        {
+          "concept": "rbd_use_cases",
+          "truths": [
+            "RBD = ReadWriteOnce. One PVC can only be mounted on one node at a time. Suitable for: MySQL, PostgreSQL, Redis, single-replica Deployments or StatefulSets.",
+            "RBD PVCs can expand online in Rook Ceph (allowVolumeExpansion: true in StorageClass). No unmount required.",
+            "RBD StorageClass: provisioner: rook-ceph.rbd.csi.ceph.com | parameters: {pool: replicapool, imageFeatures: layering}.",
+            "imageFeatures: layering is required for broad kernel compatibility. Deep-features (exclusive-lock, object-map, fast-diff) improve performance on modern kernels.",
+            "For MySQL: use xfs filesystem in RBD PVC (volumeMode: Filesystem, fsType: xfs in StorageClass). XFS handles MySQL write patterns better than ext4."
+          ]
+        },
+        {
+          "concept": "rbd_iops_tuning",
+          "truths": [
+            "BlueStore default RocksDB WAL and DB are co-located on OSD disk. For dedicated RAID-SSD OSDs on HP G8, no separate WAL/DB device needed.",
+            "OSD memory target: set osd_memory_target: 4294967296 (4GiB) per OSD in rook-config-override ConfigMap for consistent performance.",
+            "For MySQL workloads: ceph osd pool set replicapool compression_mode none (disable compression for latency-sensitive block I/O).",
+            "RBD mirroring: for cross-cluster DR, configure CephRBDMirror CR with token-based replication. Not needed for single on-premise cluster."
+          ]
+        }
+      ]
+    },
+    "layer_7_health_warn_triage": {
+      "description": "Interpreting and resolving common Ceph HEALTH_WARN and HEALTH_ERR states",
+      "truth_lens": [
+        {
+          "concept": "common_health_states",
+          "truths": [
+            "HEALTH_WARN clock skew detected: NTP not synced across K8s nodes. Fix: timedatectl status on all nodes; ensure chronyd/ntpd is running.",
+            "HEALTH_WARN too few PGs per OSD: pg_autoscaler disabled or pg_num not autoscaled yet. Enable autoscaler: ceph mgr module enable pg_autoscaler; ceph osd pool set <pool> pg_autoscale_mode on",
+            "HEALTH_WARN nearfull OSDs: OSDs approaching 85% capacity. Add OSDs or delete data immediately. Ceph will stop writes at 95% (osd_full_ratio).",
+            "HEALTH_WARN mon clock skew: ntpd issue. Also check mon_clock_drift_allowed config.",
+            "HEALTH_WARN degraded data redundancy X/Y objects degraded: Normal during OSD add/remove/rebalance. Becomes HEALTH_ERR if degraded > 0 and OSD is down (insufficient replicas).",
+            "HEALTH_WARN 1 OSDs or CRUSH nodes have {NOUP,NODOWN,NOIN,NOOUT} flags: Manual flags set. Remove with: ceph osd unset noup (etc.)",
+            "HEALTH_ERR 1 mon is down: Quorum at risk. One MON pod crashed. Check pod logs. Restart or failover MON.",
+            "HEALTH_ERR full OSDs: Writes blocked. Emergency: ceph osd set nofull (temporarily); delete data or add OSDs urgently."
+          ]
+        },
+        {
+          "concept": "diagnostic_commands",
+          "truths": [
+            "ceph status — overall health, services, data summary",
+            "ceph health detail — verbose HEALTH_WARN/ERR explanations",
+            "ceph osd tree — CRUSH hierarchy, OSD weights and states",
+            "ceph osd df — per-OSD disk usage and PG count",
+            "ceph df — pool-level usage statistics",
+            "ceph pg dump_stuck — show stuck PGs (inactive, unclean, stale)",
+            "ceph pg stat — PG count by state",
+            "ceph osd perf — per-OSD latency (read/write commit lat)",
+            "ceph tell osd.* config show — dump running config of all OSDs",
+            "ceph log last 100 — recent cluster log events",
+            "kubectl logs -n rook-ceph -l app=rook-ceph-mon -c mon — MON pod logs",
+            "kubectl logs -n rook-ceph rook-ceph-operator-<pod> — Operator reconcile logs"
+          ]
+        }
+      ]
+    },
+    "layer_8_csi_debugging": {
+      "description": "Debugging CSI mount failures for RBD and CephFS PVCs",
+      "truth_lens": [
+        {
+          "concept": "pvc_pending_debug",
+          "truths": [
+            "PVC stays Pending → provisioner not responding. Check csi-rbdplugin-provisioner or csi-cephfsplugin-provisioner pod logs.",
+            "kubectl logs -n rook-ceph deploy/csi-rbdplugin-provisioner -c csi-provisioner — external-provisioner errors.",
+            "kubectl logs -n rook-ceph deploy/csi-rbdplugin-provisioner -c csi-rbdplugin — CSI RBD driver errors.",
+            "Common cause: MON connectivity failure. Verify: kubectl exec -n rook-ceph deploy/rook-ceph-tools -- ceph -s",
+            "Common cause: wrong StorageClass provisioner string. Must match operator namespace: rook-ceph.rbd.csi.ceph.com",
+            "Common cause: CSI secrets missing (rook-csi-rbd-provisioner, rook-csi-cephfs-provisioner). Check they exist in rook-ceph namespace."
+          ]
+        },
+        {
+          "concept": "pod_failedmount_debug",
+          "truths": [
+            "Pod stuck ContainerCreating with FailedMount event → CSI node plugin not running on that node.",
+            "Check csi-rbdplugin DaemonSet: kubectl get pods -n rook-ceph -l app=csi-rbdplugin -o wide — must have Running pod on node where app pod is scheduled.",
+            "Restart stuck CSI node plugin: kubectl delete pod -n rook-ceph <csi-rbdplugin-xxxxx>",
+            "CephFS pod hanging in ContainerCreating: likely fsGroup recursive chown (see fsgroup_pitfall) or MDS unavailable.",
+            "Check MDS: ceph mds stat — should show 1 active MDS. If no active MDS, check rook-ceph-mds-* pod logs.",
+            "NetworkPolicy blocking CSI → MON: ensure rook-ceph namespace has no NetworkPolicy blocking port 3300/6789 from worker nodes."
+          ]
+        }
+      ]
+    },
+    "layer_9_operational_commands": {
+      "description": "Day-2 operations: OSD management, bucket operations, benchmarking",
+      "truth_lens": [
+        {
+          "concept": "osd_operations",
+          "truths": [
+            "Add OSD: attach new disk to node, deviceFilter matches it → Rook auto-provisions OSD. Verify: watch kubectl get pods -n rook-ceph -l app=rook-ceph-osd.",
+            "Remove OSD gracefully: ceph osd out osd.<ID> → wait for rebalance → kubectl apply -f osd-purge.yaml (set OSD-IDs in spec) → wipe disk.",
+            "Replace failed OSD: ceph osd out osd.<ID>; kubectl delete deploy rook-ceph-osd-<N>-*; replace physical/virtual disk; let Rook auto-reprovision.",
+            "Check OSD status: ceph osd status — shows per-OSD state, used/available, ops.",
+            "Force OSD down: ceph osd down osd.<ID> (for testing failover).",
+            "Stop Rook operator during manual OSD work: kubectl scale deploy -n rook-ceph rook-ceph-operator --replicas=0 (restart after: --replicas=1)."
+          ]
+        },
+        {
+          "concept": "mc_operations",
+          "truths": [
+            "mc alias set myrook http://rook-ceph-rgw-my-store.rook-ceph.svc.cluster.local ACCESSKEY SECRETKEY",
+            "mc ls myrook/ — list buckets",
+            "mc ls myrook/wp-media/ — list objects",
+            "mc cp ./image.jpg myrook/wp-media/wp-content/uploads/2026/03/image.jpg — upload single file",
+            "mc mirror ./wp-content/uploads/ myrook/wp-media/wp-content/uploads/ — one-time sync (local → bucket)",
+            "mc mirror --watch ./wp-content/uploads/ myrook/wp-media/ — continuous sync (use for warm standby)",
+            "mc mirror --remove myrook/source/ myrook/dest/ — sync between two RGW buckets (cross-cluster geo-replication)",
+            "mc rm --recursive --force myrook/wp-media/wp-content/uploads/2020/ — delete old year's uploads",
+            "mc stat myrook/wp-media/wp-content/uploads/2026/03/image.jpg — check object metadata",
+            "mc du myrook/wp-media/ — bucket disk usage summary"
+          ]
+        },
+        {
+          "concept": "benchmarking",
+          "truths": [
+            "rados bench (block-level, OSD pool): kubectl exec -n rook-ceph deploy/rook-ceph-tools -- rados bench -p replicapool 60 write --no-cleanup",
+            "rados bench read: kubectl exec -n rook-ceph deploy/rook-ceph-tools -- rados bench -p replicapool 60 seq",
+            "S3 throughput via s3-benchmark: docker run -e endpoint=http://RGW_IP:80 -e accessKey=KEY -e secretKey=SECRET minio/s3-benchmark",
+            "fio on RBD PVC: kubectl exec <db-pod> -- fio --name=rbd-test --rw=randwrite --bs=4k --numjobs=4 --size=1G --runtime=60 --ioengine=libaio --direct=1",
+            "Latency check: ceph osd perf | sort -k3 -n | tail -5 — shows slowest OSDs by apply latency."
+          ]
+        },
+        {
+          "concept": "dashboard_access",
+          "truths": [
+            "Ceph dashboard runs in MGR pod. Expose: kubectl port-forward -n rook-ceph svc/rook-ceph-mgr-dashboard 7000:7000",
+            "Get admin password: kubectl get secret -n rook-ceph rook-ceph-dashboard-password -o jsonpath='{.data.password}' | base64 -d",
+            "Username: admin. Default port: 8443 (HTTPS) or 7000 (HTTP, if dashboard.ssl: false in CephCluster).",
+            "To expose via Ingress: create Ingress pointing to Service rook-ceph-mgr-dashboard on port 7000.",
+            "Dashboard shows: cluster health, OSD tree, pool usage, RGW endpoints, active ops, performance graphs."
+          ]
+        }
+      ]
+    },
+    "layer_10_anti_patterns": {
+      "description": "Common mistakes that cause silent failures, data loss, or performance degradation",
+      "truth_lens": [
+        {
+          "concept": "anti_pattern_list",
+          "truths": [
+            "ANTI-PATTERN: Missing disk.EnableUUID on ESXi VMs → OSD provisioning silently fails. Fix: enable in VMX config before provisioning cluster.",
+            "ANTI-PATTERN: Using OS disk for OSD (no deviceFilter) → OS partition consumed, node becomes unbootable. Fix: always set deviceFilter: '^sd[b-z]'.",
+            "ANTI-PATTERN: Setting CPU Limits on MON/OSD → CPU throttling causes MON quorum timeout, OSD slow ops, HEALTH_WARN. Fix: use Requests only, never Limits.",
+            "ANTI-PATTERN: Setting Memory Limits on MON → OOM kill destroys quorum. Fix: no memory limits on MONs.",
+            "ANTI-PATTERN: Single OSD in production (replicated size 1) → no redundancy; any OSD failure = data loss. Fix: minimum 3 OSDs across 3 nodes with size: 3.",
+            "ANTI-PATTERN: Two MONs only → quorum fails if either MON crashes. Fix: always 3 MONs.",
+            "ANTI-PATTERN: fsGroup on CephFS RWX pods with many files → recursive chown causes ContainerCreating timeout. Fix: fsGroupChangePolicy: OnRootMismatch or omit fsGroup.",
+            "ANTI-PATTERN: Using virtual-hosted-style S3 URLs with Ceph RGW without configuration → 403 or DNS resolution failure. Fix: use_path_style_endpoint: true in S3 client.",
+            "ANTI-PATTERN: WP Offload Media without Tweaks plugin pointing to AWS endpoint → all S3 calls hit amazonaws.com. Fix: register as3cf_aws_s3_client_args filter with custom endpoint.",
+            "ANTI-PATTERN: Separate S3 buckets per WordPress pod for shared media → pods see different media sets. Fix: one shared bucket, all pods use same credentials and prefix.",
+            "ANTI-PATTERN: Ceph pool at >80% capacity → performance cliff, HEALTH_WARN nearfull, CRUSH backfill stalls. Fix: monitor with ceph df; keep ≤80% used.",
+            "ANTI-PATTERN: Erasure coding with fewer OSDs than dataChunks + codingChunks on separate hosts → PGs stuck undersized. Fix: replicated size 3 for small clusters.",
+            "ANTI-PATTERN: Missing dataDirHostPath in CephCluster CR → MONs lose data on pod restart, perpetual reconcile loop. Fix: dataDirHostPath: /var/lib/rook.",
+            "ANTI-PATTERN: Leaving stale OSD Deployments after disk removal → Rook may reassign them to new disks incorrectly. Fix: use osd-purge Job and remove from CR.",
+            "ANTI-PATTERN: RGW bucket ACLs and bucket policies both set with conflicting rules → policy wins, ACL ignored. Fix: use only bucket policy JSON for access control.",
+            "ANTI-PATTERN: nginx proxy_body_size default (1MB) with large media uploads → 413 Request Entity Too Large. Fix: client_max_body_size 256m in nginx."
+          ]
+        }
+      ]
+    }
+  },
+  "yaml_manifests": {
+    "ceph_object_store": {
+      "description": "Production CephObjectStore for small 3-OSD cluster",
+      "yaml": "apiVersion: ceph.rook.io/v1\nkind: CephObjectStore\nmetadata:\n  name: my-store\n  namespace: rook-ceph\nspec:\n  metadataPool:\n    failureDomain: host\n    replicated:\n      size: 3\n  dataPool:\n    failureDomain: host\n    replicated:\n      size: 3\n    parameters:\n      compression_mode: passive\n  preservePoolsOnDelete: true\n  gateway:\n    port: 80\n    instances: 2\n    resources:\n      requests:\n        cpu: '500m'\n        memory: '1Gi'\n    placement:\n      podAntiAffinity:\n        preferredDuringSchedulingIgnoredDuringExecution:\n          - weight: 100\n            podAffinityTerm:\n              labelSelector:\n                matchExpressions:\n                  - key: app\n                    operator: In\n                    values: [rook-ceph-rgw]\n              topologyKey: kubernetes.io/hostname"
+    },
+    "ceph_object_store_user": {
+      "description": "RGW user for WordPress shared media access",
+      "yaml": "apiVersion: ceph.rook.io/v1\nkind: CephObjectStoreUser\nmetadata:\n  name: wp-shared\n  namespace: rook-ceph\nspec:\n  store: my-store\n  displayName: 'WordPress Shared Media User'\n  capabilities:\n    user: 'read'\n    bucket: 'read write'\n    metadata: 'read write'\n  quotas:\n    maxBuckets: 10\n    maxSize: '500Gi'\n    maxObjects: -1"
+    },
+    "wordpress_deployment_env": {
+      "description": "WordPress Deployment snippet — S3 credentials from CephObjectStoreUser Secret",
+      "yaml": "env:\n  - name: AWS_ACCESS_KEY_ID\n    valueFrom:\n      secretKeyRef:\n        name: rook-ceph-object-user-my-store-wp-shared\n        key: AccessKey\n  - name: AWS_SECRET_ACCESS_KEY\n    valueFrom:\n      secretKeyRef:\n        name: rook-ceph-object-user-my-store-wp-shared\n        key: SecretKey\n  - name: S3_ENDPOINT\n    value: 'http://rook-ceph-rgw-my-store.rook-ceph.svc.cluster.local'\n  - name: S3_BUCKET\n    value: 'wp-media'"
+    },
+    "nginx_cdn_config": {
+      "description": "nginx CDN proxy for cdn.vikka.ua → RGW bucket",
+      "yaml": "# nginx.conf snippet\nproxy_cache_path /var/cache/nginx/wp_media levels=1:2 keys_zone=wp_media_cache:10m max_size=20g inactive=30d;\n\nserver {\n  listen 80;\n  server_name cdn.vikka.ua;\n  client_max_body_size 256m;\n\n  location /files/wp/ {\n    proxy_pass http://rook-ceph-rgw-my-store.rook-ceph.svc.cluster.local/wp-media/wp-content/uploads/;\n    proxy_set_header Host $host;\n    proxy_cache wp_media_cache;\n    proxy_cache_valid 200 304 7d;\n    proxy_cache_use_stale error timeout updating;\n    proxy_cache_lock on;\n    add_header X-Cache-Status $upstream_cache_status;\n    add_header Cache-Control 'public, max-age=604800';\n  }\n}"
+    },
+    "cephfs_storageclass": {
+      "description": "StorageClass for CephFS RWX volumes",
+      "yaml": "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: rook-cephfs\nprovisioner: rook-ceph.cephfs.csi.ceph.com\nparameters:\n  clusterID: rook-ceph\n  fsName: myfs\n  pool: myfs-data0\n  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner\n  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph\n  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner\n  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph\n  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node\n  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph\nreclaimPolicy: Retain\nallowVolumeExpansion: true\nvolumeBindingMode: Immediate"
+    },
+    "rbd_storageclass": {
+      "description": "StorageClass for Ceph RBD block (MySQL/PostgreSQL)",
+      "yaml": "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: rook-ceph-block\nprovisioner: rook-ceph.rbd.csi.ceph.com\nparameters:\n  clusterID: rook-ceph\n  pool: replicapool\n  imageFormat: '2'\n  imageFeatures: layering\n  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner\n  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph\n  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner\n  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph\n  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node\n  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph\nreclaimPolicy: Retain\nallowVolumeExpansion: true\nvolumeBindingMode: WaitForFirstConsumer"
+    }
+  },
+  "decision_matrix": {
+    "storage_interface_selection": {
+      "wordpress_media_shared": "RGW (S3) — multiple pods, S3 plugin (ADVMO), CDN fronting",
+      "wordpress_database_mysql": "RBD — ReadWriteOnce, xfs, single StatefulSet",
+      "wordpress_plugins_themes_shared": "CephFS RWX — POSIX required, set fsGroupChangePolicy: OnRootMismatch",
+      "wordpress_uploads_single_pod": "RBD RWO — acceptable if pods never scale > 1",
+      "backup_store": "RGW (S3) — Velero uses S3 API natively",
+      "log_archive": "RGW (S3) — lifecycle policies for auto-expiry",
+      "high_iops_database": "RBD — BlueStore + RAID-SSD OSD, no compression"
+    },
+    "when_rgw_beats_cephfs": [
+      "Multiple pods across multiple nodes need write access (RGW has no fsGroup issue)",
+      "Media files accessed via CDN (nginx can cache S3 GET responses; not CephFS mounts)",
+      "No POSIX semantics needed (no rename, no hardlinks, no directory listing in app code)",
+      "Media files stored with absolute CDN URLs in DB (perfect for S3 plugin URL rewrite)",
+      "Bucket lifecycle policies needed for automatic cleanup"
+    ],
+    "when_cephfs_beats_rgw": [
+      "Legacy app requires POSIX filesystem (rename, flock, hard links)",
+      "App cannot use S3 SDK and requires mounted filesystem path",
+      "Very small number of frequently-updated shared config files",
+      "Direct NFS-style access needed from multiple pods"
+    ]
+  },
+  "known_limitations": [
+    "ESXi RAID-1 virtual disk presents as single block device to OS; Ceph adds software replication on top — effective data written is 3× raw (3 Ceph replicas × 1 RAID-1 mirror). Account for this in capacity planning.",
+    "Ceph RGW does not support virtual-hosted-style bucket URLs without custom DNS wildcard setup. Always use path-style (bucket-in-path) for self-hosted RGW.",
+    "WP Offload Media (AS3CF) requires the 'Tweaks' companion plugin for custom S3 endpoints; Advanced Media Offloader (ADVMO) supports custom endpoints natively — prefer ADVMO for Ceph RGW.",
+    "CephFS cross-namespace PVC sharing requires manual static PV clone pattern; Rook does not automate this.",
+    "ESXi virtual disks are always classified as 'hdd' device class; set crushDeviceClass: ssd manually in pools or OSD config to place data on correct CRUSH class.",
+    "Rook 1.x does not support in-place disk replacement; must use out-then-in OSD replacement workflow.",
+    "RGW multisite replication (for geo-DR) requires CephObjectZone/CephObjectZoneGroup CRDs; single-zone is sufficient for single-datacenter deployments.",
+    "Ceph pg_autoscaler can produce HEALTH_WARN 'large skew in PG count' on mixed-workload clusters; acknowledge with: ceph health mute POOL_PG_NUM_NOT_POWER_OF_TWO"
+  ],
+  "jq_usage_guide": {
+    "description": "Example jq queries for navigating this skillset",
+    "examples": [
+      ".knowledge_layers.layer_3_rgw_object_storage.truth_lens[] | select(.concept==\"radosgw_admin_commands\") | .truths[]",
+      ".knowledge_layers.layer_4_wordpress_s3_integration.truth_lens[] | select(.concept==\"advanced_media_offloader\") | .truths[]",
+      ".knowledge_layers.layer_10_anti_patterns.truth_lens[0].truths[]",
+      ".yaml_manifests.nginx_cdn_config.yaml",
+      ".yaml_manifests.ceph_object_store_user.yaml",
+      ".decision_matrix.storage_interface_selection",
+      ".decision_matrix.when_rgw_beats_cephfs[]",
+      ".knowledge_layers.layer_1_esxi_vmware_specifics.truth_lens[] | select(.concept==\"disk_enableuuid\") | .truths[]",
+      ".knowledge_layers.layer_7_health_warn_triage.truth_lens[] | select(.concept==\"common_health_states\") | .truths[]",
+      ".knowledge_layers.layer_9_operational_commands.truth_lens[] | select(.concept==\"mc_operations\") | .truths[]",
+      ".core_principles[]",
+      ".known_limitations[]"
+    ]
+  }
+}

@@ -1,0 +1,837 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "llm_rag_specialist",
+  "name": "LLM RAG & Neural Memory Specialist — PostgreSQL 15 × pgvector × Hybrid Search",
+  "mission": {
+    "primary_objective": "Design, implement, and operate production-grade Retrieval-Augmented Generation (RAG) systems and LLM agent memory architectures using PostgreSQL 15 with pgvector as the unified vector store, combining semantic, lexical, and structured retrieval into a single coherent intelligence substrate.",
+    "context": "RAG grounds LLM outputs in verifiable, domain-specific knowledge rather than hallucinated recall. Agent memory systems extend this to multi-session, multi-agent, and lifelong learning contexts by classifying and consolidating knowledge across episodic, semantic, procedural, and working memory planes. PostgreSQL with pgvector handles datasets up to ~5M vectors efficiently; beyond that, dedicated vector databases (Qdrant, Weaviate, Pinecone) are justified. The complete RAG+memory schema lives in the same CloudNativePG-managed database as the application, eliminating synchronization complexity.",
+    "target_outcome": "A unified PostgreSQL schema serving as the intelligence backbone for LLM applications: documents ingested → chunked → embedded → indexed → retrieved via hybrid search → assembled into context → delivered to LLM → interaction stored as episodic memory → periodically consolidated into semantic/procedural memory → fed back into future retrievals.",
+    "scope": "Web RAG pipelines (Next.js 16 / Server Actions), multi-agent memory systems (The Legiox architecture), local model inference (LM Studio / Ollama), and cloud LLM APIs (Anthropic Claude, OpenAI GPT). Storage layer: PostgreSQL 15 + pgvector 0.8+ extension. Embedding models: text-embedding-3-small (1536-dim), nomic-embed-text (768-dim for local), all-MiniLM-L6-v2 (384-dim for lightweight)."
+  },
+  "truth_lens": "Design, implement, and operate production-grade Retrieval-Augmented Generation (RAG) systems and LLM agent memory architectures using PostgreSQL 15 with pgvector as the unified vector store, combining semantic, lexical, and structured retrieval into a single coherent intelligence substrate. RAG grounds LLM outputs in verifiable, domain-specific knowledge rather than hallucinated recall. Agent memory systems extend this to multi-session, multi-agent, and lifelong learning contexts by classifying and consolidating knowledge across episodic, semantic, procedural, and working memory planes. PostgreSQL with pgvector handles datasets up to ~5M vectors efficiently; beyond that, dedicated ve",
+  "consult_when": [
+    "Task touches llm_rag_specialist responsibilities or failure modes named in this lens.",
+    "Need selector-grade triggers for LLM RAG & Neural Memory Specialist — PostgreSQL 15 × pgvector × Hybrid Search before architecture or production change.",
+    "Cross-stack ambiguity between framework, infra, and data layers in this domain."
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for llm_rag_specialist -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "POSTGRES_AS_INTELLIGENCE_SUBSTRATE — PostgreSQL with pgvector is the single store for vectors, full-text, relational metadata, and agent memory; no external vector DB unless >5M vectors require it",
+    "HYBRID_SEARCH_MANDATORY — Pure vector search achieves ~62% retrieval precision; hybrid (vector + BM25/tsvector) + RRF consistently achieves ~84%+ in production benchmarks",
+    "HNSW_DEFAULT_INDEX — HNSW outperforms IVFFlat on speed-recall tradeoff for all production workloads; IVFFlat only for datasets requiring frequent full rebuilds on static data",
+    "CHUNKING_BEFORE_EMBEDDING — Chunk quality sets the upper bound on RAG system quality; bad chunks cannot be fixed by better embeddings or retrieval",
+    "MEMORY_TAXONOMY_EXPLICIT — Distinguish working memory (context window), episodic memory (interaction log), semantic memory (consolidated facts), procedural memory (skills/SOPs), and knowledge vault (verbatim critical facts)",
+    "EPISODIC_TO_SEMANTIC_CONSOLIDATION — Raw interaction traces must be periodically distilled into semantic and procedural assets to prevent self-degradation from error propagation"
+  ],
+  "keywords": [
+    "llm",
+    "rag",
+    "specialist",
+    "postgres",
+    "sql",
+    "design",
+    "retrieval",
+    "augmented",
+    "generation",
+    "postgresql",
+    "neural",
+    "memory",
+    "pgvector",
+    "hybrid",
+    "search"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "LLM RAG & Neural Memory Specialist — PostgreSQL 15 × pgvector × Hybrid Search",
+  "role": "LegioX truth lens — LLM RAG & Neural Memory Specialist — PostgreSQL 15 × pgvector × Hybrid Search",
+  "core_expertise": "Design, implement, and operate production-grade Retrieval-Augmented Generation (RAG) systems and LLM agent memory architectures using PostgreSQL 15 with pgvector as the unified vector store, combining semantic, lexical, and structured retrieval into a single coherent intelligence substrate.",
+  "key_capabilities": [
+    "postgres_as_intelligence_substrate_postg",
+    "hybrid_search_mandatory_pure_vector_sear",
+    "hnsw_default_index_hnsw_outperforms_ivff",
+    "chunking_before_embedding_chunk_quality_",
+    "memory_taxonomy_explicit_distinguish_wor",
+    "episodic_to_semantic_consolidation_raw_i",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-03-03",
+  "updated": "2026-03-03",
+  "core_principles": [
+    "POSTGRES_AS_INTELLIGENCE_SUBSTRATE — PostgreSQL with pgvector is the single store for vectors, full-text, relational metadata, and agent memory; no external vector DB unless >5M vectors require it",
+    "HYBRID_SEARCH_MANDATORY — Pure vector search achieves ~62% retrieval precision; hybrid (vector + BM25/tsvector) + RRF consistently achieves ~84%+ in production benchmarks",
+    "HNSW_DEFAULT_INDEX — HNSW outperforms IVFFlat on speed-recall tradeoff for all production workloads; IVFFlat only for datasets requiring frequent full rebuilds on static data",
+    "CHUNKING_BEFORE_EMBEDDING — Chunk quality sets the upper bound on RAG system quality; bad chunks cannot be fixed by better embeddings or retrieval",
+    "MEMORY_TAXONOMY_EXPLICIT — Distinguish working memory (context window), episodic memory (interaction log), semantic memory (consolidated facts), procedural memory (skills/SOPs), and knowledge vault (verbatim critical facts)",
+    "EPISODIC_TO_SEMANTIC_CONSOLIDATION — Raw interaction traces must be periodically distilled into semantic and procedural assets to prevent self-degradation from error propagation",
+    "RECENCY_IMPORTANCE_RELEVANCE — Memory retrieval scores three dimensions: recency (time decay), importance (LLM-scored significance), relevance (vector similarity); all three weighted in final score",
+    "ACTIVE_FORGETTING — Stale or contradicted memories must be pruned or overridden; naive accumulation causes catastrophic interference and self-degradation of agent performance",
+    "DIMENSION_DISCIPLINE — Choose embedding dimension based on deployment context: 1536-dim for cloud RAG (quality priority), 768-dim for balanced local, 384-dim for edge/latency-critical; never mix dimensions in same HNSW index",
+    "GENERATED_TSVECTOR_COLUMNS — Use GENERATED ALWAYS AS (to_tsvector('english', content)) STORED for full-text columns; eliminates triggers and sync bugs"
+  ],
+  "knowledge_layers": {
+    "layer_0_rag_fundamentals": {
+      "description": "Core RAG pipeline: what it is, why it works, and where it fails",
+      "truth_lens": [
+        {
+          "concept": "rag_pipeline_stages",
+          "truths": [
+            "Stage 1 — Ingestion: raw documents (PDF, HTML, Markdown, plain text) → parsed → cleaned → chunked → embedded → stored in PostgreSQL",
+            "Stage 2 — Indexing: HNSW vector index on embedding column + GIN index on tsvector column; built once, maintained incrementally",
+            "Stage 3 — Retrieval: user query → embedded → hybrid search (vector ANN + full-text BM25) → RRF fusion → top-k chunks returned",
+            "Stage 4 — Augmentation: retrieved chunks assembled into context block injected into LLM prompt before user question",
+            "Stage 5 — Generation: LLM generates response grounded in retrieved context; response is NOT hallucinated from parametric memory",
+            "Stage 6 — Memory Write: interaction (query + retrieved context + response) stored as episodic memory record for future sessions"
+          ]
+        },
+        {
+          "concept": "why_rag_beats_finetuning",
+          "truths": [
+            "RAG updates knowledge instantly by ingesting new documents; fine-tuning requires expensive retraining cycles",
+            "RAG provides citations and source traceability; parametric knowledge cannot be attributed",
+            "RAG prevents hallucination by grounding generation in retrieved facts; fine-tuning reduces but does not eliminate hallucination",
+            "RAG is compute-efficient at inference: retrieval is fast; fine-tuning inference cost is the same but training was expensive",
+            "RAG and fine-tuning are complementary: fine-tune for style/behavior, use RAG for factual knowledge"
+          ]
+        },
+        {
+          "concept": "rag_failure_modes",
+          "truths": [
+            "Retrieval miss: relevant document exists but is not retrieved — caused by poor chunking, wrong embedding model, insufficient k",
+            "Context rot: retrieved chunks are relevant but collectively confuse the LLM due to excessive context length (Chroma 2025 research: degradation across all models as context length grows)",
+            "Chunk boundary severing: important concept split across two chunks; neither chunk alone is coherent enough to answer query",
+            "Embedding model mismatch: query embedded with different model than documents; similarity scores meaningless across model boundaries",
+            "Stale knowledge: document changed in source but old chunks remain in vector store; no invalidation mechanism",
+            "Missing exact-match: vector search returns semantically similar but not exact result (e.g., specific version number, proper noun) — fixed by hybrid search with BM25",
+            "Self-degradation: agent stores erroneous interaction as episodic memory; future retrievals re-inject the error into context"
+          ]
+        }
+      ]
+    },
+    "layer_1_chunking": {
+      "description": "Chunking strategies, tradeoffs, and production defaults",
+      "truth_lens": [
+        {
+          "concept": "chunking_fundamentals",
+          "truths": [
+            "Chunking sets the upper bound of RAG system quality — poor chunks cannot be recovered by better retrieval or reranking",
+            "Two competing forces: smaller chunks = more precise retrieval; larger chunks = richer LLM context",
+            "Embedding models have input token limits: text-embedding-3-small max 8191 tokens; nomic-embed-text 2048 tokens; all-MiniLM 256-512 tokens — never exceed model limits",
+            "Chunk overlap (10-20%) preserves semantic continuity at boundaries; more overlap = more storage, more retrieval noise",
+            "Not all documents need chunking: short, single-topic documents (FAQs, product cards) perform better without chunking"
+          ]
+        },
+        {
+          "concept": "strategy_decision_matrix",
+          "truths": [
+            "Recursive character splitting (256-512 tokens, 10-20% overlap): best default for most use cases; LangChain RecursiveCharacterTextSplitter; Vectra Feb 2026 benchmark: 69% accuracy — best of 7 strategies",
+            "Token-based chunking: use when hard token budget is required (embedding model limit enforcement); slower but guarantees no truncation",
+            "Semantic chunking: groups sentences by embedding similarity breakpoints; up to 70% recall improvement over naive baselines; cost: embeds every sentence during chunking phase; best for dense technical/legal/scientific documents",
+            "Structure-aware chunking (MarkdownHeaderTextSplitter, HTML): single biggest easy improvement when documents have headers; preserves document hierarchy as metadata",
+            "Late chunking (2026): embed entire document first, then chunk — captures inter-chunk context (pronouns, cross-references); use when chunk ambiguity is high",
+            "Contextual retrieval (Anthropic 2025): prepend chunk-level context (parent heading path + brief summary) before embedding each chunk; makes chunks self-contained; significant recall improvement",
+            "Hierarchical chunking: store parent chunk (large) + child chunks (small); retrieve by child similarity, return parent for LLM context (small-to-large retrieval pattern)"
+          ]
+        },
+        {
+          "concept": "production_defaults",
+          "truths": [
+            "Start with RecursiveCharacterTextSplitter at 400-512 tokens, 50-75 token overlap — this baseline beats semantic chunking in recent benchmarks (Vectra 2026, NAACL 2025)",
+            "Add structure-aware splitting (header/markdown) before considering semantic chunking — easier, often larger gain",
+            "Store chunk_index (position within parent document), start_char, end_char in metadata for context expansion and citation",
+            "Store parent_chunk_id for hierarchical retrieval; NULL if top-level chunk",
+            "Always store token_count at ingest time: prevents silent truncation during embedding API calls"
+          ]
+        }
+      ]
+    },
+    "layer_2_embedding_models": {
+      "description": "Embedding model selection, dimension constraints, and operational guidance",
+      "truth_lens": [
+        {
+          "concept": "model_selection",
+          "truths": [
+            "text-embedding-3-small (OpenAI): 1536 dims, 8191 token context, best cost/quality for cloud RAG, ~$0.02/1M tokens",
+            "text-embedding-3-large (OpenAI): 3072 dims, 8191 token context, higher quality but 6x cost; use only for high-precision retrieval on smaller corpora",
+            "nomic-embed-text (local via Ollama/LM Studio): 768 dims, 2048 token context, best open-source quality for local inference",
+            "all-MiniLM-L6-v2 (local): 384 dims, 512 token context, fastest local model; acceptable for high-throughput low-latency edge deployments",
+            "BGE-M3 (local): 1024 dims, multi-lingual, multi-granularity; best open-source for multilingual corpora",
+            "NEVER mix embedding models on the same HNSW index — cross-model cosine similarity is meaningless; all chunks in a table must use the same model and dimension"
+          ]
+        },
+        {
+          "concept": "dimension_discipline",
+          "truths": [
+            "pgvector maximum indexable dimensions: 2000 for HNSW and IVFFlat; can store >2000 dims but cannot index — use dimensionality reduction (PCA, Matryoshka) to fit",
+            "halfvec type (pgvector 0.7+): stores vectors at half precision (2 bytes/dimension vs 4); halves HNSW index memory at ~1% recall cost; use for >1M vectors",
+            "Matryoshka embeddings (text-embedding-3-small supports it): can be truncated to lower dimensions (e.g., 256 or 512) with modest quality loss; useful for reducing index size",
+            "Schema must include embedding_model VARCHAR(64) and embedding_dim INT on chunk tables — enables multi-model corpora and migration tracking"
+          ]
+        }
+      ]
+    },
+    "layer_3_pgvector_indexing": {
+      "description": "pgvector HNSW and IVFFlat index tuning, distance metrics, and operational patterns",
+      "truth_lens": [
+        {
+          "concept": "index_type_selection",
+          "truths": [
+            "HNSW: preferred for all production workloads — better speed-recall tradeoff, incremental build (no training step), works on empty tables, handles data updates gracefully",
+            "IVFFlat: faster build times, less memory, but requires training data (cannot index empty table), needs periodic rebuild as data changes, degrades recall as data grows — use only for small static corpora <100K vectors",
+            "Sequential scan (no index): guarantees 100% recall; use for corpora <50K vectors or when exact recall is mandatory; set enable_indexscan = off to force it",
+            "pgvector 0.8+ supports binary quantization: 1-bit per dimension; reduces memory 32x at ~5-10% recall loss; extreme scale only"
+          ]
+        },
+        {
+          "concept": "hnsw_parameters",
+          "truths": [
+            "m (default 16): maximum connections per layer in the graph; higher m = better recall, slower build, more memory; range: 4-64; production default: 16 for 1536-dim, 24 for 768-dim or higher recall needs",
+            "ef_construction (default 64): candidate list size during index build; higher = better recall, slower build time; range: 32-256; production default: 64-128",
+            "ef_search (default 40): candidate list during query; tunable at query time via SET hnsw.ef_search = 100; higher = better recall, higher latency; tune independently from build params",
+            "maintenance_work_mem: set high (e.g., 2GB) during HNSW index build; HNSW graph must fit in maintenance_work_mem or build degrades significantly; NOTICE emitted at 100K tuples if insufficient",
+            "max_parallel_maintenance_workers: increase to 4-7 to parallelize HNSW index build",
+            "REINDEX INDEX CONCURRENTLY before VACUUM to speed up post-update HNSW maintenance",
+            "Monitor HNSW index recall: SET enable_indexscan = off; compare approximate vs exact results; rebuild if recall drops below acceptable threshold"
+          ]
+        },
+        {
+          "concept": "distance_metrics",
+          "truths": [
+            "Cosine distance (<=>): use for text embeddings — measures directional similarity independent of magnitude; most common for RAG; requires vector_cosine_ops operator class",
+            "L2 distance (<->): Euclidean straight-line distance; use for embeddings normalized to unit sphere (equivalent to cosine) or image embeddings; vector_l2_ops",
+            "Inner product (<#>): use for embeddings specifically trained with inner product (e.g., some CLIP variants); vector_ip_ops; returns negative value (lower = more similar)",
+            "Do NOT mix operator classes: if you create HNSW with vector_cosine_ops, queries must use <=> operator or the index is skipped",
+            "Cosine is the correct default for text-embedding-3-small, nomic-embed-text, and BGE-M3"
+          ]
+        },
+        {
+          "concept": "query_patterns",
+          "truths": [
+            "Basic ANN query: SELECT id, content, 1 - (embedding <=> $1::vector) AS similarity FROM chunks ORDER BY embedding <=> $1::vector LIMIT $2",
+            "Similarity threshold filter: WHERE (1 - (embedding <=> $1::vector)) > 0.7 — threshold 0.7 is a reasonable default; tune per corpus",
+            "Metadata pre-filter: WHERE document_id = $2 AND status = 'active' — Postgres may skip index if filter is too selective; use partial indexes for common filter patterns",
+            "Partial HNSW index for filtered queries: CREATE INDEX ON chunks USING hnsw (embedding vector_cosine_ops) WHERE status = 'active' — dramatically reduces index size and improves performance for common filters",
+            "Over-fetch pattern: retrieve 30 candidates from each source (vector + BM25), fuse to 10 final results — consistently outperforms retrieving 10 from each",
+            "jit = off: disable JIT for vector search workloads (as recommended in production guides) — JIT compilation overhead exceeds benefit for short, high-frequency vector queries"
+          ]
+        }
+      ]
+    },
+    "layer_4_hybrid_search": {
+      "description": "Hybrid retrieval combining semantic vector search with BM25 lexical search via Reciprocal Rank Fusion",
+      "truth_lens": [
+        {
+          "concept": "why_hybrid",
+          "truths": [
+            "Pure vector search: ~62% retrieval precision in production; fails on exact matches (specific version numbers, product codes, proper nouns, technical acronyms)",
+            "Pure BM25/full-text: fails on semantic queries where user intent differs from exact document words; no concept of meaning",
+            "Hybrid (vector + BM25 + RRF): ~84% retrieval precision in production (dev.to benchmark, 2026); no single approach beats the combination",
+            "BM25 vs native tsvector/ts_rank: BM25 incorporates term frequency saturation, inverse document frequency, and document length normalization; ts_rank does not — ts_rank treats all matching docs equally weighted only by match count"
+          ]
+        },
+        {
+          "concept": "rrf_algorithm",
+          "truths": [
+            "RRF formula: score = 1/(k + rank_vector) + 1/(k + rank_bm25) where k=60 is the standard smoothing constant (Cormack et al., SIGIR 2009)",
+            "RRF uses ranks, not scores — score scale normalization between vector distance (0-2) and BM25 score (unbounded) is unnecessary; ranks are always comparable",
+            "k=60: prevents high-rank documents from dominating when one method returns a very strong match; adjust upward (80-100) if you want more fusion weight toward top-ranked items",
+            "Full outer join on (chunk_id) from both result sets before RRF — a chunk appearing in only one result set still participates; its missing rank is treated as infinity (score contribution near zero)",
+            "Over-fetch both sides before RRF: SELECT LIMIT 30 from each method, fuse, return top 10 — more candidates = richer fusion signal",
+            "Optional third channel: reranker model (cross-encoder like bge-reranker-v2-m3 or Cohere Rerank) applied post-RRF for additional 15-30% precision gain"
+          ]
+        },
+        {
+          "concept": "implementation_options",
+          "truths": [
+            "Native tsvector + GIN index: built into PostgreSQL, no extensions; use GENERATED ALWAYS AS (to_tsvector('english', content)) STORED for automatic sync; query with ts_rank or ts_rank_cd; adequate for most workloads",
+            "pg_textsearch (Timescale/TigerData): true BM25 ranking via USING bm25(column) index; <@> operator; transactional, auto-maintained; as of 2026-03, preview/prerelease — not yet production-recommended",
+            "pg_search (ParadeDB): production-ready BM25 for PostgreSQL; Apache 2.0 license; mature extension for hybrid RAG pipelines as of 2025",
+            "VectorChord + VectorChord-BM25 (TensorChord): Rust-based, claims 3x faster than Elasticsearch for BM25; supports ColBERT reranking; separate extension stack",
+            "Practical default: tsvector + GIN for most teams (zero new dependencies); upgrade to pg_search if ts_rank recall is insufficient"
+          ]
+        },
+        {
+          "concept": "hybrid_sql_pattern",
+          "truths": [
+            "CTE structure: WITH vector_results AS (SELECT id, ROW_NUMBER() OVER (ORDER BY embedding <=> $query_vec) AS rank FROM chunks ORDER BY embedding <=> $query_vec LIMIT 30), fts_results AS (SELECT id, ROW_NUMBER() OVER (ORDER BY ts_rank_cd(search_vector, query)) AS rank FROM chunks WHERE search_vector @@ plainto_tsquery('english', $query_text) LIMIT 30), rrf AS (SELECT COALESCE(v.id, f.id) as id, COALESCE(1.0/(60+v.rank), 0) + COALESCE(1.0/(60+f.rank), 0) as rrf_score FROM vector_results v FULL OUTER JOIN fts_results f ON v.id = f.id) SELECT c.*, r.rrf_score FROM rrf r JOIN chunks c ON c.id = r.id ORDER BY r.rrf_score DESC LIMIT $top_k",
+            "plainto_tsquery for simple queries; websearch_to_tsquery for quoted phrases and boolean operators from advanced users",
+            "Run vector and full-text searches in parallel at the application layer if latency is critical — PostgreSQL executes CTEs sequentially unless parallelism is explicitly set up",
+            "Monitor both search arms separately: track vector_p99_ms and fts_p99_ms independently to detect HNSW index degradation or FTS bloat"
+          ]
+        }
+      ]
+    },
+    "layer_5_postgresql_schema": {
+      "description": "Complete PostgreSQL schema for RAG storage — documents, chunks, embeddings, interactions",
+      "truth_lens": [
+        {
+          "concept": "schema_design_principles",
+          "truths": [
+            "Separate documents (source metadata) from chunks (retrieval units) — 1:N relationship; a document contains N chunks",
+            "Chunk table is the hot path: all retrieval queries hit it; it must be optimized (HNSW + GIN indexes, partial indexes for status filters)",
+            "Store embedding_model and embedding_dim on chunks — required for multi-model corpora and future model migrations",
+            "search_vector (tsvector) as GENERATED ALWAYS AS column — eliminates triggers and application-layer sync bugs",
+            "metadata JSONB column on chunks: stores arbitrary per-chunk attributes (source URL, section_title, page_number, language, chunk_strategy) without schema changes",
+            "chunk_index INT: position of chunk within parent document — enables context expansion (fetch chunk N-1 and N+1 alongside retrieved chunk N)",
+            "status ENUM on chunks ('active', 'superseded', 'deleted'): enables document updates without immediate deletion; old chunks marked superseded before new chunks inserted",
+            "token_count INT: stored at ingest time; prevents silent truncation during embedding API calls; enables cost estimation"
+          ]
+        },
+        {
+          "concept": "document_table",
+          "truths": [
+            "Fields: id UUID PK, source_uri TEXT UNIQUE NOT NULL, title TEXT, content_hash CHAR(64), mime_type VARCHAR(64), status VARCHAR(16) DEFAULT 'active', ingested_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW(), metadata JSONB DEFAULT '{}'",
+            "content_hash SHA-256 of raw document content: enables idempotent re-ingestion (skip if hash unchanged); UPDATE triggers re-chunking if hash changes",
+            "source_uri UNIQUE: prevents duplicate ingestion of same source; supports update-by-source workflows",
+            "ON DELETE CASCADE from chunks to documents: deleting a document atomically removes all its chunks"
+          ]
+        },
+        {
+          "concept": "chunk_table",
+          "truths": [
+            "Fields: id UUID PK DEFAULT gen_random_uuid(), document_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE, parent_chunk_id UUID REFERENCES chunks(id) ON DELETE SET NULL, content TEXT NOT NULL, token_count INT NOT NULL, chunk_index INT NOT NULL, start_char INT, end_char INT, embedding VECTOR(1536) (or 768 or 384 depending on model), search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english', content)) STORED, embedding_model VARCHAR(64) NOT NULL, status VARCHAR(16) DEFAULT 'active', created_at TIMESTAMPTZ DEFAULT NOW(), metadata JSONB DEFAULT '{}'",
+            "UNIQUE(document_id, chunk_index): prevents duplicate chunks; enforces ordering integrity",
+            "parent_chunk_id: NULL for top-level chunks; set for hierarchical chunking patterns (child chunk points to its parent chunk)"
+          ]
+        },
+        {
+          "concept": "index_definitions",
+          "truths": [
+            "HNSW: CREATE INDEX chunks_embedding_hnsw ON chunks USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64) WHERE status = 'active' — partial index excludes superseded/deleted chunks from ANN search",
+            "GIN full-text: CREATE INDEX chunks_fts_gin ON chunks USING gin (search_vector) WHERE status = 'active'",
+            "Metadata GIN: CREATE INDEX chunks_metadata_gin ON chunks USING gin (metadata) — enables JSONB key/value filtering",
+            "B-tree on document_id for JOIN performance: CREATE INDEX chunks_document_id_idx ON chunks (document_id)",
+            "Rebuild HNSW after bulk ingest: REINDEX INDEX CONCURRENTLY chunks_embedding_hnsw — restores optimal graph structure after large batch inserts"
+          ]
+        }
+      ]
+    },
+    "layer_6_memory_taxonomy": {
+      "description": "LLM agent memory types: definitions, roles, and PostgreSQL mapping",
+      "truth_lens": [
+        {
+          "concept": "memory_types",
+          "truths": [
+            "Working memory (in-context): the LLM's context window — volatile, limited, lost at session end; managed by the application (context assembly); NOT stored in PostgreSQL",
+            "Episodic memory: timestamped records of specific interactions (what was said, what was retrieved, what decision was made, what failed); the raw experience log; stored verbatim initially",
+            "Semantic memory: abstracted, de-contextualized facts and concepts distilled from many episodes; 'what the agent knows' rather than 'what it experienced'; the result of consolidation",
+            "Procedural memory: step-by-step skills, workflows, SOPs, and task strategies learned from successful episode patterns; 'how to do things'; stored as structured documents or JSON recipes",
+            "Resource memory: documents, files, external data sources shared with or referenced by the agent",
+            "Knowledge vault: verbatim critical facts that must be preserved exactly (API keys structure, addresses, schema definitions, invariants that must not be paraphrased)"
+          ]
+        },
+        {
+          "concept": "memory_retrieval_scoring",
+          "truths": [
+            "Retrieval score = α × recency + β × importance + γ × relevance (following Generative Agents, Park et al. 2023)",
+            "Recency: exponential decay from last_accessed_at; recent memories score higher; decay rate is configurable per memory type",
+            "Importance: LLM-scored at write time (0.0-1.0); question: 'On a scale of 1-10, how important is this memory for future tasks?'; stored as importance_score FLOAT",
+            "Relevance: cosine similarity between query embedding and memory embedding; computed at retrieval time via pgvector",
+            "All three must combine: a highly important but old memory should still surface if highly relevant; recency alone gives wrong results for rare but critical facts",
+            "Weights α, β, γ are configurable: episodic memory favors recency; semantic memory favors relevance; procedural memory favors importance"
+          ]
+        },
+        {
+          "concept": "episodic_to_semantic_consolidation",
+          "truths": [
+            "Raw episodic records accumulate quickly; without consolidation, retrieval degrades and context fills with redundant raw logs",
+            "Consolidation process: background LLM job periodically reviews recent episodic records → extracts generalizable facts → writes to semantic_memory table → marks episodes as consolidated",
+            "SOP refinement: successful task episodes → extract workflow pattern → write/update procedural_memory record; future agents read SOPs before attempting task from scratch",
+            "Contradiction resolution: if new semantic memory contradicts existing record → LLM arbitrates → winner kept, loser marked superseded with contradiction_note",
+            "Consolidation frequency: after every N episodes, or time-based (hourly/daily), or trigger-based (after task completion)",
+            "SimpleMem (2026) approach: semantic lossless compression — filter low-information interactions (threshold τ=0.35), normalize temporal references, recursively consolidate fragmented facts"
+          ]
+        },
+        {
+          "concept": "active_forgetting",
+          "truths": [
+            "Naive 'add-all' memory accumulation causes catastrophic interference — agent performance self-degrades over time as erroneous memories are retrieved and re-injected",
+            "Time-decay: memories with low importance_score AND low last_accessed_at → soft-delete after threshold; hard-delete after archive period",
+            "Contradiction pruning: when consolidation identifies a contradiction, the lower-confidence memory is marked superseded",
+            "Episodic pruning: after consolidation, raw episode records with low importance can be archived to cold storage (e.g., S3-backed table partition)",
+            "Retrieval feedback: if a memory is retrieved and leads to incorrect agent action (human feedback), mark importance_score -= penalty; repeat failure → mark as invalid"
+          ]
+        }
+      ]
+    },
+    "layer_7_memory_schema": {
+      "description": "PostgreSQL schema for the five memory components of LLM agents",
+      "truth_lens": [
+        {
+          "concept": "episodic_memory_table",
+          "truths": [
+            "Purpose: log every interaction turn with full context — query, retrieved chunks, LLM response, outcome",
+            "Fields: id UUID PK, session_id UUID NOT NULL, agent_id VARCHAR(64), user_id UUID REFERENCES users(id) ON DELETE SET NULL, turn_index INT NOT NULL, role VARCHAR(16) NOT NULL ('user'|'assistant'|'system'), content TEXT NOT NULL, embedding VECTOR(1536), search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english', content)) STORED, retrieved_chunk_ids UUID[], importance_score FLOAT DEFAULT 0.5, actor VARCHAR(32) DEFAULT 'user', status VARCHAR(16) DEFAULT 'active', consolidated BOOLEAN DEFAULT FALSE, created_at TIMESTAMPTZ DEFAULT NOW(), last_accessed_at TIMESTAMPTZ DEFAULT NOW(), metadata JSONB DEFAULT '{}'",
+            "session_id groups turns into conversation sessions; session boundaries are application-defined",
+            "retrieved_chunk_ids UUID[]: records which RAG chunks were used to generate this response — enables retrieval audit and feedback loops",
+            "consolidated BOOLEAN: marks episodes that have been processed by the consolidation pipeline; avoids re-processing"
+          ]
+        },
+        {
+          "concept": "semantic_memory_table",
+          "truths": [
+            "Purpose: store distilled, de-contextualized facts extracted from episode consolidation",
+            "Fields: id UUID PK, agent_id VARCHAR(64), user_id UUID REFERENCES users(id) ON DELETE CASCADE, name VARCHAR(256) NOT NULL, content TEXT NOT NULL, embedding VECTOR(1536), search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english', content)) STORED, category VARCHAR(64), importance_score FLOAT DEFAULT 0.5, confidence_score FLOAT DEFAULT 1.0, source_episode_ids UUID[], status VARCHAR(16) DEFAULT 'active', contradiction_note TEXT, created_at TIMESTAMPTZ DEFAULT NOW(), last_accessed_at TIMESTAMPTZ DEFAULT NOW(), last_confirmed_at TIMESTAMPTZ, metadata JSONB DEFAULT '{}'",
+            "confidence_score (0-1): reduced when contradicted; memories below 0.3 confidence are candidates for soft-deletion",
+            "source_episode_ids UUID[]: provenance tracking — which episodes generated this semantic fact",
+            "last_confirmed_at: updated when new evidence confirms the fact; enables freshness scoring distinct from last_accessed_at"
+          ]
+        },
+        {
+          "concept": "procedural_memory_table",
+          "truths": [
+            "Purpose: store learned skills, SOPs, task workflows as structured step sequences",
+            "Fields: id UUID PK, agent_id VARCHAR(64), name VARCHAR(256) NOT NULL, description TEXT NOT NULL, embedding VECTOR(1536), search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english', description)) STORED, steps JSONB NOT NULL, trigger_conditions JSONB, success_count INT DEFAULT 0, failure_count INT DEFAULT 0, avg_completion_time_ms INT, status VARCHAR(16) DEFAULT 'active', version INT DEFAULT 1, created_at TIMESTAMPTZ DEFAULT NOW(), last_used_at TIMESTAMPTZ, metadata JSONB DEFAULT '{}'",
+            "steps JSONB: array of step objects [{order: 1, action: '...', tool: '...', expected_output: '...', on_failure: '...'}]",
+            "success_count / failure_count: tracks procedure reliability; low success rate → flag for review or deprecation",
+            "version INT: procedures evolve; each SOP refinement increments version; old versions set status='superseded'"
+          ]
+        },
+        {
+          "concept": "knowledge_vault_table",
+          "truths": [
+            "Purpose: preserve exact verbatim facts that must NOT be paraphrased or summarized",
+            "Fields: id UUID PK, agent_id VARCHAR(64), user_id UUID REFERENCES users(id) ON DELETE CASCADE, key VARCHAR(256) UNIQUE NOT NULL, value TEXT NOT NULL, category VARCHAR(64) NOT NULL ('credential_schema'|'address'|'invariant'|'schema_definition'|'regulatory'), encrypted BOOLEAN DEFAULT FALSE, created_at TIMESTAMPTZ DEFAULT NOW(), expires_at TIMESTAMPTZ, metadata JSONB DEFAULT '{}'",
+            "NOT embedded: knowledge vault entries are retrieved by key lookup or keyword, not semantic similarity — they are exact facts",
+            "encrypted BOOLEAN: marks entries that contain sensitive values; actual encryption via pgcrypto or application-layer",
+            "expires_at: time-limited facts (e.g., temporary access codes, expiring configurations)"
+          ]
+        },
+        {
+          "concept": "memory_indexes",
+          "truths": [
+            "episodic_memory: HNSW on embedding WHERE status='active'; GIN on search_vector WHERE status='active'; B-tree on (session_id, turn_index); B-tree on (user_id, created_at DESC) for session history; B-tree on (consolidated) WHERE consolidated=FALSE for consolidation jobs",
+            "semantic_memory: HNSW on embedding WHERE status='active'; GIN on search_vector WHERE status='active'; B-tree on (user_id, category); B-tree on (agent_id, last_confirmed_at DESC)",
+            "procedural_memory: HNSW on embedding WHERE status='active'; GIN on search_vector WHERE status='active'; B-tree on (agent_id, success_count DESC)",
+            "knowledge_vault: B-tree on key (UNIQUE); B-tree on (user_id, category); GIN on metadata"
+          ]
+        }
+      ]
+    },
+    "layer_8_ingest_pipeline": {
+      "description": "Document ingestion pipeline from raw source to indexed chunks",
+      "truth_lens": [
+        {
+          "concept": "ingest_steps",
+          "truths": [
+            "Step 1 — Hash check: compute SHA-256 of raw document; query documents WHERE source_uri=$1 AND content_hash=$2; if match → skip (idempotent ingest)",
+            "Step 2 — Parse: extract clean text from PDF/HTML/Markdown; remove boilerplate, navigation, footers; preserve section hierarchy for structure-aware chunking",
+            "Step 3 — Chunk: apply chosen strategy; record chunk_index, start_char, end_char, token_count per chunk",
+            "Step 4 — Contextual prefix (optional): prepend '{document_title} > {section_heading}: ' to each chunk content before embedding; improves self-containedness of chunks",
+            "Step 5 — Embed: call embedding API (batched, respect rate limits); store VECTOR(dim) result per chunk",
+            "Step 6 — Upsert: INSERT chunks with ON CONFLICT (document_id, chunk_index) DO UPDATE; mark old chunks status='superseded' for replaced document versions",
+            "Step 7 — Index maintenance: after bulk ingest, REINDEX INDEX CONCURRENTLY on HNSW index; schedule off-peak"
+          ]
+        },
+        {
+          "concept": "ingest_anti_patterns",
+          "truths": [
+            "Embedding entire raw document as one chunk: embedding model truncates at token limit → silently loses content",
+            "No content hash check: re-ingesting unchanged documents wastes embedding API quota and inflates chunk count",
+            "No token_count tracking: embedding API calls fail silently or truncate without explicit length guard",
+            "Ingesting and indexing HNSW simultaneously for millions of chunks: rebuild index after bulk load, not incrementally during load",
+            "Not marking old chunks superseded on document update: stale chunks remain in active HNSW index, degrading retrieval quality"
+          ]
+        }
+      ]
+    },
+    "layer_9_operational": {
+      "description": "Production operations: maintenance, performance tuning, observability for RAG + memory systems",
+      "truth_lens": [
+        {
+          "concept": "postgresql_tuning_for_vectors",
+          "truths": [
+            "shared_buffers: 25% RAM — HNSW graph traversal benefits heavily from buffer cache hits; insufficient shared_buffers causes disk I/O per ANN query",
+            "maintenance_work_mem: set to 2-4GB during HNSW index builds; reset to normal after; high value during build, NOTICE emitted at 100K tuples if insufficient",
+            "effective_cache_size: 75% RAM — guides planner to prefer index scans over sequential scans",
+            "jit = off: JIT compilation overhead exceeds benefit for short, high-frequency vector queries; global or session-level",
+            "max_parallel_maintenance_workers = 4-7: parallelizes HNSW index build significantly",
+            "Separate vector workloads: consider dedicated CloudNativePG replica for RAG read queries to avoid interfering with OLTP writes on primary"
+          ]
+        },
+        {
+          "concept": "observability",
+          "truths": [
+            "Track per-query latency for vector search and FTS arms separately using pg_stat_statements",
+            "Monitor HNSW recall health: periodically compare approximate vs exact results (SET enable_indexscan = off for exact comparison); recall below 90% → rebuild index",
+            "Track retrieval precision at application layer: log query → retrieved chunk IDs → LLM response → user feedback signal",
+            "Monitor embedding table growth: chunks per document average, total chunk count, active vs superseded ratio",
+            "Alert on HNSW index size approaching shared_buffers: once graph exceeds cache, query latency spikes",
+            "Track consolidation lag: (COUNT unconsolidated episodic memories) / (new memories per hour); lag > 24 hours → consolidation job bottleneck"
+          ]
+        },
+        {
+          "concept": "cloudnativepg_alignment",
+          "truths": [
+            "pgvector extension declared in CloudNativePG cluster manifest: additionalLibraries: ['pgvector'] or via initdb.postInitSQL: CREATE EXTENSION IF NOT EXISTS vector",
+            "Vector tables are included in WAL archiving automatically — no special backup config needed",
+            "For read-heavy RAG workloads: route RAG SELECT queries to CloudNativePG read-only replica service (ro service); write/upsert go to primary (rw service)",
+            "Dedicated RLS policies: rag_reader role gets SELECT on chunks; rag_writer gets INSERT/UPDATE on chunks and documents; memory_writer gets INSERT on episodic_memory; app_readwrite manages own user's memory only",
+            "Partitioning for episodic_memory: partition by created_at RANGE (monthly) — enables efficient cleanup of old episodes via partition detach + drop"
+          ]
+        }
+      ]
+    },
+    "layer_10_anti_patterns": {
+      "description": "RAG and memory system failure modes — compiled from production experience and 2025-2026 research",
+      "truth_lens": [
+        {
+          "concept": "vector_search_anti_patterns",
+          "truths": [
+            "Using IVFFlat for production with changing data: recall degrades as data grows between rebuilds; use HNSW",
+            "Creating HNSW index during bulk ingest: index is rebuilt incrementally per insert → exponentially slower than post-load build",
+            "Mixing embedding models in same vector column: cosine similarity across model spaces is meaningless",
+            "Not using partial HNSW index (WHERE status='active'): ANN search scans superseded chunks, wastes memory, degrades recall",
+            "Not setting jit=off for vector workloads: JIT compilation overhead is measurable at high QPS",
+            "Indexing vectors with >2000 dimensions: pgvector silently refuses to index; use halfvec or dimensionality reduction"
+          ]
+        },
+        {
+          "concept": "rag_system_anti_patterns",
+          "truths": [
+            "Using only vector search without BM25/FTS: ~62% retrieval precision; exact match queries fail completely",
+            "Chunking too large (>1000 tokens): coarse retrieval, context rot in LLM, low precision",
+            "Chunking too small (<50 tokens): chunks lack sufficient context to be semantically meaningful; embeddings capture noise",
+            "No chunk overlap: semantic continuity lost at boundaries; queries spanning two chunks retrieve neither",
+            "No document-level deduplication (content hash): repeated ingestion creates duplicate chunks; same content retrieved N times pollutes context",
+            "Fetching top-k=3 chunks only: insufficient for complex multi-part questions; use k=5-10, then rerank",
+            "Not invalidating chunks on document update: stale retrieval; outdated information served to LLM"
+          ]
+        },
+        {
+          "concept": "memory_system_anti_patterns",
+          "truths": [
+            "Storing all episodic memory without importance filtering: retrieval degrades, context fills with low-value memories",
+            "No episodic-to-semantic consolidation: raw episode logs accumulate; agent retrieves specific episodes instead of generalized knowledge; self-degradation",
+            "Not scoring importance at write time: retrieval cannot distinguish important from trivial memories without importance signal",
+            "Single monolithic memory table: mixing episodic/semantic/procedural prevents type-specific retrieval strategies and decay policies",
+            "No contradiction resolution: conflicting semantic memories both remain active; agent receives contradictory context and hallucinates resolution",
+            "Accumulating procedural memories without success tracking: failed procedures remain equally retrievable as successful ones; agent repeats mistakes"
+          ]
+        }
+      ]
+    }
+  },
+  "postgresql_schema": {
+    "description": "Complete production DDL sequence for RAG + agent memory — PostgreSQL 15 / CloudNativePG / pgvector 0.8+",
+    "extensions": [
+      "CREATE EXTENSION IF NOT EXISTS vector;        -- pgvector: vector storage and ANN search",
+      "CREATE EXTENSION IF NOT EXISTS pg_trgm;       -- trigram: fuzzy text matching support",
+      "CREATE EXTENSION IF NOT EXISTS pgcrypto;      -- gen_random_uuid(), encryption primitives",
+      "CREATE EXTENSION IF NOT EXISTS pg_stat_statements; -- query performance monitoring"
+    ],
+    "enums": [
+      "CREATE TYPE memory_status AS ENUM ('active', 'superseded', 'invalid', 'archived');",
+      "CREATE TYPE memory_role   AS ENUM ('user', 'assistant', 'system', 'tool');"
+    ],
+    "rag_documents": [
+      "CREATE TABLE rag_documents (",
+      "  id           UUID         PRIMARY KEY DEFAULT gen_random_uuid(),",
+      "  source_uri   TEXT         NOT NULL,",
+      "  title        TEXT,",
+      "  content_hash CHAR(64)     NOT NULL,",
+      "  mime_type    VARCHAR(64)  DEFAULT 'text/plain',",
+      "  status       memory_status NOT NULL DEFAULT 'active',",
+      "  ingested_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),",
+      "  updated_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),",
+      "  metadata     JSONB        NOT NULL DEFAULT '{}'",
+      ");",
+      "CREATE UNIQUE INDEX rag_documents_source_uri_uidx ON rag_documents (source_uri);",
+      "CREATE INDEX rag_documents_status_idx ON rag_documents (status) WHERE status = 'active';",
+      "CREATE INDEX rag_documents_metadata_gin ON rag_documents USING gin (metadata);"
+    ],
+    "rag_chunks": [
+      "CREATE TABLE rag_chunks (",
+      "  id              UUID          PRIMARY KEY DEFAULT gen_random_uuid(),",
+      "  document_id     UUID          NOT NULL REFERENCES rag_documents(id) ON DELETE CASCADE,",
+      "  parent_chunk_id UUID          REFERENCES rag_chunks(id) ON DELETE SET NULL,",
+      "  content         TEXT          NOT NULL,",
+      "  token_count     INT           NOT NULL,",
+      "  chunk_index     INT           NOT NULL,",
+      "  start_char      INT,",
+      "  end_char        INT,",
+      "  embedding       VECTOR(1536)  NOT NULL,",
+      "  search_vector   tsvector      GENERATED ALWAYS AS (to_tsvector('english', content)) STORED,",
+      "  embedding_model VARCHAR(64)   NOT NULL DEFAULT 'text-embedding-3-small',",
+      "  status          memory_status NOT NULL DEFAULT 'active',",
+      "  created_at      TIMESTAMPTZ   NOT NULL DEFAULT NOW(),",
+      "  metadata        JSONB         NOT NULL DEFAULT '{}'",
+      ");",
+      "CREATE UNIQUE INDEX rag_chunks_doc_idx_uidx ON rag_chunks (document_id, chunk_index);",
+      "",
+      "-- HNSW: partial index on active chunks only; set maintenance_work_mem >= 2GB before building",
+      "CREATE INDEX rag_chunks_embedding_hnsw ON rag_chunks",
+      "  USING hnsw (embedding vector_cosine_ops)",
+      "  WITH (m = 16, ef_construction = 64)",
+      "  WHERE status = 'active';",
+      "",
+      "-- Full-text search GIN index on generated tsvector column",
+      "CREATE INDEX rag_chunks_fts_gin ON rag_chunks USING gin (search_vector) WHERE status = 'active';",
+      "",
+      "-- Metadata filtering and JOIN performance",
+      "CREATE INDEX rag_chunks_document_id_idx ON rag_chunks (document_id);",
+      "CREATE INDEX rag_chunks_metadata_gin ON rag_chunks USING gin (metadata);"
+    ],
+    "episodic_memory": [
+      "CREATE TABLE episodic_memory (",
+      "  id                   UUID          PRIMARY KEY DEFAULT gen_random_uuid(),",
+      "  session_id           UUID          NOT NULL,",
+      "  agent_id             VARCHAR(64)   NOT NULL DEFAULT 'default',",
+      "  user_id              UUID          REFERENCES users(id) ON DELETE SET NULL,",
+      "  turn_index           INT           NOT NULL,",
+      "  role                 memory_role   NOT NULL,",
+      "  content              TEXT          NOT NULL,",
+      "  embedding            VECTOR(1536),",
+      "  search_vector        tsvector      GENERATED ALWAYS AS (to_tsvector('english', content)) STORED,",
+      "  retrieved_chunk_ids  UUID[]        DEFAULT '{}',",
+      "  importance_score     FLOAT         NOT NULL DEFAULT 0.5 CHECK (importance_score BETWEEN 0 AND 1),",
+      "  actor                VARCHAR(32)   DEFAULT 'user',",
+      "  status               memory_status NOT NULL DEFAULT 'active',",
+      "  consolidated         BOOLEAN       NOT NULL DEFAULT FALSE,",
+      "  created_at           TIMESTAMPTZ   NOT NULL DEFAULT NOW(),",
+      "  last_accessed_at     TIMESTAMPTZ   NOT NULL DEFAULT NOW(),",
+      "  metadata             JSONB         NOT NULL DEFAULT '{}'",
+      ") PARTITION BY RANGE (created_at);",
+      "",
+      "-- Monthly partitions (create ahead; automate with pg_cron)",
+      "CREATE TABLE episodic_memory_2026_03 PARTITION OF episodic_memory",
+      "  FOR VALUES FROM ('2026-03-01') TO ('2026-04-01');",
+      "",
+      "CREATE INDEX episodic_embedding_hnsw ON episodic_memory",
+      "  USING hnsw (embedding vector_cosine_ops)",
+      "  WITH (m = 16, ef_construction = 64)",
+      "  WHERE status = 'active' AND embedding IS NOT NULL;",
+      "CREATE INDEX episodic_fts_gin ON episodic_memory USING gin (search_vector) WHERE status = 'active';",
+      "CREATE INDEX episodic_session_idx ON episodic_memory (session_id, turn_index);",
+      "CREATE INDEX episodic_user_time_idx ON episodic_memory (user_id, created_at DESC);",
+      "CREATE INDEX episodic_consolidation_idx ON episodic_memory (consolidated) WHERE consolidated = FALSE;"
+    ],
+    "semantic_memory": [
+      "CREATE TABLE semantic_memory (",
+      "  id                  UUID          PRIMARY KEY DEFAULT gen_random_uuid(),",
+      "  agent_id            VARCHAR(64)   NOT NULL DEFAULT 'default',",
+      "  user_id             UUID          REFERENCES users(id) ON DELETE CASCADE,",
+      "  name                VARCHAR(256)  NOT NULL,",
+      "  content             TEXT          NOT NULL,",
+      "  embedding           VECTOR(1536),",
+      "  search_vector       tsvector      GENERATED ALWAYS AS (to_tsvector('english', content)) STORED,",
+      "  category            VARCHAR(64),",
+      "  importance_score    FLOAT         NOT NULL DEFAULT 0.5 CHECK (importance_score BETWEEN 0 AND 1),",
+      "  confidence_score    FLOAT         NOT NULL DEFAULT 1.0 CHECK (confidence_score BETWEEN 0 AND 1),",
+      "  source_episode_ids  UUID[]        DEFAULT '{}',",
+      "  status              memory_status NOT NULL DEFAULT 'active',",
+      "  contradiction_note  TEXT,",
+      "  created_at          TIMESTAMPTZ   NOT NULL DEFAULT NOW(),",
+      "  last_accessed_at    TIMESTAMPTZ   NOT NULL DEFAULT NOW(),",
+      "  last_confirmed_at   TIMESTAMPTZ,",
+      "  metadata            JSONB         NOT NULL DEFAULT '{}'",
+      ");",
+      "CREATE INDEX semantic_embedding_hnsw ON semantic_memory",
+      "  USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64)",
+      "  WHERE status = 'active' AND embedding IS NOT NULL;",
+      "CREATE INDEX semantic_fts_gin ON semantic_memory USING gin (search_vector) WHERE status = 'active';",
+      "CREATE INDEX semantic_user_category_idx ON semantic_memory (user_id, category);"
+    ],
+    "procedural_memory": [
+      "CREATE TABLE procedural_memory (",
+      "  id                      UUID          PRIMARY KEY DEFAULT gen_random_uuid(),",
+      "  agent_id                VARCHAR(64)   NOT NULL DEFAULT 'default',",
+      "  name                    VARCHAR(256)  NOT NULL,",
+      "  description             TEXT          NOT NULL,",
+      "  embedding               VECTOR(1536),",
+      "  search_vector           tsvector      GENERATED ALWAYS AS (to_tsvector('english', description)) STORED,",
+      "  steps                   JSONB         NOT NULL DEFAULT '[]',",
+      "  trigger_conditions      JSONB         NOT NULL DEFAULT '{}',",
+      "  success_count           INT           NOT NULL DEFAULT 0,",
+      "  failure_count           INT           NOT NULL DEFAULT 0,",
+      "  avg_completion_time_ms  INT,",
+      "  status                  memory_status NOT NULL DEFAULT 'active',",
+      "  version                 INT           NOT NULL DEFAULT 1,",
+      "  created_at              TIMESTAMPTZ   NOT NULL DEFAULT NOW(),",
+      "  last_used_at            TIMESTAMPTZ,",
+      "  metadata                JSONB         NOT NULL DEFAULT '{}'",
+      ");",
+      "CREATE INDEX procedural_embedding_hnsw ON procedural_memory",
+      "  USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64)",
+      "  WHERE status = 'active' AND embedding IS NOT NULL;",
+      "CREATE INDEX procedural_fts_gin ON procedural_memory USING gin (search_vector) WHERE status = 'active';",
+      "CREATE INDEX procedural_agent_success_idx ON procedural_memory (agent_id, success_count DESC);"
+    ],
+    "knowledge_vault": [
+      "CREATE TABLE knowledge_vault (",
+      "  id          UUID         PRIMARY KEY DEFAULT gen_random_uuid(),",
+      "  agent_id    VARCHAR(64)  NOT NULL DEFAULT 'default',",
+      "  user_id     UUID         REFERENCES users(id) ON DELETE CASCADE,",
+      "  key         VARCHAR(256) NOT NULL,",
+      "  value       TEXT         NOT NULL,",
+      "  category    VARCHAR(64)  NOT NULL DEFAULT 'general',",
+      "  encrypted   BOOLEAN      NOT NULL DEFAULT FALSE,",
+      "  created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),",
+      "  expires_at  TIMESTAMPTZ,",
+      "  metadata    JSONB        NOT NULL DEFAULT '{}'",
+      ");",
+      "CREATE UNIQUE INDEX knowledge_vault_agent_key_uidx ON knowledge_vault (agent_id, key);",
+      "CREATE INDEX knowledge_vault_user_category_idx ON knowledge_vault (user_id, category);",
+      "CREATE INDEX knowledge_vault_expiry_idx ON knowledge_vault (expires_at) WHERE expires_at IS NOT NULL;"
+    ],
+    "key_queries": {
+      "hybrid_rag_search": "WITH vector_hits AS (SELECT id, ROW_NUMBER() OVER (ORDER BY embedding <=> $1::vector) AS rank FROM rag_chunks WHERE status = 'active' ORDER BY embedding <=> $1::vector LIMIT 30), fts_hits AS (SELECT id, ROW_NUMBER() OVER (ORDER BY ts_rank_cd(search_vector, q)) AS rank FROM rag_chunks, plainto_tsquery('english', $2) q WHERE status = 'active' AND search_vector @@ q LIMIT 30), rrf AS (SELECT COALESCE(v.id, f.id) AS id, COALESCE(1.0/(60+v.rank),0) + COALESCE(1.0/(60+f.rank),0) AS score FROM vector_hits v FULL OUTER JOIN fts_hits f ON v.id = f.id) SELECT c.id, c.content, c.metadata, r.score FROM rrf r JOIN rag_chunks c ON c.id = r.id ORDER BY r.score DESC LIMIT $3",
+      "retrieve_active_memory": "SELECT id, content, 1 - (embedding <=> $1::vector) AS relevance, importance_score, EXTRACT(EPOCH FROM (NOW() - last_accessed_at))/86400 AS days_ago FROM semantic_memory WHERE user_id = $2 AND agent_id = $3 AND status = 'active' AND embedding IS NOT NULL ORDER BY (0.4 * (1 - (embedding <=> $1::vector))) + (0.3 * importance_score) + (0.3 * EXP(-EXTRACT(EPOCH FROM (NOW() - last_accessed_at))/2592000)) DESC LIMIT $4",
+      "upsert_chunk": "INSERT INTO rag_chunks (document_id, content, token_count, chunk_index, start_char, end_char, embedding, embedding_model, metadata) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT (document_id, chunk_index) DO UPDATE SET content=EXCLUDED.content, token_count=EXCLUDED.token_count, embedding=EXCLUDED.embedding, status='active', metadata=EXCLUDED.metadata",
+      "supersede_old_chunks": "UPDATE rag_chunks SET status = 'superseded' WHERE document_id = $1 AND status = 'active' AND chunk_index NOT IN (SELECT unnest($2::int[]))",
+      "consolidation_candidates": "SELECT * FROM episodic_memory WHERE consolidated = FALSE AND user_id = $1 AND agent_id = $2 AND status = 'active' ORDER BY created_at ASC LIMIT 100",
+      "mark_consolidated": "UPDATE episodic_memory SET consolidated = TRUE WHERE id = ANY($1::uuid[])",
+      "expire_knowledge_vault": "DELETE FROM knowledge_vault WHERE expires_at IS NOT NULL AND expires_at < NOW()"
+    }
+  },
+  "rls_policies": {
+    "description": "Row-Level Security for multi-user, multi-agent memory isolation",
+    "ddl": [
+      "ALTER TABLE rag_chunks ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE episodic_memory ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE semantic_memory ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE procedural_memory ENABLE ROW LEVEL SECURITY;",
+      "ALTER TABLE knowledge_vault ENABLE ROW LEVEL SECURITY;",
+      "",
+      "-- RAG reader: SELECT active chunks only",
+      "CREATE POLICY rag_reader_policy ON rag_chunks FOR SELECT TO rag_reader USING (status = 'active');",
+      "",
+      "-- Memory isolation: users see only their own memories",
+      "CREATE POLICY episodic_user_isolation ON episodic_memory",
+      "  FOR ALL TO app_readwrite",
+      "  USING (user_id = current_setting('app.current_user_id')::UUID);",
+      "",
+      "CREATE POLICY semantic_user_isolation ON semantic_memory",
+      "  FOR ALL TO app_readwrite",
+      "  USING (user_id = current_setting('app.current_user_id')::UUID);",
+      "",
+      "CREATE POLICY knowledge_vault_user_isolation ON knowledge_vault",
+      "  FOR ALL TO app_readwrite",
+      "  USING (user_id = current_setting('app.current_user_id')::UUID);",
+      "",
+      "-- Agent system role: can read all memories for consolidation jobs",
+      "CREATE POLICY episodic_agent_system ON episodic_memory FOR ALL TO agent_system USING (TRUE);",
+      "CREATE POLICY semantic_agent_system ON semantic_memory FOR ALL TO agent_system USING (TRUE);"
+    ]
+  },
+  "maintenance_jobs": {
+    "description": "pg_cron or external scheduler jobs for memory lifecycle",
+    "jobs": [
+      {
+        "name": "expire_knowledge_vault",
+        "schedule": "0 * * * *",
+        "sql": "DELETE FROM knowledge_vault WHERE expires_at IS NOT NULL AND expires_at < NOW()"
+      },
+      {
+        "name": "archive_stale_episodic",
+        "schedule": "0 3 * * *",
+        "sql": "UPDATE episodic_memory SET status = 'archived' WHERE consolidated = TRUE AND status = 'active' AND importance_score < 0.3 AND last_accessed_at < NOW() - INTERVAL '30 days'"
+      },
+      {
+        "name": "archive_low_confidence_semantic",
+        "schedule": "0 4 * * 0",
+        "sql": "UPDATE semantic_memory SET status = 'superseded' WHERE confidence_score < 0.25 AND status = 'active' AND last_confirmed_at < NOW() - INTERVAL '90 days'"
+      },
+      {
+        "name": "rebuild_hnsw_index",
+        "schedule": "0 2 * * 0",
+        "sql": "REINDEX INDEX CONCURRENTLY rag_chunks_embedding_hnsw"
+      },
+      {
+        "name": "vacuum_chunk_tables",
+        "schedule": "0 1 * * *",
+        "sql": "VACUUM (ANALYZE) rag_chunks, episodic_memory, semantic_memory"
+      }
+    ]
+  },
+  "jq_usage_guide": {
+    "examples": [
+      {
+        "query": ".knowledge_layers.layer_4_hybrid_search.truth_lens[] | select(.concept==\"rrf_algorithm\") | .truths[]",
+        "returns": "All RRF algorithm truths including k=60 formula"
+      },
+      {
+        "query": ".knowledge_layers.layer_3_pgvector_indexing.truth_lens[] | select(.concept==\"hnsw_parameters\") | .truths[]",
+        "returns": "All HNSW tuning parameter truths"
+      },
+      {
+        "query": ".postgresql_schema.key_queries.hybrid_rag_search",
+        "returns": "Complete hybrid search SQL with RRF"
+      },
+      {
+        "query": ".postgresql_schema.key_queries.retrieve_active_memory",
+        "returns": "Memory retrieval with recency+importance+relevance scoring"
+      },
+      {
+        "query": ".postgresql_schema.rag_chunks[]",
+        "returns": "Chunk table DDL line by line"
+      },
+      {
+        "query": ".postgresql_schema.episodic_memory[]",
+        "returns": "Episodic memory DDL"
+      },
+      {
+        "query": ".knowledge_layers.layer_6_memory_taxonomy.truth_lens[] | select(.concept==\"memory_retrieval_scoring\") | .truths[]",
+        "returns": "Recency × importance × relevance scoring formula"
+      },
+      {
+        "query": ".knowledge_layers.layer_6_memory_taxonomy.truth_lens[] | select(.concept==\"episodic_to_semantic_consolidation\") | .truths[]",
+        "returns": "Consolidation pipeline truths"
+      },
+      {
+        "query": ".knowledge_layers.layer_10_anti_patterns.truth_lens[].truths[]",
+        "returns": "All anti-patterns across vector, RAG, and memory systems"
+      },
+      {
+        "query": ".knowledge_layers.layer_1_chunking.truth_lens[] | select(.concept==\"strategy_decision_matrix\") | .truths[]",
+        "returns": "All chunking strategies with benchmark data"
+      },
+      {
+        "query": ".maintenance_jobs.jobs[] | .name + \": \" + .schedule",
+        "returns": "All maintenance job names and schedules"
+      },
+      {
+        "query": ".core_principles[]",
+        "returns": "All 10 core principles"
+      }
+    ]
+  },
+  "meta": {
+    "version": "1.0.0",
+    "research_sources": [
+      "pgvector/pgvector GitHub (v0.8, HNSW/IVFFlat tuning parameters)",
+      "AWS: Optimize pgvector indexing — IVFFlat and HNSW techniques (2024)",
+      "Google Cloud: Faster similarity search with pgvector HNSW indexes (2023)",
+      "ParadeDB: Hybrid Search in PostgreSQL — BM25 + pgvector + RRF (2025)",
+      "TigerData: pg_textsearch BM25 for PostgreSQL (2025)",
+      "dev.to/lpossamai: Hybrid Search RAG 62% → 84% with RRF (2026)",
+      "Firecrawl: Best Chunking Strategies for RAG in 2025 — 7 strategies benchmarked",
+      "Weaviate: Chunking Strategies for RAG (2025)",
+      "Vectra benchmark: 7 strategies across 50 academic papers (Feb 2026)",
+      "MIRIX: Multi-Component Memory Architecture (Wang et al., Jul 2025, arXiv:2507.07957)",
+      "A-MEM: Agentic Memory — Zettelkasten-inspired (Xu et al., May 2025, arXiv:2502.12110)",
+      "SimpleMem: Efficient Lifelong Memory (2026, arXiv:2601.02553)",
+      "Generative Agents: recency × importance × relevance memory scoring (Park et al., 2023)",
+      "ICLR 2026 Workshop: MemAgents — Memory for LLM-Based Agentic Systems",
+      "Memory in LLM-based Multi-Agent Systems survey (TechRxiv 2025)",
+      "Position paper: Episodic Memory is the Missing Piece for Long-Term LLM Agents (arXiv:2502.06975)"
+    ],
+    "compatible_with": [
+      "PostgreSQL 15+ (CloudNativePG)",
+      "pgvector 0.8+",
+      "Embedding models: text-embedding-3-small (1536-dim), nomic-embed-text (768-dim), all-MiniLM-L6-v2 (384-dim)",
+      "Next.js 16 App Router Server Actions",
+      "React 19",
+      "LM Studio (local inference)",
+      "Ollama (local inference)",
+      "Anthropic Claude API, OpenAI API"
+    ],
+    "schema": "truth_lens nested array per layer; each layer has concept groups with truths[]; SQL in postgresql_schema block",
+    "jq_root": ".",
+    "maintainer_notes": "The hybrid_rag_search query and the memory retrieval scoring formula are the two most critical operational artifacts. The episodic→semantic consolidation pipeline is the single most impactful architectural decision for long-running agent systems — without it, agent quality self-degrades. Chunking quality sets the hard ceiling on retrieval precision; always benchmark before switching strategies."
+  }
+}

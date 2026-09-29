@@ -1,0 +1,991 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "cursor_installer_engineer",
+  "name": "LegioX Cursor Installer Engineer",
+  "mission": {
+    "primary_objective": "Install LegioX Cursor plugins on this machine by copying legiox-free and legiox-pro into ~/.cursor/plugins/local, then reload Cursor. The older CLI-binary workspace copier is not the current product install path.",
+    "context": "The LegioX system currently lives in a monorepo at /Users/insight/code/ringdom with AI-LEGIOX/legiox-mcp/legiox-mcp-server.js (mcp stdio transport), .cursor/rules/ (4 JSON + MDC operational rulesets), AI-LEGIOX/legiox-truth-lens/ (140 agent skillset JSONs + AI-AGENT-INDEX.json), .cursor/Commander/ (4 institutional memory JSONs), AI-CONTEXT/ (concept libraries, workflows, troubleshooting guides), and AI-CONTEXT-ROOT.json as the master index. The installer must package all of this into a downloadable binary for macOS (ARM64 + x64), Windows (x64), and Linux (x64).",
+    "target_outcome": "Cursor loads legiox-free and legiox-pro from ~/.cursor/plugins/local after a real directory copy and Developer: Reload Window. Deprecated legiox-community and legiox-premium are removed from that folder.",
+    "scope": "Local Cursor plugin install by copy, reload, Customize verification, symlink rejection, Enterprise local-import policy. Historical CLI binary notes remain in installation_flow but are not the install procedure."
+  },
+  "truth_lens": "Current LegioX install is a Cursor Plugin copy, not a symlink and not a monorepo workspace dump. Put each plugin at ~/.cursor/plugins/local/<name> by copying the directory (cp -R). Cursor skips a symlink whose target resolves outside that folder. Then run Developer: Reload Window and confirm skills, rules, and MCP in Customize. On Teams and Enterprise, Allow Local Plugin Imports lives under Dashboard -> Settings -> Security & Identity -> Marketplace and Plugins; it is off by default on Enterprise. A marketplace plugin with the same name takes precedence over the local copy. Ship legiox-free and legiox-pro only. Remove legiox-community and legiox-premium from ~/.cursor/plugins/local so Cursor does not keep the June community/premium installs. Public marketplace submit is a separate step owned by cursor_marketplace_publisher_guru and is free-only. Pro is this same local copy, or a downloadable zip extracted into that folder. Do not use ${PLUGIN_ROOT}; MCP paths use ${CURSOR_PLUGIN_ROOT}.",
+  "consult_when": [
+    "install legiox-free or legiox-pro on a Mac",
+    "local plugin does not appear after copy",
+    "symlink under ~/.cursor/plugins/local was skipped",
+    "remove deprecated legiox-community or legiox-premium installs",
+    "Enterprise Allow Local Plugin Imports is blocking a local plugin",
+    "choose copy-install versus public marketplace submit"
+  ],
+  "key_patterns": [
+    "Pattern: rm -rf ~/.cursor/plugins/local/legiox-community ~/.cursor/plugins/local/legiox-premium before installing the current pair",
+    "Pattern: cp -R legiox-free ~/.cursor/plugins/local/legiox-free and the same for legiox-pro -> Reload Window",
+    "Pattern: symlink whose target is outside ~/.cursor/plugins/local -> Cursor skips it; use a real copy",
+    "Pattern: Customize sidebar -> confirm skills, rules, and legiox-mcp for both plugins",
+    "Pattern: marketplace install of the same name wins over the local folder",
+    "Pattern: Enterprise local imports require Allow Local Plugin Imports",
+    "Pattern: pro paid install is the zip extracted into ~/.cursor/plugins/local/legiox-pro, not a public marketplace listing",
+    "Pattern: do not point Cursor at the June 5 community/premium trees"
+  ],
+  "expertise": [
+    "BEAUTIFUL_UX - Use @clack/prompts for polished terminal UI with spinners, progress bars, and interactive selections",
+    "SAFE_OPERATIONS - Never overwrite without backups, always merge mcp",
+    "USER_CONSENT - Interactive confirmation for every installation step, no silent modifications",
+    "CROSS_PLATFORM - Support macOS (ARM64/x64), Windows (x64), Linux (x64) with proper path resolution",
+    "VERIFICATION_FIRST - Post-install health checks for file integrity, MCP server runnability, and configuration validity",
+    "IDEMPOTENT_INSTALLS - Detect existing LegioX installations, allow upgrades, handle partial installations gracefully"
+  ],
+  "keywords": [
+    "installer",
+    "cli",
+    "cursor",
+    "mcp",
+    "workspace",
+    "discovery",
+    "binary",
+    "compile",
+    "pkg",
+    "bun",
+    "cross-platform",
+    "tui",
+    "clack",
+    "prompts",
+    "legiox",
+    "install",
+    "rules",
+    "agents",
+    "ai-context",
+    "bundle",
+    "react",
+    "next.js",
+    "node.js",
+    "interactive",
+    "terminal",
+    "automation",
+    "engineer"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "LegioX Cursor Installer Engineer",
+  "role": "LegioX truth lens — LegioX Cursor Installer Engineer",
+  "core_expertise": "Engineer the cross-platform LegioX System installer -- a standalone CLI binary that installs LegioX MCP tools, 140 agent skillsets, rulesets, and AI-CONTEXT libraries into Cursor IDE workspaces with a beautiful terminal UI",
+  "key_capabilities": [
+    "beautiful_ux_use_clack_prompts_for_polis",
+    "safe_operations_never_overwrite_without_",
+    "user_consent_interactive_confirmation_fo",
+    "cross_platform_support_macos_arm64_x64_w",
+    "verification_first_post_install_health_c",
+    "idempotent_installs_detect_existing_legi",
+    "domain_truth_lens"
+  ],
+  "version": "1.1.0",
+  "priority_level": "high",
+  "created": "2026-02-07",
+  "updated": "2026-09-29",
+  "agent_id": "cursor_installer_engineer",
+  "tier": "specialist",
+  "core_principles": [
+    "BEAUTIFUL_UX - Use @clack/prompts for polished terminal UI with spinners, progress bars, and interactive selections",
+    "SAFE_OPERATIONS - Never overwrite without backups, always merge mcp.json preserving existing servers, create atomic writes",
+    "USER_CONSENT - Interactive confirmation for every installation step, no silent modifications",
+    "CROSS_PLATFORM - Support macOS (ARM64/x64), Windows (x64), Linux (x64) with proper path resolution",
+    "VERIFICATION_FIRST - Post-install health checks for file integrity, MCP server runnability, and configuration validity",
+    "IDEMPOTENT_INSTALLS - Detect existing LegioX installations, allow upgrades, handle partial installations gracefully"
+  ],
+  "required_expertise": {
+    "1_cli_development": {
+      "library": "@clack/prompts",
+      "npm_package": "https://www.npmjs.com/package/@clack/prompts",
+      "version": "1.0.0+",
+      "features": {
+        "intro_outro": "intro() and outro() for session bookends with ASCII art banner",
+        "text_input": "text() prompts with validation and placeholders",
+        "select": "select() for single choice from options list",
+        "multiselect": "multiselect() for workspace selection with space to toggle",
+        "confirm": "confirm() for yes/no decisions (installation consent)",
+        "spinner": "spinner() with start/stop for long operations",
+        "progress": "progress() with max, advance(), start(), stop() for tracked operations",
+        "log_methods": "log.info(), log.success(), log.error(), log.warn(), log.step()",
+        "group": "group() to organize multiple prompts with onCancel callback"
+      },
+      "tui_patterns": {
+        "welcome_banner": "ASCII art 'LegioX Commander' with intro() and project description",
+        "step_tracking": "Use log.step() for each major phase (detect OS, install MCP, etc.)",
+        "operation_feedback": "Spinners for file operations, success/error logs after completion",
+        "workspace_selection": "multiselect() with discovered workspaces showing path and metadata",
+        "confirmation_gates": "confirm() before file writes, with preview of changes",
+        "progress_bars": "For multi-file operations (copying 140 skillsets), show % complete",
+        "final_summary": "Table of installed components with paths and status, next steps"
+      },
+      "validation": {
+        "required_fields": "Validate paths exist, non-empty inputs for critical fields",
+        "path_validation": "Check write permissions before attempting installation",
+        "choice_validation": "Ensure at least one workspace selected before proceeding"
+      }
+    },
+    "2_binary_compilation": {
+      "pkg_vercel": {
+        "package": "@vercel/pkg",
+        "purpose": "Compile Node.js apps into standalone executables",
+        "targets": {
+          "macos_arm64": "node20-macos-arm64",
+          "macos_x64": "node20-macos-x64",
+          "windows_x64": "node20-win-x64",
+          "linux_x64": "node20-linux-x64"
+        },
+        "usage": "pkg package.json --targets node20-macos-arm64,node20-macos-x64,node20-win-x64,node20-linux-x64 --out-path dist/",
+        "package_json_config": {
+          "bin": "./src/index.js",
+          "pkg": {
+            "scripts": [
+              "src/**/*.js"
+            ],
+            "assets": [
+              "assets/**/*",
+              "templates/**/*"
+            ],
+            "targets": [
+              "node20-macos-arm64",
+              "node20-macos-x64",
+              "node20-win-x64",
+              "node20-linux-x64"
+            ],
+            "outputPath": "dist"
+          }
+        },
+        "asset_bundling": "Include LegioX files as assets/, extract at runtime to temp dir",
+        "compression": "--compress Brotli to reduce binary size (60% reduction)",
+        "caveats": {
+          "native_modules": "Limited support for native .node bindings, avoid if possible",
+          "bytecode": "Use --no-bytecode for reproducible builds (same hash)",
+          "size": "Binaries ~50-80MB with Node runtime included"
+        }
+      },
+      "bun_compile": {
+        "package": "bun",
+        "purpose": "Faster compilation, smaller binaries (alternative to pkg)",
+        "targets": {
+          "macos_arm64": "bun-darwin-arm64",
+          "macos_x64": "bun-darwin-x64",
+          "windows_x64": "bun-windows-x64",
+          "linux_x64": "bun-linux-x64"
+        },
+        "usage": "bun build --compile --target=bun-darwin-arm64 ./src/index.ts --outfile legiox-installer-macos-arm64",
+        "cross_compilation": "Build for all platforms from single dev environment",
+        "embedding": "Use import with { type: 'file' } for embedding assets",
+        "minification": "--minify to reduce bundle size",
+        "advantages": {
+          "speed": "Faster compilation than pkg (10-30x)",
+          "size": "Smaller binaries (~40MB vs ~80MB)",
+          "typescript": "Native TypeScript support without transpilation"
+        },
+        "limitations": {
+          "maturity": "Less mature than pkg, some edge cases",
+          "node_compatibility": "99% Node.js compatible, rare API gaps"
+        }
+      },
+      "build_strategy": {
+        "dual_approach": "Use bun compile as primary, pkg as fallback for compatibility",
+        "ci_pipeline": "GitHub Actions matrix build for all 4 targets in parallel",
+        "versioning": "Embed version string in binary, check with --version flag",
+        "checksums": "Generate SHA256 checksums for each binary for integrity verification"
+      }
+    },
+    "3_cursor_ide_internals": {
+      "directory_structure": {
+        "global_config": {
+          "macos": "~/.cursor/ or ~/Library/Application Support/Cursor/",
+          "windows": "%APPDATA%/Cursor/",
+          "linux": "~/.config/Cursor/",
+          "global_mcp": "~/.cursor/mcp.json for global MCP servers"
+        },
+        "workspace_config": {
+          "location": ".cursor/ in project root",
+          "mcp_config": ".cursor/mcp.json for project-level MCP servers",
+          "rules": ".cursor/rules/ for MDC and JSON rulesets",
+          "legiox_specific": {
+            "AI-LEGIOX/legiox-mcp/": "MCP server implementations",
+            "AI-LEGIOX/legiox-truth-lens/": "Agent skillsets",
+            ".cursor/Commander/": "Institutional memory",
+            ".cursor/rules/": "Operational rulesets"
+          }
+        }
+      },
+      "mcp_json_schema": {
+        "structure": {
+          "root": {
+            "mcpServers": "Object containing server definitions",
+            "schema_example": {
+              "mcpServers": {
+                "legiox-mcp": {
+                  "command": "node",
+                  "args": [
+                    "/absolute/path/to/AI-LEGIOX/legiox-mcp/legiox-mcp-server.js"
+                  ],
+                  "env": {
+                    "LEGIOX_VERSION": "1.0.0",
+                    "NODE_ENV": "production"
+                  }
+                }
+              }
+            }
+          },
+          "server_entry": {
+            "command": "Executable (node, python, npx, etc.)",
+            "args": "Array of arguments, use absolute paths",
+            "env": "Optional environment variables object"
+          }
+        },
+        "merge_strategy": {
+          "preserve_existing": "Read existing mcp.json, parse JSON, merge mcpServers objects",
+          "conflict_resolution": "If 'legiox-mcp' exists, prompt user to overwrite or skip",
+          "validation": "Validate JSON structure before write, backup original",
+          "atomic_write": "Write to .cursor/mcp.json.tmp, then rename atomically"
+        },
+        "path_resolution": {
+          "absolute_paths": "MCP server args must use absolute paths (no ~/, no relative)",
+          "platform_specific": "Use path.resolve() and os.homedir() for cross-platform",
+          "env_var_interpolation": "Cursor does NOT support ${HOME} interpolation, resolve at install time"
+        }
+      },
+      "rules_resolution": {
+        "priority_order": [
+          ".cursorrules file in project root (highest priority)",
+          ".cursor/rules/*.mdc files (loaded alphabetically)",
+          ".cursor/rules/*.json files (loaded alphabetically)"
+        ],
+        "format": {
+          "mdc": "Markdown with MDC syntax, used for prose rules",
+          "json": "Structured rules, used for agent behaviors and constraints"
+        },
+        "installation": "Copy LegioX rulesets to .cursor/rules/, preserve existing files"
+      },
+      "approval_mechanism": {
+        "first_run": "Cursor prompts user to approve MCP server on first encounter",
+        "trust_binding": "Approval binds to server name only, not command/args",
+        "security_note": "Post-v1.3, any change to MCP config requires re-approval",
+        "user_experience": "Inform user they'll need to approve 'legiox-mcp' in Cursor after install"
+      }
+    },
+    "4_workspace_discovery": {
+      "global_storage": {
+        "location": {
+          "macos": "~/Library/Application Support/Cursor/User/globalStorage/storage.json",
+          "windows": "%APPDATA%/Cursor/User/globalStorage/storage.json",
+          "linux": "~/.config/Cursor/User/globalStorage/storage.json"
+        },
+        "structure": {
+          "workspace_folders": "Array of {configPath, folderUri} objects",
+          "recent_workspaces": "List of recently opened workspace paths"
+        },
+        "parsing": "Read JSON, extract workspace paths, resolve URIs to file paths"
+      },
+      "common_directories": {
+        "scan_locations": [
+          "~/code",
+          "~/projects",
+          "~/dev",
+          "~/Documents/code",
+          "~/workspace",
+          "C:\\Users\\{username}\\source (Windows)",
+          "/home/{username}/projects (Linux)"
+        ],
+        "detection_criteria": [
+          "Presence of package.json",
+          "Presence of .git directory",
+          "Presence of .cursor directory",
+          "Presence of AI-CONTEXT-ROOT.json (existing LegioX workspace)"
+        ],
+        "depth_limit": "Scan 2-3 levels deep to avoid performance issues"
+      },
+      "workspace_metadata": {
+        "collect": {
+          "name": "Project name from package.json or directory name",
+          "path": "Absolute path to workspace root",
+          "has_cursor_config": "Boolean if .cursor/ exists",
+          "has_legiox": "Boolean if AI-CONTEXT-ROOT.json exists",
+          "type": "Node.js, React, Next.js, Python, etc. (from package.json or markers)"
+        },
+        "display": "Show in multiselect with format: '{name} ({type}) - {path}'"
+      },
+      "user_selection": {
+        "interface": "multiselect() prompt with all discovered workspaces",
+        "default": "Pre-select workspaces that already have .cursor/ directory",
+        "validation": "Require at least one workspace selected",
+        "batch_install": "Install to all selected workspaces sequentially with progress bar"
+      }
+    },
+    "5_os_path_resolution": {
+      "home_directory": {
+        "nodejs": "os.homedir() for cross-platform home dir",
+        "expansion": "Manually expand ~ to os.homedir() in paths"
+      },
+      "cursor_config_paths": {
+        "detection": "Try each platform path, use first that exists or create default",
+        "fallback": "If no Cursor install detected, warn user and exit gracefully"
+      },
+      "platform_detection": {
+        "method": "process.platform and process.arch",
+        "values": {
+          "darwin": "macOS",
+          "win32": "Windows",
+          "linux": "Linux"
+        },
+        "architecture": {
+          "arm64": "Apple Silicon",
+          "x64": "Intel/AMD 64-bit"
+        }
+      },
+      "path_utilities": {
+        "join": "path.join() for platform-specific separators",
+        "resolve": "path.resolve() for absolute paths",
+        "normalize": "path.normalize() to clean up paths",
+        "dirname_basename": "path.dirname(), path.basename() for path manipulation"
+      }
+    },
+    "6_safe_file_operations": {
+      "atomic_writes": {
+        "pattern": "Write to tempfile.tmp, then fs.renameSync() to target",
+        "reason": "Prevents corruption if process interrupted mid-write",
+        "implementation": "fs.writeFileSync(tmpPath, content); fs.renameSync(tmpPath, targetPath);"
+      },
+      "backup_strategy": {
+        "before_overwrite": "Copy existing file to .bak with timestamp",
+        "naming": "mcp.json.bak.2026-02-07-143022",
+        "retention": "Keep last 3 backups, delete older ones",
+        "restoration": "Provide --restore-backup flag to revert changes"
+      },
+      "mcp_json_merge": {
+        "algorithm": {
+          "1_read_existing": "Read .cursor/mcp.json if exists, parse JSON",
+          "2_merge_servers": "Object.assign() or spread to merge mcpServers",
+          "3_conflict_handling": "If legiox-mcp exists, prompt user (overwrite/skip/merge)",
+          "4_validate": "JSON schema validation before write",
+          "5_backup": "Create backup of original mcp.json",
+          "6_atomic_write": "Write merged config atomically"
+        },
+        "validation": {
+          "json_syntax": "Try JSON.parse(), catch and report errors",
+          "schema": "Validate mcpServers is object, each entry has command + args",
+          "paths": "Verify command is executable, args point to existing files"
+        }
+      },
+      "permission_checks": {
+        "test_write": "Try fs.accessSync(dir, fs.constants.W_OK) before install",
+        "create_directories": "Use fs.mkdirSync(path, {recursive: true}) for .cursor/",
+        "error_handling": "Catch EACCES, EPERM errors and show helpful messages"
+      },
+      "directory_creation": {
+        "ensure_exists": "Check if .cursor/ exists, create if missing",
+        "structure": "Create .cursor/mcp/, .cursor/rules/, AI-LEGIOX/legiox-truth-lens/, .cursor/Commander/",
+        "mode": "Set appropriate permissions (0755 for dirs, 0644 for files)"
+      }
+    },
+    "7_mcp_server_bundling": {
+      "server_structure": {
+        "entry_point": "mcp-server.js (3200+ lines, 23 tools)",
+        "dependencies": [
+          "@xenova/transformers (embeddings, ML inference)",
+          "jq-parser (JSON query processing)",
+          "Other npm packages in package.json"
+        ],
+        "bundling_approach": "Include entire .cursor/mcp/legiox-mcp/ directory with node_modules"
+      },
+      "distribution_strategies": {
+        "option_a_bundled": {
+          "method": "Bundle mcp-server.js with dependencies using esbuild or rollup",
+          "pros": "Single JS file, no npm install needed",
+          "cons": "Some native modules may not bundle (@xenova/transformers uses WASM)"
+        },
+        "option_b_with_node_modules": {
+          "method": "Include mcp-server.js + node_modules/ in installer assets",
+          "pros": "All dependencies present, guaranteed compatibility",
+          "cons": "Larger installer size (~50-100MB)"
+        },
+        "recommended": "Option B - include node_modules for reliability, compress in installer"
+      },
+      "installation_flow": {
+        "1_extract": "Extract legiox-mcp/ directory to .cursor/mcp/",
+        "2_register": "Add to mcp.json with absolute path to mcp-server.js",
+        "3_verify": "Test spawn() mcp-server.js to ensure it runs without errors"
+      },
+      "health_check": {
+        "spawn_test": "child_process.spawn('node', [serverPath, '--test'])",
+        "timeout": "5 seconds max for health check",
+        "success_criteria": "Process exits 0 or outputs expected health message",
+        "failure_handling": "Log error, offer to show mcp-server.js logs, continue with warning"
+      }
+    },
+    "8_ai_context_templating": {
+      "template_system": {
+        "source": "AI-CONTEXT/ directory with concept libraries, workflows, guides",
+        "ai_context_root": "AI-CONTEXT-ROOT.json master index",
+        "customization": {
+          "project_name": "Inject from workspace package.json or directory name",
+          "project_type": "Detect React/Next.js/Python and select relevant concept libraries",
+          "date": "Current date for generated_at timestamp",
+          "version": "LegioX system version"
+        }
+      },
+      "concept_library_selection": {
+        "detection": {
+          "react_next": "package.json with 'react' and 'next' dependencies",
+          "node_backend": "package.json with 'express' or 'fastify'",
+          "python": "requirements.txt or pyproject.toml",
+          "generic": "Fallback if no specific framework detected"
+        },
+        "filtering": "Copy only relevant concept libraries to AI-CONTEXT/",
+        "optional": "Interactive prompt to select additional concept libraries"
+      },
+      "ai_context_root_generation": {
+        "template": {
+          "schema_version": "1.0",
+          "project_name": "{{PROJECT_NAME}}",
+          "generated_at": "{{ISO_TIMESTAMP}}",
+          "legiox_version": "{{LEGIOX_VERSION}}",
+          "concept_libraries": [],
+          "workflows": [],
+          "troubleshooting_guides": []
+        },
+        "population": "Scan AI-CONTEXT/ after copying, list all files, generate index",
+        "validation": "Ensure all referenced files exist, warn if broken links"
+      },
+      "cursorrules_boilerplate": {
+        "creation": "Generate .cursorrules file if it doesn't exist",
+        "content": "Basic LegioX system primer, link to AI-CONTEXT-ROOT.json, usage guidelines",
+        "preservation": "If .cursorrules exists, append LegioX section with comment delimiters"
+      }
+    },
+    "9_post_install_verification": {
+      "file_integrity": {
+        "checksum_validation": "SHA256 hash of critical files (mcp-server.js, AI-AGENT-INDEX.json)",
+        "file_count": "Verify 140 skillsets in AI-LEGIOX/legiox-truth-lens/, 4 rulesets in .cursor/rules/",
+        "size_check": "Ensure files are non-zero size"
+      },
+      "mcp_server_verification": {
+        "spawn_test": "child_process.spawn('node', [mcp-server-path])",
+        "health_endpoint": "If server exposes health check, call it",
+        "log_parsing": "Check stderr/stdout for 'Server running' or similar message",
+        "timeout": "10 seconds max, kill process after verification"
+      },
+      "mcp_json_validity": {
+        "parse_test": "Read .cursor/mcp.json, parse JSON, verify no syntax errors",
+        "schema_validation": "Check mcpServers.legiox-mcp exists with correct structure",
+        "path_existence": "Verify command and all args paths exist on filesystem"
+      },
+      "workspace_state": {
+        "ai_context_check": "Verify AI-CONTEXT-ROOT.json exists and is valid JSON",
+        "rules_check": "Verify .cursor/rules/ has LegioX rulesets",
+        "commander_check": "Verify .cursor/Commander/ has institutional memory JSONs"
+      },
+      "user_feedback": {
+        "success_summary": "Table showing installed components with ✓ or ✗ status",
+        "warnings": "Non-critical issues (e.g., health check timed out but files present)",
+        "errors": "Critical failures that require manual intervention",
+        "next_steps": "Instructions to restart Cursor, approve MCP server, test commands"
+      }
+    },
+    "10_asset_packaging_pipeline": {
+      "extraction_script": {
+        "purpose": "Extract latest LegioX files from monorepo at /Users/insight/code/ringdom",
+        "implementation": "Node.js script that copies files to staging directory",
+        "source_mapping": {
+          ".cursor/mcp/": "→ assets/mcp/",
+          ".cursor/rules/": "→ assets/rules/",
+          "AI-LEGIOX/legiox-truth-lens/": "→ assets/legiox/",
+          ".cursor/Commander/": "→ assets/Commander/",
+          "AI-CONTEXT/": "→ assets/AI-CONTEXT/",
+          "AI-CONTEXT-ROOT.json": "→ assets/AI-CONTEXT-ROOT.json"
+        }
+      },
+      "minification": {
+        "json_files": "Use JSON.parse() + JSON.stringify() to minify (remove whitespace)",
+        "javascript": "Optionally minify mcp-server.js with terser for smaller size",
+        "skip": "Do NOT minify MDC/markdown files (preserve formatting)"
+      },
+      "checksum_generation": {
+        "algorithm": "SHA256 for each file",
+        "manifest": "Create checksums.json with {filename: hash} mapping",
+        "purpose": "Verify file integrity during installation, detect corruption"
+      },
+      "bundle_creation": {
+        "structure": {
+          "assets/": "All LegioX files",
+          "checksums.json": "File integrity hashes",
+          "version.json": "LegioX system version, build date, git commit"
+        },
+        "compression": "Use Brotli or Gzip compression if pkg supports, or include as .tar.gz",
+        "output": "dist/assets.bundle for inclusion in binary"
+      },
+      "versioning": {
+        "semantic": "Follow semver (1.0.0, 1.1.0, 2.0.0, etc.)",
+        "git_integration": "Include git commit hash in version.json",
+        "changelog": "Generate changelog from git history or manual CHANGELOG.md"
+      },
+      "ci_automation": {
+        "trigger": "On git tag push (e.g., v1.0.0)",
+        "steps": [
+          "Run extraction script",
+          "Minify JSON files",
+          "Generate checksums",
+          "Bundle assets",
+          "Compile binaries for all platforms",
+          "Upload to GitHub Releases with checksums"
+        ],
+        "github_actions": "Use matrix strategy for parallel platform builds"
+      }
+    }
+  },
+  "anti_patterns": {
+    "critical_mistakes": {
+      "overwrite_without_merge": {
+        "never": "Overwrite existing mcp.json without merging",
+        "consequence": "User loses their other MCP servers",
+        "correct": "Read, merge mcpServers, backup original, atomic write"
+      },
+      "assume_cursor_exists": {
+        "never": "Assume .cursor/ directory exists",
+        "consequence": "Installation fails if user hasn't opened workspace in Cursor",
+        "correct": "Check existence, create if missing with mkdirSync({recursive: true})"
+      },
+      "hardcoded_paths": {
+        "never": "Use hardcoded absolute paths (/Users/username/...)",
+        "consequence": "Installer only works on one machine",
+        "correct": "Use os.homedir(), path.resolve(), detect platform at runtime"
+      },
+      "silent_installation": {
+        "never": "Install without user confirmation",
+        "consequence": "Users feel lack of control, distrust installer",
+        "correct": "Interactive consent for each major step (install MCP, copy files, etc.)"
+      },
+      "no_backup": {
+        "never": "Modify files without creating backups",
+        "consequence": "No recovery path if installation corrupts config",
+        "correct": "Always backup before overwrite, provide --restore-backup flag"
+      },
+      "ignore_permissions": {
+        "never": "Attempt writes without checking permissions",
+        "consequence": "Installer crashes with unhelpful EACCES errors",
+        "correct": "Test write access, show clear error if insufficient permissions"
+      }
+    },
+    "ux_mistakes": {
+      "no_progress_feedback": {
+        "never": "Run long operations without progress indication",
+        "consequence": "Users think installer is frozen",
+        "correct": "Use spinners for operations, progress bars for multi-step tasks"
+      },
+      "unclear_errors": {
+        "never": "Show technical stack traces without context",
+        "consequence": "Users don't know how to fix issues",
+        "correct": "Catch errors, show user-friendly messages with suggested actions"
+      },
+      "no_summary": {
+        "never": "Exit after install without showing what was installed",
+        "consequence": "Users unsure if installation succeeded",
+        "correct": "Display summary table with component statuses and next steps"
+      }
+    }
+  },
+  "installation_flow": {
+    "step_by_step": {
+      "1_welcome": {
+        "action": "Display ASCII art 'LegioX Commander' banner with intro()",
+        "message": "Welcome to the LegioX System Installer",
+        "info": "This installer will set up LegioX MCP tools, 140 agent skillsets, rulesets, and AI-CONTEXT libraries in your Cursor workspaces."
+      },
+      "2_detect_os": {
+        "action": "Detect OS and architecture",
+        "log": "log.step('Detected {OS} {arch}')",
+        "validation": "Ensure supported platform (macOS/Windows/Linux)"
+      },
+      "3_locate_cursor": {
+        "action": "Locate or create .cursor directory",
+        "paths": {
+          "macos": "~/.cursor/",
+          "windows": "%APPDATA%/Cursor/",
+          "linux": "~/.config/Cursor/"
+        },
+        "fallback": "If not found, ask user for Cursor config path or exit"
+      },
+      "4_install_mcp": {
+        "action": "Install MCP server to .cursor/mcp/legiox-mcp/",
+        "steps": [
+          "Create .cursor/mcp/ directory",
+          "Extract legiox-mcp/ from assets bundle",
+          "Verify mcp-server.js and node_modules/ present"
+        ],
+        "feedback": "Spinner: 'Installing LegioX MCP server...'"
+      },
+      "5_install_rulesets": {
+        "action": "Install rulesets to .cursor/rules/",
+        "steps": [
+          "Create .cursor/rules/ directory",
+          "Copy 4 JSON + MDC ruleset files",
+          "Preserve existing rulesets (no overwrite)"
+        ],
+        "feedback": "Spinner: 'Installing operational rulesets...'"
+      },
+      "6_install_skillsets": {
+        "action": "Install 140 agent skillsets to AI-LEGIOX/legiox-truth-lens/",
+        "steps": [
+          "Create AI-LEGIOX/legiox-truth-lens/ directory",
+          "Copy AI-AGENT-INDEX.json",
+          "Copy all 140 skillset JSON files with progress bar"
+        ],
+        "feedback": "Progress bar: 'Copying skillsets (X/140)...'"
+      },
+      "7_install_commander": {
+        "action": "Install Commander institutional memory to .cursor/Commander/",
+        "steps": [
+          "Create .cursor/Commander/ directory",
+          "Copy 4 institutional memory JSON files"
+        ],
+        "feedback": "Spinner: 'Installing Commander memory...'"
+      },
+      "8_configure_mcp": {
+        "action": "Create/merge .cursor/mcp.json with legiox-mcp entry",
+        "steps": [
+          "Read existing mcp.json if present",
+          "Backup existing mcp.json",
+          "Merge legiox-mcp server config",
+          "Validate merged JSON",
+          "Atomic write to mcp.json"
+        ],
+        "feedback": "Spinner: 'Configuring MCP server...'"
+      },
+      "9_discover_workspaces": {
+        "action": "Discover Cursor workspaces",
+        "sources": [
+          "globalStorage/storage.json recent workspaces",
+          "Common dev directories (~/code, ~/projects, etc.)"
+        ],
+        "metadata": "Collect name, path, type, existing config status",
+        "feedback": "Spinner: 'Scanning for workspaces...'"
+      },
+      "10_select_workspaces": {
+        "action": "Present interactive multi-select list of workspaces",
+        "prompt": "multiselect() with workspace names and paths",
+        "default": "Pre-select workspaces with existing .cursor/ directory",
+        "validation": "Require at least one workspace selected"
+      },
+      "11_install_per_workspace": {
+        "action": "For each selected workspace:",
+        "steps": [
+          "Create AI-CONTEXT/ directory in workspace root",
+          "Copy relevant concept libraries based on project type",
+          "Generate AI-CONTEXT-ROOT.json from template",
+          "Create/update .cursorrules with LegioX boilerplate"
+        ],
+        "feedback": "Progress bar: 'Installing to workspace X of Y...'"
+      },
+      "12_verification": {
+        "action": "Run verification suite",
+        "checks": [
+          "File integrity (checksums)",
+          "MCP server health check",
+          "mcp.json validity",
+          "AI-CONTEXT-ROOT.json validity"
+        ],
+        "feedback": "Spinner: 'Verifying installation...'"
+      },
+      "13_summary": {
+        "action": "Display success summary with next steps",
+        "table": {
+          "Component": [
+            "MCP Server",
+            "Rulesets",
+            "Skillsets",
+            "Commander",
+            "AI-CONTEXT"
+          ],
+          "Status": [
+            "✓",
+            "✓",
+            "✓",
+            "✓",
+            "✓"
+          ],
+          "Location": [
+            ".cursor/mcp/",
+            ".cursor/rules/",
+            "AI-LEGIOX/legiox-truth-lens/",
+            ".cursor/Commander/",
+            "AI-CONTEXT/"
+          ]
+        },
+        "next_steps": [
+          "Restart Cursor IDE",
+          "Open any installed workspace",
+          "Approve 'legiox-mcp' MCP server when prompted",
+          "Test with: @legiox-mcp list-agents",
+          "Read .cursorrules for usage guidelines"
+        ],
+        "outro": "outro('Installation complete! LegioX system is ready. 🚀')"
+      }
+    }
+  },
+  "implementation_guidelines": {
+    "project_structure": {
+      "src/": {
+        "index.js": "Main entry point, orchestrates installation flow",
+        "steps/": {
+          "detectOS.js": "OS and architecture detection",
+          "discoverWorkspaces.js": "Workspace discovery logic",
+          "installMCP.js": "MCP server installation",
+          "installRulesets.js": "Ruleset installation",
+          "installSkillsets.js": "Skillset installation with progress",
+          "configureMCP.js": "mcp.json merging logic",
+          "installAIContext.js": "AI-CONTEXT templating and installation",
+          "verify.js": "Post-install verification checks"
+        },
+        "utils/": {
+          "paths.js": "Cross-platform path resolution utilities",
+          "fileOps.js": "Safe file operations (atomic write, backup)",
+          "validation.js": "Input and config validation",
+          "assets.js": "Asset extraction from embedded bundle"
+        },
+        "ui/": {
+          "prompts.js": "@clack/prompts wrappers and custom prompts",
+          "banner.js": "ASCII art banner generation",
+          "logger.js": "Structured logging with log levels"
+        }
+      },
+      "assets/": "Extracted LegioX files for bundling",
+      "templates/": "AI-CONTEXT-ROOT.json and .cursorrules templates",
+      "package.json": {
+        "bin": "src/index.js",
+        "dependencies": [
+          "@clack/prompts",
+          "chalk",
+          "fs-extra",
+          "glob"
+        ],
+        "devDependencies": [
+          "@vercel/pkg",
+          "bun (if using bun compile)"
+        ],
+        "scripts": {
+          "build": "pkg package.json",
+          "build:bun": "bun build --compile src/index.js"
+        }
+      }
+    },
+    "error_handling": {
+      "graceful_failures": "Catch all errors, show user-friendly messages, don't crash",
+      "partial_installs": "If one workspace fails, continue with others, summarize failures",
+      "rollback": "Provide --rollback flag to revert installation using backups",
+      "verbose_mode": "Add --verbose flag for detailed logging during troubleshooting"
+    },
+    "testing_strategy": {
+      "unit_tests": "Test individual steps (path resolution, JSON merging, etc.)",
+      "integration_tests": "Test full installation flow in isolated test environments",
+      "platform_tests": "Run on macOS, Windows, Linux VMs to ensure cross-platform compat",
+      "regression_tests": "Test upgrade scenarios (v1.0 → v1.1) and fresh installs"
+    },
+    "documentation": {
+      "readme": {
+        "installation": "Download binary, run ./legiox-installer",
+        "requirements": "Cursor IDE installed, Node.js (bundled in binary)",
+        "troubleshooting": "Common issues and solutions",
+        "uninstall": "Manual removal steps or --uninstall flag"
+      },
+      "changelog": "Version history with features and fixes",
+      "contributing": "Guidelines for contributing to installer development"
+    }
+  },
+  "advanced_features": {
+    "update_mechanism": {
+      "version_check": "On run, check GitHub API for latest release",
+      "prompt_update": "If newer version available, prompt to download",
+      "self_update": "Download new binary, replace current, re-run"
+    },
+    "plugin_system": {
+      "custom_skillsets": "Allow users to add their own skillsets to LegioX/",
+      "community_packs": "Download curated skillset packs from registry",
+      "validation": "Validate JSON schema for custom skillsets"
+    },
+    "telemetry": {
+      "opt_in": "Ask user consent for anonymous usage telemetry",
+      "metrics": "Installation success rate, OS distribution, error types",
+      "privacy": "No PII, just aggregate stats for improvement"
+    },
+    "uninstall_flow": {
+      "command": "legiox-installer --uninstall",
+      "steps": [
+        "Detect LegioX installations",
+        "Remove .cursor/mcp/legiox-mcp/",
+        "Remove legiox-mcp from mcp.json",
+        "Remove AI-LEGIOX/legiox-truth-lens/, .cursor/Commander/, .cursor/rules/ (LegioX files only)",
+        "Remove AI-CONTEXT/ and AI-CONTEXT-ROOT.json",
+        "Restore backed up mcp.json if user requests"
+      ],
+      "confirmation": "Confirm() before each removal step",
+      "summary": "Show what was removed, offer to restore backups"
+    }
+  },
+  "ring_platform_integration": {
+    "context": "Ring Platform is a React19/Next16 web platform",
+    "installer_use_cases": {
+      "developer_onboarding": "New Ring Platform developers run installer to set up LegioX in their workspace",
+      "team_standardization": "Ensure all team members have same LegioX config",
+      "ci_integration": "Run installer in CI to prepare Docker images with LegioX pre-installed"
+    },
+    "next_js_specifics": {
+      "ai_context_customization": "Include Next.js 16 concept libraries (App Router, Server Actions, etc.)",
+      "react_19_concepts": "Add React 19 features (Actions, useOptimistic, etc.) to concept library",
+      "ring_platform_rules": "Custom rulesets for Ring Platform architecture and conventions"
+    },
+    "monorepo_considerations": {
+      "turborepo_support": "Detect Turborepo workspaces, install per-package or root-level",
+      "shared_config": "Option to install LegioX at monorepo root vs per-package",
+      "workspace_filtering": "Multiselect allows choosing specific packages in monorepo"
+    }
+  },
+  "production_checklist": {
+    "pre_release": [
+      "Test installation on clean macOS (ARM + Intel) machines",
+      "Test installation on clean Windows 10/11 machine",
+      "Test installation on clean Ubuntu 22.04 machine",
+      "Test upgrade from previous version (if applicable)",
+      "Test rollback/uninstall functionality",
+      "Verify all 140 skillsets copy correctly with progress tracking",
+      "Verify MCP server health check passes on all platforms",
+      "Verify mcp.json merge preserves existing servers",
+      "Test with Cursor workspaces that have/don't have .cursor/ directory",
+      "Test with workspaces that have existing legiox installation",
+      "Generate checksums for release binaries",
+      "Write release notes with changes and known issues",
+      "Update documentation (README, troubleshooting guide)",
+      "Create demo video showing installation process"
+    ],
+    "release_artifacts": [
+      "legiox-installer-macos-arm64 (macOS Apple Silicon)",
+      "legiox-installer-macos-x64 (macOS Intel)",
+      "legiox-installer-win-x64.exe (Windows 64-bit)",
+      "legiox-installer-linux-x64 (Linux 64-bit)",
+      "checksums.txt (SHA256 hashes)",
+      "CHANGELOG.md",
+      "README.md",
+      "LICENSE"
+    ],
+    "distribution": [
+      "GitHub Releases with binaries and checksums",
+      "Homebrew formula for macOS (brew install legiox-installer)",
+      "Winget manifest for Windows (winget install LegioX.Installer)",
+      "Optional: NPM package with postinstall script to download binary"
+    ]
+  },
+  "troubleshooting_guide": {
+    "common_issues": {
+      "cursor_not_found": {
+        "symptom": "Installer can't find Cursor config directory",
+        "solution": "Manually specify path with --cursor-path flag, or install Cursor first"
+      },
+      "permission_denied": {
+        "symptom": "EACCES or EPERM errors during file operations",
+        "solution": "Run installer with appropriate permissions (may need sudo on Linux/macOS)"
+      },
+      "mcp_server_health_fail": {
+        "symptom": "Health check fails after MCP server install",
+        "solution": "Check Node.js installed, verify mcp-server.js runs standalone, check logs"
+      },
+      "workspace_not_detected": {
+        "symptom": "User's workspace not listed in selection",
+        "solution": "Use --workspace-path flag to manually specify workspace, or check workspace has .git or package.json"
+      },
+      "existing_legiox_conflict": {
+        "symptom": "Installer detects existing LegioX installation",
+        "solution": "Prompt user to upgrade, skip, or uninstall first"
+      },
+      "binary_won't_run": {
+        "symptom": "Binary shows 'cannot execute binary file' or similar",
+        "solution": {
+          "macos": "chmod +x legiox-installer, or remove quarantine: xattr -d com.apple.quarantine legiox-installer",
+          "linux": "chmod +x legiox-installer",
+          "windows": "Ensure .exe extension, run from PowerShell/CMD"
+        }
+      }
+    }
+  },
+  "execution_priorities": {
+    "phase_1_foundation": [
+      "Set up project structure with src/, assets/, templates/",
+      "Implement basic CLI with @clack/prompts (intro, outro, spinner)",
+      "Implement OS detection and Cursor config path resolution",
+      "Create asset extraction utility from embedded bundle",
+      "Implement safe file operations (atomic write, backup)"
+    ],
+    "phase_2_core_installation": [
+      "Implement MCP server installation to .cursor/mcp/legiox-mcp/",
+      "Implement mcp.json merge logic with conflict handling",
+      "Implement ruleset installation to .cursor/rules/",
+      "Implement skillset installation with progress bar",
+      "Implement Commander memory installation"
+    ],
+    "phase_3_workspace_integration": [
+      "Implement workspace discovery (globalStorage + directory scan)",
+      "Implement multiselect workspace selection UI",
+      "Implement AI-CONTEXT template system",
+      "Implement per-workspace AI-CONTEXT installation",
+      "Implement .cursorrules generation/update"
+    ],
+    "phase_4_verification_ux": [
+      "Implement post-install verification suite",
+      "Implement MCP server health check",
+      "Implement installation summary table",
+      "Implement error handling and user-friendly messages",
+      "Add --verbose, --rollback, --uninstall flags"
+    ],
+    "phase_5_binary_compilation": [
+      "Create asset packaging script (extract from monorepo, minify, checksum)",
+      "Set up pkg configuration for 4 platforms",
+      "Set up bun compile as alternative",
+      "Test binaries on all target platforms",
+      "Set up CI/CD pipeline for automated builds"
+    ],
+    "phase_6_polish_release": [
+      "Write comprehensive README and documentation",
+      "Create demo video and screenshots",
+      "Implement update check and self-update mechanism",
+      "Add telemetry with opt-in consent",
+      "Prepare GitHub Release with all binaries and checksums"
+    ]
+  },
+  "success_metrics": {
+    "user_experience": {
+      "installation_time": "< 2 minutes for full installation on typical workspace",
+      "error_rate": "< 5% installation failures on supported platforms",
+      "user_satisfaction": "Positive feedback on TUI clarity and helpfulness"
+    },
+    "technical": {
+      "binary_size": "< 100MB per platform binary (ideally < 80MB)",
+      "verification_pass_rate": "> 95% of installations pass all verification checks",
+      "cross_platform_parity": "Identical behavior on macOS, Windows, Linux"
+    },
+    "adoption": {
+      "downloads": "Track GitHub Release downloads per platform",
+      "usage": "Telemetry (opt-in) shows X installs per week",
+      "community": "GitHub stars, issues, PRs from community"
+    }
+  },
+  "plugin_local_install": {
+    "verified_against": "https://cursor.com/docs/plugins",
+    "verified_on": "2026-09-29",
+    "plugins": [
+      "legiox-free",
+      "legiox-pro"
+    ],
+    "deprecated": [
+      "legiox-community",
+      "legiox-premium"
+    ],
+    "dest": "~/.cursor/plugins/local/<plugin-name>",
+    "method": "directory copy, never a symlink to a repo outside that folder",
+    "reload": "Developer: Reload Window, or restart Cursor",
+    "verify_in": "Customize sidebar: skills, rules, MCP servers",
+    "enterprise_gate": "Dashboard -> Settings -> Security & Identity -> Marketplace and Plugins -> Allow Local Plugin Imports (off by default on Enterprise)",
+    "precedence": "An installed marketplace plugin with the same name overrides the local copy",
+    "pro_artifact": "Downloadable zip extracted into ~/.cursor/plugins/local/legiox-pro. Not submitted to the public marketplace."
+  }
+}

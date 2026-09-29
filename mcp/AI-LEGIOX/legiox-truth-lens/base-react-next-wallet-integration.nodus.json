@@ -1,0 +1,83 @@
+{
+  "agent_type": "base_react_next_wallet_integration",
+  "name": "Base React/Next.js — wagmi + viem",
+  "role": "LegioX truth lens — Ring Base L2 secondary rail",
+  "mission": {
+    "primary_objective": "Wire wagmi + viem for Base (chainId 8453 / 84532) reusing ring-platform.org EVM stack, with AA paymaster path when gasless US rail is enabled.",
+    "context": "Legacy ring-platform.org uses wagmi for Polygon; Base rail adds base + baseSepolia to wagmi config when ring-config.chains.evm.base.enabled. Solana native wallet is separate provider tree — do not merge. Gasless path delegates to base-account-smart-wallet + paymaster lenses.",
+    "target_outcome": "configureChains includes base; useWriteContract targets RING mirror address from ring-config; readContract for 8-decimal balances; optional useSendUserOperation when CDP AA enabled.",
+    "scope": "Next.js wagmi/viem for Base rail only. Excludes Solana wallet-adapter (solana-react-next-wallet-integration) and full multichain Polygon primary flows."
+  },
+  "truth_lens": "Base wagmi integration extends existing EVM provider — add base and baseSepolia chains, RING mirror ABI with 8 decimals in formatUnits. ring-config.chains.evm.base.ringTokenAddress is SSOT for contract address. For gasless US users, wagmi alone is insufficient — route to CDP smart account + paymaster. Keep Web3Provider client boundary; dynamic import to save bundle size. Never treat Base as ring-native chain in UI copy.",
+  "core_principles": [
+    "ring-config SSOT for Base chainId and RING mirror address.",
+    "formatUnits(balance, 8) — not 18 for mirror token.",
+    "Separate Solana and EVM wallet UI sections.",
+    "AA gasless path via paymaster lens — not plain useWriteContract alone.",
+    "Reuse existing web3-provider.tsx patterns from Polygon legacy."
+  ],
+  "anti_patterns": [
+    "Hardcoding Base RING address outside ring-config.",
+    "18-decimal formatting on 8-decimal mirror token.",
+    "Single wallet provider mixing Solana adapter + wagmi without chain tabs.",
+    "Enabling Base as default chain over Solana native.",
+    "Client-side CDP paymaster URL in wagmi transport config."
+  ],
+  "key_patterns": [
+    "wagmi config: import { base, baseSepolia } from 'wagmi/chains'.",
+    "useReadContract({ address: ringConfig.evm.base.ringToken, abi: erc20Abi, functionName: 'balanceOf' }).",
+    "useWriteContract for non-sponsored power-user path only.",
+    "useSendUserOperation when smartAccount enabled in config.",
+    "wallet-wrapper.tsx: conditional Base section if chains.evm.base.enabled.",
+    "hooks/use-wallet-balance.ts: branch chain === 'base' for mirror read."
+  ],
+  "consult_when": [
+    "Adding Base chain to wagmi-config.ts.",
+    "Displaying RING mirror balance on Base in wallet UI.",
+    "Integrating CDP AA with existing wagmi hooks.",
+    "Dual-chain wallet-client layout Solana + Base.",
+    "Porting Polygon wagmi patterns to Base Sepolia testnet."
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/base-erc20-ring-token-mirror.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/base-erc4337-paymaster-sponsorship.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/react-19-web3-frontend-integration-specialist.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/solana-react-next-wallet-integration.nodus.json"
+  ],
+  "expertise": [
+    "WAGMI_BASE_CHAINS",
+    "VIEM_8_DECIMALS",
+    "RING_CONFIG_SSOT",
+    "AA_OPTIONAL_PATH",
+    "DUAL_PROVIDER_UI"
+  ],
+  "keywords": [
+    "wagmi Base",
+    "viem chainId 8453",
+    "baseSepolia",
+    "RING mirror balance",
+    "useWriteContract",
+    "ring-config evm base",
+    "Next.js Web3",
+    "8 decimals format"
+  ],
+  "priority": "high",
+  "jq_topic_index": {
+    "wagmi_config": ["key_patterns", "core_principles"],
+    "decimals": ["anti_patterns", "core_principles"],
+    "ring_config": ["key_patterns", "truth_lens"],
+    "aa_path": ["related_skillsets", "key_patterns"],
+    "ui_separation": ["anti_patterns", "related_skillsets"]
+  },
+  "web_references": [
+    "https://wagmi.sh/react/chains",
+    "https://viem.sh/docs/chains/base",
+    "https://docs.base.org/chain/using-base"
+  ],
+  "schema_version": "2.0",
+  "status": "active",
+  "tier": "web3_blockchain",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "version": "1.1.0"
+}

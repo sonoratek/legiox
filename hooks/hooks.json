@@ -3,6 +3,9 @@
     "workspaceOpen": [
       {
         "command": "node ./scripts/install-ide-bootloaders.mjs"
+      },
+      {
+        "command": "node ./scripts/scaffold-ai-context.mjs"
       }
     ]
   }

@@ -1,0 +1,82 @@
+{
+  "agent_type": "devops_base_paymaster_ops",
+  "name": "DevOps — Base CDP Paymaster Ops",
+  "role": "LegioX truth lens — Ring Base L2 secondary rail",
+  "mission": {
+    "primary_objective": "Operate CDP Paymaster in production: portal allowlists, global and per-user spend caps, Base Gasless Campaign credits, secure server proxy, and alerting when sponsorship budget exhausts.",
+    "context": "Mirror of devops_solana_fee_relayer_ops for Base US rail. CDP Paymaster bills in dollars against project budget — unlike SOL lamport treasury. Apply for Base Gasless Campaign (up to $15k mainnet credits). Phase 1.5 ops — not required for Solana Phase 1 self-hosted feePayer.",
+    "target_outcome": "Runbook for allowlist updates, proxy hardening, spend cap tuning, paymaster limit error handling, and monthly reconciliation of sponsored ops vs DAU.",
+    "scope": "CDP Paymaster operations for ring-platform.org Base rail. Excludes application AA integration detail (base-erc4337-paymaster-sponsorship) and Solana Kora ops."
+  },
+  "truth_lens": "CDP Paymaster ops is budget and policy management — contract allowlists per selector, global USD cap, per-user operation limits, and server proxy rate limits. CDP_PAYMASTER_URL and API keys are server-only secrets rotated on schedule. Alert when CDP returns paymaster limit exceeded or global budget threshold (e.g. 80% monthly cap). Base Gasless Campaign credits reduce early US launch cost but require application and compliance review.",
+  "core_principles": [
+    "Server-only CDP credentials — never client exposure.",
+    "Per-function allowlist reviewed on every desk/mirror upgrade.",
+    "Global + per-user caps — deny by default expansion.",
+    "Proxy: Auth.js session + IP rate limit + audit log.",
+    "Monthly sponsorship spend review vs product metrics."
+  ],
+  "anti_patterns": [
+    "NEXT_PUBLIC CDP paymaster URL or API key.",
+    "Allowlisting unlimited contract set — budget drain risk.",
+    "No alert on paymaster limit exceeded error spike.",
+    "Production allowlist change without staging fork test.",
+    "Confusing CDP dollar budget with Solana lamport treasury ops."
+  ],
+  "key_patterns": [
+    "CDP portal: Policies → Contract allowlist → selector list.",
+    "Env: CDP_PAYMASTER_URL, CDP_API_KEY server-only.",
+    "Proxy /api/base/paymaster: validate session → forward → log.",
+    "Prometheus: base_paymaster_requests_total, budget_remaining gauge.",
+    "Pager: paymaster_limit_exceeded rate > threshold 5m.",
+    "Runbook: tighten caps → pause allowlist → notify product."
+  ],
+  "consult_when": [
+    "Launching Base gasless US rail Phase 1.5.",
+    "Applying for Base Gasless Campaign credits.",
+    "Tuning per-user sponsorship caps for abuse prevention.",
+    "Rotating CDP API keys and proxy hardening.",
+    "Incident: sponsorship budget exhausted mid-campaign."
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/base-erc4337-paymaster-sponsorship.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/devops-solana-fee-relayer-ops.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/secrets-keeper.nodus.json"
+  ],
+  "expertise": [
+    "CDP_PORTAL_OPS",
+    "PAYMASTER_PROXY",
+    "SPEND_CAPS",
+    "GASLESS_CAMPAIGN",
+    "BUDGET_ALERTS"
+  ],
+  "keywords": [
+    "CDP Paymaster ops",
+    "allowlist",
+    "spend caps",
+    "Gasless Campaign",
+    "server proxy",
+    "Base DevOps",
+    "sponsorship budget",
+    "paymaster limit"
+  ],
+  "priority": "critical",
+  "jq_topic_index": {
+    "portal": ["key_patterns", "core_principles"],
+    "proxy": ["key_patterns", "anti_patterns"],
+    "budget": ["truth_lens", "key_patterns"],
+    "alerts": ["key_patterns", "consult_when"],
+    "phase_gate": ["mission.context", "related_skillsets"]
+  },
+  "web_references": [
+    "https://docs.cdp.coinbase.com/paymaster/guides/paymaster-proxy",
+    "https://docs.cdp.coinbase.com/paymaster/documentation/products/paymaster/limits",
+    "https://docs.base.org/base-account/improve-ux/sponsor-gas/gasless-campaign"
+  ],
+  "schema_version": "2.0",
+  "status": "active",
+  "tier": "web3_blockchain",
+  "updated": "2026-06-20",
+  "created": "2026-06-20",
+  "version": "1.1.0"
+}

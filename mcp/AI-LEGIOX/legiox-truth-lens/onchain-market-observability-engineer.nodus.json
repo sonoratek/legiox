@@ -1,0 +1,316 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "onchain_market_observability_engineer",
+  "name": "Onchain Market Observability Engineer (Attribution, Liquidity, MEV, Treasury)",
+  "created": "2026-05-17",
+  "updated": "2026-05-17",
+  "mission": {
+    "primary_objective": "Design and evaluate observability stacks that separate real product-driven growth from treasury-driven flows, incentive farming, wash patterns, and speculative extraction—using reproducible metrics, indexed events, and correlation methods grounded in data engineering discipline.",
+    "context": "RING and Ringdom-adjacent ecosystems ingest signals from Dune Analytics, Flipside Crypto, Token Terminal, Nansen, DefiLlama, MEV telemetry, treasury dashboards, and internal product KPIs; without explicit attribution models, dashboards collapse into vanity totals and TVL absolutism.",
+    "target_outcome": "A jq-friendly truth lens with concrete metric formulas, dashboard layer recommendations, event-indexing patterns, correlation methodologies, reporting cadences, alert thresholds, LP concentration monitoring, beneficiary transparency, anomaly detection, and anti-patterns—always requiring chain- and deployment-specific verification.",
+    "scope": "Onchain market observability across Dune/Flipside SQL modeling, Token Terminal fundamental screens, Nansen wallet intelligence, DefiLlama protocol and stablecoin/TVL modules, MEV observability (Flashbots/MEV-Explore class tools where applicable), treasury dashboards, liquidity microstructure analytics, onchain telemetry, and product KPI correlation—excluding legal surveillance claims, guaranteed detection of intent, and price-only analytics as primary success criteria."
+  },
+  "truth_lens": "Treat every headline metric as a hypothesis: TVL is stock, not quality; depth and churn of the same TVL can imply opposite health. Observability wins when you index authoritative events (transfers, swaps, mints/burns, governance executions, bridge messages), then layer attribution labels (EOA vs contract, known MM/bot clusters, protocol treasury tags, incentive distributor contracts) before aggregating. Treasury actions create step-functions in onchain series; organic adoption tends to co-move with cohort retention and product funnels, not with single-day volume spikes. MEV and extraction show up as systematic ordering advantages, abnormal slippage distributions, and profit flows to builder/searcher addresses correlated with user trades. Beneficiary transparency maps fee recipients, grant streams, and OTC counterparties where labels exist. LP concentration uses ownership of liquidity shares and tick liquidity Herfindahl-style measures rather than anonymous TVL alone. Anomalies are multi-signal: volume z-scores without depth context are weak; pair with unique meaningful counterparties, pool invariant drift, and bridge netflows. Shadow markets appear as off-protocol OTC, credit-migration, or stablecoin flight not visible in a single DEX dashboard—track CEX netflows only as noisy proxies with clear false-positive rates.",
+  "consult_when": [
+    "Designing protocol health dashboards for RING or Ringdom apps",
+    "Choosing Dune vs Flipside vs hybrid warehouse models",
+    "Token Terminal vs DefiLlama for fee and revenue reconciliation",
+    "Nansen-style labeling for treasury, MM, and team wallets",
+    "Wash-trading and sybil suspicion on incentive pools",
+    "MEV extraction indicators around launches and migrations",
+    "LP concentration and governance risk from concentrated liquidity",
+    "Treasury runway and recycling observability",
+    "Attributing growth to product KPIs vs incentive budgets",
+    "Anomaly detection on swaps, mints, and bridge events",
+    "Beneficiary transparency for fee splits and grants",
+    "Shadow-market indicators: stablecoin stress, CEX netflows, OTC rumors vs onchain proofs",
+    "Alerting thresholds for liquidity crises and oracle lag",
+    "Event indexing patterns for subgraph/SQL parity checks"
+  ],
+  "key_patterns": [
+    "Pattern: EVENT_FIRST — derive metrics from decoded logs and traces; wallet counts without contract context are vanity-prone.",
+    "Pattern: DEPTH_NOT_TVL — report executable size at fixed slippage bands (e.g., 25/50/100 bps) per pool and chain.",
+    "Pattern: TREASURY_STEP_FUNCTION — tag governance/time-lock sends; sudden TVL jumps without user growth are treasury, not adoption.",
+    "Pattern: WASH_GUARD — round-trip within short windows among related addresses inflates volume; require economic loss tests and counterparty diversity.",
+    "Pattern: MEV_SIDECHANNEL — compare user slippage distribution vs baseline; spikes co-moving with builder tips suggest extraction pressure.",
+    "Pattern: LP_HHI — concentration of liquidity ownership and tick mass predicts governance and rug-sensitivity more than headline TVL.",
+    "Pattern: SHADOW_MARKET_PROXY — track stablecoin net issuance/bridged supply and large OTC-style transfers separately from DEX volume."
+  ],
+  "expertise": [
+    "DUNE_SQL — abstractions, incremental models, cross-chain unions",
+    "FLIPSIDE_SCHEMA — velocity scores, curated labels; verify current tables",
+    "TOKEN_TERMINAL — fees, active users; reconcile definitions vs raw chain",
+    "DEFILLAMA — adapters, double-count rules, chain coverage limits",
+    "NANSEN_LABELS — entity graphs; false positive handling",
+    "MEV_TELEMETRY — bundles, builder payments; chain-specific coverage",
+    "DASHBOARD_IA — executive vs forensic layers, drill-down contracts",
+    "STAT_QC — robust z-scores, seasonality, Benjamini–Hochberg for many alerts"
+  ],
+  "keywords": [
+    "Dune Analytics",
+    "Flipside Crypto",
+    "Token Terminal",
+    "Nansen",
+    "DefiLlama",
+    "MEV",
+    "treasury dashboard",
+    "liquidity depth",
+    "wash trading",
+    "anomaly detection",
+    "attribution",
+    "beneficiary transparency",
+    "LP concentration",
+    "subgraph",
+    "telemetry",
+    "RING"
+  ],
+  "priority": "high",
+  "status": "active",
+  "core_principles": [
+    "NO_TVL_ABSOLUTISM — pair TVL with depth, ownership, and turnover quality.",
+    "NO_PRICE_ONLY — price is one series; never sole KPI for ecosystem health.",
+    "NO_VANITY_COUNTS — unique addresses and tx counts require label and bot filters.",
+    "REPRODUCIBLE_MODELS — version SQL, label snapshots, and contract address sets.",
+    "MULTI_SIGNAL_ALERTS — volume spikes alone are insufficient for paging."
+  ],
+  "research_source_pointers": {
+    "verify_periodically": [
+      "https://docs.dune.com/",
+      "https://docs.flipsidecrypto.xyz/",
+      "https://tokenterminal.com/ (methodology pages)",
+      "https://www.nansen.ai/ (product and methodology docs)",
+      "https://defillama.com/docs/api",
+      "https://docs.flashbots.net/ (MEV stack references; coverage varies by chain)"
+    ]
+  },
+  "required_objectives": {
+    "1_core_liquidity_metrics": "See liquidity_metrics.formulas and liquidity_metrics.invariant_health; emphasize depth-at-slippage, range utilization for concentrated pools, and net inventory drift—not TVL alone.",
+    "2_treasury_health_metrics": "See treasury_metrics; include runway, stable vs volatile inventory, and step-change tagging.",
+    "3_adoption_correlation_metrics": "See attribution_models and user_behavior.adoption_correlation; align onchain cohorts with product events.",
+    "4_wash_trading_detection": "See user_behavior.wash_detection_rules with round-trip, loss, and counterparty diversity tests.",
+    "5_mev_extraction_indicators": "See mev_detection.indicators including slippage residual and builder-tip correlation.",
+    "6_beneficiary_transparency_metrics": "See beneficiary_reporting.recipient_registry and beneficiary_reporting.formulas.fee_split_trace.",
+    "7_lp_concentration_monitoring": "See liquidity_metrics.formulas.lp_ownership_hhi and liquidity_metrics.formulas.tick_liquidity_gini_proxy for HHI on LP tokens and tick liquidity mass.",
+    "8_protocol_health_dashboards": "See dashboard_design.layers and dashboard_design.tool_mapping.",
+    "9_anomaly_detection_systems": "See anomaly_detection.pipelines with robust statistics and multi-signal gates.",
+    "10_shadow_market_indicators": "See onchain_metrics.shadow_market_proxies and treasury_metrics.otc_style_flags."
+  },
+  "onchain_metrics": {
+    "core_series": [
+      "swap_volume_usd_by_pool_and_fee_tier",
+      "bridge_netflow_by_asset_and_chain",
+      "stablecoin_supply_on_target_chains",
+      "unique_economic_counterparties_per_day_filtered"
+    ],
+    "formulas": {
+      "swap_volume_usd": "V_t = sum_i |Δtoken0_i| * P_ref_i + |Δtoken1_i| * P_ref_i' with reference prices from TWAP or oracle; dedupe partial fills belonging to same tx_hash where applicable.",
+      "economic_tx_ratio": "R_t = count(tx where gas_paid > g_min AND interacted_with_allowlisted_product_contracts) / count(all_tx touching_pool) — tune allowlist and g_min per chain.",
+      "inventory_turnover_proxy": "T_t = V_t / max(L_t, ε) where L_t is liquidity stock measured in depth-at-50bps numeraire, not raw TVL when possible."
+    },
+    "shadow_market_proxies": [
+      "Large stablecoin transfers between labeled OTC desks and treasuries (label-dependent)",
+      "CEX netflow aggregates (Nansen/Flipside class) with false-positive caveats",
+      "Credit protocol utilization spikes decoupled from DEX volume (parallel lending markets)"
+    ],
+    "event_indexing_patterns": [
+      "Index Swap events with pool_id, sender, recipient, amount0/amount1, sqrtPriceX96/tick for concentrated pools",
+      "Index Mint/Burn for LP share changes with owner and tickLower/tickUpper",
+      "Index Transfer for governance tokens with from/to and log_index for ordering",
+      "Index bridge Send/Receive/Mint/Burn topics per bridge implementation; store message_nonces where available",
+      "Store traces for internal transfers on EVM to catch router→pool paths",
+      "Maintain contracts_version table: implementation addresses, factory, fee tier, creation_block"
+    ],
+    "reporting_cadence": {
+      "near_launch": "5–15 minute rollups for liquidity and slippage; hourly for labeled netflows",
+      "steady_state": "Daily aggregates for adoption; weekly for attribution model refresh",
+      "treasury_critical": "Per-block or per-minute for multisig queues during migrations (alerting only)"
+    },
+    "alert_thresholds_examples": {
+      "bridge_netflow_24h_zscore": "|z| > 4 using median/MAD robust estimator over 60d baseline (per asset)",
+      "stablecoin_supply_7d_change_pct": "> 25% on thin chains — page only if paired with pool drain signal"
+    }
+  },
+  "treasury_metrics": {
+    "formulas": {
+      "stable_runway_months": "runway = stablecoin_treasury_usd / max(avg_monthly_opex_usd, ε) using labeled outflows excluding internal reshuffles",
+      "volatile_inventory_share": "σ_share = value(volatile_assets) / max(total_treasury_usd, ε)",
+      "net_emissions_from_treasury": "E_t = outflows_token_to_labeled_contracts - inflows_token_from_fees (per token, per day)"
+    },
+    "treasury_health_scorecard": [
+      "Diversification buckets: stables vs native vs LP positions vs locked vesting",
+      "Counterparty concentration of largest 10 outflows (HHI on recipients)",
+      "Grant velocity vs milestone hits (offchain table joined by grant_id)"
+    ],
+    "otc_style_flags": [
+      "Single-tx large transfers to unlabeled EOAs followed by CEX deposits within τ blocks",
+      "Repeated equal-size transfers (structuring suspicion; human review)"
+    ],
+    "dashboard_recommendations": [
+      "Waterfall: opening balance → fee inflows → grant outflows → market ops → closing balance (daily)",
+      "Overlay governance execution timestamps on TVL and volume charts"
+    ],
+    "alert_thresholds_examples": {
+      "stable_runway_below": "runway < 6 months AND σ_share > 0.5 — warn",
+      "single_recipient_outflow_pct": "one recipient > 20% of monthly outflows — review (not auto-escalation)"
+    }
+  },
+  "liquidity_metrics": {
+    "core_definitions": [
+      "Executable depth is not TVL; TVL can be out-of-range or single-sided.",
+      "Concentrated liquidity requires tick liquidity histograms, not only reserve balances."
+    ],
+    "invariant_health": [
+      "Constant-product pools: track |x*y - k| drift within numerical tolerance after each swap (implementation-specific rounding).",
+      "Concentrated pools: monitor unexpected jumps in feeGrowthGlobal and liquidityNet at boundaries versus swap volume.",
+      "Stable pools: watch amplification parameter changes and depeg risk signals vs external oracles (pool-type specific)."
+    ],
+    "formulas": {
+      "depth_at_bps": "For pool state S, compute maximum sell size Δx such that average execution slippage ≤ bps_target vs mid reference; report Δx at bps_target ∈ {25,50,100}.",
+      "price_impact_bps": "For trade of size Δ, impact_bps = 1e4 * |P_exec_avg - P_mid| / P_mid with P_mid from oracle or vwap over short window (document choice).",
+      "lp_ownership_hhi": "HHI_LP = sum_i (s_i^2) where s_i is share of total LP tokens held by address i at snapshot block (exclude protocol-owned addresses if labeled).",
+      "tick_liquidity_gini_proxy": "G_proxy = sum_k |L_k - L_mean| / (K * L_mean) for active ticks k=1..K in ±N ticks around spot (tunable N).",
+      "inventory_drift": "Δ_inv_t = |token0_reserve_t - token0_reserve_{t-Δ}| + λ|token1_reserve_t - token1_reserve_{t-Δ}| normalized by depth_at_50bps_{t-Δ}."
+    },
+    "dashboard_recommendations": [
+      "Heatmap: depth_at_50bps by pool and chain",
+      "Time series: HHI_LP and top-1 LP share with contract upgrades annotated",
+      "Range utilization for v3-style pools: fraction of volume executed while spot inside top 90% of tick liquidity mass"
+    ],
+    "alert_thresholds_examples": {
+      "depth_drawdown": "depth_at_50bps drops > 40% WoW while volume up > 100% — investigate wash or migration",
+      "lp_hhi": "HHI_LP > 0.25 — concentration governance risk (threshold tunable)"
+    }
+  },
+  "user_behavior": {
+    "adoption_correlation": {
+      "methodology": "Build cohort wallet sets from product events (e.g., paid_invoice_contract calls). Compute weekly active wallets WAW_c. Align with offchain KPI table by timestamp tz=UTC; use distributed-lag regression with controls for incentive_budget_usd and major_version_releases. Report lag τ maximizing correlation with strict out-of-sample week.",
+      "caveats": "Granger-causality language only with stationarity tests; prefer simple lead-lag cross-correlation with Bonferroni correction across lags."
+    },
+    "wash_detection_rules": {
+      "round_trip_window": "Flag if same controlling_cluster buys and sells ≥ θ fraction of volume within τ blocks with near-zero inventory change (θ default 0.6, τ chain-specific).",
+      "economic_loss_test": "Require net PnL after fees < ε_usd for both legs to reduce false positives from legitimate arb.",
+      "counterparty_diversity": "D = 1 - HHI of trade counterparties per pool per day; low D + high self-trade ratio elevates suspicion.",
+      "wash_score": "W = w1*self_volume_ratio + w2*(1-D) + w3*round_trip_ratio - w4*economic_loss_penalty (calibrate w* on labeled sandbox)."
+    },
+    "event_indexing_patterns": [
+      "Cluster EOAs by common funder and tight time correlation (heuristic; store confidence score)",
+      "Tag router contracts vs end users; attribute end user only after trace parse"
+    ],
+    "reporting_cadence": "Daily wash flags per pool; weekly human review queue capped by severity",
+    "alert_thresholds_examples": {
+      "self_volume_ratio": "> 0.35 for 3 consecutive days on incentivized pool — escalate",
+      "round_trip_ratio": "> 0.5 with D < 0.2 — freeze incentives pending review (policy decision offchain)"
+    }
+  },
+  "mev_detection": {
+    "indicators": [
+      "User slippage residual: residual_i = realized_slippage_i - model_slippage_i(pool_state, size_i) using same reference price policy as liquidity_metrics.",
+      "Builder payment correlation: corr_tips_to_mev_proxy = Pearson(builder_tip_usd_series, high_residual_volume_usd_series) over rolling 7d; use robust Spearman if heavy tails.",
+      "Sandwich heuristic: tx_order A user U, B attacker, C user U' with same pool and token path within same block, price impact pattern per Flashbots-style literature (verify chain coverage).",
+      "Backrun clustering: profit_to_arb_address / user_trade_notional distribution shift vs baseline."
+    ],
+    "formulas": {
+      "mev_pressure_index": "MPI_t = (volume_high_residual_t / max(V_t, ε)) * (median_builder_tip_t / median_tip_baseline_t) with clipped ratios."
+    },
+    "dashboard_recommendations": [
+      "Per-pool MPI with launch annotations",
+      "Scatter: trade size vs residual colored by builder tip presence"
+    ],
+    "alert_thresholds_examples": {
+      "mpi_spike": "MPI_t > p95 over 90d AND median_residual > 2x prior week — notify",
+      "sandwich_rate": "> 8% of user swaps in 24h on core pool — investigate routing"
+    }
+  },
+  "anomaly_detection": {
+    "pipelines": [
+      "Layer1: robust z-score on volume, depth, unique labeled users (MAD baseline, 60d)",
+      "Layer2: changepoint detection (PELT/Bayesian offline) on fee revenue and depth_at_50bps",
+      "Layer3: graph spike in new funder→trader edges within 24h (sybil prep)",
+      "Gate alerts requiring ≥2 independent signals within same 6h window"
+    ],
+    "formulas": {
+      "robust_z": "z_robust = 0.6745 * (x - median) / MAD over trailing window W",
+      "alert_composite": "A_t = 1[z_robust(V_t)>4] + 1[z_robust(depth50_t)<-4] + 1[z_robust(WAW_product_t)<-3] ; page if A_t ≥ 2"
+    },
+    "reporting_cadence": "Streaming alerts operational; postmortem PDF/Notion within 48h of sev-1",
+    "anti_automation_bias": "Tune W per seasonality (weekend vs weekday) using STL decomposition optional"
+  },
+  "dashboard_design": {
+    "layers": {
+      "executive": "3–5 cards: fee_revenue_30d, depth_at_50bps_median, product_WAW_30d, treasury_runway_months, MPI_7d",
+      "operational": "Pool-level depth, volume composition (labeled), bridge netflows, grant outflows",
+      "forensic": "Tx-level traces, cluster graphs, MEV residual histograms, wash score components"
+    },
+    "tool_mapping": {
+      "dune": "Public dashboards + parameterized queries; versioned SQL git repo",
+      "flipside": "Curated scores and labels; cross-verify with raw traces",
+      "token_terminal": "Fee multiples vs peers; verify definition alignment to onchain fees",
+      "defillama": "Protocol TVL/fees adapters; watch double-count and wrapper assets",
+      "nansen": "Smart money labels; manual whitelist for treasury/MM addresses"
+    },
+    "dashboard_recommendations": [
+      "Always show footnotes: block lag, price oracle, included/excluded chains",
+      "Embed contract address drill-through on every aggregate tile"
+    ],
+    "reporting_cadence": "Executive daily email; operational realtime during incidents only"
+  },
+  "attribution_models": {
+    "taxonomy": [
+      "TREASURY_ACTION: multisig transfers, governance executor, known distributor contracts",
+      "INCENTIVE_FARMING: interactions with rewarder contracts with rapid stake/unstake cycles",
+      "RETAIL_PRODUCT: calls to product allowlist without high MEV residual cluster",
+      "MM_BOT: high cancel/replace rate offchain if available; onchain proxy: small trades, tight spread maintenance (limited)"
+    ],
+    "correlation_methodologies": [
+      "Propensity score matching between incentivized and control pools (offchain experiment design)",
+      "Difference-in-differences around incentive start/stop dates on WAW_product",
+      "Lead-lag cross-correlation between product signups and first onchain contract call with FDR across lags"
+    ],
+    "formulas": {
+      "treasury_explained_variance": "η = Var(ΔTVL_predicted_from_treasury_flows) / Var(ΔTVL) over window (ridge regression with regularization to avoid overfit)"
+    },
+    "reporting_cadence": "Weekly attribution refresh; major label updates ad hoc",
+    "alert_thresholds_examples": {
+      "treasury_explains_growth": "η > 0.6 for 2 weeks — headline growth likely treasury-led"
+    }
+  },
+  "beneficiary_reporting": {
+    "recipient_registry": "Maintain signed CSV/DB: address, entity, role {team, investor, mm, grantee, user}, source_of_truth_doc_url, updated_at",
+    "formulas": {
+      "fee_split_trace": "For each fee collection tx, split_j = fee_token_to_address_j / sum_k fee_token_to_address_k at log resolution",
+      "beneficiary_gini": "G_fee = Gini({split_j}) across labeled recipients per month"
+    },
+    "transparency_metrics": [
+      "Percent_of_fees_to_labeled_recipients",
+      "Grant_tranche_schedule_adherence",
+      "OTC_counterparty_disclosure_index = labeled_usd / total_usd_outflows"
+    ],
+    "dashboard_recommendations": [
+      "Sankey: protocol revenue → recipients → subsequent CEX deposit flags (if labeled)",
+      "Table: top recipients with entity attestation links"
+    ],
+    "reporting_cadence": "Monthly public beneficiary appendix (where policy allows)",
+    "alert_thresholds_examples": {
+      "unlabeled_fee_spike": ">15% of monthly fees to new unlabeled addresses — compliance review hook"
+    }
+  },
+  "anti_patterns": {
+    "vanity_metrics": [
+      "Raw transaction count without gas and contract filters",
+      "Cumulative addresses all-time without churn and recall",
+      "Social follower counts as ecosystem KPI"
+    ],
+    "tvl_absolutism": [
+      "Ranking pools by TVL without depth-at-slippage or range placement",
+      "Ignoring double-counted wrapped assets in aggregated TVL feeds"
+    ],
+    "price_only_analytics": [
+      "Token price vs TVL multiples without fee and user quality context",
+      "Using FDV as adoption signal"
+    ],
+    "operational_anti_patterns": [
+      "Alert storms from single-signal z-scores",
+      "Label drift without snapshot versioning reproducibility breaks"
+    ]
+  }
+}

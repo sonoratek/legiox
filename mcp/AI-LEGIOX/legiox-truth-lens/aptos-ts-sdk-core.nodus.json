@@ -1,0 +1,83 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "aptos_ts_sdk_core",
+  "name": "Aptos TypeScript SDK Core (Ring Client & Server)",
+  "mission": {
+    "primary_objective": "Standardize Ring's Aptos TypeScript integration on @aptos-labs/ts-sdk for build, simulate, sign, submit, view, and event indexing.",
+    "context": "Ring Next.js apps use TS SDK on server (fee payer, airdrops) and client (via wallet adapter). Network config, error handling, and waitForTransaction patterns must be consistent across clones.",
+    "target_outcome": "Shared Aptos client factory, typed transaction builders, simulation-before-submit discipline, and view-function helpers for FA balances and governance state.",
+    "scope": "SDK usage patterns only. Excludes wallet adapter UI (aptos-react-next-wallet-integration) and gas station SaaS (devops-aptos-gas-station-ops)."
+  },
+  "truth_lens": "The Aptos TS SDK replaces deprecated `aptos` npm package. Use Aptos + AptosConfig with explicit Network; prefer transaction.build.simple for entry functions; simulate.simple before production submit; view() for read-only Move calls without signing.",
+  "core_principles": [
+    "One AptosConfig per process with network + API keys from env.",
+    "Never commit private keys; fee payer keys server-only.",
+    "Simulate before submit on server paths.",
+    "Parse TransactionResponse for success, vm_status, gas_used.",
+    "Use Account.fromPrivateKey only on server; client uses wallet adapter."
+  ],
+  "anti_patterns": [
+    "Installing deprecated `aptos` package alongside @aptos-labs/ts-sdk.",
+    "Skipping waitForTransaction after submit.",
+    "Hardcoding mainnet URLs in client bundles without env guard.",
+    "Using float for token amounts — use bigint / U64."
+  ],
+  "key_patterns": [
+    "const aptos = new Aptos(new AptosConfig({ network: Network.MAINNET, clientConfig })).",
+    "build.simple({ sender, data: { function, functionArguments }, withFeePayer? }).",
+    "simulate.simple({ transaction, signerPublicKey?, feePayerPublicKey? }).",
+    "sign / signAsFeePayer / submit.simple / waitForTransaction.",
+    "aptos.view({ payload: { function, functionArguments } }).",
+    "aptos.getAccountResources / getAccountCoinsData for FA discovery."
+  ],
+  "consult_when": [
+    "Bootstrapping Aptos client in ring-platform.org.",
+    "Debugging transaction simulation failures.",
+    "Implementing server-side fee payer signing service.",
+    "Reading on-chain FA balances and proposal state."
+  ],
+  "related_skillsets": [
+    "AI-LEGIOX/legiox-truth-lens/aptos-fee-payer-sponsored-transactions.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/aptos-react-next-wallet-integration.nodus.json",
+    "AI-LEGIOX/legiox-truth-lens/aptos-rpc-indexer-data-plane.nodus.json"
+  ],
+  "expertise": [
+    "SDK_CLIENT_FACTORY — AptosConfig network and API keys.",
+    "TX_BUILD_SIM_SUBMIT — full transaction lifecycle.",
+    "VIEW_FUNCTIONS — read-only chain queries.",
+    "ERROR_TAXONOMY — vm_status and common failure codes."
+  ],
+  "keywords": [
+    "@aptos-labs/ts-sdk",
+    "AptosConfig",
+    "build.simple",
+    "simulate.simple",
+    "waitForTransaction",
+    "view function",
+    "Account",
+    "Ed25519PrivateKey"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "role": "LegioX truth lens — Aptos TS SDK core patterns",
+  "version": "1.0.0",
+  "created": "2026-06-20",
+  "updated": "2026-06-20",
+  "tier": "web3_blockchain",
+  "package": {
+    "name": "@aptos-labs/ts-sdk",
+    "doc_url": "https://aptos.dev/build/sdks/ts-sdk",
+    "deprecated_package": "aptos"
+  },
+  "jq_topic_index": {
+    "build": ["key_patterns", "package"],
+    "simulate": ["key_patterns"],
+    "submit": ["key_patterns"],
+    "view": ["key_patterns"],
+    "events": ["key_patterns"]
+  },
+  "web_references": [
+    "https://aptos.dev/build/sdks/ts-sdk",
+    "https://github.com/aptos-labs/aptos-ts-sdk"
+  ]
+}

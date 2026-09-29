@@ -1,0 +1,30 @@
+---
+name: ai-anthropic-api-specialist
+description: Claude API integration. tool use implementation. prompt caching optimization. batch processing. LegioX truth lens skill.
+---
+
+# AI Anthropic API & Claude Integration Specialist
+
+## Summary
+
+Anthropic API integration: Claude model family (Opus/Sonnet/Haiku), tool use orchestration, prompt caching (90% cost reduction on repeated prefixes), batch processing API, extended thinking mode. Ring-specific: AI Matcher powered by Claude with model cascading.
+
+## When to use
+
+- Claude API integration
+- tool use implementation
+- prompt caching optimization
+- batch processing
+- extended thinking mode
+- model selection
+
+## Instructions
+
+1. Model cascade: Haiku (fast/cheap) -> Sonnet (balanced) -> Opus (complex)
+2. Prompt caching: cache_control breakpoints for 90% cost reduction
+3. Tool use: JSON schema definitions, parallel tool calls, error handling
+4. Batch: 50% cost reduction for non-time-sensitive workloads
+
+## MCP
+
+Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://ai_anthropic_api_specialist`).

@@ -1,0 +1,473 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_pr_analytics_metabase_dashboard",
+  "name": "Metabase PR Analytics & OKR Dashboard Specialist",
+  "mission": {
+    "primary_objective": "Deploy and operate Metabase on Kubernetes as the unified PR analytics layer: Helm or operator-based installs, external PostgreSQL for Metabase app DB, read-only connections to operational data, ingestion pipelines for external metrics, OKR-anchored dashboards, alerts, subscriptions, and signed static embedding.",
+    "context": "You are the LegioX truth lens for Metabase OSS on k8s used for PR/communications OKRs. Stack spans Clojure/JVM Metabase, optional Redis cache, PostgreSQL metadata store, community Helm charts, and integrations with Twenty CRM, Plane, LinkedIn/Beehiiv/Brand24 ingestion tables, and founder reporting.",
+    "target_outcome": "Production-safe Metabase: MB_DB_TYPE=postgres, pinned image tags, resource limits, SMTP for alerts, embedding secrets rotation, collection-based permissions, and documented sync schedules per data source.",
+    "scope": "Kubernetes (k3s/k8s) deployment of Metabase OSS; Helm charts (pmint93, operators, or raw manifests); PostgreSQL internal DB; read-only roles to app DBs; analytics schema ingestion; dashboard/question design; Metabase REST API; static embedding JWT; not Metabase Enterprise-only features unless explicitly scoped."
+  },
+  "truth_lens": "Metabase on Kubernetes is a stateful JVM service that must use external PostgreSQL for its internal application database before production traffic (H2 is unacceptable). Connect operational sources (Twenty, Plane, app DB) only via read-only PostgreSQL roles. External metrics (LinkedIn, Beehiiv, Brand24, GA4) land in a dedicated analytics schema via batch ingestion—no live API drivers for vendor APIs in production dashboards. OSS chart landscape: pmint93/metabase is common; operators exist; Bitnami dependencies are risky post-2025 access changes. Saved Questions are the atomic unit; dashboards compose Questions; alerts target KR breaches with owners. Collections double as permission boundaries: separate Founder, PR team, and embeddable spaces. Static embedding uses MB_EMBEDDING_SECRET_KEY-signed JWT; rotate independently of MB_ENCRYPTION_SECRET_KEY. Align with core_principles in this file for MB_* env vars, JAVA_OPTS heap, sync cadence, and embedding as distribution.",
+  "consult_when": [
+    "Deploying or upgrading Metabase on Kubernetes / Helm for PR or OKR analytics",
+    "Configuring MB_DB_TYPE postgres, secrets, SMTP, Slack, embedding, or JAVA_OPTS for Metabase",
+    "Designing Metabase collections, dashboards, saved questions, alerts, or subscriptions for PR metrics",
+    "Ingesting LinkedIn, Beehiiv, Brand24, GA4, or CRM data into analytics PostgreSQL for Metabase",
+    "Metabase static embedding, signed JWT, or sharing dashboards to Mattermost / wiki / reports",
+    "Choosing or comparing Metabase Helm charts, operators, or raw k8s manifests"
+  ],
+  "key_patterns": [
+    "Pattern: internal Metabase DB → external Postgres first; then wire read-only app DBs; then schedule sync; then dashboards.",
+    "Pattern: every KR chart → explicit target line or goal; outcome metrics before vanity counts per OKR_ANCHORED_DASHBOARDS."
+  ],
+  "expertise": [
+    "MB_POSTGRES_METADATA — MB_DB_TYPE=postgres, encryption and embedding secrets lifecycle",
+    "READ_ONLY_SOURCES — dedicated DB roles for Twenty/Plane/app replicas; never writer URLs",
+    "INGEST_THEN_QUERY — batch pipelines to analytics schema; no live vendor API in dashboard SQL",
+    "HELM_METABASE — pmint93/operator tradeoffs; pin image.tag; resources 2–4Gi heap guidance"
+  ],
+  "keywords": [
+    "metabase",
+    "analytics",
+    "bi",
+    "k8s",
+    "helm",
+    "postgresql",
+    "okr",
+    "pr-metrics",
+    "dashboards",
+    "embedding",
+    "helm metabase",
+    "pmint93",
+    "MB_DB_TYPE",
+    "static embedding",
+    "Ringdom"
+  ],
+  "priority": "high",
+  "status": "active",
+
+  "skillset_id": "devops-pr-analytics-metabase-dashboard",
+  "version": "1.0.0",
+  "title": "Metabase PR Analytics & OKR Dashboard Specialist",
+  "description": "Comprehensive truth-lens for deploying and operating Metabase as the unified PR analytics layer on K8s. Covers architecture, Helm deployment, multi-source data connections, PR-specific dashboard design, SQL questions, alerts, dashboard subscriptions, static embedding, REST API patterns, and data ingestion pipelines from LinkedIn, Beehiiv, Brand24, and internal CRM/PM systems.",
+  "author": "Sonoratek LLC / LegioX Legion",
+  "created": "2026-03-29",
+  "schema": "truth-lens-v1",
+  "jq_root": ".",
+  "tags": ["metabase", "analytics", "bi", "k8s", "helm", "postgresql", "okr", "pr-metrics", "dashboards", "embedding"],
+
+  "core_principles": [
+    "READ_ONLY_CONNECTIONS — Metabase connects to all operational databases (Twenty CRM, Plane, application DB) via dedicated read-only PostgreSQL roles. Never point Metabase at a primary connection string with write privileges.",
+    "EXTERNAL_PG_MANDATORY — H2 is Metabase's default internal database and is unsuitable for production: no concurrent access, no backup, single-file corruption risk. Always configure MB_DB_TYPE=postgres before first launch.",
+    "OKR_ANCHORED_DASHBOARDS — Every dashboard must have defined numeric targets for each metric. A chart without a target is decoration, not analytics. Embed the target as a Goal Line or reference number in every Key Result visualization.",
+    "METRICS_NOT_VANITY — Measure outcomes (coverage earned, leads attributed, newsletter subscribers) not outputs (posts published, pitches sent). Both matter but outcomes must dominate dashboard real estate.",
+    "INGESTION_BEFORE_VISUALIZATION — Metrics that live outside internal PostgreSQL databases (LinkedIn, Beehiiv, Brand24, GA4) require explicit ingestion pipelines into a dedicated analytics PostgreSQL schema before Metabase can query them. No live API connections.",
+    "SCHEDULED_SYNC_DISCIPLINE — Metabase's database sync and field scan schedules must be configured per data source based on update frequency. Twenty CRM: sync every 1 hour; analytics ingestion table: sync every 15 minutes; Plane: sync every 30 minutes.",
+    "QUESTION_AS_BUILDING_BLOCK — Saved Questions are the atomic unit. Dashboards are composed of saved Questions. Never build SQL directly into a dashboard card — always save as a Question first for reusability and alerting.",
+    "ALERT_ON_OUTCOMES — Configure Metabase Alerts for KR threshold breaches (newsletter open rate drops below 25%, no Tier 1 coverage in 30 days) not on operational noise. Every alert must have a defined owner and response SLA.",
+    "COLLECTIONS_ARE_PERMISSIONS — Metabase Collections are both an organizational and permission layer. Create: /PR Team (private), /Founder View (read-only share), /Public (embedded). Never put sensitive journalist relationship data in embeddable collections.",
+    "EMBEDDING_IS_DISTRIBUTION — Metabase's static embedding (signed JWT) is the mechanism to deliver PR dashboards into Mattermost, Outline wiki, or the founder's weekly agent report without requiring Metabase accounts for consumers."
+  ],
+
+  "knowledge_layers": {
+
+    "layer_0_architecture": {
+      "concept": "Metabase Architecture and Technology Stack",
+      "truth_lens": [
+        {
+          "concept": "core_stack",
+          "truths": [
+            "Backend: Clojure on JVM (Java 21+); stateless application server — can run multiple replicas behind a load balancer for HA.",
+            "Frontend: React single-page application served by the same JVM process; no separate Node.js server required.",
+            "Internal database: H2 (embedded, default) or external PostgreSQL/MySQL — stores Metabase's own config: questions, dashboards, users, permissions, alerts. NOT your data.",
+            "Caching layer: optional Redis for query result caching (MB_REDIS_HOST); reduces database load for frequently-viewed dashboards.",
+            "Container image: metabase/metabase:latest (OSS) or metabase/metabase-enterprise:latest (Pro/Enterprise); as of 2025, v0.54.x is current stable OSS.",
+            "Port: 3000 (HTTP); expose via Ingress with TLS termination — never expose raw 3000 externally.",
+            "Supported external data sources: PostgreSQL, MySQL/MariaDB, MongoDB, BigQuery, Redshift, Snowflake, Athena, DuckDB, SQLite, SQL Server, Oracle, Presto, Spark — and more via community drivers (JAR plugins in MB_PLUGINS_DIR).",
+            "Licensing: OSS (AGPL-3.0) covers all core BI features; Pro/Enterprise adds SSO (JWT/SAML), row/column security, advanced embedding (authenticated embeds, SDK), whitelabeling, auditing. For internal PR team dashboards, OSS is sufficient."
+          ]
+        },
+        {
+          "concept": "production_configuration_requirements",
+          "truths": [
+            "MB_DB_TYPE=postgres: switches internal metadata store from H2 to PostgreSQL — mandatory before first launch.",
+            "MB_DB_HOST, MB_DB_PORT (5432), MB_DB_DBNAME, MB_DB_USER, MB_DB_PASS: PostgreSQL connection for Metabase's internal DB; store all in a K8s Secret, reference via secretKeyRef.",
+            "MB_SITE_URL: public URL of the Metabase instance (e.g. https://analytics.sonoratek.com) — required for correct email link generation and embedding URL construction.",
+            "MB_EMAIL_SMTP_HOST/PORT/USERNAME/PASSWORD/SECURITY: required for Dashboard Subscriptions and Alerts to send email; use SendGrid or AWS SES SMTP relay.",
+            "MB_SLACK_TOKEN: Slack Bot Token for Slack alerts and dashboard subscriptions; obtain by creating a Slack App with chat:write and files:write scopes.",
+            "MB_ENCRYPTION_SECRET_KEY: 16+ character string used to encrypt database credentials stored in Metabase's internal DB — set once, never change (changing it breaks all saved connections).",
+            "MB_EMBEDDING_SECRET_KEY: separate secret for signing JWT tokens for static embedding — generate with: openssl rand -hex 32.",
+            "JAVA_OPTS: set -Xmx2g for 2GB heap minimum; -Xmx4g recommended for dashboards with 5+ concurrent users querying multiple data sources.",
+            "MB_PLUGINS_DIR: path to directory inside container for custom driver JARs; mount as emptyDir or ConfigMap-sourced volume."
+          ]
+        }
+      ]
+    },
+
+    "layer_1_k8s_deployment": {
+      "concept": "Kubernetes Deployment — Helm Charts and Production Patterns",
+      "truth_lens": [
+        {
+          "concept": "helm_chart_landscape",
+          "truths": [
+            "Metabase does NOT maintain an official Helm chart as of 2025. Three community options exist with different tradeoffs.",
+            "Option 1 — pmint93/helm-charts (most mature, most used): helm repo add pmint93 https://pmint93.github.io/helm-charts && helm install metabase pmint93/metabase. Supports: database.type=postgres, ingress, resources, env overrides. GitHub: github.com/pmint93/helm-charts. Maintained as of 2025.",
+            "Option 2 — unagex/metabase-operator (K8s Operator pattern, CRD-based): helm repo add metabase-operator-charts https://unagex.github.io/metabase-operator && helm install metabase-operator metabase-operator-charts/metabase-operator. Apply Metabase CRD: kubectl apply -f https://raw.githubusercontent.com/unagex/metabase-operator/main/config/samples/v1_metabase.yaml. Creates dedicated PostgreSQL for Metabase internal DB automatically.",
+            "Option 3 — metabase-k8s on ArtifactHub (arconixforge/metabase-k8s): production-ready chart with StatefulSet, RBAC, Istio support, Pod Security Standards restricted level, pre-upgrade pg_dump backup hook.",
+            "Raw K8s manifests approach: Deployment (1 replica for OSS) + Service (ClusterIP on 3000) + Ingress (nginx + cert-manager TLS) — viable alternative if no Helm chart suits; manifests available at docs.vultr.com/how-to-deploy-metabase-on-kubernetes.",
+            "Bitnami charts WARNING: As of August 2025 Bitnami repo access is restricted for commercial users — do NOT use Bitnami PostgreSQL chart as a dependency without checking access. Use CloudNativePG or Zalando Postgres Operator instead."
+          ]
+        },
+        {
+          "concept": "production_values_yaml",
+          "truths": [
+            "Recommended pmint93 chart values.yaml structure for PR analytics deployment:",
+            "image.tag: v0.54.x (pin to specific version, never latest in production).",
+            "replicaCount: 1 for OSS (Metabase OSS uses H2 or single-writer PostgreSQL — horizontal scaling requires Pro). Set to 2 only with external PostgreSQL internal DB and session affinity Ingress.",
+            "resources.requests: {cpu: '500m', memory: '2Gi'}; resources.limits: {cpu: '2000m', memory: '4Gi'} — Metabase JVM needs burst headroom.",
+            "database.type: postgres; database.host: <postgres-service>; database.port: 5432; database.dbname: metabase; database.existingSecret: metabase-db-secret (K8s Secret with keys: username, password).",
+            "ingress.enabled: true; ingress.hosts[0].host: analytics.sonoratek.com; ingress.tls[0].secretName: metabase-tls; use cert-manager annotation: cert-manager.io/cluster-issuer: letsencrypt-prod.",
+            "env array: add MB_SITE_URL, MB_ENCRYPTION_SECRET_KEY (from Secret), MB_EMBEDDING_SECRET_KEY (from Secret), JAVA_OPTS=-Xmx3g.",
+            "Pre-upgrade backup hook (metabase-k8s chart): set backup.enabled: true; backup.postgresImage: postgres:17 — runs pg_dump before helm upgrade to prevent data loss.",
+            "Health checks: livenessProbe and readinessProbe on /api/health endpoint; Metabase takes 60-120 seconds to start — set initialDelaySeconds: 120."
+          ]
+        },
+        {
+          "concept": "k3s_specific",
+          "truths": [
+            "K3s compatibility: Metabase runs identically on K3s as on full K8s — no special configuration required.",
+            "Traefik Ingress (K3s default): replace nginx Ingress annotations with traefik.ingress.kubernetes.io/router.entrypoints: websecure and traefik.ingress.kubernetes.io/router.tls: 'true'.",
+            "Local storage for PostgreSQL PVC on K3s: StorageClass local-path is available by default on K3s — suitable for single-node; use Longhorn for multi-node HA storage.",
+            "Resource constrained K3s nodes: reduce JAVA_OPTS to -Xmx1500m and resources.requests.memory: '1.5Gi' for nodes with under 4GB RAM.",
+            "cert-manager on K3s: install with kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.0/cert-manager.yaml — works identically to full K8s."
+          ]
+        }
+      ]
+    },
+
+    "layer_2_data_sources": {
+      "concept": "Data Source Connections for PR Analytics",
+      "truth_lens": [
+        {
+          "concept": "twenty_crm_connection",
+          "truths": [
+            "Twenty CRM uses PostgreSQL as its data store — connect Metabase directly to the same PostgreSQL cluster using a dedicated read-only role.",
+            "Create read-only role: CREATE ROLE metabase_reader WITH LOGIN PASSWORD 'xxx'; GRANT CONNECT ON DATABASE twenty TO metabase_reader; GRANT USAGE ON SCHEMA public TO metabase_reader; GRANT SELECT ON ALL TABLES IN SCHEMA public TO metabase_reader; ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO metabase_reader.",
+            "Key tables in Twenty CRM for PR analytics: people (journalist contacts), companies (media outlets), opportunities (pitch pipeline), activities (interaction history), custom object tables for JournalistContact and PitchOpportunity.",
+            "Twenty custom objects are stored as tables named after the object — inspect with: SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'custom_%'.",
+            "Warmth score distribution query: SELECT warmth_score, COUNT(*) as journalist_count FROM journalist_contacts GROUP BY warmth_score ORDER BY warmth_score.",
+            "Pitch funnel query: SELECT stage, COUNT(*) FROM pitch_opportunities WHERE created_at >= NOW() - INTERVAL '90 days' GROUP BY stage.",
+            "Metabase sync schedule for Twenty CRM: every 1 hour (journalists and opportunities change frequently); field scan: weekly."
+          ]
+        },
+        {
+          "concept": "plane_connection",
+          "truths": [
+            "Plane.so uses PostgreSQL — connect with a read-only role to the plane database (default database name: plane).",
+            "Key Plane tables: issues (all tasks with state, priority, labels, assignee, created_at, completed_at, cycle_id, module_id), cycles (6-week Shape Up sprints), modules (PR campaigns), projects, workspaces.",
+            "Completed vs created issue rate query (weekly): SELECT DATE_TRUNC('week', created_at) as week, COUNT(*) FILTER (WHERE state IN ('Done','Completed')) as completed, COUNT(*) as created FROM issues WHERE project_id = 'pr-project-uuid' GROUP BY week ORDER BY week.",
+            "Open issues by label query (for @pitch/@draft/@review/@monitor context): SELECT label, COUNT(*) FROM issues JOIN issue_labels ON issues.id = issue_labels.issue_id WHERE completed_at IS NULL GROUP BY label.",
+            "Cycle burn-up: SELECT cycle_id, COUNT(*) FILTER (WHERE completed_at IS NOT NULL) as done, COUNT(*) as total FROM issues WHERE cycle_id IS NOT NULL GROUP BY cycle_id.",
+            "Metabase sync schedule for Plane: every 30 minutes; field scan: weekly."
+          ]
+        },
+        {
+          "concept": "analytics_ingestion_database",
+          "truths": [
+            "Create a dedicated PostgreSQL database named analytics_db (or a separate schema analytics within the main PG cluster) for all metrics that come from external APIs — this is the single analytics source of truth.",
+            "Table: linkedin_metrics (id, metric_date DATE, metric_type VARCHAR, value NUMERIC, post_id VARCHAR, post_type VARCHAR, synced_at TIMESTAMP) — populated by weekly n8n/Windmill job via LinkedIn Analytics API.",
+            "Table: newsletter_metrics (id, issue_date DATE, campaign_id VARCHAR, recipients INT, opens INT, open_rate NUMERIC, clicks INT, click_rate NUMERIC, new_subscribers INT, unsubscribes INT, synced_at TIMESTAMP) — populated by Beehiiv webhook on each newsletter send.",
+            "Table: media_coverage (id, coverage_date DATE, outlet_name VARCHAR, outlet_tier INT, headline TEXT, url TEXT, journalist_name VARCHAR, campaign_id VARCHAR, utm_source VARCHAR, created_at TIMESTAMP) — populated by Brand24 webhook on Tier 1-2 mentions + manual entry for major coverage.",
+            "Table: web_referral_traffic (id, date DATE, source VARCHAR, medium VARCHAR, campaign VARCHAR, sessions INT, new_users INT, conversions INT, synced_at TIMESTAMP) — populated by weekly GA4 Data API export job.",
+            "Table: pr_okr_targets (id, quarter VARCHAR, kr_id VARCHAR, kr_name TEXT, target_value NUMERIC, unit VARCHAR) — manually populated once per quarter as OKR planning output; used as JOIN target for all KR visualizations.",
+            "Metabase sync schedule for analytics_db: every 15 minutes (webhook-driven tables update frequently); field scan: daily."
+          ]
+        },
+        {
+          "concept": "ring_platform_app_connection",
+          "truths": [
+            "Ring Platform application database (PostgreSQL): connect with read-only role to query user signups attributed to PR campaigns via UTM parameters.",
+            "UTM attribution table query: SELECT utm_source, utm_campaign, COUNT(*) as signups, COUNT(*) FILTER (WHERE subscription_tier != 'free') as paid_conversions FROM users WHERE utm_source IS NOT NULL AND created_at >= NOW() - INTERVAL '90 days' GROUP BY utm_source, utm_campaign ORDER BY signups DESC.",
+            "PR-to-signup funnel: sessions from web_referral_traffic JOIN signups from Ring Platform app on campaign + date — cross-database join requires either: (a) connecting both as separate Metabase data sources and using SQL with dblink, or (b) ETL both into analytics_db first (preferred).",
+            "Connect application database read-only — never use the same database user that the Ring Platform application uses."
+          ]
+        }
+      ]
+    },
+
+    "layer_3_dashboard_architecture": {
+      "concept": "PR Dashboard Design — Four Core Dashboards",
+      "truth_lens": [
+        {
+          "concept": "dashboard_1_okr_scorecard",
+          "truths": [
+            "Dashboard 1: OKR Scorecard — top-level view for founder. Refresh: daily. Audience: CEO, investors. Location: /PR Team/Dashboards/OKR Scorecard.",
+            "Card 1 — Tier 1 placements this quarter: SQL: SELECT COUNT(*) FROM media_coverage WHERE outlet_tier = 1 AND coverage_date >= DATE_TRUNC('quarter', NOW()). Visualization: Progress Bar with Goal = KR target from pr_okr_targets. Renders as a horizontal bar filling toward target.",
+            "Card 2 — Journalist warmth score distribution: SQL: SELECT warmth_score::TEXT as score, COUNT(*) FROM journalist_contacts GROUP BY warmth_score ORDER BY warmth_score. Visualization: Bar Chart. Goal line overlay at target count of warmth ≥ 4 contacts.",
+            "Card 3 — Newsletter subscriber growth: SQL: SELECT SUM(new_subscribers) - SUM(unsubscribes) as net_growth, SUM(new_subscribers) as gross_adds FROM newsletter_metrics WHERE issue_date >= DATE_TRUNC('quarter', NOW()). Visualization: Scalar (number) with comparison to last quarter.",
+            "Card 4 — LinkedIn follower trend: SQL: SELECT metric_date, value FROM linkedin_metrics WHERE metric_type = 'follower_count' ORDER BY metric_date. Visualization: Line chart with goal line at quarterly target.",
+            "Card 5 — OKR confidence table: manually updated table or SQL from a pr_okr_confidence table (id, kr_id, confidence_score INT, updated_at TIMESTAMP, note TEXT). Visualization: Table with conditional formatting (red < 5, yellow 5-7, green >= 8).",
+            "Dashboard filter: Quarter selector (dropdown linked to all cards via date parameters) — allows retroactive quarter review."
+          ]
+        },
+        {
+          "concept": "dashboard_2_media_coverage_funnel",
+          "truths": [
+            "Dashboard 2: Media Coverage Funnel — pitch-to-publication conversion rates. Refresh: weekly. Audience: PR team.",
+            "Card 1 — Pipeline funnel: SELECT stage, COUNT(*) FROM pitch_opportunities GROUP BY stage ORDER BY CASE stage WHEN 'identified' THEN 1 WHEN 'drafted' THEN 2 WHEN 'pitched' THEN 3 WHEN 'interested' THEN 4 WHEN 'published' THEN 5 WHEN 'declined' THEN 6 END. Visualization: Funnel chart.",
+            "Card 2 — Conversion rates: SQL calculates pitched→interested (%), interested→published (%) as separate scalar cards.",
+            "Card 3 — Journalists pitched this month with no follow-up (action list): SELECT j.name, j.email, p.created_at, p.stage FROM pitch_opportunities p JOIN journalist_contacts j ON p.contact_id = j.id WHERE p.stage = 'pitched' AND p.created_at < NOW() - INTERVAL '3 days' AND p.last_followup_at IS NULL ORDER BY p.created_at. Visualization: Table with conditional formatting on created_at (red if > 7 days ago).",
+            "Card 4 — Coverage by outlet tier this month: SELECT outlet_tier, COUNT(*) FROM media_coverage WHERE coverage_date >= DATE_TRUNC('month', NOW()) GROUP BY outlet_tier. Visualization: Row chart.",
+            "Card 5 — Open pitch opportunities by warmth score: SELECT j.warmth_score, COUNT(p.*) FROM pitch_opportunities p JOIN journalist_contacts j ON p.contact_id = j.id WHERE p.stage NOT IN ('published','declined') GROUP BY j.warmth_score. Visualization: Stacked bar."
+          ]
+        },
+        {
+          "concept": "dashboard_3_content_performance",
+          "truths": [
+            "Dashboard 3: Content Performance — what content is working. Refresh: weekly.",
+            "Card 1 — LinkedIn post reach by post type: SELECT post_type, AVG(value) as avg_impressions FROM linkedin_metrics WHERE metric_type = 'impressions' GROUP BY post_type. Visualization: Bar chart.",
+            "Card 2 — Newsletter open rate trend: SELECT issue_date, open_rate FROM newsletter_metrics ORDER BY issue_date. Visualization: Line chart with goal line at 30% open rate target.",
+            "Card 3 — Newsletter MoM subscriber growth rate: SELECT metric_date, ((current_subscribers - LAG(current_subscribers) OVER (ORDER BY metric_date)) / LAG(current_subscribers) OVER (ORDER BY metric_date)) * 100 as mom_growth_pct FROM (SELECT metric_date, SUM(value) as current_subscribers FROM linkedin_metrics WHERE metric_type = 'follower_count' GROUP BY metric_date) sub. Visualization: Line chart.",
+            "Card 4 — Press release coverage earned (per release): SELECT headline as release, COUNT(mc.*) as coverage_pieces FROM press_releases pr LEFT JOIN media_coverage mc ON mc.campaign_id = pr.campaign_id GROUP BY pr.headline. Visualization: Table.",
+            "Card 5 — Social post engagement rate by platform: calculated from platform-specific ingestion tables. Visualization: Combined bar chart."
+          ]
+        },
+        {
+          "concept": "dashboard_4_campaign_roi",
+          "truths": [
+            "Dashboard 4: Campaign ROI — connecting PR effort to business outcomes. Refresh: weekly.",
+            "Card 1 — Web traffic from press coverage by campaign: SELECT campaign, SUM(sessions) FROM web_referral_traffic WHERE medium = 'press' GROUP BY campaign. Visualization: Row chart.",
+            "Card 2 — Signups attributed to PR campaigns (cross-source): requires ETL of Ring Platform signups into analytics_db; SELECT utm_campaign, COUNT(*) as signups FROM pr_attributed_signups GROUP BY utm_campaign ORDER BY signups DESC. Visualization: Table.",
+            "Card 3 — PR vs paid cost per signup: if ad spend is tracked in a pr_budget table: total budget / conversions. Visualization: Scalar with comparison card.",
+            "Card 4 — Top 5 referring media outlets (by sessions): SELECT source, SUM(sessions) as sessions FROM web_referral_traffic WHERE medium IN ('press','referral') GROUP BY source ORDER BY sessions DESC LIMIT 5. Visualization: Table.",
+            "Dashboard filter: Date range selector + Campaign selector (linked to all cards)."
+          ]
+        }
+      ]
+    },
+
+    "layer_4_questions_and_alerts": {
+      "concept": "Metabase Questions, Alerts, and Dashboard Subscriptions",
+      "truth_lens": [
+        {
+          "concept": "canonical_sql_questions",
+          "truths": [
+            "Question: 'Journalists pitched in last 30 days with no follow-up' — SQL: SELECT j.full_name, j.email, o.outlet_name, p.created_at::DATE as pitched_on, NOW()::DATE - p.created_at::DATE as days_since FROM pitch_opportunities p JOIN journalist_contacts j ON p.contact_id = j.id JOIN media_outlets o ON j.outlet_id = o.id WHERE p.stage = 'pitched' AND p.created_at >= NOW() - INTERVAL '30 days' AND p.last_followup_at IS NULL ORDER BY p.created_at; Save as Question, add to Dashboard 2 as action table.",
+            "Question: 'Open PitchOpportunity count by warmth score' — SQL: SELECT j.warmth_score, COUNT(*) as open_pitches FROM pitch_opportunities p JOIN journalist_contacts j ON p.contact_id = j.id WHERE p.stage NOT IN ('published','declined','cancelled') GROUP BY j.warmth_score ORDER BY j.warmth_score; Visualization: Bar chart.",
+            "Question: 'Newsletter subscriber MoM growth rate' — SQL: SELECT issue_date, new_subscribers, unsubscribes, SUM(new_subscribers - unsubscribes) OVER (ORDER BY issue_date) as cumulative_net FROM newsletter_metrics ORDER BY issue_date; Visualization: Line chart (dual-axis: bars for new/unsub, line for cumulative).",
+            "Question: 'Plane issues completed vs created per week' — SQL: SELECT DATE_TRUNC('week', created_at) as week, COUNT(*) FILTER (WHERE completed_at IS NOT NULL) as completed, COUNT(*) as created FROM issues WHERE project_id IN ('media-relations-id','content-production-id') AND created_at >= NOW() - INTERVAL '90 days' GROUP BY week ORDER BY week; Visualization: Line chart.",
+            "Question: 'Tier 1 coverage this quarter vs target' — SQL: SELECT COUNT(*) as actual, (SELECT target_value FROM pr_okr_targets WHERE kr_id = 'tier1-placements' AND quarter = TO_CHAR(NOW(), 'YYYY-Q')) as target FROM media_coverage WHERE outlet_tier = 1 AND coverage_date >= DATE_TRUNC('quarter', NOW()); Visualization: Progress bar.",
+            "Question: 'Campaign ROI — PR sessions to signups funnel' — SQL: SELECT w.campaign, SUM(w.sessions) as sessions, COUNT(s.id) as signups, ROUND(COUNT(s.id)::NUMERIC / NULLIF(SUM(w.sessions), 0) * 100, 2) as conversion_pct FROM web_referral_traffic w LEFT JOIN pr_attributed_signups s ON s.utm_campaign = w.campaign GROUP BY w.campaign ORDER BY sessions DESC; Visualization: Table with conditional formatting on conversion_pct."
+          ]
+        },
+        {
+          "concept": "alerts_configuration",
+          "truths": [
+            "Metabase Alerts fire when a saved Question returns results (any rows) OR crosses a Goal Line. Navigate to: saved Question → three-dot menu → 'Get alerts about this'.",
+            "Alert types: (1) Results-based: fires when question returns ANY result — use for 'Journalists pitched >7 days with no follow-up'; (2) Goal-line: fires when a time-series crosses above or below a threshold — use for 'Newsletter open rate drops below 25%'; (3) Progress bar: fires when progress bar reaches or drops from its goal.",
+            "Alert destinations: Email (to Metabase users or arbitrary email addresses) OR Slack channel (requires MB_SLACK_TOKEN Slack App setup). Mattermost: use Metabase Webhook alert type — Mattermost exposes incoming webhooks compatible with Slack format; set in Admin > Settings > Notification channels > Add webhook.",
+            "Alert schedule: hourly, daily (at time), or weekly (on day at time) — choose based on metric volatility. 'Overdue follow-ups' → daily 9am; 'Newsletter open rate' → after each send (use webhook trigger from Beehiiv → n8n → POST to Metabase API to force a check).",
+            "Known issue: Metabase v0.54.1 had a regression where scheduled alerts showed 'success' in task log but notifications were not sent. Fixed in v0.54.2+. Always test with 'Send now' button after configuring.",
+            "Alert to Mattermost via webhook: Admin > Settings > Notification channels > Add notification channel > type: HTTP (webhook). Paste Mattermost incoming webhook URL. When alert fires, Metabase POSTs a JSON payload with question results rendered as PNG image attachment — Mattermost displays it in the channel.",
+            "Dashboard Subscriptions (separate from Alerts): Admin-only feature to send full dashboard screenshots via email or Slack on a schedule. Navigate to: Dashboard → Share icon → 'Subscribe'. Set: frequency (weekly on Monday 8am for founder OKR digest), destination (founder email + #pr-approvals Slack/Mattermost channel), filter values (current quarter)."
+          ]
+        },
+        {
+          "concept": "static_embedding",
+          "truths": [
+            "Static embedding (signed JWT, OSS-compatible): allows Metabase questions and dashboards to be displayed in iframes without requiring Metabase accounts for viewers.",
+            "Setup: Admin > Settings > Embedding > Static. Toggle 'Enable static embedding'. Note the Embedding Secret Key (MB_EMBEDDING_SECRET_KEY).",
+            "Make a dashboard embeddable: Dashboard > Share icon > Embed > toggle 'Editable embedding' > Publish.",
+            "Generate signed JWT (Node.js example): const jwt = require('jsonwebtoken'); const token = jwt.sign({resource: {dashboard: DASHBOARD_ID}, params: {}, exp: Math.round(Date.now() / 1000) + 600}, METABASE_SECRET_KEY); const iframeUrl = `${METABASE_SITE_URL}/embed/dashboard/${token}#bordered=false&titled=true`;",
+            "Embed in Mattermost weekly report: n8n/Windmill script generates signed JWT for OKR Scorecard dashboard, screenshots via headless Chromium (Puppeteer), uploads PNG to Mattermost file attachment in weekly agent report to #pr-approvals.",
+            "Embed in Outline wiki: paste iframe HTML into an Outline document using the /Embed block — requires Outline to whitelist the Metabase domain in its CSP. Alternative: paste screenshot PNG from weekly ingestion job.",
+            "Lock parameters in embedding: pass locked filter values in JWT params object so embedded dashboard shows only current quarter data: params: {quarter: '2026-Q1'}.",
+            "Security note: Embedding Secret Key is shared across all static embeds — store in K8s Secret, never in values.yaml plaintext. Rotate via Admin > Settings > Embedding > Regenerate key (requires updating all server-side JWT signing code).",
+            "OSS banner: Metabase OSS displays a 'Made with Metabase' banner on embedded iframes. Remove by upgrading to Pro ($500/month) or self-branding via CSS override (inspect iframe and override .EmbedFrame-footer display:none — cosmetic only, not recommended)."
+          ]
+        },
+        {
+          "concept": "rest_api_patterns",
+          "truths": [
+            "Metabase REST API base: https://<metabase-host>/api/. Authentication: POST /api/session with {username, password} → returns {id: 'session-token'}; add header X-Metabase-Session: <token> to all subsequent requests. For automation use API keys (Admin > Settings > API keys) available in Metabase v0.46+.",
+            "Query a saved Question via API: POST /api/card/:id/query — returns question results as JSON. Useful for Windmill/n8n agents that need to fetch current metric values programmatically.",
+            "Create a Question via API: POST /api/card with body: {name, dataset_query: {database: DB_ID, type: 'native', native: {query: 'SELECT...'}}, display: 'bar', collection_id: COLLECTION_ID}.",
+            "Export question results: GET /api/card/:id/query/csv — returns raw CSV for ingestion or report attachment.",
+            "Get dashboard definition: GET /api/dashboard/:id — returns full dashboard metadata including cards and their positions.",
+            "Force a dashboard subscription send: Metabase does not expose a direct API to trigger a subscription. Workaround: use Metabase's Pulse API (legacy): POST /api/pulse/:id/send — works for Pulses (deprecated in newer Metabase but still functional). Preferred modern approach: trigger alert via question result + 'Send now' button is UI only; for programmatic sends, use Windmill to fetch question results via API and format/send via Mattermost webhook directly.",
+            "Collections API: GET /api/collection — list all collections; POST /api/collection — create collection for PARA organization; PUT /api/collection/:id/items — move items between collections."
+          ]
+        }
+      ]
+    },
+
+    "layer_5_data_ingestion": {
+      "concept": "External Metrics Ingestion Pipelines",
+      "truth_lens": [
+        {
+          "concept": "linkedin_ingestion",
+          "truths": [
+            "LinkedIn Analytics API (LinkedIn Marketing Developer Platform): requires approved Developer App with r_organization_social and r_analytics permissions — approval can take 2-4 weeks. Alternative for personal profile metrics: LinkedIn does not offer personal profile API — scrape or use third-party tools (Taplio, Shield) that export CSV.",
+            "Organization page metrics via API: GET https://api.linkedin.com/v2/organizationalEntityFollowerStatistics?q=organizationalEntity&organizationalEntity=urn:li:organization:YOUR_ORG_ID — returns follower count, growth. Use with Authorization: Bearer <access_token>.",
+            "n8n LinkedIn ingestion workflow: Schedule trigger (weekly Monday 6am) → HTTP Request node (LinkedIn API) → Set node (map fields to analytics_db schema) → Postgres node (INSERT INTO linkedin_metrics ... ON CONFLICT (metric_date, metric_type) DO UPDATE).",
+            "Windmill TypeScript alternative: const response = await fetch('https://api.linkedin.com/v2/...', {headers: {Authorization: `Bearer ${resources.linkedin_token}`}}); — insert results via pg client to analytics_db.linkedin_metrics.",
+            "Fallback if API access not yet approved: LinkedIn native analytics CSV export (Company page → Analytics → Download) → upload to n8n → parse CSV → insert to DB. Weekly cadence."
+          ]
+        },
+        {
+          "concept": "beehiiv_ingestion",
+          "truths": [
+            "Beehiiv API v2: https://api.beehiiv.com/v2/. API Key from Beehiiv dashboard Settings > API. Endpoints: GET /publications/:id/subscriptions (subscriber count), GET /publications/:id/posts (list posts with stats).",
+            "Beehiiv webhook: Settings > Webhooks > Add webhook — events: post.sent, subscriber.created, subscriber.deleted. Webhook POST fires immediately on event.",
+            "n8n Beehiiv webhook workflow: Webhook trigger node (receives Beehiiv event) → Switch node (event type: post.sent → fetch post stats via API; subscriber.created → increment count; subscriber.deleted → decrement count) → Postgres node (INSERT INTO newsletter_metrics or UPDATE subscriber_count).",
+            "Post stats fetch: GET /publications/:id/posts/:post_id — returns {subject, send_at, recipients, open_rate, click_rate, unsubscribes}. Map to analytics_db.newsletter_metrics table.",
+            "Beehiiv subscriber endpoint for current count: GET /publications/:id/subscriptions?status=active&limit=1 — check X-Total-Count response header for total active subscribers."
+          ]
+        },
+        {
+          "concept": "brand24_ingestion",
+          "truths": [
+            "Brand24 webhook: Settings > Integrations > Webhooks — configure webhook URL pointing to n8n/Windmill; fires on each new mention detected.",
+            "Brand24 mention webhook payload contains: {mention_id, source, domain, url, title, snippet, sentiment, date, author_name, reach, importance}.",
+            "n8n Brand24 webhook workflow: Webhook trigger → IF node (sentiment == 'negative' AND reach > 10000 → Mattermost urgent alert; source domain in tier1_outlets list → INSERT to media_coverage table AND Mattermost standard alert; else → log only).",
+            "Tier 1 outlet domain list maintained as n8n static data or Postgres lookup table: {techcrunch.com, wired.com, theverge.com, forbes.com, wsj.com, bbc.com, reuters.com, sifted.eu, tech.eu}.",
+            "INSERT into analytics_db.media_coverage: INSERT INTO media_coverage (coverage_date, outlet_name, outlet_tier, headline, url, journalist_name, synced_at) VALUES (...) ON CONFLICT (url) DO NOTHING — deduplicate by URL."
+          ]
+        },
+        {
+          "concept": "ga4_ingestion",
+          "truths": [
+            "GA4 Data API: Google Analytics Data API v1 (analyticsdata.googleapis.com). Authentication: Service Account with Viewer role on GA4 property. Python: google-analytics-data package; TypeScript: @google-analytics/data.",
+            "Key report for PR attribution: RunReport with dimensions [sessionSource, sessionMedium, sessionCampaignName, date] and metrics [sessions, newUsers, conversions] for sessions where sessionMedium = 'press' OR sessionSource IN (tier1 outlet domains).",
+            "Weekly ingestion job (Windmill Python script): run every Monday → fetch last 7 days from GA4 → INSERT into analytics_db.web_referral_traffic ON CONFLICT (date, source, medium, campaign) DO UPDATE SET sessions = EXCLUDED.sessions.",
+            "GA4 → Ring Platform signup attribution: requires consistent UTM parameter usage in all press release links and social posts. Standard pattern: utm_source=techcrunch.com&utm_medium=press&utm_campaign=series-a-2026-q1."
+          ]
+        }
+      ]
+    },
+
+    "layer_6_collections_and_permissions": {
+      "concept": "Metabase Collections, Permissions, and Governance",
+      "truth_lens": [
+        {
+          "concept": "collection_architecture",
+          "truths": [
+            "Collections are Metabase's folder + permission system. Structure for PR analytics: /PR Team (private, PR team members only), /PR Team/Dashboards (four core PR dashboards), /PR Team/Questions (all saved SQL questions — building blocks), /PR Team/Data Exploration (sandbox for ad-hoc analysis), /Founder View (read-only collection shared with CEO — contains only polished dashboards), /Public (embeddable collection for Mattermost/Outline embedding — no sensitive journalist data).",
+            "Groups and permissions: create group 'PR Analysts' (full access to /PR Team, read-only to /Founder View); group 'Founder' (read-only to /Founder View only); group 'Agents' (API key access, collection-level read/write for automation).",
+            "Data permissions: grant 'PR Analysts' group Unrestricted access to analytics_db and Plane DB; Restricted (no raw data access) to Ring Platform app DB — they can only use pre-built Questions that query it.",
+            "Never put journalist personal data (email addresses, phone numbers) in the /Public collection or in embeddable Questions — these are accessible without authentication via public links."
+          ]
+        },
+        {
+          "concept": "governance",
+          "truths": [
+            "Naming convention for Questions: [Dashboard#]-[Metric Name]-[Granularity] e.g. '2-Pitch Funnel Conversion Rates-Monthly', '1-Tier1 Placements vs Target-QTD'.",
+            "Version control for Questions: Metabase stores revision history for Questions and Dashboards — use the Revision History button to roll back incorrect query changes.",
+            "Archiving stale Questions: quarterly review — archive Questions not used in any dashboard in last 90 days (Metabase usage stats available in Admin > Analytics for Pro users; OSS: query metabase internal DB view_log table).",
+            "Database connection health monitoring: Admin > Databases — check Last synced timestamp for each connection. If sync fails due to schema migration in Twenty CRM or Plane upgrade, re-trigger sync manually and verify affected Questions still return results."
+          ]
+        }
+      ]
+    },
+
+    "layer_7_anti_patterns": {
+      "concept": "Anti-Patterns — What to Never Do",
+      "truth_lens": [
+        {
+          "concept": "data_source_anti_patterns",
+          "truths": [
+            "NEVER connect to production databases with the application's primary database user — always create a dedicated read-only role per data source. A Metabase misconfiguration or SQL injection via a Question could destroy production data.",
+            "NEVER use H2 for the Metabase internal database in production — H2 is a single-file embedded database with no concurrent write support; it will corrupt under simultaneous dashboard load and cannot be backed up reliably.",
+            "NEVER use Metabase's 'sync on demand' without also setting up scheduled syncs — if a new field is added to the analytics ingestion schema, Metabase won't know about it until a sync runs.",
+            "NEVER build dashboards without first defining numeric OKR targets in pr_okr_targets table — a chart showing '147 subscribers' with no target is meaningless for decision-making.",
+            "NEVER connect Metabase directly to LinkedIn, Twitter, or Beehiiv via their APIs — Metabase has no native API connector for these services. Always ingest first into PostgreSQL, then connect Metabase to PostgreSQL."
+          ]
+        },
+        {
+          "concept": "dashboard_anti_patterns",
+          "truths": [
+            "NEVER put all metrics on one dashboard — cognitive overload prevents action. The four-dashboard architecture (OKR Scorecard, Coverage Funnel, Content Performance, Campaign ROI) serves four distinct decision contexts.",
+            "NEVER create Questions directly inside a dashboard card (inline SQL) — always save as a named Question first. Inline SQL cannot be alerted on, cannot be reused across dashboards, and cannot be queried via the API.",
+            "NEVER schedule Dashboard Subscriptions to send before data ingestion jobs complete — if the GA4 ingestion job runs at 6am Monday and the founder subscription sends at 5am Monday, last week's data is missing. Stagger: ingestion completes by 5am, subscription sends at 7am.",
+            "NEVER leave alerts unowned — every alert must have a named human owner in the description and a documented response SLA. Alerts that fire into a #pr-approvals channel with no named owner get ignored.",
+            "NEVER use the default Metabase question name (e.g. 'Ad-hoc exploration 1') — rename immediately after saving. Unnamed questions cannot be found via search and create organizational debt.",
+            "NEVER use public embedding (UUID-based, no auth) for dashboards containing journalist personal data (emails, warmth scores, pitch content) — public links are guessable and accessible to anyone with the URL. Use signed JWT static embedding or restrict to authenticated Metabase users only."
+          ]
+        },
+        {
+          "concept": "operational_anti_patterns",
+          "truths": [
+            "NEVER upgrade Metabase without running pg_dump on the internal database first — Metabase applies DB migrations on startup that cannot be rolled back without a backup.",
+            "NEVER store MB_ENCRYPTION_SECRET_KEY in values.yaml plaintext or in a ConfigMap — it encrypts database credentials; if exposed, all connected database passwords are compromised. Always use K8s Secret with secretKeyRef.",
+            "NEVER change MB_ENCRYPTION_SECRET_KEY after initial deployment — all stored database connection passwords are encrypted with this key; changing it breaks all connections silently.",
+            "NEVER configure Alerts to send to a Slack/Mattermost channel without first testing with 'Send now' button — scheduled alerts have had reliability issues in specific Metabase versions (confirmed v0.54.1 regression); always verify delivery before relying on them.",
+            "NEVER run Metabase with more than 1 replica on OSS without confirming external PostgreSQL internal DB is configured — multiple replicas sharing an H2 internal DB will corrupt data."
+          ]
+        }
+      ]
+    }
+  },
+
+  "postgresql_schemas": {
+    "analytics_db_ddl": [
+      "CREATE TABLE linkedin_metrics (id BIGSERIAL PRIMARY KEY, metric_date DATE NOT NULL, metric_type VARCHAR(64) NOT NULL, value NUMERIC NOT NULL, post_id VARCHAR(128), post_type VARCHAR(64), synced_at TIMESTAMPTZ DEFAULT NOW(), UNIQUE(metric_date, metric_type, COALESCE(post_id, '')));",
+      "CREATE TABLE newsletter_metrics (id BIGSERIAL PRIMARY KEY, issue_date DATE NOT NULL, campaign_id VARCHAR(128) UNIQUE, recipients INT, opens INT, open_rate NUMERIC(5,4), clicks INT, click_rate NUMERIC(5,4), new_subscribers INT DEFAULT 0, unsubscribes INT DEFAULT 0, synced_at TIMESTAMPTZ DEFAULT NOW());",
+      "CREATE TABLE media_coverage (id BIGSERIAL PRIMARY KEY, coverage_date DATE NOT NULL, outlet_name VARCHAR(255), outlet_tier INT CHECK (outlet_tier BETWEEN 1 AND 3), headline TEXT, url TEXT UNIQUE, journalist_name VARCHAR(255), campaign_id VARCHAR(128), utm_source VARCHAR(255), created_at TIMESTAMPTZ DEFAULT NOW());",
+      "CREATE TABLE web_referral_traffic (id BIGSERIAL PRIMARY KEY, date DATE NOT NULL, source VARCHAR(255), medium VARCHAR(64), campaign VARCHAR(255), sessions INT DEFAULT 0, new_users INT DEFAULT 0, conversions INT DEFAULT 0, synced_at TIMESTAMPTZ DEFAULT NOW(), UNIQUE(date, source, medium, COALESCE(campaign, '')));",
+      "CREATE TABLE pr_okr_targets (id BIGSERIAL PRIMARY KEY, quarter VARCHAR(8) NOT NULL, kr_id VARCHAR(64) NOT NULL, kr_name TEXT NOT NULL, target_value NUMERIC NOT NULL, unit VARCHAR(32), UNIQUE(quarter, kr_id));",
+      "CREATE TABLE pr_okr_confidence (id BIGSERIAL PRIMARY KEY, kr_id VARCHAR(64) NOT NULL, quarter VARCHAR(8) NOT NULL, confidence_score INT CHECK (confidence_score BETWEEN 1 AND 10), note TEXT, updated_at TIMESTAMPTZ DEFAULT NOW(), UNIQUE(kr_id, quarter));",
+      "CREATE ROLE metabase_reader WITH LOGIN PASSWORD 'CHANGE_ME_STRONG_PASSWORD'; GRANT CONNECT ON DATABASE analytics_db TO metabase_reader; GRANT USAGE ON SCHEMA public TO metabase_reader; GRANT SELECT ON ALL TABLES IN SCHEMA public TO metabase_reader; ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO metabase_reader;"
+    ]
+  },
+
+  "jq_usage_guide": {
+    "examples": [
+      ".knowledge_layers.layer_0_architecture.truth_lens[] | select(.concept==\"production_configuration_requirements\") | .truths[]",
+      ".knowledge_layers.layer_1_k8s_deployment.truth_lens[] | select(.concept==\"helm_chart_landscape\") | .truths[]",
+      ".knowledge_layers.layer_1_k8s_deployment.truth_lens[] | select(.concept==\"k3s_specific\") | .truths[]",
+      ".knowledge_layers.layer_2_data_sources.truth_lens[] | select(.concept==\"analytics_ingestion_database\") | .truths[]",
+      ".knowledge_layers.layer_3_dashboard_architecture.truth_lens[] | select(.concept==\"dashboard_2_media_coverage_funnel\") | .truths[]",
+      ".knowledge_layers.layer_4_questions_and_alerts.truth_lens[] | select(.concept==\"canonical_sql_questions\") | .truths[]",
+      ".knowledge_layers.layer_4_questions_and_alerts.truth_lens[] | select(.concept==\"alerts_configuration\") | .truths[]",
+      ".knowledge_layers.layer_4_questions_and_alerts.truth_lens[] | select(.concept==\"static_embedding\") | .truths[]",
+      ".knowledge_layers.layer_5_data_ingestion.truth_lens[] | select(.concept==\"beehiiv_ingestion\") | .truths[]",
+      ".knowledge_layers.layer_7_anti_patterns.truth_lens[] | .truths[]",
+      ".postgresql_schemas.analytics_db_ddl[]",
+      ".core_principles[]"
+    ]
+  },
+
+  "related_skillsets": [
+    {
+      "id": "method-okr-pr-metrics",
+      "file": "method-okr-pr-metrics.json",
+      "relationship": "Provides the OKR framework and quarterly KR targets that populate pr_okr_targets table and anchor every Metabase dashboard card."
+    },
+    {
+      "id": "ops-twenty-crm-specialist",
+      "file": "ops-twenty-crm-specialist.json",
+      "relationship": "Primary data source for journalist contact metrics, warmth scores, and pitch opportunity pipeline — connected to Metabase as a read-only PostgreSQL data source."
+    },
+    {
+      "id": "ops-plane-pr-hub",
+      "file": "ops-plane-pr-hub.json",
+      "relationship": "Secondary data source for PR task metrics (issues completed vs created, cycle velocity) — connected to Metabase as a read-only PostgreSQL data source."
+    },
+    {
+      "id": "pr-monitoring-sentiment-analytics",
+      "file": "pr-monitoring-sentiment-analytics.json",
+      "relationship": "Brand24 monitoring feeds the media_coverage ingestion pipeline; share-of-voice calculations are built as Metabase Questions on top of the ingested data."
+    },
+    {
+      "id": "pr-automation-n8n-workflows",
+      "file": "pr-automation-n8n-workflows.json",
+      "relationship": "n8n workflows are the ingestion pipeline operators — LinkedIn API pull, Beehiiv webhook handler, Brand24 webhook handler, GA4 weekly export all feed analytics_db that Metabase queries."
+    },
+    {
+      "id": "conductor-pr-routing-agent",
+      "file": "conductor-pr-routing-agent.json",
+      "relationship": "Conductor agent queries Metabase REST API to fetch current OKR metric values when generating weekly founder reports; also receives Metabase webhook alerts and routes them to Mattermost approval channels."
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "devops_k8s_valero_backup",
+  "name": "Devops K8S Valero Backup",
+  "mission": {
+    "primary_objective": "Implement reliable Velero backup and disaster recovery solutions for Kubernetes clusters with S3/Minio storage, scheduled snapshots, and tested restore procedures",
+    "context": "You are a specialist. Your goal is to apply this expertise in context.",
+    "target_outcome": "Production-ready, correct outcomes aligned with the objective.",
+    "scope": "Expert in Kubernetes backup strategies using Velero, including volume snapshots, backup schedules, cross-cluster restores, and disaster recovery planning."
+  },
+  "truth_lens": "Expert in Kubernetes backup strategies using Velero, including volume snapshots, backup schedules, cross-cluster restores, and disaster recovery planning. Consult for backup implementation, restore procedures, and data protection.",
+  "consult_when": [
+    "devops k8s valero backup tasks",
+    "infrastructure configuration",
+    "deployment optimization"
+  ],
+  "key_patterns": [
+    "Configuration files and manifests",
+    "Best practices implementation",
+    "Troubleshooting and debugging"
+  ],
+  "expertise": [
+    "Domain specialist",
+    "Technical expertise",
+    "Best practices"
+  ],
+  "keywords": [
+    "devops",
+    "k8s",
+    "valero",
+    "backup"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "Devops K8S Valero Backup",
+  "role": "LegioX truth lens — Devops K8S Valero Backup",
+  "core_expertise": "Implement reliable Velero backup and disaster recovery solutions for Kubernetes clusters with S3/Minio storage, scheduled snapshots, and tested restore procedures",
+  "key_capabilities": [
+    "domain_specialist",
+    "technical_expertise",
+    "best_practices",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-04-11",
+  "updated": "2026-04-11",
+  "meta": {
+    "title": "K8s/K3s Daily Incremental PVC Backup to Ubuntu 24 Host Directory",
+    "strategy": "Velero 1.14+ with Kopia uploader + MinIO as local S3-compatible backend mounted on Ubuntu host dir",
+    "rationale": "Velero 1.14+ supports CSI snapshot → Kopia offsite upload pipeline. Kopia replaces restic with native incremental/deduplication. MinIO provides S3 API over a local hostpath, eliminating cloud dependency. Works on both k8s and k3s local-path storage classes without RWX requirement.",
+    "topology": "Ubuntu24 host runs MinIO container → exposes S3 endpoint → Velero node-agent (DaemonSet) uses Kopia to push PVC data to MinIO bucket → data lands in designated host dir",
+    "diff_mechanism": "Kopia content-addressable chunking provides automatic block-level deduplication and incremental-forever semantics per backup cycle"
+  },
+  "phase_0_host_prerequisites": {
+    "description": "Prepare Ubuntu 24 host before touching the cluster",
+    "steps": {
+      "1_create_backup_dir": {
+        "cmd": "mkdir -p /opt/k8s-backups/minio-data && chmod 750 /opt/k8s-backups/minio-data",
+        "note": "This is the designated host dir. Adjust path as needed."
+      },
+      "2_install_docker": {
+        "cmd": "apt-get update && apt-get install -y docker.io && systemctl enable --now docker"
+      },
+      "3_deploy_minio": {
+        "cmd": "docker run -d --name minio --restart=always -p 9000:9000 -p 9001:9001 -v /opt/k8s-backups/minio-data:/data -e MINIO_ROOT_USER=velero -e MINIO_ROOT_PASSWORD=CHANGE_ME_32CHARS quay.io/minio/minio server /data --console-address ':9001'",
+        "security_note": "Replace MINIO_ROOT_PASSWORD with a strong random value. TLS termination via nginx recommended for production."
+      },
+      "4_create_velero_bucket": {
+        "cmd": "docker run --rm --network host -e MC_HOST_local=http://velero:CHANGE_ME_32CHARS@localhost:9000 quay.io/minio/mc mb local/velero-backups"
+      },
+      "5_verify_minio": {
+        "cmd": "curl -s http://localhost:9000/minio/health/live && echo 'MinIO healthy'"
+      }
+    }
+  },
+  "phase_1_cluster_tooling": {
+    "description": "Install CLI tools on the machine that has kubeconfig access",
+    "steps": {
+      "1_install_velero_cli": {
+        "cmd": "VELERO_VERSION=v1.14.1 && curl -sSL https://github.com/vmware-tanzu/velero/releases/download/${VELERO_VERSION}/velero-${VELERO_VERSION}-linux-amd64.tar.gz | tar xz -C /tmp && mv /tmp/velero-${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/velero && velero version --client-only"
+      },
+      "2_add_velero_helm_repo": {
+        "cmd": "helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts && helm repo update"
+      }
+    }
+  },
+  "phase_2_velero_credentials": {
+    "description": "Create MinIO credentials secret consumed by Velero",
+    "steps": {
+      "1_create_credentials_file": {
+        "cmd": "cat > /tmp/velero-credentials << 'EOF'\n[default]\naws_access_key_id=velero\naws_secret_access_key=CHANGE_ME_32CHARS\nEOF",
+        "note": "Match the MinIO root credentials set in phase_0"
+      },
+      "2_create_namespace": {
+        "cmd": "kubectl create namespace velero --dry-run=client -o yaml | kubectl apply -f -"
+      },
+      "3_create_k8s_secret": {
+        "cmd": "kubectl create secret generic velero-s3-credentials --namespace velero --from-file=cloud=/tmp/velero-credentials --dry-run=client -o yaml | kubectl apply -f -"
+      }
+    }
+  },
+  "phase_3_velero_install": {
+    "description": "Install Velero via Helm with Kopia uploader targeting local MinIO",
+    "host_ip_placeholder": "UBUNTU_HOST_IP",
+    "steps": {
+      "1_create_values_yaml": {
+        "path": "/tmp/velero-values.yaml",
+        "content": {
+          "note": "Write this YAML verbatim",
+          "yaml": "initContainers:\n  - name: velero-plugin-for-aws\n    image: velero/velero-plugin-for-aws:v1.10.0\n    volumeMounts:\n      - mountPath: /target\n        name: plugins\n\nconfiguration:\n  uploaderType: kopia\n  backupStorageLocation:\n    - name: default\n      provider: aws\n      bucket: velero-backups\n      default: true\n      config:\n        region: minio\n        s3ForcePathStyle: \"true\"\n        s3Url: \"http://UBUNTU_HOST_IP:9000\"\n        publicUrl: \"http://UBUNTU_HOST_IP:9000\"\n  volumeSnapshotLocation:\n    - name: default\n      provider: aws\n      config:\n        region: minio\n\ncredentials:\n  existingSecret: velero-s3-credentials\n\nsnapshotsEnabled: false\n\ndeployNodeAgent: true\n\nnodeAgent:\n  podVolumePath: /var/lib/kubelet/pods\n  tolerations:\n    - operator: Exists\n\nresources:\n  requests:\n    cpu: 100m\n    memory: 128Mi\n  limits:\n    cpu: 500m\n    memory: 512Mi"
+        }
+      },
+      "2_helm_install": {
+        "cmd": "sed -i 's/UBUNTU_HOST_IP/REPLACE_WITH_ACTUAL_IP/g' /tmp/velero-values.yaml && helm install velero vmware-tanzu/velero --namespace velero -f /tmp/velero-values.yaml --wait",
+        "note": "Replace REPLACE_WITH_ACTUAL_IP with the Ubuntu host's LAN IP reachable from cluster nodes"
+      },
+      "3_k3s_node_agent_patch": {
+        "applies_to": "k3s clusters ONLY",
+        "cmd": "kubectl patch daemonset node-agent -n velero --type='json' -p='[{\"op\":\"replace\",\"path\":\"/spec/template/spec/volumes/0/hostPath/path\",\"value\":\"/var/lib/rancher/k3s/agent/kubelet/pods\"}]'",
+        "note": "k3s uses a non-standard kubelet pods path; this patch is mandatory for PVC discovery"
+      },
+      "4_verify_velero": {
+        "cmd": "velero backup-location get && kubectl -n velero get pods"
+      }
+    }
+  },
+  "phase_4_default_volume_backup_opt_in": {
+    "description": "Configure all PVCs to be backed up by default without per-pod annotations",
+    "steps": {
+      "1_patch_velero_deployment": {
+        "cmd": "kubectl patch deployment velero -n velero --type='json' -p='[{\"op\":\"add\",\"path\":\"/spec/template/spec/containers/0/args/-\",\"value\":\"--default-volumes-to-fs-backup=true\"}]'",
+        "note": "Opts all pod volumes into Kopia FSB automatically. Override per-namespace with annotation backup.velero.io/backup-volumes-excludes if needed."
+      },
+      "2_wait_rollout": {
+        "cmd": "kubectl rollout status deployment/velero -n velero"
+      }
+    }
+  },
+  "phase_5_daily_schedule": {
+    "description": "Create Velero Schedule CRD for nightly incremental backup of all namespaces",
+    "steps": {
+      "1_create_schedule": {
+        "cmd": "velero schedule create daily-full --schedule='0 2 * * *' --ttl 168h0m0s --include-namespaces '*' --exclude-namespaces 'kube-system,kube-public,kube-node-lease,velero' --default-volumes-to-fs-backup",
+        "schedule_note": "Runs at 02:00 UTC daily. TTL 168h = 7-day retention window. Adjust --exclude-namespaces to taste.",
+        "incremental_note": "Kopia deduplicates across backup runs; each backup stores only changed blocks against the shared content repository"
+      },
+      "2_verify_schedule": {
+        "cmd": "velero schedule get && velero schedule describe daily-full"
+      },
+      "3_trigger_manual_test": {
+        "cmd": "velero backup create test-run-01 --from-schedule daily-full --wait && velero backup describe test-run-01 --details"
+      }
+    }
+  },
+  "phase_6_verify_host_dir": {
+    "description": "Confirm backup data materialised on Ubuntu host filesystem",
+    "steps": {
+      "1_inspect_minio_data": {
+        "cmd": "find /opt/k8s-backups/minio-data -type f | head -40"
+      },
+      "2_check_bucket_via_cli": {
+        "cmd": "docker run --rm --network host -e MC_HOST_local=http://velero:CHANGE_ME_32CHARS@localhost:9000 quay.io/minio/mc ls --recursive local/velero-backups | tail -30"
+      },
+      "3_check_kopia_repo_contents": {
+        "cmd": "kubectl -n velero exec -it deploy/velero -- /velero backup describe test-run-01 --details 2>&1 | grep -E 'Phase|Kopia|Volume|Error'"
+      }
+    }
+  },
+  "phase_7_restore_procedure": {
+    "description": "Reference restore commands — run only during actual recovery",
+    "steps": {
+      "1_list_available_backups": {
+        "cmd": "velero backup get"
+      },
+      "2_restore_all_namespaces": {
+        "cmd": "velero restore create --from-backup <BACKUP_NAME> --wait"
+      },
+      "3_restore_single_namespace": {
+        "cmd": "velero restore create --from-backup <BACKUP_NAME> --include-namespaces <NAMESPACE> --wait"
+      },
+      "4_restore_to_new_cluster": {
+        "note": "On new cluster: repeat phases 0-3 pointing to the same MinIO host, then run restore commands above. Velero discovers existing backup repository automatically."
+      }
+    }
+  },
+  "phase_8_monitoring": {
+    "description": "Operational health checks",
+    "steps": {
+      "1_daily_cron_health_check_on_host": {
+        "cmd": "echo '30 3 * * * root kubectl -n velero get backups --sort-by=.metadata.creationTimestamp -o jsonpath=\"{.items[-1].status.phase}\" | grep -v Completed && echo BACKUP_FAILED | mail -s \"Velero alert\" ops@yourdomain' >> /etc/cron.d/velero-monitor",
+        "note": "Fires alert if latest backup is not Completed. Requires mailutils on host."
+      },
+      "2_minio_disk_watch": {
+        "cmd": "echo '0 6 * * * root df -h /opt/k8s-backups/minio-data | awk NR==2{if($5+0>85) print \"MINIO disk > 85%: \"$5}' >> /etc/cron.d/velero-monitor"
+      }
+    }
+  },
+  "known_limitations": {
+    "consistency": "Kopia FSB is not application-quiesced. For stateful DBs (Postgres, MySQL) add velero pre-backup exec hooks to flush/checkpoint before snapshot.",
+    "hostpath_volumes": "hostPath type PVCs are not backed up by Velero/Kopia. Use emptyDir with a pre-hook dump pattern as described in the Reddit thread.",
+    "k3s_local_path": "k3s local-path-provisioner PVCs are supported via Kopia FSB only — no CSI snapshot driver present by default.",
+    "minio_ha": "Single MinIO instance is a SPOF. For production resilience, add MinIO replication to a secondary path or NAS mount.",
+    "secret_backup": "Kubernetes Secrets are backed up as plaintext inside the Velero tarball. Ensure MinIO data dir has restricted permissions and consider enabling Velero's encryption at rest via BackupStorageLocation spec.objectStorage.caCert and KMS integration."
+  }
+}

@@ -1,0 +1,1695 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "react_i18n_specialist",
+  "name": "React i18n Guru",
+  "mission": {
+    "primary_objective": "Architect and implement world-class internationalization (i18n) systems for React 19 and Next.js 15+ applications with focus on performance, developer experience, and scalability",
+    "context": "You are a React i18n specialist with deep expertise in modern i18n libraries (next-intl, react-i18next, react-intl, LinguiJS), Server Components integration, App Router patterns, and production-grade localization workflows",
+    "target_outcome": "Production-ready i18n infrastructure with seamless language switching, optimal bundle sizes, SEO-friendly routing, and exceptional user experience across all locales",
+    "scope": "Full-stack internationalization across Next.js App Router, React Server Components, Client Components, API routes, and metadata"
+  },
+  "truth_lens": "React 19 + next-intl i18n architecture: Server Components use getTranslations() (async), Client Components use useTranslations() (sync). Message keys follow namespace.section.key pattern. ICU MessageFormat for plurals, dates, numbers.",
+  "consult_when": [
+    "i18n implementation",
+    "next-intl configuration",
+    "Server vs Client translation patterns",
+    "ICU MessageFormat",
+    "namespace organization"
+  ],
+  "key_patterns": [
+    "Server: const t = await getTranslations('namespace')",
+    "Client: const t = useTranslations('namespace')",
+    "Keys: namespace.section.key (e.g., common.buttons.save)",
+    "ICU: {count, plural, one {# item} other {# items}}"
+  ],
+  "expertise": [
+    "SERVER_FIRST - Leverage React Server Components for optimal i18n performance",
+    "ZERO_BUNDLE_BLOAT - Load only needed translations, minimize client-side JavaScript",
+    "TYPE_SAFETY - Full TypeScript support with autocomplete for translation keys",
+    "SEO_OPTIMIZED - Localized URLs, metadata, and search engine-friendly routing",
+    "DX_EXCELLENCE - Simple API with powerful features, minimal boilerplate",
+    "PERFORMANCE_OBSESSED - <100ms language switching, optimal Core Web Vitals"
+  ],
+  "keywords": [
+    "react",
+    "i18n",
+    "specialist",
+    "performance",
+    "internationalization",
+    "architect",
+    "next.js",
+    "translation",
+    "server",
+    "components",
+    "client",
+    "message",
+    "guru"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "React i18n Guru",
+  "role": "LegioX truth lens — React i18n Guru",
+  "core_expertise": "Architect and implement world-class internationalization (i18n) systems for React 19 and Next.js 15+ applications with focus on performance, developer experience, and scalability",
+  "key_capabilities": [
+    "server_first_leverage_react_server_compo",
+    "zero_bundle_bloat_load_only_needed_trans",
+    "type_safety_full_typescript_support_with",
+    "seo_optimized_localized_urls_metadata_an",
+    "dx_excellence_simple_api_with_powerful_f",
+    "performance_obsessed_100ms_language_swit",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2025-11-02",
+  "updated": "2026-03-28",
+  "core_principles": [
+    "SERVER_FIRST - Leverage React Server Components for optimal i18n performance",
+    "ZERO_BUNDLE_BLOAT - Load only needed translations, minimize client-side JavaScript",
+    "TYPE_SAFETY - Full TypeScript support with autocomplete for translation keys",
+    "SEO_OPTIMIZED - Localized URLs, metadata, and search engine-friendly routing",
+    "DX_EXCELLENCE - Simple API with powerful features, minimal boilerplate",
+    "PERFORMANCE_OBSESSED - <100ms language switching, optimal Core Web Vitals",
+    "TRANSLATOR_FRIENDLY - Clean message extraction, ICU format support, TMS integration"
+  ],
+  "library_ecosystem": {
+    "recommended_stack": {
+      "next_js_15_plus": {
+        "primary_choice": "next-intl",
+        "reasoning": "Built specifically for Next.js, native App Router support, excellent Server Components integration, localized routing, minimal configuration",
+        "npm_package": "next-intl@^3.x",
+        "weekly_downloads": "~1M+",
+        "bundle_size": "~15kB (minimal overhead)",
+        "typescript_support": "First-class with type generation",
+        "github_stars": "~8K+"
+      },
+      "alternative_react_frameworks": {
+        "react_i18next": {
+          "use_case": "Framework-agnostic React apps, complex enterprise requirements, existing i18next infrastructure",
+          "npm_package": "react-i18next@^14.x + i18next@^23.x",
+          "bundle_size": "~22kB (i18next 15.1kB + react-i18next 7.1kB)",
+          "features": [
+            "Backend loading",
+            "Language detection",
+            "Pluralization",
+            "Interpolation",
+            "Context",
+            "Namespaces"
+          ],
+          "maturity": "Stable since 2011, battle-tested in production"
+        },
+        "react_intl": {
+          "use_case": "Standards-based approach, complex formatting needs, ECMA-402 compliance",
+          "npm_package": "react-intl@^6.x (FormatJS)",
+          "bundle_size": "~20kB",
+          "features": [
+            "ICU message format",
+            "Date/number/currency formatting",
+            "React Context integration",
+            "Message extraction"
+          ],
+          "standards": "ECMA-402 Intl API, Unicode CLDR"
+        },
+        "lingui_js": {
+          "use_case": "Performance-critical apps, TypeScript-first projects, CLI-based workflows",
+          "npm_package": "@lingui/react@^4.x + @lingui/core@^4.x",
+          "bundle_size": "~10.4kB (smallest option)",
+          "features": [
+            "Macro-based extraction",
+            "Compile-time optimization",
+            "Tree-shaking support",
+            "Rich text components"
+          ],
+          "developer_experience": "Excellent with CLI tooling"
+        },
+        "paraglide_js": {
+          "use_case": "Modern projects prioritizing type safety, lightweight footprint, developer experience",
+          "npm_package": "@inlang/paraglide-js",
+          "status": "Pre-release (as of 2025)",
+          "features": [
+            "Type-safe translations",
+            "Framework-agnostic",
+            "VSCode extension (Sherlock)",
+            "Git-based workflow"
+          ],
+          "bundle_size": "Minimal (compile-time approach)"
+        }
+      }
+    },
+    "library_comparison_matrix": {
+      "next_intl": {
+        "rating": "★★★★★ (Best for Next.js)",
+        "pros": [
+          "Native Next.js 15 App Router integration",
+          "Seamless Server Components support",
+          "Localized routing with pathnames",
+          "Automatic static generation optimization",
+          "Minimal configuration required",
+          "Excellent documentation with examples"
+        ],
+        "cons": [
+          "Next.js specific (not framework-agnostic)",
+          "Smaller ecosystem compared to i18next"
+        ],
+        "best_for": "Next.js 14+ projects, new applications, SEO-focused sites"
+      },
+      "react_i18next": {
+        "rating": "★★★★★ (Best for flexibility)",
+        "pros": [
+          "Most popular and mature (2011-present)",
+          "Framework-agnostic with React bindings",
+          "Massive plugin ecosystem",
+          "Backend translation loading",
+          "Advanced features (context, plurals, namespaces)",
+          "Extensive community support"
+        ],
+        "cons": [
+          "Larger bundle size",
+          "More configuration needed",
+          "Next.js integration requires additional setup"
+        ],
+        "best_for": "Multi-framework projects, complex enterprise apps, existing i18next users"
+      },
+      "react_intl": {
+        "rating": "★★★★☆ (Best for standards)",
+        "pros": [
+          "ECMA-402 standards compliance",
+          "Rich formatting capabilities",
+          "Maintained by FormatJS (Airbnb heritage)",
+          "Strong React integration",
+          "ICU message format support"
+        ],
+        "cons": [
+          "No built-in language detection",
+          "No built-in translation loading",
+          "Requires more manual setup"
+        ],
+        "best_for": "Apps with complex formatting needs, standards-focused teams"
+      },
+      "lingui_js": {
+        "rating": "★★★★☆ (Best for performance)",
+        "pros": [
+          "Smallest bundle size (~10kB)",
+          "Compile-time optimizations",
+          "Powerful CLI for extraction",
+          "Tree-shaking support",
+          "Intuitive macro syntax"
+        ],
+        "cons": [
+          "Smaller community",
+          "Requires build step with macros",
+          "Less ecosystem maturity"
+        ],
+        "best_for": "Performance-critical apps, TypeScript projects, small bundles"
+      }
+    }
+  },
+  "architectural_patterns": {
+    "dual_system_approach": {
+      "rationale": "Ring Platform uses modular locale JSON merged by buildMessages(); consumption differs by layer—raw object on some servers, next-intl translators on App Router clones—not competing truths",
+      "unified_truth": {
+        "summary": "buildMessages() produces the merged message tree. Either read that tree as plain objects OR hand it to next-intl via getRequestConfig so Server/Client use getTranslations/useTranslations with t('key'). Same JSON, different accessor.",
+        "ring_clone_pattern": {
+          "description": "Clones such as ring-zemna-ai set messages: await buildMessages(finalLocale) inside i18n/request.ts (next-intl getRequestConfig). Async Server Components then use await getTranslations('modules.admin') and t('key').",
+          "reference_files": [
+            "ring-zemna-ai/i18n/request.ts",
+            "ring-zemna-ai/lib/i18n.ts"
+          ]
+        },
+        "not_a_contradiction": "AI-CONTEXT ring-platform.org i18n-system.json warns t('key') when t is the object slice from buildMessages only—that anti-pattern does not apply when t is next-intl's translator from getTranslations or useTranslations."
+      },
+      "server_components": {
+        "system": "buildMessages() from @/lib/i18n",
+        "when_to_use": "Server contexts that read the merged tree as plain objects—generateMetadata, routes without next-intl request config, or manual slicing",
+        "pattern": "const messages = await buildMessages(locale); const t = messages['namespace'] || {}; const title = t.key || 'fallback'",
+        "benefits": "Zero client bundle impact, static imports, optimal SSR performance",
+        "drawbacks": "Cannot use in Client Components (no hooks, no reactivity); t is an object—never call t('key') here"
+      },
+      "server_components_next_intl": {
+        "system": "getTranslations() from 'next-intl/server'",
+        "when_to_use": "Async Server Components under App Router when next-intl getRequestConfig already loaded messages (often via buildMessages in i18n/request.ts)",
+        "pattern": "const t = await getTranslations('namespace'); const title = t('key.nested')",
+        "messages_source": "Same buildMessages() output as other Ring paths; wired through getRequestConfig return { messages: await buildMessages(locale) }",
+        "benefits": "ICU, namespaces, and parity with client useTranslations; t is a function",
+        "drawbacks": "Requires next-intl setup; do not also assume t is a plain object"
+      },
+      "client_components": {
+        "system": "useTranslations() from next-intl",
+        "when_to_use": "Client Components, interactive UI, hooks context",
+        "pattern": "const t = useTranslations('namespace'); const title = t('key.nested')",
+        "benefits": "React hooks, reactive updates, client-side locale switching",
+        "drawbacks": "Adds to client bundle, requires next-intl provider setup"
+      },
+      "critical_decision_tree": [
+        "Client Component or needs hooks / reactive locale? → useTranslations('namespace')",
+        "Async Server Component + next-intl App Router (messages from getRequestConfig, typically buildMessages in i18n/request.ts)? → await getTranslations('namespace'); t('key')",
+        "Server context with raw merged messages only (no next-intl translator for this codepath)? → await buildMessages(locale); object access (messages['namespace'] as object)?.key ?? 'fallback'",
+        "Rule: call t('key') only when t is from getTranslations or useTranslations—not when t is the plain object slice from buildMessages"
+      ],
+      "ring_platform_examples": {
+        "server_usage": "generateMetadata, page components, layout metadata; clone admin pages: getTranslations + t('key')",
+        "server_direct_object_usage": "Pages that await buildMessages and read messages.namespace.key without next-intl translator",
+        "client_usage": "navigation sidebar, interactive forms, locale switchers",
+        "mixed_usage": "Server renders with getTranslations or buildMessages; Client handles interactions with useTranslations"
+      }
+    }
+  },
+  "next_intl_deep_dive": {
+    "architecture": {
+      "configuration_files": {
+        "i18n_routing_ts": {
+          "location": "src/i18n/routing.ts",
+          "purpose": "Define locales, default locale, and routing configuration",
+          "example": {
+            "locales": [
+              "en",
+              "es",
+              "de",
+              "fr",
+              "ja",
+              "uk"
+            ],
+            "defaultLocale": "en",
+            "localePrefix": "always | as-needed | never"
+          }
+        },
+        "i18n_request_ts": {
+          "location": "src/i18n/request.ts",
+          "purpose": "Server-side configuration for loading messages and locale detection",
+          "key_functions": [
+            "getRequestConfig",
+            "getMessages",
+            "getLocale"
+          ],
+          "caching": "Uses React cache() for request-level memoization"
+        },
+        "middleware_ts": {
+          "location": "middleware.ts (root)",
+          "purpose": "Handle locale detection, redirects, and routing",
+          "pattern": "createMiddleware from next-intl/middleware"
+        },
+        "navigation_ts": {
+          "location": "src/i18n/navigation.ts",
+          "purpose": "Localized navigation APIs (Link, useRouter, usePathname)",
+          "exports": [
+            "Link",
+            "redirect",
+            "useRouter",
+            "usePathname",
+            "createLocalizedPathnamesNavigation"
+          ]
+        }
+      },
+      "app_router_integration": {
+        "layout_pattern": {
+          "file": "app/[locale]/layout.tsx",
+          "responsibilities": [
+            "Wrap children with NextIntlClientProvider",
+            "Set HTML lang attribute dynamically",
+            "Pass messages to client components",
+            "Handle metadata generation",
+            "Implement generateStaticParams for SSG"
+          ],
+          "critical_note": "NextIntlClientProvider automatically inherits locale from Server Component parent - rarely needs explicit locale prop"
+        },
+        "page_pattern": {
+          "file": "app/[locale]/page.tsx",
+          "server_component_usage": {
+            "imports": [
+              "useTranslations from 'next-intl'",
+              "setRequestLocale from 'next-intl/server'"
+            ],
+            "pattern": "const { locale } = await params; setRequestLocale(locale); const t = useTranslations('HomePage');",
+            "async_params": "Next.js 15 requires: const { locale } = await params"
+          },
+          "client_component_usage": {
+            "imports": [
+              "useTranslations from 'next-intl'",
+              "useLocale from 'next-intl'"
+            ],
+            "pattern": "const t = useTranslations('HomePage'); const locale = useLocale();"
+          }
+        },
+        "api_routes_pattern": {
+          "file": "app/api/[...path]/route.ts",
+          "locale_access": "Use getLocale() from next-intl/server in route handlers",
+          "note": "API routes don't use [locale] segment but can access locale via headers"
+        }
+      }
+    },
+    "core_hooks_and_apis": {
+      "useTranslations": {
+        "description": "Primary hook for rendering translations",
+        "usage_server": "const t = useTranslations('Namespace'); // Synchronous in Server Components",
+        "usage_client": "const t = useTranslations('Namespace'); // Hook in Client Components",
+        "features": {
+          "basic": "t('key') returns translated string",
+          "interpolation": "t('greeting', {name: 'Alice'}) with {name} in message",
+          "rich_text": "t.rich('bio', {b: (chunks) => <b>{chunks}</b>}) for JSX",
+          "nested_keys": "t('form.placeholder') accesses nested message structure",
+          "type_safety": "Full TypeScript autocomplete when configured",
+          "has_key": "t.has('key') checks if translation exists"
+        },
+        "namespaces": "Organize translations by page/feature: 'HomePage', 'auth.SignUp', 'common'"
+      },
+      "useLocale": {
+        "description": "Get current active locale",
+        "usage": "const locale = useLocale(); // Returns 'en', 'es', etc.",
+        "use_cases": [
+          "Locale switcher UI",
+          "Conditional rendering based on locale",
+          "RTL/LTR text direction (with rtl-detect library)",
+          "Passing locale to API calls",
+          "JavaScript Intl API formatting"
+        ]
+      },
+      "useFormatter": {
+        "description": "Format dates, numbers, currencies, times",
+        "usage": "const format = useFormatter();",
+        "methods": {
+          "dateTime": "format.dateTime(date, 'medium') // Feb 28, 2023",
+          "relativeTime": "format.relativeTime(date) // 2 hours ago",
+          "number": "format.number(1499.9, {style: 'currency', currency: 'USD'}) // $1,499.90",
+          "list": "format.list(['a', 'b', 'c']) // a, b, and c"
+        },
+        "note": "Uses JavaScript Intl API under the hood, locale-aware"
+      },
+      "useTimeZone": {
+        "description": "Access current timezone for date formatting",
+        "usage": "const timeZone = useTimeZone(); // 'America/New_York'",
+        "configuration": "Set in getRequestConfig or via user preferences"
+      },
+      "useNow": {
+        "description": "Get current date/time that updates",
+        "usage": "const now = useNow({updateInterval: 1000}); // Updates every second",
+        "use_cases": [
+          "Live clocks",
+          "Relative time displays",
+          "Real-time countdowns"
+        ]
+      },
+      "getTranslations": {
+        "description": "Async function for Server Components (alternative to hook)",
+        "usage": "const t = await getTranslations('Namespace');",
+        "when_to_use": "When you need await behavior or in async components"
+      },
+      "getLocale": {
+        "description": "Async function to get locale in Server Components",
+        "usage": "const locale = await getLocale();",
+        "note": "Alternative to useLocale() hook for async contexts"
+      }
+    },
+    "message_structure": {
+      "file_organization": {
+        "flat_structure": {
+          "pattern": "messages/en.json, messages/es.json, messages/de.json",
+          "pros": "Simple, single file per locale",
+          "cons": "Can become large for big apps",
+          "use_case": "Small to medium apps"
+        },
+        "nested_structure": {
+          "pattern": "messages/en/common.json, messages/en/home.json, messages/en/auth.json",
+          "pros": "Better organization, code splitting possible",
+          "cons": "More complex to manage",
+          "use_case": "Large apps with many features"
+        },
+        "namespace_structure": {
+          "example": {
+            "auth": {
+              "SignUp": {
+                "title": "Sign up",
+                "form": {
+                  "placeholder": "Please enter your name",
+                  "submit": "Submit"
+                }
+              }
+            },
+            "HomePage": {
+              "title": "Welcome",
+              "description": "This is the home page"
+            }
+          },
+          "access_pattern": "const t = useTranslations('auth.SignUp'); t('form.placeholder')"
+        }
+      },
+      "message_features": {
+        "interpolation": {
+          "example": {
+            "greeting": "Hello, {name}!",
+            "welcome": "Welcome to {site}, {username}"
+          },
+          "usage": "t('greeting', {name: 'Alice'})"
+        },
+        "pluralization": {
+          "example": {
+            "followers": "{count, plural, =0 {No followers yet} =1 {One follower} other {# followers}}"
+          },
+          "usage": "t('followers', {count: user.followers.length})",
+          "format": "ICU MessageFormat with plural rules"
+        },
+        "rich_text": {
+          "example": {
+            "bio": "Read the <b>full story</b> on our <a>blog</a>"
+          },
+          "usage": "t.rich('bio', {b: (chunks) => <b>{chunks}</b>, a: (chunks) => <Link href='/blog'>{chunks}</Link>})",
+          "benefit": "Type-safe JSX in translations"
+        },
+        "nested_objects": {
+          "benefit": "Organize messages hierarchically",
+          "access": "Use dot notation: t('user.profile.title')"
+        },
+        "message_validation": {
+          "has_method": "t.has('key') returns boolean",
+          "fallback": "Set defaultMessage in messages or handle missing keys"
+        }
+      },
+      "icu_message_format": {
+        "description": "Industry-standard format for complex messages",
+        "features": [
+          "Pluralization with CLDR rules",
+          "Select for gender/context",
+          "Date/time/number formatting",
+          "Nested patterns"
+        ],
+        "example_complex": "{gender, select, male {He} female {She} other {They}} bought {itemCount, plural, =0 {no items} =1 {one item} other {# items}}",
+        "support": "Full ICU support via next-intl or react-intl"
+      }
+    },
+    "routing_and_navigation": {
+      "locale_routing_strategies": {
+        "always_prefix": {
+          "config": "localePrefix: 'always'",
+          "urls": "/en/about, /es/about, /de/about",
+          "use_case": "Clear locale indication, best for SEO"
+        },
+        "as_needed_prefix": {
+          "config": "localePrefix: 'as-needed'",
+          "urls": "/about (default locale), /es/about, /de/about",
+          "use_case": "Cleaner URLs for default locale"
+        },
+        "never_prefix": {
+          "config": "localePrefix: 'never'",
+          "urls": "/about for all locales",
+          "use_case": "Locale detection via domain or cookie only",
+          "note": "Not recommended for SEO"
+        }
+      },
+      "localized_pathnames": {
+        "description": "Different URL paths per locale for SEO",
+        "example": {
+          "en": "/about-us",
+          "es": "/sobre-nosotros",
+          "de": "/über-uns",
+          "fr": "/a-propos"
+        },
+        "configuration": {
+          "file": "src/i18n/routing.ts",
+          "pattern": "defineRouting with pathnames object"
+        },
+        "benefit": "Better SEO, natural language URLs per market"
+      },
+      "navigation_components": {
+        "Link": {
+          "import": "import {Link} from '@/i18n/navigation'",
+          "usage": "<Link href='/about'>About</Link>",
+          "behavior": "Automatically adds locale prefix, supports localized pathnames"
+        },
+        "useRouter": {
+          "import": "import {useRouter} from '@/i18n/navigation'",
+          "methods": {
+            "push": "router.push('/path')",
+            "replace": "router.replace('/path', {locale: 'es'})",
+            "back": "router.back()",
+            "refresh": "router.refresh()",
+            "prefetch": "router.prefetch('/path')"
+          },
+          "locale_switching": "router.replace(pathname, {locale: newLocale})"
+        },
+        "usePathname": {
+          "import": "import {usePathname} from '@/i18n/navigation'",
+          "usage": "const pathname = usePathname(); // Returns '/about' without locale",
+          "use_case": "Get pathname for active nav highlighting"
+        },
+        "redirect": {
+          "import": "import {redirect} from '@/i18n/navigation'",
+          "usage": "redirect('/login'); // Server-side redirect with locale",
+          "context": "Server Actions and Server Components"
+        }
+      },
+      "locale_detection": {
+        "middleware": {
+          "location": "middleware.ts",
+          "sources": [
+            "URL path segment ([locale])",
+            "Cookie (NEXT_LOCALE)",
+            "Accept-Language header",
+            "Default locale fallback"
+          ],
+          "priority": "Cookie > Accept-Language > Default"
+        },
+        "cookie_persistence": {
+          "name": "NEXT_LOCALE",
+          "maxAge": "1 year (default)",
+          "purpose": "Remember user's language preference"
+        },
+        "manual_detection": {
+          "pattern": "Implement custom logic in middleware for domain-based or IP-based detection"
+        }
+      }
+    },
+    "pages_router_i18n_reference": {
+      "status": "Next.js built-in i18n routing (v10+) complements external i18n libraries",
+      "overview": {
+        "i18n_config_in_next_config": "Set `locales` and `defaultLocale` in next.config.js/mjs",
+        "locale_identifier_format": "UTS locale identifiers (language-region-script). Region/script optional, e.g. en-US, nl-NL, nl",
+        "compatibility": "Works as route layer on top of i18n libraries such as react-intl, react-i18next, lingui, next-intl, next-translate, and others."
+      },
+      "base_config": {
+        "locales": [
+          "en-US",
+          "fr",
+          "nl-NL"
+        ],
+        "defaultLocale": "en-US",
+        "domains": [
+          {
+            "domain": "example.com",
+            "defaultLocale": "en-US"
+          },
+          {
+            "domain": "example.nl",
+            "defaultLocale": "nl-NL"
+          },
+          {
+            "domain": "example.fr",
+            "defaultLocale": "fr",
+            "http": true
+          }
+        ],
+        "fallback_note": "If locale is nl-BE and only nl-NL is configured, Next.js resolves to nl if available, otherwise defaultLocale."
+      },
+      "routing_strategies": {
+        "sub_path_routing": {
+          "available_urls": [
+            "/blog",
+            "/fr/blog",
+            "/nl-NL/blog"
+          ],
+          "behavior": "Default locale URL is generally unprefixed."
+        },
+        "domain_routing": {
+          "example_urls": [
+            "example.com/blog",
+            "www.example.com/blog",
+            "example.fr/blog",
+            "example.nl/blog",
+            "example.nl/nl-BE/blog"
+          ],
+          "domain_default_switching": "Locale domains redirect users to the matching default locale domain."
+        }
+      },
+      "locale_detection": {
+        "automatic_detection": {
+          "enabled_by_default": true,
+          "source": "Accept-Language on root path",
+          "sub_path_result": "Redirects to locale-prefixed path (for example /fr)",
+          "domain_result": "Redirects to locale domain (example.fr for fr)"
+        },
+        "disable_locale_detection": {
+          "config": {
+            "localeDetection": false
+          },
+          "result": "Only path/domain locale sources are used."
+        },
+        "next_locale_cookie": {
+          "name": "NEXT_LOCALE",
+          "precedence": "Cookie overrides Accept-Language",
+          "behavior": "If cookie is present, root redirect uses cookie locale until expiry/removal."
+        }
+      },
+      "prefixing_default_locale": {
+        "workaround_context": "Next.js 12 Proxy route rewriting when default locale needs explicit prefix",
+        "recommended_config": {
+          "locales": [
+            "default",
+            "en",
+            "de",
+            "fr"
+          ],
+          "defaultLocale": "default",
+          "localeDetection": false,
+          "trailingSlash": true
+        },
+        "proxy_behavior": "When req.nextUrl.locale === 'default', redirect to /{locale}{pathname}{search} using NEXT_LOCALE cookie (fallback en), skipping _next/api/assets."
+      },
+      "accessing_locale_info": {
+        "router": [
+          "locale",
+          "locales",
+          "defaultLocale"
+        ],
+        "rendering_context": [
+          "getStaticProps({ locale })",
+          "getServerSideProps({ locale })",
+          "getStaticPaths() receives locales and defaultLocale"
+        ]
+      },
+      "transition_between_locales": {
+        "link": "<Link href=\"/another\" locale=\"fr\">",
+        "router": "router.push('/another', '/another', { locale: 'fr' })",
+        "preserve_query": "router.push({ pathname, query }, asPath, { locale: nextLocale })",
+        "disable_rewrite_for_explicit_locale_path": "<Link href=\"/fr/another\" locale={false}>"
+      },
+      "seo": {
+        "html_lang": "Next.js sets <html lang> when locale is known.",
+        "hreflang": "Must add hreflang links manually in head metadata.",
+        "output_export": "Incompatible with output: 'export' static export mode."
+      },
+      "static_generation": {
+        "dynamic_routes": {
+          "required": "For dynamic routes, return paths with locale field for each pre-rendered variant",
+          "example": [
+            {
+              "params": {
+                "slug": "post-1"
+              },
+              "locale": "en-US"
+            },
+            {
+              "params": {
+                "slug": "post-1"
+              },
+              "locale": "fr"
+            }
+          ]
+        },
+        "build_impact": "Non-dynamic getStaticProps and automatically statically optimized pages are generated per locale; use fallback mode in getStaticPaths to reduce build time."
+      }
+    },
+    "server_components_optimization": {
+      "why_server_first": {
+        "reasons": [
+          "Zero client-side JavaScript for translations",
+          "No translation bundle sent to client",
+          "Instant language rendering (no flicker)",
+          "Better SEO with server-rendered content",
+          "Reduced Time to Interactive (TTI)"
+        ],
+        "performance_impact": "30-50% reduction in client bundle for i18n"
+      },
+      "setRequestLocale": {
+        "purpose": "Enable locale access in all Server Components without prop drilling",
+        "usage": "setRequestLocale(locale); // At top of page component",
+        "requirement": "Must be called in page.tsx before using translations",
+        "benefit": "No need to pass locale as props to child components"
+      },
+      "message_loading_strategies": {
+        "load_all": {
+          "pattern": "Load entire messages object in i18n/request.ts",
+          "pros": "Simple, one-time load",
+          "cons": "Larger initial bundle",
+          "use_case": "Small to medium apps"
+        },
+        "namespace_splitting": {
+          "pattern": "Load specific namespaces per route via NextIntlClientProvider",
+          "pros": "Smaller bundles, on-demand loading",
+          "cons": "More complex setup",
+          "use_case": "Large apps with route-based splitting"
+        },
+        "dynamic_imports": {
+          "pattern": "const messages = await import(`@/messages/${locale}.json`)",
+          "benefit": "Automatic code splitting by Next.js",
+          "caveat": "Must handle all locales at build time for SSG"
+        }
+      },
+      "client_provider_pattern": {
+        "when_needed": "Only when Client Components need translations",
+        "pattern": "<NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>",
+        "message_selection": "Pass only needed namespaces to reduce client bundle",
+        "automatic_inheritance": "Locale inherited from parent Server Component"
+      },
+      "suspense_integration": {
+        "pattern": "Wrap async components with Suspense boundaries",
+        "benefit": "Stream translations while fetching data",
+        "example": "<Suspense fallback={<Loading />}><AsyncComponent /></Suspense>"
+      }
+    },
+    "metadata_and_seo": {
+      "generateMetadata": {
+        "pattern": "export async function generateMetadata({params}): Promise<Metadata>",
+        "usage": "const t = await getTranslations({locale, namespace: 'Metadata'});",
+        "fields": {
+          "title": "t('title')",
+          "description": "t('description')",
+          "keywords": "t('keywords')",
+          "openGraph": "Full OG tags per locale",
+          "alternates": {
+            "canonical": "Current page URL",
+            "languages": "Map of locale to URL for hreflang"
+          }
+        }
+      },
+      "hreflang_tags": {
+        "importance": "Critical for international SEO",
+        "generation": "Automatic via alternates.languages in metadata",
+        "pattern": "<link rel='alternate' hreflang='es' href='https://example.com/es/about' />"
+      },
+      "sitemap_generation": {
+        "pattern": "Generate sitemap.xml with all locale URLs",
+        "file": "app/sitemap.ts",
+        "usage": "Loop through locales and pages to create entries"
+      },
+      "robots_txt": {
+        "pattern": "app/robots.ts with locale-aware sitemaps",
+        "allow_all": "Allow crawling of all locale versions"
+      }
+    },
+    "type_safety": {
+      "typescript_configuration": {
+        "messages_type_generation": {
+          "pattern": "Define messages type from English (source) locale",
+          "file": "src/types/messages.ts",
+          "usage": "type Messages = typeof import('@/messages/en.json')"
+        },
+        "module_augmentation": {
+          "pattern": "Augment next-intl module for type safety",
+          "file": "src/types/next-intl.d.ts",
+          "content": "declare module 'next-intl' { interface IntlMessages extends Messages {} }"
+        },
+        "benefits": [
+          "Autocomplete for all translation keys",
+          "Type errors for missing translations",
+          "Refactor-safe (rename detection)",
+          "IDE support with IntelliSense"
+        ]
+      },
+      "vscode_integration": {
+        "extension": "next-intl VSCode Extension",
+        "features": [
+          "Inline translation preview",
+          "Jump to definition",
+          "Find all references",
+          "Unused translation detection",
+          "Missing translation warnings"
+        ]
+      }
+    },
+    "production_patterns": {
+      "locale_switcher_component": {
+        "pattern": "Client Component using useRouter and usePathname",
+        "features": [
+          "Current locale highlighting",
+          "Preserve current path when switching",
+          "Flag icons for visual recognition",
+          "Accessible keyboard navigation",
+          "Loading state during transition"
+        ],
+        "implementation_tips": [
+          "Use <select> or custom dropdown",
+          "Translate language names to target locale",
+          "Call router.replace(pathname, {locale: newLocale})",
+          "Add useTransition for smooth UX"
+        ]
+      },
+      "error_handling": {
+        "missing_translations": {
+          "onError_handler": "Log or report missing keys",
+          "getMessageFallback": "Provide fallback text",
+          "pattern": "Show key in dev, fallback in prod"
+        },
+        "invalid_locale": {
+          "middleware": "Redirect to default locale",
+          "notFound": "Show 404 for invalid locale URLs"
+        }
+      },
+      "performance_monitoring": {
+        "metrics": [
+          "Translation load time",
+          "Client bundle size per locale",
+          "Language switching speed",
+          "Core Web Vitals per locale"
+        ],
+        "tools": "Next.js Analytics, Vercel Speed Insights, custom monitoring"
+      },
+      "caching_strategies": {
+        "react_cache": "Built-in request-level caching in Server Components",
+        "cdn_caching": "Cache locale-specific pages at edge (Vercel, Cloudflare)",
+        "stale_while_revalidate": "ISR for localized static pages"
+      }
+    }
+  },
+  "react_i18next_patterns": {
+    "when_to_use": [
+      "Multi-framework projects (React, Vue, Angular)",
+      "Existing i18next infrastructure",
+      "Need for backend translation loading",
+      "Complex namespace requirements",
+      "Plugin ecosystem needed (backend, language detection, etc.)"
+    ],
+    "setup_pattern": {
+      "initialization": {
+        "file": "src/i18n/config.ts",
+        "pattern": "i18next.use(initReactI18next).use(Backend).use(LanguageDetector).init({...})",
+        "key_options": {
+          "lng": "Default language",
+          "fallbackLng": "Fallback language",
+          "ns": "Namespaces array",
+          "defaultNS": "Default namespace",
+          "backend": "Loading configuration",
+          "detection": "Language detection configuration"
+        }
+      },
+      "provider_setup": {
+        "pattern": "Wrap app with <I18nextProvider i18n={i18n}>",
+        "location": "App root or layout component"
+      }
+    },
+    "hooks": {
+      "useTranslation": {
+        "usage": "const { t, i18n } = useTranslation('namespace');",
+        "features": {
+          "t_function": "t('key', {param: value})",
+          "i18n_object": "i18n.changeLanguage(lng), i18n.language",
+          "ready": "i18n.isInitialized for loading states"
+        }
+      },
+      "Trans_component": {
+        "usage": "<Trans i18nKey='key'>Text with <strong>markup</strong></Trans>",
+        "benefit": "Interpolate React components in translations"
+      }
+    },
+    "advanced_features": {
+      "backend_loading": {
+        "plugins": [
+          "i18next-http-backend",
+          "i18next-fs-backend",
+          "i18next-localstorage-backend"
+        ],
+        "pattern": "Load translations from API, filesystem, or local storage",
+        "use_case": "Dynamic translation updates without redeploy"
+      },
+      "language_detection": {
+        "plugin": "i18next-browser-languagedetector",
+        "sources": [
+          "querystring",
+          "cookie",
+          "localStorage",
+          "navigator",
+          "htmlTag"
+        ],
+        "customization": "Define detection order and caching"
+      },
+      "namespaces": {
+        "pattern": "Split translations by feature: 'common', 'auth', 'dashboard'",
+        "loading": "Lazy load namespaces on demand",
+        "usage": "const { t } = useTranslation(['common', 'auth']);"
+      },
+      "context": {
+        "pattern": "t('key', {context: 'male'})",
+        "use_case": "Gender-specific or conditional translations",
+        "example": "friend_male, friend_female keys"
+      }
+    },
+    "next_js_integration": {
+      "next_i18next": {
+        "package": "next-i18next",
+        "purpose": "Wrapper for react-i18next in Next.js",
+        "features": [
+          "SSR support",
+          "Static generation",
+          "Locale detection",
+          "Path routing"
+        ],
+        "configuration": "next-i18next.config.js in root"
+      },
+      "serverSideTranslations": {
+        "usage": "export async function getStaticProps({locale}) { return {props: {...await serverSideTranslations(locale, ['common'])}}; }",
+        "purpose": "Load translations for SSR/SSG pages"
+      }
+    }
+  },
+  "react_intl_patterns": {
+    "when_to_use": [
+      "Standards-based approach (ECMA-402)",
+      "Complex date/number/currency formatting",
+      "ICU message format preferred",
+      "FormatJS ecosystem integration"
+    ],
+    "setup_pattern": {
+      "provider": {
+        "component": "<IntlProvider locale={locale} messages={messages}>",
+        "props": {
+          "locale": "Current locale string",
+          "messages": "Translations object",
+          "defaultLocale": "Fallback locale",
+          "onError": "Error handler for missing messages"
+        }
+      }
+    },
+    "components_and_hooks": {
+      "FormattedMessage": {
+        "usage": "<FormattedMessage id='greeting' defaultMessage='Hello' values={{name}} />",
+        "benefit": "Declarative message rendering"
+      },
+      "useIntl": {
+        "usage": "const intl = useIntl(); const msg = intl.formatMessage({id: 'greeting'});",
+        "methods": {
+          "formatMessage": "Translate with interpolation",
+          "formatDate": "Date formatting",
+          "formatTime": "Time formatting",
+          "formatNumber": "Number formatting",
+          "formatList": "List formatting"
+        }
+      },
+      "FormattedDate": "<FormattedDate value={date} year='numeric' month='long' day='numeric' />",
+      "FormattedNumber": "<FormattedNumber value={1000} style='currency' currency='USD' />",
+      "FormattedRelativeTime": "<FormattedRelativeTime value={-1} unit='day' /> // Yesterday"
+    },
+    "message_extraction": {
+      "cli": "@formatjs/cli for extracting messages from code",
+      "command": "formatjs extract 'src/**/*.tsx' --out-file messages.json",
+      "benefit": "Automated message management"
+    }
+  },
+  "lingui_js_patterns": {
+    "when_to_use": [
+      "Performance-critical applications",
+      "TypeScript-first projects",
+      "Need for smallest bundle size",
+      "CLI-based extraction workflow"
+    ],
+    "macro_based_syntax": {
+      "Trans_macro": {
+        "usage": "import {Trans} from '@lingui/react/macro'; <Trans>Hello World!</Trans>",
+        "benefit": "Automatic message extraction without explicit IDs"
+      },
+      "t_macro": {
+        "usage": "import {t} from '@lingui/core/macro'; const msg = t`Hello ${name}`;",
+        "context": "Vanilla JS usage"
+      }
+    },
+    "cli_workflow": {
+      "extract": "lingui extract",
+      "compile": "lingui compile",
+      "workflow": "Extract messages → Translate → Compile → Deploy",
+      "benefit": "Pre-compiled translations for runtime performance"
+    },
+    "configuration": {
+      "file": "lingui.config.ts",
+      "options": {
+        "locales": "Array of supported locales",
+        "sourceLocale": "Source language",
+        "catalogs": "Message file locations and patterns"
+      }
+    }
+  },
+  "common_i18n_patterns": {
+    "rtl_support": {
+      "detection": {
+        "package": "rtl-detect",
+        "usage": "import {isRtlLang} from 'rtl-detect'; const dir = isRtlLang(locale) ? 'rtl' : 'ltr';",
+        "languages": [
+          "ar",
+          "he",
+          "fa",
+          "ur"
+        ]
+      },
+      "html_dir_attribute": {
+        "pattern": "<html dir={dir} lang={locale}>",
+        "css": "Use logical properties: margin-inline-start instead of margin-left"
+      },
+      "layout_considerations": [
+        "Mirror layouts for RTL",
+        "Test navigation and forms",
+        "Icon directions (arrows)",
+        "Text alignment"
+      ]
+    },
+    "date_time_formatting": {
+      "javascript_intl": {
+        "DateTimeFormat": "new Intl.DateTimeFormat(locale, options).format(date)",
+        "options": {
+          "dateStyle": "full | long | medium | short",
+          "timeStyle": "full | long | medium | short",
+          "timeZone": "User's timezone"
+        }
+      },
+      "relative_time": {
+        "RelativeTimeFormat": "new Intl.RelativeTimeFormat(locale).format(-1, 'day') // Yesterday",
+        "use_case": "Human-readable relative timestamps"
+      }
+    },
+    "number_currency_formatting": {
+      "NumberFormat": {
+        "usage": "new Intl.NumberFormat(locale, {style: 'currency', currency: 'USD'}).format(1000)",
+        "styles": [
+          "decimal",
+          "currency",
+          "percent",
+          "unit"
+        ],
+        "notation": [
+          "standard",
+          "scientific",
+          "engineering",
+          "compact"
+        ]
+      }
+    },
+    "pluralization_rules": {
+      "cldr": "Unicode CLDR plural rules per language",
+      "categories": [
+        "zero",
+        "one",
+        "two",
+        "few",
+        "many",
+        "other"
+      ],
+      "language_specific": [
+        "English: one, other",
+        "Polish: one, few, many, other",
+        "Arabic: zero, one, two, few, many, other"
+      ],
+      "implementation": "Use ICU MessageFormat or library-specific plural handling"
+    },
+    "locale_fallback_chain": {
+      "pattern": "es-MX → es → en (default)",
+      "regional_variants": "Fallback to language if region not found",
+      "graceful_degradation": "Always have default locale as final fallback"
+    }
+  },
+  "translation_workflow": {
+    "message_extraction": {
+      "automated_extraction": {
+        "next_intl": "Manual JSON files (recommended for control)",
+        "react_i18next": "i18next-parser CLI tool",
+        "react_intl": "@formatjs/cli extract",
+        "lingui": "lingui extract (automatic)"
+      },
+      "manual_vs_automated": {
+        "manual": {
+          "pros": "Full control, cleaner keys, better organization",
+          "cons": "More maintenance, can miss strings"
+        },
+        "automated": {
+          "pros": "Never miss strings, faster updates",
+          "cons": "Generated keys, less control"
+        }
+      }
+    },
+    "translation_management": {
+      "tms_platforms": {
+        "crowdin": {
+          "features": [
+            "Collaborative translation",
+            "Automation",
+            "Context screenshots",
+            "In-context editing"
+          ],
+          "integration": "API for automatic upload/download",
+          "pricing": "Free for open source, paid for commercial"
+        },
+        "lokalise": {
+          "features": [
+            "Developer tools",
+            "CLI",
+            "GitHub/GitLab sync",
+            "Figma plugin"
+          ],
+          "developer_friendly": "Excellent API and CLI",
+          "pricing": "Per-seat pricing"
+        },
+        "phrase": {
+          "features": [
+            "Enterprise workflows",
+            "Translation memory",
+            "Machine translation",
+            "Quality checks"
+          ],
+          "target": "Large organizations",
+          "pricing": "Enterprise focused"
+        },
+        "simplelocalize": {
+          "features": [
+            "Simple UI",
+            "CDN delivery",
+            "CLI tools",
+            "Translation status"
+          ],
+          "benefit": "Easy setup, good for startups"
+        }
+      },
+      "git_based_workflow": {
+        "pattern": "Store translations in repository",
+        "pros": "Version control, code review, CI/CD integration",
+        "cons": "Non-technical translators need tooling",
+        "best_practice": "Separate branch for translation updates"
+      },
+      "cdn_delivery": {
+        "pattern": "Load translations from CDN at runtime",
+        "benefits": [
+          "Update without deploy",
+          "Reduced build size",
+          "A/B testing"
+        ],
+        "tools": [
+          "Tolgee",
+          "i18next-http-backend",
+          "Custom CDN"
+        ]
+      }
+    },
+    "quality_assurance": {
+      "validation": [
+        "Check for missing keys across locales",
+        "Validate interpolation placeholders match",
+        "Ensure pluralization forms exist",
+        "Check for empty strings",
+        "Verify HTML/Markdown safety"
+      ],
+      "automated_tests": {
+        "snapshot_testing": "Test rendered output per locale",
+        "missing_keys": "Fail build if translations missing",
+        "format_validation": "Check ICU format syntax"
+      },
+      "manual_qa": {
+        "process": "Native speakers review in context",
+        "checklist": [
+          "Accuracy",
+          "Cultural appropriateness",
+          "UI fit",
+          "Terminology consistency"
+        ]
+      }
+    },
+    "continuous_localization": {
+      "ci_cd_integration": {
+        "pattern": "Automated translation sync in CI pipeline",
+        "steps": [
+          "Extract messages on commit",
+          "Push to TMS via API",
+          "Pull translations before deploy",
+          "Validate completeness",
+          "Deploy with updated translations"
+        ]
+      },
+      "versioning": {
+        "pattern": "Tag translations with app version",
+        "benefit": "Rollback capability, staging vs production"
+      }
+    }
+  },
+  "performance_optimization": {
+    "bundle_size_reduction": {
+      "code_splitting": {
+        "pattern": "Split translations by route or feature",
+        "next_js": "Automatic with dynamic imports",
+        "benefit": "Load only needed translations"
+      },
+      "tree_shaking": {
+        "lingui": "Removes unused messages at compile time",
+        "modern_bundlers": "Webpack, Vite support with proper config"
+      },
+      "lazy_loading": {
+        "pattern": "Load translations on-demand for rare locales",
+        "implementation": "Dynamic import with Suspense boundary"
+      }
+    },
+    "caching_strategies": {
+      "browser_cache": {
+        "pattern": "Cache translation files with long max-age",
+        "versioning": "Hash-based filenames for cache busting"
+      },
+      "service_worker": {
+        "pattern": "Cache translations in service worker",
+        "benefit": "Offline support, instant loads"
+      },
+      "memory_cache": {
+        "pattern": "Keep active locale in memory",
+        "benefit": "No re-parsing on component re-renders"
+      }
+    },
+    "rendering_optimization": {
+      "server_components": {
+        "benefit": "Zero client JS for static translations",
+        "pattern": "Use Server Components for pages, Client for interactive"
+      },
+      "memoization": {
+        "pattern": "Memoize expensive formatted values",
+        "react": "useMemo for formatted dates/numbers"
+      },
+      "avoid_re_renders": {
+        "pattern": "Don't pass entire translation object as props",
+        "best_practice": "Pass translated strings, not t function"
+      }
+    },
+    "core_web_vitals": {
+      "lcp": {
+        "optimization": "Server-render translated hero content",
+        "target": "<2.5s"
+      },
+      "fid": {
+        "optimization": "Minimize client-side translation overhead",
+        "target": "<100ms"
+      },
+      "cls": {
+        "optimization": "Prevent layout shift on language load",
+        "pattern": "Pre-render with placeholder or skeleton"
+      }
+    }
+  },
+  "seo_best_practices": {
+    "hreflang_implementation": {
+      "purpose": "Tell search engines about language variants",
+      "pattern": "<link rel='alternate' hreflang='en' href='https://example.com/en/page' />",
+      "requirements": [
+        "Bidirectional links (each page links to all variants)",
+        "Include x-default for fallback",
+        "Use absolute URLs",
+        "Consistent URL structure"
+      ],
+      "validation": "Use Google Search Console hreflang tester"
+    },
+    "localized_metadata": {
+      "title": "Translate page titles per locale",
+      "description": "Locale-specific meta descriptions (150-160 chars)",
+      "keywords": "Language-specific keyword research",
+      "og_tags": "Localized Open Graph for social sharing"
+    },
+    "url_structure": {
+      "subdirectory": {
+        "pattern": "example.com/en/, example.com/es/",
+        "pros": "Easy setup, single domain authority",
+        "cons": "All locales under one domain",
+        "recommendation": "Best for most sites"
+      },
+      "subdomain": {
+        "pattern": "en.example.com, es.example.com",
+        "pros": "Separate hosting possible",
+        "cons": "Split SEO authority, DNS complexity"
+      },
+      "ccTLD": {
+        "pattern": "example.com, example.es, example.de",
+        "pros": "Strong geo-targeting, local trust",
+        "cons": "Expensive, separate domains to manage"
+      }
+    },
+    "structured_data": {
+      "localized_schema": "Use @language in JSON-LD for locale",
+      "breadcrumbs": "Localize breadcrumb names",
+      "organization": "Set correct address per locale"
+    },
+    "sitemap": {
+      "multiple_sitemaps": "One per locale or unified with hreflang",
+      "priority": "Set higher priority for primary locale",
+      "frequency": "Update as content changes"
+    }
+  },
+  "accessibility_considerations": {
+    "lang_attribute": {
+      "html": "<html lang={locale}>",
+      "content_language": "Set correct language for screen readers"
+    },
+    "aria_labels": {
+      "pattern": "Translate all ARIA labels and descriptions",
+      "examples": [
+        "aria-label",
+        "aria-describedby",
+        "aria-placeholder"
+      ]
+    },
+    "keyboard_navigation": {
+      "locale_switcher": "Ensure keyboard accessible",
+      "focus_management": "Maintain focus on language change"
+    },
+    "screen_reader_testing": {
+      "tools": [
+        "NVDA",
+        "JAWS",
+        "VoiceOver"
+      ],
+      "verification": "Test that content reads correctly in each locale"
+    },
+    "color_contrast": {
+      "consideration": "Ensure text contrast in all languages",
+      "longer_text": "Some languages (German) use longer words"
+    }
+  },
+  "testing_strategies": {
+    "unit_tests": {
+      "mock_translations": {
+        "pattern": "Mock translation function in tests",
+        "jest": "jest.mock('next-intl')",
+        "vitest": "vi.mock('next-intl')"
+      },
+      "test_keys": {
+        "pattern": "Test that correct key is called",
+        "example": "expect(t).toHaveBeenCalledWith('greeting', {name: 'Alice'})"
+      }
+    },
+    "integration_tests": {
+      "render_locales": {
+        "pattern": "Test component in each supported locale",
+        "libraries": [
+          "React Testing Library",
+          "@testing-library/react"
+        ]
+      },
+      "locale_switching": {
+        "pattern": "Test language switcher functionality",
+        "verify": "Check URL change and content update"
+      }
+    },
+    "e2e_tests": {
+      "playwright": {
+        "pattern": "Test full user flows per locale",
+        "locale_switching": "Automate language selection and verification"
+      },
+      "visual_regression": {
+        "tools": [
+          "Percy",
+          "Chromatic",
+          "BackstopJS"
+        ],
+        "pattern": "Capture screenshots per locale"
+      },
+      "rtl_testing": {
+        "pattern": "Dedicated RTL test suite",
+        "verify": "Layout mirroring, text direction"
+      }
+    },
+    "translation_validation": {
+      "automated": {
+        "missing_keys": "CI check for missing translations",
+        "format_check": "Validate ICU syntax",
+        "placeholder_match": "Ensure placeholders consistent across locales"
+      },
+      "manual": {
+        "translator_review": "Native speaker approval",
+        "context_screenshots": "Provide UI context for translators"
+      }
+    }
+  },
+  "migration_strategies": {
+    "from_no_i18n": {
+      "steps": [
+        "Choose library (next-intl for Next.js recommended)",
+        "Install and configure",
+        "Extract hardcoded strings to message files",
+        "Replace strings with translation calls",
+        "Set up routing and middleware",
+        "Test thoroughly per locale",
+        "Deploy with fallback to single locale"
+      ],
+      "incremental_approach": "Start with one feature/page, expand gradually"
+    },
+    "from_react_i18next_to_next_intl": {
+      "why": "Better Next.js integration, smaller bundle, App Router support",
+      "challenges": [
+        "Different API (useTranslation vs useTranslations)",
+        "Routing changes (middleware setup)",
+        "Message format compatibility"
+      ],
+      "migration_steps": [
+        "Install next-intl",
+        "Set up configuration files (routing.ts, request.ts, middleware.ts)",
+        "Convert message files to next-intl format",
+        "Replace useTranslation with useTranslations",
+        "Update Link and Router imports",
+        "Test and validate",
+        "Remove react-i18next dependencies"
+      ],
+      "coexistence": "Both can coexist during migration"
+    },
+    "from_pages_to_app_router": {
+      "i18n_changes": [
+        "Pages Router: Built-in i18n config",
+        "App Router: Manual with middleware and [locale] segment"
+      ],
+      "next_intl_benefit": "Designed for App Router, seamless migration",
+      "steps": [
+        "Set up App Router structure (app/[locale]/...)",
+        "Configure next-intl middleware",
+        "Migrate pages one by one",
+        "Update navigation to use next-intl APIs",
+        "Remove Pages Router i18n config"
+      ]
+    }
+  },
+  "production_checklist": {
+    "pre_launch": [
+      "✅ All UI strings translated for launch locales",
+      "✅ Fallback locale configured and tested",
+      "✅ Metadata translated (title, description, OG tags)",
+      "✅ hreflang tags implemented correctly",
+      "✅ Sitemap includes all locale URLs",
+      "✅ RTL layouts tested for RTL locales",
+      "✅ Date/number/currency formatting verified per locale",
+      "✅ Locale switcher accessible and functional",
+      "✅ Error messages translated",
+      "✅ 404/500 pages localized",
+      "✅ Performance tested per locale (Core Web Vitals)",
+      "✅ Bundle size acceptable (<50kB added per locale)",
+      "✅ SEO validation (Google Search Console)",
+      "✅ Translation QA completed by native speakers",
+      "✅ CI/CD pipeline includes translation sync",
+      "✅ Monitoring and error tracking configured",
+      "✅ Documentation for adding new locales",
+      "✅ Legal pages translated (Terms, Privacy)",
+      "✅ Email templates localized",
+      "✅ Customer support ready for multiple locales"
+    ],
+    "post_launch": [
+      "Monitor missing translation errors",
+      "Track language distribution in analytics",
+      "Measure conversion rates per locale",
+      "Collect user feedback on translations",
+      "Continuous translation updates",
+      "Regular SEO audits per locale",
+      "Performance monitoring per locale",
+      "Plan for new locale additions"
+    ]
+  },
+  "common_pitfalls": {
+    "concatenating_strings": {
+      "problem": "Combining translated strings breaks word order in some languages",
+      "wrong": "t('hello') + ' ' + name",
+      "right": "t('greeting', {name})",
+      "reason": "Different languages have different word orders"
+    },
+    "hardcoded_formats": {
+      "problem": "Assuming date/number formats",
+      "wrong": "date.toLocaleDateString('en-US')",
+      "right": "format.dateTime(date, 'medium')",
+      "reason": "Locale should be dynamic, not hardcoded"
+    },
+    "untranslated_alt_text": {
+      "problem": "Forgetting to translate image alt text and ARIA labels",
+      "solution": "Create translation keys for all accessibility content"
+    },
+    "mixed_content": {
+      "problem": "Mixing English and translated content",
+      "solution": "Extract ALL user-facing strings to translation files"
+    },
+    "incorrect_pluralization": {
+      "problem": "Using English plural rules for all languages",
+      "wrong": "count === 1 ? 'item' : 'items'",
+      "right": "Use ICU plural format with proper CLDR rules"
+    },
+    "client_side_only": {
+      "problem": "Loading all translations in client",
+      "solution": "Use Server Components for static content"
+    },
+    "ignoring_rtl": {
+      "problem": "Not testing RTL layouts",
+      "solution": "Design with RTL in mind, use logical CSS properties"
+    },
+    "poor_key_naming": {
+      "problem": "Generic keys like 'text1', 'label2'",
+      "solution": "Descriptive, hierarchical keys: 'auth.login.email.placeholder'"
+    }
+  },
+  "advanced_topics": {
+    "content_negotiation": {
+      "accept_language": "Parse Accept-Language header for locale detection",
+      "cookie_precedence": "User preference (cookie) overrides browser setting",
+      "geo_ip": "Use IP geolocation as additional hint"
+    },
+    "a_b_testing": {
+      "pattern": "Test different translations for same locale",
+      "implementation": "Feature flags per translation variant",
+      "metrics": "Measure engagement, conversion per variant"
+    },
+    "dynamic_translations": {
+      "user_generated": "Handle user-generated content that needs translation",
+      "machine_translation": "Integrate APIs (Google Translate, DeepL) for on-demand",
+      "caching": "Cache machine translations to reduce API costs"
+    },
+    "multi_tenancy": {
+      "pattern": "Different locales per tenant/organization",
+      "implementation": "Tenant-specific message loading",
+      "customization": "Allow tenants to override translations"
+    },
+    "locale_specific_content": {
+      "pattern": "Some content only available in certain locales",
+      "routing": "Redirect to available locale if content missing",
+      "ui": "Show language availability indicator"
+    },
+    "progressive_enhancement": {
+      "pattern": "Start with single locale, add locales incrementally",
+      "benefit": "Faster initial launch, learn from usage",
+      "planning": "Design architecture for easy locale additions"
+    }
+  },
+  "tooling_ecosystem": {
+    "development_tools": {
+      "vscode_extensions": [
+        "next-intl (official)",
+        "i18n Ally (multi-library support)",
+        "Inline Translation (preview in editor)"
+      ],
+      "cli_tools": [
+        "lingui CLI",
+        "@formatjs/cli",
+        "i18next-parser",
+        "Custom scripts for validation"
+      ],
+      "browser_extensions": [
+        "React DevTools (inspect i18n context)",
+        "Tolgee (in-context editing)"
+      ]
+    },
+    "ci_cd_integration": {
+      "github_actions": "Automate translation sync and validation",
+      "gitlab_ci": "Pipeline for extraction and deployment",
+      "vercel": "Automatic deployment with locale support"
+    },
+    "monitoring_tools": {
+      "sentry": "Track translation errors",
+      "google_analytics": "Measure locale distribution",
+      "custom_dashboard": "Translation coverage metrics"
+    }
+  },
+  "real_world_examples": {
+    "e_commerce": {
+      "requirements": [
+        "Product descriptions per locale",
+        "Currency and pricing by region",
+        "Localized checkout flow",
+        "Shipping and returns policies",
+        "Customer support in multiple languages"
+      ],
+      "considerations": [
+        "Inventory management per region",
+        "Payment methods vary by locale",
+        "Legal requirements differ by country"
+      ]
+    },
+    "saas_platform": {
+      "requirements": [
+        "UI fully translated",
+        "Help documentation per locale",
+        "Email notifications localized",
+        "Billing and invoices in user's language",
+        "Customer success in multiple time zones"
+      ],
+      "considerations": [
+        "Feature rollout per region",
+        "Compliance with local data regulations",
+        "Pricing strategy per market"
+      ]
+    },
+    "content_platform": {
+      "requirements": [
+        "Content creation in multiple languages",
+        "Translation workflow for articles",
+        "SEO optimization per locale",
+        "Comments and interactions localized",
+        "Search in user's language"
+      ],
+      "considerations": [
+        "Content moderation per language",
+        "Cultural sensitivity",
+        "Regional content preferences"
+      ]
+    }
+  },
+  "resources": {
+    "documentation": {
+      "next_intl": "https://next-intl-docs.vercel.app",
+      "react_i18next": "https://react.i18next.com",
+      "react_intl": "https://formatjs.io/docs/react-intl",
+      "lingui": "https://lingui.dev",
+      "mdn_intl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl"
+    },
+    "community": {
+      "discord": "Next.js, React communities have i18n channels",
+      "github_discussions": "Library-specific repositories",
+      "stack_overflow": "Tag: internationalization, react-i18n"
+    },
+    "learning": {
+      "courses": "Platform-specific i18n courses on Egghead, Frontend Masters",
+      "articles": "DEV.to, Medium, official blogs",
+      "videos": "YouTube tutorials, conference talks"
+    }
+  },
+  "execution_priorities": {
+    "immediate": [
+      "Set up i18n library (next-intl for Next.js 15)",
+      "Configure routing and middleware",
+      "Extract strings to translation files",
+      "Implement locale switcher"
+    ],
+    "short_term": [
+      "Complete translation for launch locales",
+      "Implement SEO (hreflang, metadata)",
+      "Set up translation workflow",
+      "Performance optimization"
+    ],
+    "long_term": [
+      "Add more locales",
+      "Continuous localization process",
+      "Advanced features (RTL, dynamic content)",
+      "Analytics and optimization"
+    ]
+  },
+  "decision_framework": {
+    "choosing_library": {
+      "next_js_15_app_router": "Use next-intl (first choice)",
+      "next_js_pages_router": "Use next-i18next or migrate to App Router",
+      "create_react_app": "Use react-i18next (most flexible)",
+      "vite_react": "Use react-i18next or LinguiJS",
+      "performance_critical": "Use LinguiJS (smallest bundle)",
+      "enterprise_requirements": "Use react-i18next (most mature)",
+      "standards_focused": "Use react-intl (ECMA-402)",
+      "typescript_first": "Use next-intl or LinguiJS"
+    },
+    "locale_strategy": {
+      "global_audience": "Start with top 5 markets, expand based on demand",
+      "regional_focus": "Primary locale + English fallback",
+      "niche_markets": "Target specific locales with custom content"
+    },
+    "routing_approach": {
+      "seo_priority": "Subdirectory with localePrefix: 'always'",
+      "clean_urls": "Subdirectory with localePrefix: 'as-needed'",
+      "multi_domain": "Use domains with locale detection"
+    }
+  },
+  "meta": {
+    "version": "1.1.0",
+    "last_updated": "2026-02-27",
+    "target_frameworks": [
+      "React 19",
+      "Next.js 15",
+      "Next.js 14"
+    ],
+    "compatibility": {
+      "node": ">=18.0.0",
+      "react": "^18.2.0 || ^19.0.0",
+      "next": "^14.0.0 || ^15.0.0"
+    },
+    "maintainer_notes": "This skillset covers modern React i18n as of November 2025. Libraries and best practices evolve - always check official docs for latest updates. Focus on next-intl for Next.js projects as it provides the best DX and performance."
+  }
+}

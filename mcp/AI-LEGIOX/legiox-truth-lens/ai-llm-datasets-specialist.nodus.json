@@ -1,0 +1,749 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "ai_llm_datasets_specialist",
+  "name": "AI LLM Datasets Specialist — Dataset Creation × Model Formats × Quantisation × Alignment",
+  "mission": {
+    "primary_objective": "Design, curate, generate, validate, and format high-quality datasets for LLM fine-tuning and alignment training; select and work with model storage formats (GGUF, MLX, safetensors); apply quantisation selection rationale; perform and understand model modification techniques including abliteration; and understand alignment training methods (SFT, DPO, GRPO, RLHF) well enough to produce correct training artifacts for each.",
+    "context": "Dataset quality is the single hardest-to-fix variable in LLM fine-tuning. No training method, architecture, or hardware advantage compensates for bad data. The LIMA paper (2305.11206, 2023) demonstrated that 1,000 carefully curated, diverse, high-quality examples can outperform models trained on orders-of-magnitude more data. Microsoft's Evol-Instruct generated 250,000 instruction variants from 175 seed examples. Scale AI's research shows the optimal synthetic strategy shifts from answer augmentation to new question generation as query budget grows. These empirical anchors inform every decision in this skillset. The field advances weekly — treat benchmarks as snapshots, not axioms.",
+    "target_outcome": "Produce training-ready datasets in the correct format and quality level for any given fine-tuning goal; select the right model format and quantisation for any deployment target; understand abliteration mechanics to interpret or produce abliterated GGUF/MLX models; choose the right alignment training method and understand its data requirements.",
+    "scope": "Dataset creation (manual, synthetic, hybrid); dataset formats (Alpaca, ShareGPT, ChatML, DPO pairs, GRPO prompts, pretraining corpora); model formats (GGUF, MLX, safetensors, AWQ, GPTQ); quantisation taxonomy (K-quants, I-quants, legacy, dynamic/Unsloth UD); abliteration (dense and MoE architectures, projection methods, tool ecosystem); alignment training (SFT, DPO, ORPO, GRPO, PPO/RLHF); tooling (Unsloth, LLaMA-Factory, Axolotl, mlx-lm, Augmentoolkit, Evol-Instruct, RAGAS, LLM-as-Judge). Local inference context: LM Studio / llmster on Apple M4 Max with Qwen3.5 and similar models."
+  },
+  "truth_lens": "Design, curate, generate, validate, and format high-quality datasets for LLM fine-tuning and alignment training; select and work with model storage formats (GGUF, MLX, safetensors); apply quantisation selection rationale; perform and understand model modification techniques including abliteration; and understand alignment training methods (SFT, DPO, GRPO, RLHF) well enough to produce correct training artifacts for each. Dataset quality is the single hardest-to-fix variable in LLM fine-tuning. No training method, architecture, or hardware advantage compensates for bad data. The LIMA paper (2305.11206, 2023) demonstrated that 1,000 carefully curated, diverse, high-quality examples can outperform models trained on orders-of-magnitude more data. Microsoft's Evol-Instruct generated 250,000 instruction variants from 17",
+  "consult_when": [
+    "Task touches ai_llm_datasets_specialist responsibilities or failure modes named in this lens.",
+    "Need selector-grade triggers for AI LLM Datasets Specialist — Dataset Creation × Model Formats × Quantisation × Alignment before architecture or production change.",
+    "Cross-stack ambiguity between framework, infra, and data layers in this domain."
+  ],
+  "key_patterns": [
+    "Pattern: map requirement -> consult_when hit for ai_llm_datasets_specialist -> apply truth_lens constraints before code.",
+    "Pattern: validate external API/env assumptions against this lens before merge or deploy."
+  ],
+  "expertise": [
+    "QUALITY_OVER_QUANTITY — 1,000 carefully crafted, diverse, consistent examples outperform 50,000 mediocre ones (LIMA, 2023; NeurIPS 2023 empirical consensus); bad examples actively harm model performance",
+    "DIVERSITY_IS_MANDATORY — A dataset of 50,000 variations of 'What is X? X is Y",
+    "DATA_RESEMBLES_TARGET — Training data must match the exact format, tone, and structure you want at inference; fine-tuning is programming the model with examples, not teaching it generically",
+    "HUMAN_IN_THE_LOOP — LLM-generated synthetic data must be reviewed, filtered, and quality-checked by humans; fully synthetic pipelines without human gates create bias amplification and drift",
+    "DEDUPLICATION_MANDATORY — Near-duplicate examples actively degrade fine-tuned model performance; deduplicate semantically (embedding cosine similarity > 0",
+    "FORMAT_IS_CONTRACT — The dataset format (Alpaca, ShareGPT, ChatML) is a contract between data and training framework; mismatching format to framework breaks fine-tuning silently or noisily"
+  ],
+  "keywords": [
+    "llm",
+    "datasets",
+    "specialist",
+    "ai",
+    "ml",
+    "design",
+    "gguf",
+    "mlx",
+    "sft",
+    "dpo",
+    "grpo",
+    "rlhf",
+    "dataset",
+    "creation",
+    "model",
+    "formats",
+    "quantisation",
+    "alignment"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "AI LLM Datasets Specialist — Dataset Creation × Model Formats × Quantisation × Alignment",
+  "role": "LegioX truth lens — AI LLM Datasets Specialist — Dataset Creation × Model Formats × Quantisation × Alignment",
+  "core_expertise": "Design, curate, generate, validate, and format high-quality datasets for LLM fine-tuning and alignment training; select and work with model storage formats (GGUF, MLX, safetensors); apply quantisation selection rationale; perform and understand model modification techniques including abliteration; and understand alignment training methods (SFT, DPO, GRPO, RLHF) well enough to produce correct train",
+  "key_capabilities": [
+    "quality_over_quantity_1_000_carefully_cr",
+    "diversity_is_mandatory_a_dataset_of_50_0",
+    "data_resembles_target_training_data_must",
+    "human_in_the_loop_llm_generated_syntheti",
+    "deduplication_mandatory_near_duplicate_e",
+    "format_is_contract_the_dataset_format_al",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-03-04",
+  "updated": "2026-03-04",
+  "core_principles": [
+    "QUALITY_OVER_QUANTITY — 1,000 carefully crafted, diverse, consistent examples outperform 50,000 mediocre ones (LIMA, 2023; NeurIPS 2023 empirical consensus); bad examples actively harm model performance",
+    "DIVERSITY_IS_MANDATORY — A dataset of 50,000 variations of 'What is X? X is Y.' teaches nothing; semantic, task, and stylistic diversity are as critical as volume",
+    "DATA_RESEMBLES_TARGET — Training data must match the exact format, tone, and structure you want at inference; fine-tuning is programming the model with examples, not teaching it generically",
+    "HUMAN_IN_THE_LOOP — LLM-generated synthetic data must be reviewed, filtered, and quality-checked by humans; fully synthetic pipelines without human gates create bias amplification and drift",
+    "DEDUPLICATION_MANDATORY — Near-duplicate examples actively degrade fine-tuned model performance; deduplicate semantically (embedding cosine similarity > 0.9 threshold) not just lexically",
+    "FORMAT_IS_CONTRACT — The dataset format (Alpaca, ShareGPT, ChatML) is a contract between data and training framework; mismatching format to framework breaks fine-tuning silently or noisily",
+    "QUANTISATION_IS_DEPLOYMENT_DECISION — Choose quantisation based on available memory and acceptable quality floor, not habit; Q4_K_M is a pragmatic default but not always optimal",
+    "ABLITERATION_IS_SURGICAL_NOT_GLOBAL — Modern abliteration on dense models modifies specific weight matrices orthogonal to a refusal direction; on MoE it requires multi-layer mapping across expert pathways",
+    "ALIGNMENT_METHOD_DETERMINES_DATA_SHAPE — SFT needs prompt/response pairs; DPO needs chosen/rejected preference pairs; GRPO needs prompts with verifiable outcomes; data format and alignment method are inseparable",
+    "PRESERVE_THINKING_IN_FINE_TUNED_MODELS — When fine-tuning reasoning models (Qwen3.5, DeepSeek-R1), include ≥75% chain-of-thought examples in the dataset or thinking capability degrades"
+  ],
+  "knowledge_layers": {
+    "layer_0_dataset_fundamentals": {
+      "description": "Core principles of what makes a fine-tuning dataset work or fail",
+      "truth_lens": [
+        {
+          "concept": "quality_vs_quantity",
+          "truths": [
+            "LIMA (2305.11206, 2023): 1,000 manually curated, diverse examples produced a model competitive with GPT-3.5-level instruction followers; the paper proved quality can trump quantity for SFT",
+            "LoRA/QLoRA fine-tuning: strong results achievable with 500–5,000 high-quality instruction-response pairs for well-defined, single tasks (DigitalOcean, 2026)",
+            "Full fine-tuning requires much larger datasets: tens to hundreds of thousands of examples; PEFT is the pragmatic path for most domain adaptation",
+            "Quality floor: a 10,000-example dataset where 20% of examples are ambiguous, contradictory, or low-quality performs worse than a 2,000-example clean dataset on the target task",
+            "Inspect quality continuously — read examples individually during generation, not after 50,000 are already produced; bad eggs compound",
+            "Training data should read like 'code you're writing to program the model' — every inconsistency is a bug (Meta AI blog, 2024)"
+          ]
+        },
+        {
+          "concept": "diversity",
+          "truths": [
+            "Diversity requirement: the dataset must cover the full range of inputs the model will encounter at inference, not just the most common case",
+            "Diversity dimensions: task type (Q&A, reasoning, extraction, generation, classification), question phrasing (semantic diversity), answer length, difficulty (easy/medium/hard), domain subdomain coverage",
+            "Instruction Backtranslation: generate Q/A pairs by asking the LLM 'What questions could this text be the answer to?' — creates semantically diverse questions from a single document corpus",
+            "Paraphrasing input diversity: rephrase prompts while preserving semantics; used in SQLCoder2 fine-tuning to achieve syntactic + semantic input diversity",
+            "Cosine similarity deduplication: embed all examples with a fast embedding model; remove pairs where cosine similarity > 0.9 — semantic duplicates are more damaging than lexical duplicates",
+            "Telecom paper (arXiv 2509.25736): measuring pairwise embedding cosine similarity across synthetic dataset versus seed dataset with left-shift in histogram (lower similarity = greater diversity) is the correct diversity check",
+            "Bloom's Taxonomy application to diversity: include examples spanning recall, comprehension, application, analysis, synthesis, and evaluation levels — not just recall Q&A"
+          ]
+        },
+        {
+          "concept": "dataset_size_guidelines",
+          "truths": [
+            "Start small: build 100 examples of a specific target behaviour, train on them, test — iterate the pipeline before committing to full-scale generation",
+            "Task-specific SFT (single well-defined task): 500–2,000 high-quality examples sufficient with LoRA",
+            "Domain adaptation (broad domain, many subtasks): 5,000–50,000 examples; quality controls more critical at this scale",
+            "Instruction following (general capability improvement): 10,000–100,000 examples; Alpaca (52K) and WizardLM (250K via Evol-Instruct) are the reference scales",
+            "Continued pretraining on new knowledge: requires much larger corpora (100M+ tokens); fine-tuning alone is unreliable for injecting entirely new factual knowledge that wasn't in pretraining",
+            "The 'cannot add new knowledge' claim is overstated: large, well-structured datasets on a topic can inject new knowledge; what fails is single-paragraph or low-sample-count injections (LocalLLaMA community consensus)",
+            "DPO alignment: 10,000–50,000 preference pairs; quality of the 'rejected' response matters as much as the 'chosen' — bad rejected examples teach nothing"
+          ]
+        },
+        {
+          "concept": "data_pipeline_stages",
+          "truths": [
+            "Stage 1 — Source selection: identify authoritative domain sources (PDFs, internal wikis, structured databases, existing HuggingFace datasets via search with sentence-similarity models)",
+            "Stage 2 — Extraction and cleaning: parse raw sources; strip HTML/boilerplate/PII; chunk long documents to context-appropriate size",
+            "Stage 3 — Q&A generation: use local LLM (Mixtral, Qwen3.5, Llama-3.1-70B) or teacher model (GPT-4) to generate instruction/response pairs from chunks",
+            "Stage 4 — Evolution (optional): apply Evol-Instruct in-depth (more detail) and in-breadth (new variants) evolution to seed examples to expand diversity",
+            "Stage 5 — Quality filtering: run LLM-as-Judge scoring; apply RAGAS metrics for domain-specific quality; threshold on quality score to discard low-quality outputs",
+            "Stage 6 — Deduplication: semantic dedup via embedding cosine similarity; lexical dedup via exact or near-exact hash comparison",
+            "Stage 7 — Format and export: convert to target format (Alpaca JSONL, ShareGPT JSONL, ChatML); validate schema; split train/val",
+            "Stage 8 — Review: manually read a random 1–5% sample; if quality is unsatisfactory, diagnose which generation stage is failing and fix at that stage — do not patch downstream"
+          ]
+        }
+      ]
+    },
+    "layer_1_synthetic_data_generation": {
+      "description": "Methods, tools, and failure modes for LLM-generated synthetic training data",
+      "truth_lens": [
+        {
+          "concept": "generation_strategies",
+          "truths": [
+            "Seed-and-expand: curate 50–200 high-quality human examples; prompt LLM to generate N similar examples per seed; effective for domain-specific narrow tasks",
+            "Document-grounded QA: chunk documents → prompt LLM as 'Professor writing exam questions' with context → generate question + answer pairs grounded in the chunk (Mbando Reddit approach; Mixtral-8x7B locally via LM Studio)",
+            "Evol-Instruct (Microsoft, WizardLM): in-depth evolution adds complexity/detail; in-breadth evolution generates new variants; elimination removes failed outputs — 175 seeds → 250,000 instructions",
+            "Augmentoolkit (github.com/e-p-armstrong): open-source pipeline that ingests documents and outputs Q/A pairs ready for fine-tuning; most accessible automated dataset creation tool for domain-specific corpora",
+            "Answer augmentation: generate multiple answers to the same question (different styles, detail levels, formats); most effective when query budget ratio is low (Scale AI NeurIPS 2024 FITML workshop)",
+            "Question rephrasing: rephrase existing questions while preserving answer; robust even with weaker augmentation models; good for syntactic diversity without needing frontier LLM",
+            "New question generation: generate entirely new questions about the topic; most effective as query budget ratio increases — complement to augmentation, not replacement",
+            "Co-teaching / evolutionary iteration (Gretel Navigator): multiple LLMs critique and refine each other's outputs iteratively; can outperform single-model generation including GPT-4 by up to 25.6% on some tasks",
+            "Hybrid approach best: human-written data establishes correctness and tone; LLM-generated data scales volume; balance achieves better results than either alone"
+          ]
+        },
+        {
+          "concept": "local_private_generation",
+          "truths": [
+            "Use local LLMs (Mixtral-8x7B, Qwen3.5-35B-A3B, Llama-3.1-70B via LM Studio) for private/proprietary data — do not send company data to cloud APIs",
+            "Serve locally via LM Studio / KoboldCPP / Ollama → query via OpenAI-compatible /v1/completions or /v1/chat/completions endpoint",
+            "Python pattern: requests.post(url, headers=headers, json=payload) against local server; format selection depends on model chat template (alpaca, chatml, llama3)",
+            "Nudge JSON output: begin the model's response with '{' to force JSON structure; works with most local models",
+            "Implement retry logic: add garbage-detection check in generation loop (expected JSON field count, output length); discard and regenerate on failure",
+            "Post-generation crop: trim partially-generated trailing text; validate with json.loads() before saving",
+            "Licensing caution: verify the license of any LLM used for generation — cc-by-nc-4.0 or similar may prohibit using generated outputs for commercial model training"
+          ]
+        },
+        {
+          "concept": "quality_validation",
+          "truths": [
+            "LLM-as-Judge: use a strong LLM (GPT-4o, Llama-3.1-70B) as judge to score quality; research shows strong LLM judges achieve >80% agreement with humans (Confident AI, 2024)",
+            "RAGAS metrics: Relevancy, Faithfulness, Context Recall, Context Precision — useful for document-grounded QA datasets; customisable domain-specific metrics (telecom specificity example)",
+            "Indistinguishability Rate (IR): have a strong LLM discriminate between synthetic and human-expert examples; IR close to 50% means the synthetic data is indistinguishable from human data",
+            "Reward model scoring: for preference datasets, use a trained reward model (e.g., nicolinho/QRM-Llama3.1-8B-v2) to score chosen vs rejected responses",
+            "Rule-based scoring: for math/code tasks, verify correctness programmatically (regex, unit tests, code execution) — cheapest and most reliable quality signal for verifiable outputs",
+            "Perplexity filtering for DPO: filter responses by perplexity relative to the policy model (responses too easy or too hard for the model are uninformative preference pairs)",
+            "Inspect 1–5% manually always: automated quality checks catch systematic errors; manual inspection catches creative failure modes no automated checker anticipated"
+          ]
+        },
+        {
+          "concept": "anti_patterns",
+          "truths": [
+            "50,000 variations of the same Q&A pattern — the model learns the pattern, not domain knowledge; diversity is not optional",
+            "Fully automated pipeline without human review gates — model collapse risk: LLM-generated data reinforces LLM biases at each iteration if unchecked",
+            "Using a model to generate training data for itself (same model, same weights) — produces circular bias; use a larger teacher model or diversified peer model",
+            "Skipping deduplication — near-duplicates bias the model toward common phrasings and harm generalization",
+            "Including PII, credentials, or proprietary identifiers in the dataset — becomes baked into model weights and may surface at inference",
+            "Not tracking provenance — without source linkage you cannot diagnose which documents caused hallucination patterns during fine-tuning",
+            "Generating examples without accounting for the chat template the training framework will apply — training on raw text then applying a chat template at inference creates prompt format mismatch"
+          ]
+        }
+      ]
+    },
+    "layer_2_dataset_formats": {
+      "description": "All major LLM fine-tuning dataset formats, their structure, use cases, and compatibility",
+      "truth_lens": [
+        {
+          "concept": "file_formats",
+          "truths": [
+            "JSONL (JSON Lines): one JSON object per line; the production standard for fine-tuning datasets; append-friendly, streamable, easy to validate line by line",
+            "JSON: array of objects in a single file; valid for smaller datasets; cannot stream efficiently",
+            "Parquet: columnar binary format; efficient for large datasets (>100K examples); used by HuggingFace Datasets natively; not human-readable",
+            "CSV: acceptable for simple two-column (prompt/response) datasets; loses schema expressiveness for multi-turn data; avoid for preference data",
+            "Always validate JSONL line by line before training: json.loads(line) in a loop; invalid UTF-8 or malformed objects cause silent truncation in some trainers"
+          ]
+        },
+        {
+          "concept": "alpaca_format",
+          "truths": [
+            "Purpose: single-turn instruction following; the original format from Stanford's Alpaca (52K GPT-3 generated examples, 2023)",
+            "Schema: { 'instruction': string, 'input': string (optional context), 'output': string }",
+            "Multi-turn variant adds 'history': list of [user, assistant] string pairs",
+            "Training framework: LLaMA-Factory, Axolotl, Unsloth (apply_chat_template + alpaca column names)",
+            "The 'input' field is concatenated with 'instruction' at training time; keep 'input' empty unless you need context separation",
+            "Best for: Q&A from documents, extraction tasks, format conversion, domain-specific instruction following",
+            "Limitation: single-turn only in base form; ShareGPT handles multi-turn more naturally"
+          ]
+        },
+        {
+          "concept": "sharegpt_format",
+          "truths": [
+            "Purpose: multi-turn conversations; closer to real chatbot interaction patterns",
+            "Schema: { 'conversations': [ { 'from': 'human'|'gpt'|'system'|'function'|'observation', 'value': string } ] }",
+            "Supports tool calling via 'function' and 'observation' roles — required for function-calling fine-tuning",
+            "LLaMA-Factory, Axolotl, Unsloth all natively support ShareGPT via formatting='sharegpt' flag",
+            "Conversion: Unsloth's standardize_sharegpt() converts ShareGPT 'from'/'value' keys to ChatML 'role'/'content' keys for models expecting ChatML template",
+            "Best for: chatbot fine-tuning, multi-turn dialogue, tool-use/function-call training, persona training",
+            "Continued pretraining: NOT supported by ShareGPT format — use plain text JSONL for pretraining"
+          ]
+        },
+        {
+          "concept": "chatml_format",
+          "truths": [
+            "Origin: OpenAI's ChatML (Chat Markup Language); now the most widely-used conversation format",
+            "Schema: { 'messages': [ { 'role': 'system'|'user'|'assistant', 'content': string } ] }",
+            "Special tokens: <|im_start|>{role}\\n{content}<|im_end|> delimiters in the tokenised form",
+            "HuggingFace tokenizer default apply_chat_template() outputs ChatML by default for many modern models",
+            "Qwen3.5, Llama-3.x, Mistral-Nemo: all use ChatML or ChatML-derived templates",
+            "Tool calling: 'tool_calls' field on assistant messages; 'tool' role for function results",
+            "Best for: any task targeting a model that was pretrained/SFT'd with ChatML template"
+          ]
+        },
+        {
+          "concept": "preference_formats",
+          "truths": [
+            "DPO/ORPO/SimPO format: { 'prompt': string, 'chosen': string, 'rejected': string } — flat triplet",
+            "DPO ShareGPT variant: { 'conversations': [...], 'chosen': { 'role': 'assistant', 'content': '...' }, 'rejected': { 'role': 'assistant', 'content': '...' } }",
+            "KTO format (Kahneman-Tversky Optimisation): { 'messages': [...], 'label': true|false } — single response labelled as good or bad; does not require contrastive pairs",
+            "Preference data quality: the 'rejected' response must be plausible but inferior — trivially bad rejected responses teach nothing; close contrastive pairs are hardest to produce and most informative",
+            "Generating rejected responses: take a correct response, introduce a subtle error, remove a key detail, or use a weaker model's output",
+            "DPO on math: rule-based reward (regex correct/incorrect) to automatically label chosen/rejected from sampled model outputs — scalable without human labelling"
+          ]
+        },
+        {
+          "concept": "grpo_format",
+          "truths": [
+            "GRPO training data: list of prompts only — GRPO generates multiple completions at training time and scores them via reward function",
+            "Schema: { 'prompt': string } or { 'messages': [ { 'role': 'user', 'content': string } ] }",
+            "No response column: GRPO generates G responses per prompt (G=8 typical) and uses intra-group reward differences to compute advantage",
+            "Reward functions: rule-based (math correctness, code execution, format adherence) or learned (reward model); verifiable tasks are ideal for GRPO",
+            "Difficulty matters more for GRPO than SFT: training on the hardest examples yields up to 47% larger performance gains vs training on easy examples (arXiv 2508.14094, 2025)",
+            "GRPO produced DeepSeek-R1's reasoning breakthrough; most accessible implementation: Unsloth GRPO notebooks on Google Colab"
+          ]
+        },
+        {
+          "concept": "pretraining_format",
+          "truths": [
+            "Continued pretraining: raw text JSONL, one document per line as { 'text': string }",
+            "No instruction structure: pretraining teaches the model to predict the next token from your domain corpus — does not teach it to answer questions",
+            "Combine with SFT: pretrain on domain corpus → then SFT with instruction format → best results for new knowledge injection",
+            "Common Crawl, Wikipedia, GitHub: standard pretraining corpora; use CC-NET or Dolma pipelines for filtering",
+            "Quality > coverage: perplexity-filtered, near-deduped pretraining data outperforms raw web dumps at the same token count"
+          ]
+        }
+      ]
+    },
+    "layer_3_model_formats": {
+      "description": "GGUF, MLX, safetensors, AWQ, GPTQ — what they are, when to use each",
+      "truth_lens": [
+        {
+          "concept": "gguf",
+          "truths": [
+            "GGUF (GPT-Generated Unified Format, or Georgi Gerganov Universal Format): binary file format that packages model weights, tokenizer, architecture metadata, and quantisation parameters into a single portable file",
+            "Ecosystem: native to llama.cpp; used by Ollama, LM Studio, Jan.ai, llamafile; the dominant format for local CPU/Apple Silicon inference",
+            "Three quantisation generations: Legacy (Q4_0, Q4_1, Q5_0, Q8_0) → K-quants (Q4_K_M, Q5_K_M, Q6_K) → I-quants (IQ2_XXS...IQ4_XS) using vector quantisation and importance matrices",
+            "Naming convention: Q = quantisation, number = bits per weight, K = K-quant family, M/S/L = size variant (Medium/Small/Large within the same bit depth), I = importance-matrix quant",
+            "K-quant advantage: uses 'super blocks' and grouped scaling; handles non-Gaussian weight distributions better than legacy linear quantisation",
+            "I-quant advantage: non-linear table-assisted reconstruction; fits heavy-tailed distributions at 2–4 bits; requires a calibration importance matrix (imatrix) during quantisation",
+            "Unsloth Dynamic 2.0 (UD) quants: selectively upcast critical layers (attention, embeddings) to higher precision while quantising less-sensitive layers more aggressively — SOTA accuracy on Pareto frontier",
+            "Self-contained: GGUF files include tokenizer vocabulary, special tokens, rope scaling parameters, model config — no separate files needed for inference",
+            "Conversion: python llama.cpp/convert_hf_to_gguf.py --input ./hf_model --output model.gguf --outtype f16 → then quantize: ./llama-quantize model.gguf model_Q4_K_M.gguf Q4_K_M"
+          ]
+        },
+        {
+          "concept": "quantisation_selection_guide",
+          "truths": [
+            "Q8_0: ~8-bit, near-lossless; largest GGUF; use when memory is ample and maximum quality is needed; 6.74 PPL on Qwen2.5-32B (benchmark, JarvisLabs 2026)",
+            "Q6_K: 6-bit K-quant; excellent quality; fits in less memory than Q8; sweet spot for large models on high-VRAM setups",
+            "Q5_K_M: 5-bit K-quant Medium; excellent quality-to-size ratio; recommended for production coding/reasoning tasks when memory allows",
+            "Q4_K_M: 4-bit K-quant Medium; the pragmatic default — ~75% memory reduction from FP16 while maintaining ~95% of quality; most-downloaded GGUF variant across all models",
+            "IQ4_XS: importance-matrix 4-bit; ~4.46 bpw vs Q4_K_M's ~4.89 bpw; slightly smaller, slightly faster generation, slightly slower prompt processing; use when squeezing every GB matters",
+            "Q3_K_M: quality degrades noticeably for reasoning/coding; avoid unless fitting in memory is the only constraint",
+            "Q2_K: significant quality loss; development/testing only",
+            "Unsloth UD-Q4_K_XL: recommended for Qwen3.5-35B-A3B on 36GB M4 Max; <0.1 PPL increase vs BF16 (benchmark, Benjamin Marie)",
+            "Platform decision: GGUF for CPU or Apple Silicon (llama.cpp/Metal); AWQ/GPTQ/Marlin for NVIDIA GPU (vLLM/TGI); MLX for Apple Silicon (MLX engine in LM Studio or mlx-lm CLI)",
+            "AWQ on NVIDIA: Marlin-AWQ achieves 741 tok/s vs 461 tok/s FP16 baseline on H200 at same quality; best speed+quality for CUDA deployments"
+          ]
+        },
+        {
+          "concept": "mlx_format",
+          "truths": [
+            "MLX: Apple's open-source machine learning framework; uses its own weight format (safetensors + config.json on disk, loaded into MLX array types at runtime)",
+            "MLX models on HuggingFace: typically in mlx-community/ namespace (e.g., mlx-community/Qwen3.5-9B-8bit)",
+            "Not GGUF: MLX models cannot be loaded by llama.cpp; GGUF models cannot be loaded by mlx-lm without conversion",
+            "Conversion to GGUF: mlx-lm.fuse (merge adapters) → save as HF safetensors → convert_hf_to_gguf.py → quantize",
+            "MLX strengths: native Apple Silicon Metal shaders; best throughput for dense models on Apple Silicon (5–15% faster than llama.cpp Metal for same model); continuous batching in LM Studio 0.4.2+",
+            "MLX fine-tuning: mlx-lm LoRA training is the primary on-device fine-tuning path for Apple Silicon (see also layer_5 of the Qwen3.5 specialist skillset for parameter reference)",
+            "Quantisation in MLX: Q4, Q8, and bfloat16 supported; mlx.core.quantize() applies per-layer quantisation"
+          ]
+        },
+        {
+          "concept": "safetensors_hf",
+          "truths": [
+            "safetensors: HuggingFace's standard model checkpoint format; replaces pytorch .bin files; safe (no code execution on load), faster to load, memory-mappable",
+            "Use for: full-precision inference (vLLM, transformers), fine-tuning output checkpoints, adapter weights (LoRA in safetensors form)",
+            "Not quantised by default: raw safetensors are BF16 or FP16; quantisation is applied separately (bitsandbytes at load time, AWQ offline, GPTQ offline)",
+            "PEFT LoRA adapters: stored as adapter_model.safetensors + adapter_config.json; merge into base model with merge_and_unload() for deployment"
+          ]
+        }
+      ]
+    },
+    "layer_4_abliteration": {
+      "description": "Abliteration mechanics, MoE-specific considerations, tool ecosystem, and parameter interpretation",
+      "truth_lens": [
+        {
+          "concept": "theory",
+          "truths": [
+            "Foundational paper: Arditi et al. 2024 (arXiv:2406.11717, NeurIPS 2024) — 'Refusal in LLMs is mediated by a single direction in the residual stream'",
+            "Refusal direction: computed by taking mean activation difference between harmful and harmless prompt sets across layers; the resulting vector d_refusal is a direction in residual stream space",
+            "Activation steering: subtract the refusal direction from the residual stream at every token and every layer during inference — prevents model from representing the refusal direction",
+            "Weight orthogonalisation: modify the model weights directly by projecting the weight matrices orthogonal to d_refusal — the modification is permanent and does not require inference-time intervention",
+            "Which weights: matrices that write to the residual stream — attention projection weights (q_proj, k_proj, v_proj, o_proj) and MLP layers; the q/k/v/o_proj weights are the primary targets for attention-only abliteration",
+            "Abliteration ≠ fine-tuning: no backward pass required; operates on activations and weights directly; works even in 4-bit quantised models (bitsandbytes quantisation compatible for measurement)",
+            "Post-abliteration DPO heal: abliteration alone often degrades general capabilities (GSM8K math most sensitive); apply a short DPO round (NeuralDaredevil-8B pattern: abliterate → DPO heal) to restore quality"
+          ]
+        },
+        {
+          "concept": "parameters_and_methods",
+          "truths": [
+            "ablation_method='projection': applies projected abliteration — orthogonalises refusal direction against harmless direction during measurement to isolate pure refusal signal; reduces collateral damage",
+            "ablation_method='standard': conventional abliteration without harmless-projection; simpler, slightly higher collateral",
+            "refusal_vector_policy='per-layer': compute and apply a separate refusal direction vector for each transformer layer; more precise than using a single global direction",
+            "refusal_direction_method='projected': applies projection during the ablation step itself (distinct from measurement projection); combined with per-layer policy = norm-preserving biprojected abliteration",
+            "ablation_strength: multiplier on the ablation; 1.0 = standard; 2.0 = aggressive double-strength removal; higher values increase refusal suppression but also increase capability degradation; tune empirically",
+            "probed_layers='all': measure refusal direction signal across all transformer layers; look for peaks in the middle-to-late layers (typical refusal signal location for dense models)",
+            "pca_components (ablate-k=1): number of principal components of the refusal direction to ablate; k=1 ablates the dominant direction; k>1 ablates multiple dimensions (more thorough, more risky)",
+            "attention_only=True: abliterate only the attention projection weights (q_proj/k_proj/v_proj/o_proj), not MLP; used in MoE models to preserve expert routing quality — MLP expert weights handle domain-specific knowledge, routing is attention-driven",
+            "--normpreserve flag: preserve weight norms/magnitudes during ablation; prevents scale drift in the weight matrices; recommended for quality preservation",
+            "--invert flag: adds the refusal direction instead of subtracting — used to artificially increase refusal in under-aligned models"
+          ]
+        },
+        {
+          "concept": "moe_specific",
+          "truths": [
+            "MoE abliteration is fundamentally harder than dense: refusal behavior is distributed across hundreds of experts per layer (Mixtral: 8 experts/layer; Kimi K2: 384 experts/layer)",
+            "Single-layer abliteration that works on 7B–14B dense models has zero effect on 1T MoE models like Kimi K2 (Cracken.ai domain-specific abliteration blog, 2026)",
+            "MoE strategy: map refusal signal strength across all layers; select N representative layers spanning the full computation pathway (early pattern encoding → final refusal expression); Cracken K2 example used 15 of 61 layers",
+            "attention_only=True for MoE: abliterating only attention projection weights (q/k/v/o_proj) instead of full MLP layers preserves expert routing quality — MoE router uses attention-derived representations to select experts",
+            "Why attention_only for MoE: MoE architecture description 'Abliteration targets only the attention projection weights (q/k/v/o_proj) to preserve expert routing quality' — the standard formulation for MoE abliteration configs",
+            "Domain-specific abliteration: MoE architecture's expert specialisation creates natural domain boundaries; it is possible to abliterate cybersecurity refusal while preserving explicit content safety (Cracken.ai result on Kimi K2)",
+            "Verification VRAM: large MoE models (Kimi K2 ~1T params) require 8× H200 GPUs for hidden state extraction; 35B-A3B can be measured in 4-bit on 24–36 GB VRAM"
+          ]
+        },
+        {
+          "concept": "tools",
+          "truths": [
+            "FailSpy/abliterator (GitHub): original TransformerLens-based implementation; requires TransformerLens architecture support; interactive exploration of refusal directions; limited to architectures with TransformerLens support",
+            "NousResearch/llm-abliteration (GitHub, DECCP): memory-efficient sharded processing; norm-preserving + projected variants; no TransformerLens dependency; processes 4-bit bitsandbytes models; <8GB VRAM for measurement; ~2 minutes runtime",
+            "jim-plus/llm-abliteration: supports dense and MoE architectures; tested on Llama-3.2, Qwen2.5-Coder, Ministral-8b, Mistral-7B, gemma-3-27b; --projected / --normpreserve / --invert flags; YAML config for multi-source multi-strategy application",
+            "ErisForge: minimal knowledge degradation; projection-based; recommended for dense models where capability preservation is critical",
+            "Heretic: Bayesian-optimised; fine KL/refusal tuning; handles nonstandard architectures; higher compute than DECCP; best for hard-to-abliterate models",
+            "HuggingFace abliterated models: >5,000 models with 'abliterated' in name as of 2025; quality varies enormously by tool and model; always test capability preservation benchmarks before using in production",
+            "Four-tool comparison (arXiv 2512.13655, Young 2025): DECCP offers best balance of compatibility and quality preservation across 16 models; Heretic wins on some architectures but has higher variance; FailSpy most limited by TransformerLens coverage (5/16 models)"
+          ]
+        },
+        {
+          "concept": "parameter_card_interpretation",
+          "truths": [
+            "Reading a model card like 'Base model: ./models/MiniMax-M2.5-8bit, Ablation method: projection, Refusal vector policy: per-layer, Refusal direction method: projected, Ablation strength: 2.0, Probed layers: all, PCA components: 1, Attention only: True' means: the base model was 8-bit quantised MiniMax M2.5; biprojected abliteration was applied (projection at measurement AND projection at ablation = maximum harmless-direction isolation); each transformer layer got its own refusal direction computed; aggressive 2× strength applied; the principal direction only (k=1) of the refusal subspace was ablated; ONLY the attention projection weights were modified, NOT MLP expert weights — this is MoE-safe abliteration",
+            "Ablation strength 2.0 + attention_only=True on MoE: very aggressive on the attention pathway while leaving MoE expert routing fully intact — the most surgical configuration for dense-model-equivalent refusal suppression on a MoE",
+            "Timestamp in model card: UTC datetime of when abliteration was applied — useful for tracing which version of the tool was used (pre/post MXFP4 fix era, etc.)"
+          ]
+        }
+      ]
+    },
+    "layer_5_alignment_training_methods": {
+      "description": "SFT, DPO, GRPO, RLHF/PPO — what each method needs, how they differ, and when to use each",
+      "truth_lens": [
+        {
+          "concept": "sft_supervised_finetuning",
+          "truths": [
+            "Purpose: teach the model to produce outputs in a specific format, style, tone, or domain; the foundation for all post-pretraining adaptation",
+            "Data shape: instruction/response pairs (Alpaca) or multi-turn conversations (ShareGPT/ChatML)",
+            "Training: cross-entropy loss on response tokens only (mask prompt tokens to avoid memorising prompts)",
+            "Works for: domain adaptation, instruction following, format compliance (JSON output), persona injection, new vocabulary alignment",
+            "Limitation: teaches what responses look like, not which responses are better; for preference alignment, follow SFT with DPO or GRPO",
+            "LoRA SFT: r=16, alpha=32 for domain adaptation; r=64 for larger behavioural shifts; target_modules usually ['q_proj','k_proj','v_proj','o_proj','gate_proj','up_proj','down_proj']",
+            "Thinking model SFT: include ≥75% chain-of-thought formatted examples (with <think>...</think> blocks) to preserve reasoning capability during domain SFT"
+          ]
+        },
+        {
+          "concept": "dpo_direct_preference_optimisation",
+          "truths": [
+            "Purpose: align model with human preferences by learning which of two responses is better — without a separate reward model",
+            "Data shape: { prompt, chosen (preferred response), rejected (non-preferred response) } triplets",
+            "Training: binary cross-entropy loss that increases probability of chosen and decreases probability of rejected relative to a reference model",
+            "DPO formula: L_DPO = -E[(x,y_w,y_l)~D][log σ(β log π_θ(y_w|x)/π_ref(y_w|x) - β log π_θ(y_l|x)/π_ref(y_l|x))]",
+            "β hyperparameter: controls strength of preference; β=0.1 is standard default; lower values = weaker preference enforcement",
+            "DPO vs RLHF: eliminates the trained reward model; simpler to implement; comparable quality to PPO-RLHF on most alignment tasks; more stable training",
+            "DPO limitation: less effective on multi-step reasoning where a single correct/incorrect label applies to a complex chain; GRPO handles this better",
+            "On-policy DPO: generate responses from the SFT model, score with a reward model or rule-based verifier, use as preference pairs — more effective than offline DPO on static human-labelled datasets",
+            "ORPO (Odds Ratio Policy Optimisation): combines SFT and DPO in a single step; no reference model needed; useful when compute is tight"
+          ]
+        },
+        {
+          "concept": "grpo_group_relative_policy_optimisation",
+          "truths": [
+            "Purpose: improve reasoning capabilities (math, code, multi-step logic) via RL without a trained reward model; popularised by DeepSeek-R1",
+            "Data shape: prompts only — GRPO samples G responses per prompt at training time",
+            "Training mechanism: for each prompt, generate G outputs; score each with reward function; compute advantage A_i = R_i - mean(R_group); update policy to increase probability of high-advantage outputs",
+            "Reward functions: rule-based preferred (math correctness via regex, code execution pass/fail, JSON format validity) or learned reward model; rule-based is the foundation for most GRPO success stories",
+            "G=8: generate 8 responses per prompt; balances variance reduction with computational efficiency (GRPO paper default)",
+            "KL regularisation β=0.1: prevents the policy from drifting too far from reference model during training",
+            "Dataset difficulty: hard examples yield up to 47% more performance gain than easy examples in GRPO training (arXiv 2508.14094, 2025); curate prompts at the edge of model capability",
+            "GRPO vs DPO: GRPO generates its own training signal at runtime; DPO relies on static human-labelled pairs; GRPO is better for verifiable tasks, DPO better for subjective preference alignment",
+            "Dr. GRPO: removes biases from original GRPO formulation; preferred variant in 2025-2026 implementations",
+            "Unsloth GRPO support: available for Qwen3.5, Llama-3.x, DeepSeek-R1 derivatives via open Colab notebooks"
+          ]
+        },
+        {
+          "concept": "rlhf_ppo",
+          "truths": [
+            "Purpose: the original alignment method; train a reward model from human preference data; then optimise the LLM policy with PPO to maximise reward model scores",
+            "Data shape: human preference pairs to train the reward model; then the aligned LLM generates rollouts which are scored by the reward model",
+            "PPO: Proximal Policy Optimisation; constraint: KL divergence between old and new policy bounded by δ; prevents catastrophic policy collapse",
+            "RLAIF (RL from AI Feedback): uses a strong LLM as the feedback annotator instead of humans; achieves comparable helpfulness ratings; outperforms RLHF on harmlessness (Constitutional AI paper)",
+            "Why RLHF/PPO is often replaced: requires training and maintaining a separate reward model; computationally intensive; unstable to hyperparameter choices; DPO and GRPO are simpler alternatives for most use cases",
+            "When RLHF/PPO is still necessary: very complex reward functions that cannot be reduced to pairwise comparisons; continuous reward signals (e.g., user engagement over time); online adaptation scenarios",
+            "Constitutional AI (Anthropic): red-team the model to generate harmful outputs → critique and revise against constitutional principles → RLHF on revised outputs; distributes the safety signal across tokens"
+          ]
+        },
+        {
+          "concept": "method_selection_matrix",
+          "truths": [
+            "Domain adaptation, style transfer, format compliance → SFT alone; use Alpaca or ShareGPT format",
+            "Safety alignment, helpfulness preference, subjective quality improvement → SFT first → DPO; use preference pair format",
+            "Reasoning improvement (math, code, multi-step logic) → SFT first → GRPO with rule-based reward; use prompt-only GRPO format",
+            "Instruction following on new domain + preference alignment → SFT → DPO in sequence; two-stage training",
+            "Very small dataset (<500 examples) + well-defined task → SFT with LoRA only; GRPO/DPO underfit with too-small datasets",
+            "Training a production assistant from scratch → pretraining corpus → SFT instruction tuning → DPO or PPO-RLHF alignment; full pipeline",
+            "Local fine-tuning on Apple M4 Max 36GB → SFT via mlx-lm LoRA (models up to 9B); DPO via mlx-lm (same size limit); GRPO via Unsloth on CUDA (Linux/Windows, not macOS)"
+          ]
+        }
+      ]
+    },
+    "layer_6_tooling_ecosystem": {
+      "description": "Tools for every stage of dataset creation, training, evaluation, and local deployment",
+      "truth_lens": [
+        {
+          "concept": "dataset_creation_tools",
+          "truths": [
+            "Augmentoolkit (github.com/e-p-armstrong): processes arbitrary documents into Q/A pairs; most accessible automated tool for building domain-specific instruction datasets from private corpora",
+            "Evol-Instruct / WizardLM: data evolution framework (in-depth, in-breadth, elimination); 175 → 250,000 diverse instructions; WizardLM reimplementation available on GitHub",
+            "Gretel Navigator: compound AI system with co-teaching and evolutionary iteration; can outperform GPT-4 on synthetic data quality; for teams with budget",
+            "LlamaIndex / LangChain document loaders: structured document ingestion for RAG-to-SFT pipelines; LlamaIndex specifically has dataset generators",
+            "Bonito: conditional synthetic instruction dataset generation from raw text; specialised for instruction-tuning corpora from domain documents",
+            "KoboldCPP / LM Studio local server: serve local LLMs via OpenAI-compatible API for private synthetic generation; Mixtral-8x7B and Qwen3.5-35B-A3B are the recommended local generation models",
+            "PyMuPDF: extract clean text from PDF documents for ingestion pipelines",
+            "SpaCy: tokenisation, sentence segmentation, NER — useful for structured extraction before Q/A generation"
+          ]
+        },
+        {
+          "concept": "training_frameworks",
+          "truths": [
+            "Unsloth: 1.5–2× faster fine-tuning, 50–80% less VRAM than vanilla transformers; supports Qwen3.5, Llama-3.x, Mistral; SFT + DPO + GRPO + PPO + reward modelling; GGUF export built-in; Colab notebooks for all major models",
+            "LLaMA-Factory: web UI + CLI; 100+ models supported natively; Alpaca + ShareGPT format; full range of training methods; production tool for teams",
+            "Axolotl: yaml-config-driven; flexible; supports all major fine-tuning methods; used in many production fine-tuning pipelines; requires more config expertise than LLaMA-Factory",
+            "HuggingFace TRL: the library underpinning most training frameworks; SFTTrainer, DPOTrainer, GRPOTrainer, RewardTrainer all in trl package",
+            "mlx-lm: Apple's fine-tuning framework for Apple Silicon; LoRA + DPO; 0.8B–9B models fit on 36 GB M4 Max; fuse adapters + export to GGUF",
+            "Axolotl + DeepSpeed ZeRO-3: production-scale multi-GPU training setup; required for 70B+ full fine-tune"
+          ]
+        },
+        {
+          "concept": "evaluation_and_datasets",
+          "truths": [
+            "HuggingFace Datasets: primary hub; 100K+ datasets; load with datasets.load_dataset(); search with sentence-similarity to find domain-relevant datasets",
+            "RAGAS: RAG evaluation framework but also useful for measuring document-grounded QA dataset quality; Faithfulness, Relevancy, Context metrics",
+            "DeepEval: dataset evaluation platform; LLM-as-Judge; benchmark regression; G-Eval, DAG, custom metrics",
+            "LLM-as-Judge pattern: provide judge-LLM with original context, generated Q&A, rubric → score 1–10; strong judges (GPT-4o, Llama-3.1-70B) achieve >80% human agreement",
+            "Open datasets worth knowing: Alpaca-52K (general SFT), WizardLM-250K (evolved instructions), UltraFeedback (DPO preference pairs, 64K), OpenHermes-2.5 (instruction following, 1M), FineTome-100K (ShareGPT multi-turn), Open-Platypus (STEM reasoning), MetaMathQA (math), CodeFeedback (code), Magpie-Align (synthetic preference), Cosmopedia (synthetic pretraining)"
+          ]
+        },
+        {
+          "concept": "quality_and_dedup_tools",
+          "truths": [
+            "CCNet / Dolma: deduplication and quality filtering pipelines for large-scale pretraining corpora",
+            "datasketch MinHash LSH: approximate deduplication for large JSONL datasets without embedding every example",
+            "Sentence embedding dedup: encode all examples with all-MiniLM-L6-v2 or bge-small-en-v1.5 → cosine similarity threshold 0.9 → remove near-duplicates; best quality but slower for >100K examples",
+            "Argilla: data annotation platform with LLM integration; human-in-the-loop review UI for synthetic datasets; supports preference labelling for DPO"
+          ]
+        }
+      ]
+    },
+    "layer_7_new_knowledge_injection": {
+      "description": "How and when fine-tuning can inject new knowledge vs when it fails — the most misunderstood aspect of fine-tuning",
+      "truth_lens": [
+        {
+          "concept": "injection_feasibility",
+          "truths": [
+            "The claim 'fine-tuning cannot add new knowledge' is overstated: it mostly applies to low-sample, unstructured, or single-paragraph attempts — not to well-structured, large, domain-focused datasets",
+            "What fine-tuning reliably changes: output format, tone, vocabulary alignment, instruction following style, domain-specific terminology, response structure",
+            "What fine-tuning can inject: new factual knowledge when the training examples are numerous, well-structured, and internally consistent; the model generalises from examples to the underlying facts",
+            "What fine-tuning struggles with: entirely novel concepts with no pretraining basis whatsoever; isolated single facts without surrounding context; very large knowledge bases that require fundamental world model changes",
+            "RAG + fine-tuning complementarity: fine-tune for style/behaviour/format; use RAG for dynamic factual retrieval — this combination outperforms either alone for knowledge-intensive tasks",
+            "Continued pretraining approach: if the domain is entirely new (specialised scientific domain, proprietary system), continued pretraining on the domain corpus THEN SFT instruction tuning works better than SFT alone for knowledge injection"
+          ]
+        },
+        {
+          "concept": "catastrophic_forgetting",
+          "truths": [
+            "Catastrophic forgetting: aggressive fine-tuning on a narrow domain can reduce general capabilities; the model 'forgets' general knowledge as it specialises",
+            "LoRA mitigates forgetting: LoRA adapters train only a small fraction of parameters; the base model weights are frozen; general capabilities are preserved more than full fine-tuning",
+            "Data mixing: blend 10–20% general instruction data (e.g., OpenHermes, Alpaca) into domain-specific training data to maintain general capability while specialising",
+            "Epoch count matters: more than 2–3 epochs on a small dataset often causes overfitting and forgetting; monitor validation loss, stop early if it rises",
+            "Reasoning preservation: for thinking models (Qwen3.5, DeepSeek-R1), include reasoning-chain examples (≥75% of training mix) or the <think> mechanism degrades"
+          ]
+        }
+      ]
+    }
+  },
+  "quick_reference": {
+    "format_selection_matrix": {
+      "single_turn_instruction_following": "Alpaca JSONL { instruction, input, output }",
+      "multi_turn_chat": "ShareGPT JSONL { conversations: [{from, value}] }",
+      "tool_calling_function_call": "ShareGPT with 'function' and 'observation' roles",
+      "preference_alignment_dpo": "DPO triplets { prompt, chosen, rejected } or ShareGPT DPO variant",
+      "reasoning_rl_grpo": "Prompt-only JSONL { prompt } or { messages: [{role: user, content: ...}] }",
+      "continued_pretraining": "Plain text JSONL { text: string }",
+      "kto_weak_labelling": "KTO format { messages: [...], label: true|false }"
+    },
+    "quantisation_decision_tree": {
+      "max_memory_36gb_apple": "Q4_K_M or UD-Q4_K_XL (Unsloth) for 35B models",
+      "max_quality_with_headroom": "Q6_K or Q5_K_M",
+      "maximum_speed_cpu": "Q4_K_M (K-quant family; CPU-optimised decoding)",
+      "maximum_quality_cuda": "BitsandBytes or AWQ; Marlin-AWQ for throughput",
+      "very_tight_memory": "IQ4_XS or IQ3_XXS with calibration imatrix",
+      "near_lossless": "Q8_0"
+    },
+    "abliteration_config_for_moe": {
+      "ablation_method": "projection",
+      "refusal_vector_policy": "per-layer",
+      "refusal_direction_method": "projected",
+      "ablation_strength": "1.0 (start); 2.0 (aggressive)",
+      "probed_layers": "all",
+      "pca_components": "1",
+      "attention_only": "True",
+      "note": "attention_only=True preserves MoE expert routing quality by targeting only q/k/v/o_proj weights"
+    },
+    "alignment_method_data_requirements": {
+      "SFT": "instruction/response pairs; 500–50K; format-matched to target; diverse",
+      "DPO": "prompt + chosen + rejected triplets; 10K–50K; rejected must be plausibly wrong, not trivially bad",
+      "GRPO": "prompts only + verifiable reward function; difficulty-stratified; hard examples preferred",
+      "PPO_RLHF": "preference pairs for reward model + policy rollouts; most complex; 100K+ pairs recommended",
+      "ORPO": "prompt + chosen + rejected; same as DPO but no reference model; single-stage"
+    }
+  },
+  "anti_patterns": [
+    "Creating 50,000 variations of a single Q/A pattern — trains pattern, not knowledge; diversity is non-negotiable",
+    "No human review gate on synthetic data — model collapse risk; automated quality checks cannot catch all systematic errors",
+    "Using the same model to generate its own training data without diversification — circular bias amplification",
+    "Not deduplicating semantically — near-duplicates bias the model and reduce generalisation silently",
+    "Applying Alpaca format to a multi-turn use case — model learns single-turn patterns; fails at conversational continuity",
+    "Generating DPO rejected responses that are obviously wrong — trivially bad rejections teach nothing; close contrastive pairs are necessary",
+    "Training more than 3 epochs on a small dataset — overfitting and catastrophic forgetting; monitor val loss, stop early",
+    "Fine-tuning reasoning models (Qwen3.5, DeepSeek-R1) with <75% reasoning-chain examples — thinking capability degrades silently",
+    "Mislabelling the chat template (e.g., training on ChatML but inferring with Alpaca template) — completions are garbage; always verify template alignment",
+    "Applying abliteration to MoE models using single-layer or dense-only tools — no effect; requires multi-layer per-expert pathway approach",
+    "Post-abliteration deployment without capability benchmarks — math/reasoning degrades predictably; always run GSM8K/MMLU delta check",
+    "Loading GGUF models into vLLM for production — GGUF in vLLM runs at 93 tok/s vs 461 tok/s for same model in llama.cpp/Metal; use GGUF only in llama.cpp ecosystem",
+    "Not verifying model card abliteration parameters before deployment — attention_only=False on an MoE means MLP expert weights were modified, potentially breaking routing",
+    "Injecting new knowledge via 5–10 fine-tuning examples — insufficient; new knowledge injection needs hundreds to thousands of structured, consistent examples or a continued pretraining stage",
+    "Including PII, credentials, or company-confidential identifiers in training data — they surface at inference and cannot be fully purged without retraining"
+  ],
+  "key_papers_and_references": [
+    {
+      "id": "LIMA",
+      "citation": "Zhou et al. 2023, arXiv:2305.11206",
+      "finding": "1,000 carefully curated diverse examples sufficient for strong SFT alignment; quality > quantity"
+    },
+    {
+      "id": "Evol-Instruct",
+      "citation": "Xu et al. 2023 (WizardLM), arXiv:2304.12244",
+      "finding": "In-depth + in-breadth evolution of 175 seed instructions → 250,000 diverse instructions; Evol-Instruct framework"
+    },
+    {
+      "id": "Abliteration",
+      "citation": "Arditi et al. 2024, arXiv:2406.11717, NeurIPS 2024",
+      "finding": "Refusal in LLMs mediated by a single direction in residual stream; weight orthogonalisation removes refusal without retraining"
+    },
+    {
+      "id": "GRPO",
+      "citation": "Shao et al. 2024 (DeepSeekMath); Guo et al. 2025 (DeepSeek-R1)",
+      "finding": "GRPO eliminates separate reward model; group-relative advantage; powered DeepSeek-R1 reasoning breakthrough"
+    },
+    {
+      "id": "DPO",
+      "citation": "Rafailov et al. 2023, arXiv:2305.18290",
+      "finding": "DPO simplifies RLHF by eliminating reward model; direct classification loss on preference pairs; comparable quality to PPO"
+    },
+    {
+      "id": "Constitutional_AI",
+      "citation": "Bai et al. 2022 (Anthropic)",
+      "finding": "RLAIF with constitutional principles; red-teaming + critique-revision pipeline; RLAIF outperforms RLHF on harmlessness"
+    },
+    {
+      "id": "Scale_synthetic",
+      "citation": "Scale AI, NeurIPS 2024 FITML Workshop",
+      "finding": "Answer augmentation optimal at low query budget; new question generation optimal at high query budget; question rephrasing robust with weaker models"
+    },
+    {
+      "id": "Abliteration_crossarch",
+      "citation": "Young 2025, arXiv:2512.13655",
+      "finding": "Comparative evaluation of Heretic/DECCP/ErisForge/FailSpy across 16 models; DECCP offers best compatibility+quality preservation; math reasoning most sensitive to abliteration"
+    },
+    {
+      "id": "GRPO_difficulty",
+      "citation": "arXiv:2508.14094, 2025",
+      "finding": "Hard examples yield up to 47% larger GRPO performance gains vs easy examples; difficulty-stratified dataset curation critical"
+    },
+    {
+      "id": "Synthetic_diversity",
+      "citation": "arXiv:2511.01490, 2025",
+      "finding": "Synthetic data diversity via multiple source models prevents model collapse; single-source synthetic data amplifies biases; mixing strategies recommended"
+    }
+  ],
+  "jq_usage_guide": {
+    "examples": [
+      {
+        "query": ".knowledge_layers.layer_1_synthetic_data_generation.truth_lens[] | select(.concept==\"generation_strategies\") | .truths[]",
+        "returns": "All synthetic generation strategies"
+      },
+      {
+        "query": ".knowledge_layers.layer_2_dataset_formats.truth_lens[] | select(.concept==\"alpaca_format\") | .truths[]",
+        "returns": "Alpaca format complete specification"
+      },
+      {
+        "query": ".knowledge_layers.layer_2_dataset_formats.truth_lens[] | select(.concept==\"preference_formats\") | .truths[]",
+        "returns": "DPO/ORPO/KTO preference format specifications"
+      },
+      {
+        "query": ".knowledge_layers.layer_3_model_formats.truth_lens[] | select(.concept==\"quantisation_selection_guide\") | .truths[]",
+        "returns": "Full quantisation selection guide Q2–Q8"
+      },
+      {
+        "query": ".knowledge_layers.layer_4_abliteration.truth_lens[] | select(.concept==\"parameters_and_methods\") | .truths[]",
+        "returns": "All abliteration parameter definitions"
+      },
+      {
+        "query": ".knowledge_layers.layer_4_abliteration.truth_lens[] | select(.concept==\"moe_specific\") | .truths[]",
+        "returns": "MoE-specific abliteration considerations and attention_only rationale"
+      },
+      {
+        "query": ".knowledge_layers.layer_5_alignment_training_methods.truth_lens[] | select(.concept==\"method_selection_matrix\") | .truths[]",
+        "returns": "When to use SFT vs DPO vs GRPO vs RLHF"
+      },
+      {
+        "query": ".knowledge_layers.layer_5_alignment_training_methods.truth_lens[] | select(.concept==\"grpo_group_relative_policy_optimisation\") | .truths[]",
+        "returns": "Complete GRPO mechanics and data requirements"
+      },
+      {
+        "query": ".quick_reference.format_selection_matrix | to_entries[] | .key + \": \" + .value",
+        "returns": "Format selection matrix as readable list"
+      },
+      {
+        "query": ".quick_reference.abliteration_config_for_moe",
+        "returns": "MoE abliteration recommended parameter card"
+      },
+      {
+        "query": ".anti_patterns[]",
+        "returns": "All dataset and model anti-patterns"
+      },
+      {
+        "query": ".key_papers_and_references[] | .id + \": \" + .finding",
+        "returns": "All key papers with findings"
+      },
+      {
+        "query": ".knowledge_layers.layer_6_tooling_ecosystem.truth_lens[] | select(.concept==\"training_frameworks\") | .truths[]",
+        "returns": "All training framework options"
+      },
+      {
+        "query": ".core_principles[]",
+        "returns": "All core principles"
+      },
+      {
+        "query": ".knowledge_layers | keys[]",
+        "returns": "All layer names"
+      }
+    ]
+  },
+  "meta": {
+    "version": "1.0.0",
+    "research_sources": [
+      "LIMA (arXiv:2305.11206, 2023) — quality over quantity SFT finding",
+      "Evol-Instruct / WizardLM (arXiv:2304.12244, 2023) — data evolution from 175 → 250K",
+      "Arditi et al. 2024 (arXiv:2406.11717, NeurIPS 2024) — refusal direction theory",
+      "Labonne 2024, HuggingFace blog — abliteration practical implementation",
+      "Young 2025 (arXiv:2512.13655) — four-tool cross-architecture abliteration comparison",
+      "Cracken.ai blog 2026 — domain-specific MoE abliteration on Kimi K2",
+      "NousResearch/jim-plus llm-abliteration GitHub repos — parameter flags and MoE support",
+      "Shao et al. 2024 (DeepSeekMath) + Guo et al. 2025 (DeepSeek-R1) — GRPO",
+      "Rafailov et al. 2023 (DPO, arXiv:2305.18290) — direct preference optimisation",
+      "Scale AI NeurIPS 2024 FITML Workshop — synthetic strategy selection under budget constraints",
+      "arXiv:2508.14094 (2025) — difficulty-stratified GRPO dataset curation",
+      "arXiv:2511.01490 (2025) — synthetic data diversity and model collapse",
+      "Meta AI Blog — dataset curation best practices (fine-tune focus)",
+      "Unsloth docs.unsloth.ai/get-started/fine-tuning-llms-guide/datasets-guide — format guide",
+      "Anyscale docs dataset preparation — format specifications",
+      "Towards Data Science: fine-tune Llama 3.1 with Unsloth — ChatML + ShareGPT in practice",
+      "kaitchup.substack.com — GGUF K-quants vs I-quants detailed comparison",
+      "JarvisLabs vLLM quantisation benchmarks 2026 — Q4_K_M vs AWQ vs BitsandBytes",
+      "DigitalOcean LLM fine-tuning dataset guide 2026 — hybrid pipeline practices",
+      "r/LocalLLaMA Reddit community — practical synthetic data generation scripts and lessons"
+    ],
+    "compatible_with": [
+      "Unsloth (SFT/DPO/GRPO/PPO, GGUF export)",
+      "LLaMA-Factory 0.9+",
+      "Axolotl",
+      "HuggingFace TRL",
+      "mlx-lm (Apple Silicon SFT/DPO)",
+      "LM Studio 0.4.x / llmster",
+      "llama.cpp / llama-quantize",
+      "jim-plus/llm-abliteration, NousResearch/llm-abliteration",
+      "Augmentoolkit",
+      "RAGAS, DeepEval"
+    ],
+    "schema": "truth_lens nested array per layer; concept groups with truths[]; quick_reference flat lookup tables; key_papers with findings",
+    "jq_root": ".",
+    "related_skillsets": [
+      "llm_qwen35_apple_specialist — LM Studio inference params, quantisation deployment, MLX fine-tuning on M4 Max",
+      "llm_rag_specialist — RAG pipeline, chunking, embedding models, PostgreSQL vector storage",
+      "fcm_specialist — FCM token lifecycle, React 19 + Next.js 16 push notification integration"
+    ],
+    "maintainer_notes": "The three most operationally critical sections are: (1) layer_0 quality/diversity principles — the decision to start with 100 examples and iterate is the most important advice; (2) layer_4 abliteration parameters — especially attention_only=True rationale for MoE, which is the least-documented but most-asked-about detail; (3) layer_5 method selection matrix — the data shape requirement difference between SFT/DPO/GRPO is frequently confused and causes silent training failures."
+  }
+}

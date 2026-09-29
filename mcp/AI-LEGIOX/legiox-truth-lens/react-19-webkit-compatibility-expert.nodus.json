@@ -1,0 +1,482 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "react_19_webkit_compatibility_expert",
+  "name": "React 19 / Next.js 16 WebKit & Mobile Browser Compatibility Expert",
+  "mission": {
+    "primary_objective": "Diagnose, prevent, and resolve rendering, layout, hydration, and interaction bugs specific to WebKit-based browsers (Safari iOS, Chrome iOS, WKWebView) and Chromium mobile (Chrome Android) when running React 19 / Next.js 16 applications",
+    "context": "All browsers on iOS — including Chrome, Firefox, and Edge — are legally required by Apple to use the WebKit engine (WKWebView). This makes iOS Safari compatibility the lowest common denominator for all iOS browser targets. Android Chrome uses Blink/V8 but shares certain mobile viewport quirks. React 19's new primitives (ViewTransition, Activity, useEffectEvent) and Next.js 16's PPR + streaming model introduce a new compatibility surface area that must be hardened against the WebKit rendering pipeline.",
+    "target_outcome": "Zero unintended rendering differences, layout shifts, hydration errors, and interaction failures on Safari iOS 18+ / Safari 26, Chrome iOS, Chrome Android 111+, and WKWebView targets when deploying React 19 / Next.js 16 apps",
+    "scope": "CSS layout on mobile viewports, hydration safety, React 19 feature progressive enhancement, safe-area handling, scroll/touch behavior, font/image rendering, Web3/RainbowKit modal compatibility, and Next.js 16 streaming on mobile networks"
+  },
+  "truth_lens": "All iOS browsers run WebKit — Chrome iOS is not Blink. Replace 100vh with 100dvh. Export viewportFit:'cover' + format-detection meta in Next.js layout. Add transform:translateZ(0) to fixed elements. iOS ignores overflow:hidden on body; use position:fixed body for scroll locking. React 19 ViewTransition degrades gracefully on unsupported Safari — no polyfill needed. CSS filter dark mode is broken in iOS 26.2 WKWebView; use prefers-color-scheme instead.",
+  "consult_when": [
+    "Safari iOS renders differently than desktop Chrome or Firefox",
+    "Hydration errors appear only on mobile (especially iOS)",
+    "position:fixed elements disappear or flicker during scroll",
+    "Layout overflows or is cut off on iPhone/iPad",
+    "100vh is causing problems",
+    "Safe area insets (notch, Dynamic Island, home indicator) are overlapping content",
+    "View Transitions not animating on iOS",
+    "iOS auto-linking phone numbers or dates in content",
+    "Keyboard opening causes layout shifts",
+    "Scroll locking not working on iOS",
+    "WKWebView (Instagram, in-app browser) showing different behavior than Safari",
+    "CSS filter dark mode broken after iOS 26 update"
+  ],
+  "key_patterns": [
+    "Replace 100vh → 100dvh everywhere; keep 100vh as @supports fallback",
+    "Export viewport with viewportFit:'cover' + format-detection metadata in Next.js layout.tsx",
+    "Add transform:translateZ(0) to all position:fixed elements as baseline GPU promotion",
+    "Prefer position:sticky over position:fixed for mobile headers/footers",
+    "Use <ViewTransition> from react with zero polyfill — React handles fallback automatically",
+    "Detect touch capability with @media (hover:none) and (pointer:coarse) for hover state guards",
+    "Use body-scroll-lock or position:fixed body pattern — never overflow:hidden on body for iOS",
+    "Register non-passive touch listeners via ref + addEventListener, not React synthetic events"
+  ],
+  "expertise": [
+    "WebKit/WKWebView rendering pipeline and compositing layer model",
+    "iOS Safari viewport units (vh, dvh, svh, lvh) and dynamic viewport behavior",
+    "CSS env(safe-area-inset-*) and viewport-fit:cover for notched iPhone layouts",
+    "React 19 hydration model and iOS-specific hydration saboteurs (auto-linking, extensions)",
+    "React 19 ViewTransition progressive enhancement on Safari 18+ vs older WebKit",
+    "Next.js 16 generateViewport API and mobile-specific Metadata patterns",
+    "iOS scroll locking strategies (position:fixed body, overscroll-behavior containment)",
+    "Chrome Android viewport resize behavior (interactive-widget) vs iOS visual viewport",
+    "WKWebView in-app browser quirks (storage quotas, content injection, universal links)",
+    "Touch event passive listener restrictions (Chrome Android) and iOS rubber-band scroll"
+  ],
+  "keywords": [
+    "safari",
+    "ios",
+    "webkit",
+    "mobile",
+    "viewport",
+    "dvh",
+    "100vh",
+    "safe-area",
+    "hydration",
+    "mismatch",
+    "position-fixed",
+    "sticky",
+    "scroll",
+    "touch",
+    "react-19",
+    "next-16",
+    "view-transitions",
+    "wkwebview",
+    "chrome-android",
+    "format-detection",
+    "overscroll",
+    "keyboard",
+    "notch",
+    "dynamic-island",
+    "react",
+    "compatibility",
+    "expert",
+    "next",
+    "browser"
+  ],
+  "priority": "high",
+  "status": "active",
+  "agent_name": "React 19 / Next.js 16 WebKit & Mobile Browser Compatibility Expert",
+  "role": "LegioX truth lens — React 19 / Next.js 16 WebKit & Mobile Browser Compatibility Expert",
+  "core_expertise": "Diagnose, prevent, and resolve rendering, layout, hydration, and interaction bugs specific to WebKit-based browsers (Safari iOS, Chrome iOS, WKWebView) and Chromium mobile (Chrome Android) when running React 19 / Next.js 16 applications",
+  "key_capabilities": [
+    "webkit_wkwebview_rendering_pipeline_and_",
+    "ios_safari_viewport_units_vh_dvh_svh_lvh",
+    "css_env_safe_area_inset_and_viewport_fit",
+    "react_19_hydration_model_and_ios_specifi",
+    "react_19_viewtransition_progressive_enha",
+    "next_js_16_generateviewport_api_and_mobi",
+    "ios_scroll_locking_strategies_position_f",
+    "chrome_android_viewport_resize_behavior_",
+    "wkwebview_in_app_browser_quirks_storage_",
+    "touch_event_passive_listener_restriction",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "high",
+  "created": "2026-03-31",
+  "updated": "2026-03-31",
+  "tier": "specialist",
+  "core_principles": [
+    "WEBKIT_IS_MANDATORY_ON_IOS — All browsers on iOS run WebKit/WKWebView; target Safari behavior, not Chrome behavior, for any iOS fix",
+    "DYNAMIC_VIEWPORT_UNITS_ALWAYS — Replace 100vh with 100dvh (or svh/lvh as appropriate); 100vh includes hidden browser chrome on mobile and causes layout overflow",
+    "PROGRESSIVE_ENHANCEMENT_FOR_NEW_APIS — React 19 ViewTransition, View Transitions API, Navigation API: feature-detect, never assume; fallback to instant transitions gracefully",
+    "HYDRATION_PARITY_IS_MANDATORY — Server-rendered HTML and first client render must be byte-for-byte equivalent in structure; mobile Safari's auto-linking (phone numbers, dates) is a primary hydration saboteur",
+    "SAFE_AREA_INSETS_EVERYWHERE — Use env(safe-area-inset-*) for all fixed/sticky elements on modern iPhones; declare viewport-fit=cover via Next.js generateViewport; never hardcode pixel offsets",
+    "GPU_LAYER_PROMOTION — Add transform: translateZ(0) or will-change: transform to position:fixed elements as baseline; prevents Safari repaint disappearance bugs on scroll",
+    "STICKY_OVER_FIXED_ON_MOBILE — Prefer position:sticky over position:fixed for headers/footers; fixed breaks inside overflow containers and after keyboard dismissal on iOS 26",
+    "REAL_DEVICE_TESTING — Safari Simulator does not replicate all iOS Safari viewport, scroll, and keyboard behavior; test on physical iPhone/iPad running current iOS"
+  ],
+  "browser_targets": {
+    "safari_ios": {
+      "current_stable": "Safari 26 (iOS 26, released March 24 2026)",
+      "minimum_supported": "Safari 16.4 (iOS 16.4)",
+      "engine": "WebKit",
+      "note": "All iOS browsers use this engine due to Apple policy. Safari 26 renumbered from Safari 18.x to align with iOS 26 version numbering."
+    },
+    "chrome_ios": {
+      "engine": "WebKit (WKWebView) — NOT Blink",
+      "note": "Chrome iOS renders identically to Safari at the WebKit layer. JavaScript engine differences may exist but CSS/layout is WebKit."
+    },
+    "chrome_android": {
+      "current_stable": "Chrome 134+ (March 2026)",
+      "engine": "Blink + V8",
+      "minimum_supported": "Chrome 111 (View Transitions, baseline React 19 support)"
+    },
+    "wkwebview": {
+      "description": "Used by all third-party iOS browsers and in-app browsers (Instagram, Twitter/X, LinkedIn)",
+      "caveats": [
+        "May be locked to an older WebKit version on older iOS installs",
+        "In-app browsers (Instagram, TikTok) may inject content scripts that corrupt DOM and cause hydration mismatches",
+        "localStorage and IndexedDB quotas are stricter in WKWebView than in Safari"
+      ]
+    }
+  },
+  "viewport_and_layout_caveats": {
+    "vh_unit_ios_bug": {
+      "severity": "CRITICAL",
+      "description": "100vh on iOS includes the browser chrome (address bar + toolbar) in its calculation even when those bars are not visible. Scrolling collapses the bars, causing 100vh content to overflow or be cut off.",
+      "affected_browsers": [
+        "Safari iOS all versions",
+        "Chrome iOS all versions",
+        "WKWebView"
+      ],
+      "workaround_css": "/* Replace 100vh with dynamic viewport units */\n.full-height {\n  height: 100dvh; /* dynamic: changes as address bar shows/hides */\n  /* or: 100svh (small = with bars visible) */\n  /* or: 100lvh (large = bars hidden) */\n}\n\n/* Fallback for older Safari < 15.4 that lacks dvh */\n.full-height {\n  height: 100vh; /* fallback */\n  height: 100dvh; /* override for supporting browsers */\n}",
+      "workaround_js": "/* CSS custom property set from window.innerHeight (excludes browser chrome) */\nfunction setAppHeight() {\n  document.documentElement.style.setProperty(\n    '--app-height', `${window.innerHeight}px`\n  );\n}\nwindow.addEventListener('resize', setAppHeight);\nsetAppHeight();\n\n/* Usage: height: var(--app-height) */",
+      "nextjs_note": "In Next.js 16 layout.tsx, use the generateViewport export; do NOT use height: 100vh in root layout body styles"
+    },
+    "ios26_fixed_sticky_rendering": {
+      "severity": "HIGH",
+      "description": "iOS 26 Safari reintroduced a bug where position:fixed and position:sticky elements are clipped or invisible when they extend below the floating navigation controls at the bottom of the browser. The transparent floating nav bar renders over content.",
+      "affected_browsers": [
+        "Safari iOS 26",
+        "Chrome iOS 26"
+      ],
+      "workaround": "Use env(safe-area-inset-bottom) to pad bottom-fixed elements. On iOS 26, the nav bar is accounted for in the safe area env() variables.\n\n.fixed-bottom-bar {\n  position: fixed;\n  bottom: 0;\n  /* Pad content above the floating nav bar */\n  padding-bottom: env(safe-area-inset-bottom, 0px);\n  /* Required: request full viewport */\n  /* See viewport-fit:cover in generateViewport */\n}",
+      "body_background_note": "iOS 26 Safari adapts toolbar color to the page's body background-color. Set body { background-color } explicitly to control the area behind the floating navigation bar for full-screen overlays and modals."
+    },
+    "fixed_element_disappearance_on_scroll": {
+      "severity": "HIGH",
+      "description": "position:fixed elements (headers, modals) can disappear during momentum scroll on iOS Safari. The element is painted but WebKit's compositing layer fails to repaint it at the correct position.",
+      "affected_browsers": [
+        "Safari iOS all versions",
+        "Chrome iOS"
+      ],
+      "workaround": "/* Force GPU compositing layer promotion */\n.fixed-header {\n  position: fixed;\n  transform: translateZ(0); /* or translate3d(0,0,0) */\n  -webkit-transform: translateZ(0);\n  backface-visibility: hidden;\n  -webkit-backface-visibility: hidden;\n}\n\n/* IMPORTANT: Do NOT nest position:fixed inside elements\n   that have transform, filter, or will-change properties.\n   Those properties create new stacking contexts that\n   break fixed positioning entirely. */",
+      "anti_pattern": "Never wrap position:fixed elements inside containers with CSS transform, filter, backdrop-filter, or will-change. Restructure HTML to avoid this nesting."
+    },
+    "keyboard_visualviewport_offset_reset": {
+      "severity": "HIGH",
+      "description": "iOS 26 bug: after the software keyboard is dismissed, visualViewport.offsetTop does not reset to 0. Fixed header/footer elements remain misaligned — offset downward — until the user scrolls.",
+      "affected_browsers": [
+        "Safari iOS 26",
+        "WKWebView iOS 26"
+      ],
+      "workaround_js": "'use client';\nimport { useEffect } from 'react';\n\n// Attach in root layout client component\nexport function ViewportKeyboardFix() {\n  useEffect(() => {\n    if (!window.visualViewport) return;\n    const handleResize = () => {\n      // When keyboard dismisses, offsetTop should be 0\n      if (window.visualViewport.offsetTop > 0 &&\n          window.visualViewport.height === window.innerHeight) {\n        // Keyboard dismissed but offset not reset\n        window.scrollTo(0, window.scrollY); // force repaint\n      }\n    };\n    window.visualViewport.addEventListener('resize', handleResize);\n    return () => window.visualViewport.removeEventListener('resize', handleResize);\n  }, []);\n  return null;\n}"
+    },
+    "scrolly_not_updated_during_fast_scroll": {
+      "severity": "MEDIUM",
+      "description": "On iOS Safari, window.scrollY stops updating during fast momentum scrolling when read inside a requestAnimationFrame loop. Scroll-tracking UIs (parallax, sticky transforms, progress bars) receive stale values.",
+      "affected_browsers": [
+        "Safari iOS all versions"
+      ],
+      "workaround_js": "// Use a passive scroll listener instead of rAF for position reads\nwindow.addEventListener('scroll', handler, { passive: true });\n\n// Or use IntersectionObserver for show/hide logic instead of scrollY comparison\nconst observer = new IntersectionObserver(\n  ([entry]) => setIsVisible(entry.isIntersecting),\n  { rootMargin: '-64px 0px 0px 0px' } // offset by header height\n);"
+    },
+    "sticky_inside_overflow_auto": {
+      "severity": "HIGH",
+      "description": "position:sticky breaks silently when any ancestor element has overflow:auto, overflow:hidden, or overflow:scroll set. This is a CSS specification behavior but disproportionately trips up mobile layouts.",
+      "affected_browsers": [
+        "All browsers — CSS spec behavior"
+      ],
+      "workaround": "/* Audit ancestor chain of any sticky element.\n   Remove overflow from ancestors or restructure HTML.\n   Use a position:fixed element as fallback if restructuring\n   is not possible, combined with transform:translateZ(0) */\n\n/* Detection pattern */\n/* If sticky isn't working, temporarily add: */\n* { outline: 1px solid red !important; }\n/* And inspect the overflow stack */"
+    },
+    "safe_area_insets": {
+      "severity": "HIGH",
+      "description": "iPhones with notches and Dynamic Islands require padding using env(safe-area-inset-*) CSS variables. Without viewport-fit=cover, safe area insets are always 0.",
+      "nextjs_16_setup": "// app/layout.tsx — use generateViewport (not meta tags)\nimport type { Viewport } from 'next';\n\nexport const viewport: Viewport = {\n  width: 'device-width',\n  initialScale: 1,\n  viewportFit: 'cover', // REQUIRED for env(safe-area-inset-*) to be non-zero\n  // Avoid maximumScale: 1 + userScalable: false — breaks accessibility\n  // and triggers App Store review issues for PWAs\n};",
+      "css_usage": "/* In global CSS */\n:root {\n  --safe-top: env(safe-area-inset-top, 0px);\n  --safe-bottom: env(safe-area-inset-bottom, 0px);\n  --safe-left: env(safe-area-inset-left, 0px);\n  --safe-right: env(safe-area-inset-right, 0px);\n}\n\n.bottom-nav {\n  padding-bottom: max(var(--safe-bottom), 16px);\n}\n\n.top-header {\n  padding-top: max(var(--safe-top), 0px);\n}"
+    },
+    "chrome_android_viewport_keyboard": {
+      "severity": "MEDIUM",
+      "description": "Chrome Android resizes the layout viewport (not just the visual viewport) when the software keyboard appears, causing layout shifts. iOS behaves differently (only visual viewport shrinks).",
+      "workaround_meta": "/* Add to viewport meta via generateViewport */\n// interactive-widget=resizes-visual prevents layout shrink\nexport const viewport: Viewport = {\n  // ... other props\n  // Next.js 16: use 'other' for non-standard meta\n  // Or set via <meta> in RootLayout until Next.js adds first-class support\n};\n\n/* Manual meta tag fallback in layout.tsx */\n// <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-visual\" />",
+      "note": "interactive-widget=resizes-content was a workaround; the underlying Chrome bug was fixed in Chrome 139. Use resizes-visual for modern Chrome Android targets."
+    }
+  },
+  "hydration_caveats": {
+    "ios_auto_linking": {
+      "severity": "CRITICAL",
+      "description": "iOS Safari (and WKWebView) automatically detects phone numbers, email addresses, and sometimes dates in text content and wraps them in <a> tags. The server renders plain text; the client browser-DOM has anchor elements. React hydration sees a structural mismatch and fails.",
+      "affected_browsers": [
+        "Safari iOS all versions",
+        "Chrome iOS (WKWebView)"
+      ],
+      "symptoms": [
+        "Hydration error: 'Expected server HTML to contain a matching <a> in <span>'",
+        "Bug occurs ONLY on iOS — the Next.js GitHub issue #43914 confirmed this pattern"
+      ],
+      "workaround_html": "/* Add meta tags to disable auto-detection */\n// In Next.js 16 layout.tsx metadata export:\nexport const metadata: Metadata = {\n  // ...\n  other: {\n    'format-detection': 'telephone=no, date=no, address=no, email=no',\n  },\n};\n\n/* Or as a direct meta tag in RootLayout: */\n// <meta name=\"format-detection\" content=\"telephone=no, date=no, address=no, email=no\" />",
+      "workaround_css": "/* CSS-only suppression for phone links */\na[href^='tel'] {\n  color: inherit;\n  text-decoration: none;\n  pointer-events: none;\n}"
+    },
+    "css_in_js_class_mismatch": {
+      "severity": "HIGH",
+      "description": "CSS-in-JS libraries (styled-components, Emotion) can generate different class names on server vs client if not configured for SSR. The resulting hydration mismatch causes FOUC and React errors.",
+      "affected_browsers": [
+        "All — but more visible on slow mobile connections"
+      ],
+      "workaround_styled_components": "// app/StyledComponentsRegistry.tsx\n'use client';\nimport React, { useState } from 'react';\nimport { useServerInsertedHTML } from 'next/navigation';\nimport { ServerStyleSheet, StyleSheetManager } from 'styled-components';\n\nexport default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {\n  const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());\n  useServerInsertedHTML(() => {\n    const styles = styledComponentsStyleSheet.getStyleElement();\n    styledComponentsStyleSheet.instance.clearTag();\n    return <>{styles}</>;\n  });\n  if (typeof window !== 'undefined') return <>{children}</>;\n  return (\n    <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>\n      {children}\n    </StyleSheetManager>\n  );\n}"
+    },
+    "css_modules_lazy_load_fouc": {
+      "severity": "HIGH",
+      "description": "Next.js selective hydration with React.lazy + Suspense: CSS Modules are loaded lazily alongside the JS chunk. The server-rendered HTML has correct class names but no CSS until hydration. This causes a visible flash of unstyled content (FOUC) especially on slow mobile connections.",
+      "affected_browsers": [
+        "All — amplified on mobile network latency"
+      ],
+      "workaround": "// Prefer static imports for above-the-fold components\n// Use dynamic() only for components that are genuinely below the fold\n// or interaction-triggered (modals, drawers)\n\n// For critical CSS, use CSS Modules with static import:\nimport styles from './Component.module.css'; // static, included in initial CSS\n\n// Only use dynamic() for non-critical:\nconst HeavyModal = dynamic(() => import('./HeavyModal'), { ssr: false });"
+    },
+    "date_time_timezone_mismatch": {
+      "severity": "MEDIUM",
+      "description": "new Date().toString() on the server (UTC/server timezone) vs client (user timezone) produces different strings. Common hydration failure source.",
+      "workaround": "// Use suppressHydrationWarning for intentional time display:\n<time dateTime={isoString} suppressHydrationWarning>\n  {/* This renders on client only */}\n</time>\n\n// Or use useEffect to set client-local time after hydration:\n'use client';\nimport { useState, useEffect } from 'react';\nfunction LocalTime({ isoString }: { isoString: string }) {\n  const [localTime, setLocalTime] = useState('');\n  useEffect(() => {\n    setLocalTime(new Date(isoString).toLocaleString());\n  }, [isoString]);\n  return <time dateTime={isoString}>{localTime}</time>;\n}"
+    },
+    "browser_extension_dom_mutation": {
+      "severity": "MEDIUM",
+      "description": "Browser extensions (ad blockers, dark mode injectors, accessibility tools) and in-app browsers (Instagram, TikTok) inject DOM mutations before React hydrates, causing structural mismatches.",
+      "workaround": "// Suppress hydration warnings on elements known to be mutated by extensions:\n<html suppressHydrationWarning>\n  <body suppressHydrationWarning>\n    {children}\n  </body>\n</html>\n\n// suppressHydrationWarning only applies one level deep.\n// For deeper suppression, use a client-only wrapper:\nconst ClientOnly = dynamic(() => import('./ClientOnly'), { ssr: false });"
+    },
+    "isomorphic_client_guard": {
+      "severity": "MEDIUM",
+      "description": "Components reading browser APIs (window, localStorage, navigator) during render cause server crashes or hydration mismatches. On mobile this also triggers silent failures in WKWebView.",
+      "pattern": "'use client';\nimport { useState, useEffect } from 'react';\n\n// Pattern 1: isClient gate\nexport function BrowserOnlyComponent() {\n  const [isClient, setIsClient] = useState(false);\n  useEffect(() => setIsClient(true), []);\n  if (!isClient) return <div aria-hidden>Loading...</div>;\n  return <div>{window.navigator.userAgent}</div>;\n}\n\n// Pattern 2: dynamic() with ssr:false — preferred for whole components\nconst MapComponent = dynamic(() => import('./Map'), { ssr: false });\n\n// Pattern 3: React 19 use() with Suspense — server-safe data access\n// (for async data, not browser APIs)"
+    }
+  },
+  "react_19_feature_compatibility": {
+    "view_transitions": {
+      "support_matrix": {
+        "safari_ios_18_plus": "Supported — same-document View Transitions API landed in Safari 18 (iOS 18, September 2024). Basic crossfades and shared element transitions work. Cross-document (@view-transition CSS rule) available in Safari 18.2+.",
+        "safari_ios_16_17": "NOT supported — React 19.2 falls back to instant navigation silently",
+        "chrome_ios": "Same as Safari iOS (WebKit engine)",
+        "chrome_android_111_plus": "Full support — same-document and cross-document transitions",
+        "firefox": "Behind flag until Firefox 144 (October 2025); stable in Firefox 133+"
+      },
+      "progressive_enhancement_pattern": "// React 19.2 <ViewTransition> component handles feature detection internally.\n// On unsupported browsers: instant navigation, no animation, no error.\n// Do NOT polyfill with JS animation libraries — adds bundle weight and\n// does not replicate the compositing-layer snapshot model.\n\nimport { ViewTransition } from 'react';\n\n// Correct usage — wrap elements that should animate:\nfunction ProductCard({ product }: { product: Product }) {\n  return (\n    <ViewTransition key={product.id}>\n      <article className=\"product-card\">\n        <img\n          src={product.image}\n          alt={product.name}\n          style={{ viewTransitionName: `product-image-${product.id}` }}\n        />\n        <h2>{product.name}</h2>\n      </article>\n    </ViewTransition>\n  );\n}",
+      "reduced_motion": "/* Always respect prefers-reduced-motion */\n@media (prefers-reduced-motion: reduce) {\n  ::view-transition-group(*),\n  ::view-transition-old(*),\n  ::view-transition-new(*) {\n    animation-duration: 0.01ms !important;\n  }\n}\n\n/* Or disable transitions entirely for reduced-motion users */\n@media (prefers-reduced-motion: no-preference) {\n  @view-transition {\n    navigation: auto;\n  }\n}",
+      "safari_known_caveats": [
+        "Safari 18 supports same-document transitions but lacks View Transition Level 2 features (view-transition-class, auto-naming). Use explicit view-transition-name strings.",
+        "Cross-document @view-transition requires Safari 18.2+. Feature-detect with CSS @supports.",
+        "view-transition-name values must be unique per document at the moment the transition fires. Duplicate names silently disable the shared element animation.",
+        "Do not apply view-transition-name to elements inside display:none or visibility:hidden — Safari may crash the transition."
+      ]
+    },
+    "activity_component": {
+      "description": "React 19 <Activity mode='hidden'> renders children as display:none but preserves state. On mobile this has performance implications: hidden components still consume memory.",
+      "mobile_caveats": [
+        "On memory-constrained iOS devices, keeping many Activity-hidden components alive may trigger low-memory warnings. Prefer unmounting components that contain large media assets.",
+        "iOS Safari may suspend timers and effects inside hidden iframes/tabs; <Activity mode='hidden'> is not subject to this (it's in the same document), but very slow animations or background setIntervals may be throttled by iOS when the page is backgrounded.",
+        "Test Activity-heavy UIs on older iPhone models (iPhone 12/13 era) with lower RAM. Profile with Safari Web Inspector > Timeline."
+      ],
+      "pattern": "// Prefer Activity for lightweight state-heavy components (forms, filters)\n// Unmount (conditional rendering) for heavy media components\n\nimport { Activity } from 'react';\n\nfunction TabPanel({ tabs, activeTab }: { tabs: Tab[]; activeTab: string }) {\n  return (\n    <>\n      {tabs.map(tab => (\n        <Activity\n          key={tab.id}\n          mode={activeTab === tab.id ? 'visible' : 'hidden'}\n        >\n          {tab.isMediaHeavy\n            ? activeTab === tab.id ? <tab.Component /> : null // unmount\n            : <tab.Component />  // Activity preserve state\n          }\n        </Activity>\n      ))}\n    </>\n  );\n}"
+    },
+    "use_effect_event": {
+      "description": "useEffectEvent is stable in React 19.2. No compatibility issues with WebKit — it is a React runtime feature. Requires eslint-plugin-react-hooks@6.1.0+ for lint support.",
+      "mobile_caveats": []
+    }
+  },
+  "css_and_rendering_caveats": {
+    "overflow_hidden_body_scrollable": {
+      "severity": "HIGH",
+      "description": "iOS Safari ignores overflow:hidden on <body> and <html> — the page remains scrollable. This is a known WebKit behavior tracked in WebKit Bugzilla #153852.",
+      "affected_browsers": [
+        "Safari iOS all versions"
+      ],
+      "workaround": "// To truly lock scroll on iOS (e.g., modal open):\n// Approach 1: position:fixed body (causes scroll position jump)\nconst lockScroll = () => {\n  const scrollY = window.scrollY;\n  document.body.style.position = 'fixed';\n  document.body.style.top = `-${scrollY}px`;\n  document.body.style.width = '100%';\n};\nconst unlockScroll = () => {\n  const scrollY = document.body.style.top;\n  document.body.style.position = '';\n  document.body.style.top = '';\n  window.scrollTo(0, parseInt(scrollY || '0') * -1);\n};\n\n// Approach 2: Use a scroll-locking library like body-scroll-lock\n// that handles the iOS rubber-banding edge case:\n// import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';"
+    },
+    "elastic_scroll_bounce": {
+      "severity": "MEDIUM",
+      "description": "iOS rubber-band (elastic) overscroll cannot be disabled with overscroll-behavior:none on <body> (unlike Android/Chrome). It can only be contained to specific scroll containers.",
+      "workaround_css": "/* Contain overscroll to a specific element, not body */\n.scroll-container {\n  overflow-y: auto;\n  -webkit-overflow-scrolling: touch; /* legacy, still useful < iOS 13 */\n  overscroll-behavior-y: contain; /* prevent propagation to body */\n}",
+      "note": "overscroll-behavior on <html>/<body> does NOT disable iOS rubber-banding. Position the app inside a fixed-height container and let that container scroll instead."
+    },
+    "backdrop_filter_performance": {
+      "severity": "MEDIUM",
+      "description": "backdrop-filter (for frosted glass effects) causes significant GPU load on older iOS devices. On iPhone X / iPhone 11 era devices, overuse causes janky scrolling.",
+      "workaround": "/* Use @supports to apply only on capable hardware, or reduce blur radius */\n@supports (backdrop-filter: blur(1px)) {\n  .glass-panel {\n    backdrop-filter: blur(8px); /* keep radius low: 8-12px max */\n    -webkit-backdrop-filter: blur(8px);\n  }\n}\n\n/* Fallback for unsupported or budget devices */\n.glass-panel {\n  background-color: rgba(255, 255, 255, 0.85);\n}"
+    },
+    "text_size_adjust": {
+      "severity": "LOW",
+      "description": "iOS Safari auto-inflates font sizes in narrow viewports (text-size-adjust). This can cause text to render larger than specified, breaking layouts.",
+      "workaround_css": "/* Disable auto font inflation */\nhtml {\n  -webkit-text-size-adjust: 100%;\n  text-size-adjust: 100%;\n}"
+    },
+    "input_zoom_prevention": {
+      "severity": "MEDIUM",
+      "description": "iOS Safari zooms into the page when a form input with font-size < 16px is focused. This breaks fixed-position layouts.",
+      "workaround_css": "/* Ensure all interactive inputs have font-size >= 16px */\ninput, select, textarea {\n  font-size: 16px; /* Prevents iOS Safari auto-zoom */\n}\n\n/* Or use a CSS reset if your design system uses smaller fonts: */\n@supports (-webkit-touch-callout: none) {\n  input, select, textarea {\n    font-size: max(16px, 1em);\n  }\n}"
+    },
+    "smooth_scroll_safari": {
+      "severity": "LOW",
+      "description": "Safari does not support scroll-behavior: smooth on <html>/<body> (it ignores the property for programmatic scrolling). window.scrollTo({ behavior: 'smooth' }) is also unreliable.",
+      "workaround_js": "// Use a polyfill or custom smooth scroll implementation\n// Option 1: smoothscroll-polyfill\n// import smoothscroll from 'smoothscroll-polyfill';\n// smoothscroll.polyfill();\n\n// Option 2: Manual requestAnimationFrame scroll\nfunction smoothScrollTo(target: number, duration = 300) {\n  const start = window.scrollY;\n  const distance = target - start;\n  let startTime: number | null = null;\n  function step(timestamp: number) {\n    if (!startTime) startTime = timestamp;\n    const elapsed = timestamp - startTime;\n    const progress = Math.min(elapsed / duration, 1);\n    window.scrollTo(0, start + distance * easeInOut(progress));\n    if (elapsed < duration) requestAnimationFrame(step);\n  }\n  requestAnimationFrame(step);\n}\nfunction easeInOut(t: number) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }"
+    },
+    "css_filter_dark_mode_ios26": {
+      "severity": "MEDIUM",
+      "description": "iOS 26.2+ WebView produces incorrect colors when CSS filter is used to implement dark mode inversion. Works in iOS 18.x WebView but broken in iOS 26.2 WebView.",
+      "affected_browsers": [
+        "WKWebView on iOS 26.2+"
+      ],
+      "workaround": "// Use prefers-color-scheme media query for dark mode instead of filter inversion\n// This is more robust and semantically correct\n\n@media (prefers-color-scheme: dark) {\n  :root {\n    --bg: #121212;\n    --text: #ffffff;\n  }\n}\n\n// In Next.js 16: use next-themes or similar with prefers-color-scheme\n// Do NOT use: html { filter: invert(1) hue-rotate(180deg) } — broken on iOS 26.2 WebView"
+    }
+  },
+  "nextjs_16_mobile_patterns": {
+    "viewport_export": {
+      "description": "Canonical Next.js 16 pattern for mobile viewport configuration. Never use raw <meta name='viewport'> tags in layout.tsx — Next.js deduplicates only the exported Viewport.",
+      "code": "// app/layout.tsx\nimport type { Viewport, Metadata } from 'next';\n\nexport const viewport: Viewport = {\n  width: 'device-width',\n  initialScale: 1,\n  viewportFit: 'cover',           // enables env(safe-area-inset-*)\n  // Do NOT add maximumScale: 1 or userScalable: false\n  // These break accessibility zoom on iOS and may cause App Store rejection\n};\n\nexport const metadata: Metadata = {\n  other: {\n    // Disable iOS auto-linking to prevent hydration mismatches\n    'format-detection': 'telephone=no, date=no, address=no, email=no',\n  },\n};"
+    },
+    "streaming_on_slow_mobile_networks": {
+      "description": "Next.js 16 PPR + streaming delivers HTML incrementally. On 3G/unstable mobile networks, Suspense fallbacks may be visible for longer. Design skeletons carefully.",
+      "best_practices": [
+        "Keep Suspense fallback height identical to the loaded content height to avoid CLS (Cumulative Layout Shift)",
+        "Use CSS skeleton animations that don't trigger layout (animate opacity or background-position, not width/height)",
+        "Prioritize above-the-fold content outside Suspense boundaries — stream below-the-fold only",
+        "Set explicit width/height on next/image — avoids layout shift while image loads on slow connections"
+      ],
+      "code": "// Good skeleton: matches loaded content dimensions exactly\nfunction CardSkeleton() {\n  return (\n    <div\n      className=\"rounded-xl border p-4 animate-pulse\"\n      style={{ minHeight: '180px' }} // match actual card height\n      aria-busy=\"true\"\n      aria-label=\"Loading content\"\n    >\n      <div className=\"h-4 w-3/4 rounded bg-muted mb-2\" />\n      <div className=\"h-4 w-1/2 rounded bg-muted\" />\n    </div>\n  );\n}"
+    },
+    "next_image_mobile": {
+      "description": "Next.js 16 next/image changes affecting mobile: minimum cache TTL increased to 4 hours, max redirects limited to 3, quality coerced to nearest configured value.",
+      "mobile_best_practices": [
+        "Always provide sizes prop reflecting responsive breakpoints — prevents oversized image downloads on mobile",
+        "Use placeholder='blur' with blurDataURL for graceful loading on slow connections",
+        "Set priority={true} only on LCP images above the fold",
+        "Prefer WebP/AVIF formats — automatically served by next/image on Safari 14+ and Chrome 85+"
+      ],
+      "code": "import Image from 'next/image';\n\n// Mobile-optimized image\n<Image\n  src={product.imageUrl}\n  alt={product.name}\n  width={800}\n  height={600}\n  quality={75}\n  placeholder=\"blur\"\n  blurDataURL={product.blurHash}\n  sizes=\"(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw\"\n  priority={isAboveFold}\n  className=\"w-full h-auto object-cover rounded-xl\"\n/>"
+    },
+    "dynamic_ssr_false_for_mobile_only": {
+      "description": "Pattern for components that should render only on client, preventing hydration issues caused by mobile browser specifics (geolocation, DeviceOrientationEvent, touch APIs).",
+      "code": "import dynamic from 'next/dynamic';\n\n// Components using mobile-specific APIs\nconst GeolocationWidget = dynamic(\n  () => import('./GeolocationWidget'),\n  { ssr: false, loading: () => <div className=\"h-10 w-full animate-pulse bg-muted rounded\" /> }\n);\n\nconst TouchGestureCanvas = dynamic(\n  () => import('./TouchGestureCanvas'),\n  { ssr: false }\n);"
+    },
+    "web3_modal_mobile": {
+      "description": "WalletConnect / RainbowKit modals on iOS require special handling. The modal must not be inside a position:fixed container with transform applied, and must handle iOS keyboard interactions correctly.",
+      "caveats": [
+        "RainbowKit modal uses a portal — ensure your app's modal root is not inside a CSS transform container",
+        "WalletConnect deep links (for mobile wallet apps) require proper universal link setup; QR code scanning is the reliable fallback on iOS",
+        "On iOS Safari, window.ethereum may not be injected unless MetaMask or Coinbase Wallet mobile browser is used",
+        "Test WalletConnect flow on Safari iOS with network throttling — WC handshake can timeout on slow 3G"
+      ]
+    }
+  },
+  "touch_and_interaction_caveats": {
+    "tap_delay_300ms": {
+      "severity": "LOW",
+      "description": "Legacy 300ms tap delay on iOS has been removed for pages with width=device-width viewport meta. Ensure your viewport is set correctly.",
+      "workaround": "// Ensure viewport is set — tap delay is absent when:\n// <meta name=\"viewport\" content=\"width=device-width\">\n// Next.js 16: export const viewport: Viewport = { width: 'device-width', ... }\n\n/* CSS touch-action optimization for interactive elements */\nbutton, a, [role='button'] {\n  touch-action: manipulation; /* removes tap delay, disables double-tap zoom */\n}"
+    },
+    "touchstart_passive_listeners": {
+      "severity": "MEDIUM",
+      "description": "Chrome Android enforces that touchstart/touchmove listeners on document/window are passive by default. Calling event.preventDefault() in a non-passive listener throws a console warning and may be ignored.",
+      "workaround_js": "// Register as non-passive explicitly when you need to preventDefault\ndocument.addEventListener('touchmove', handler, { passive: false });\n\n// In React, use ref-based event attachment for passive:false:\nconst ref = useRef<HTMLDivElement>(null);\nuseEffect(() => {\n  const el = ref.current;\n  if (!el) return;\n  const handler = (e: TouchEvent) => { e.preventDefault(); /* drag logic */ };\n  el.addEventListener('touchmove', handler, { passive: false });\n  return () => el.removeEventListener('touchmove', handler);\n}, []);"
+    },
+    "hover_states_on_touch": {
+      "severity": "MEDIUM",
+      "description": "CSS :hover states persist on mobile after tap (sticky hover). This causes visual artifacts on buttons and links after the user taps them.",
+      "workaround_css": "/* Remove hover styles on touch-primary devices */\n@media (hover: none) and (pointer: coarse) {\n  .button:hover {\n    /* Reset any hover effects */\n    background-color: initial;\n    transform: none;\n  }\n}\n\n/* Or use :hover only when hover is available */\n@media (hover: hover) {\n  .button:hover {\n    background-color: var(--primary-hover);\n  }\n}"
+    },
+    "focus_visible_ios": {
+      "severity": "LOW",
+      "description": ":focus-visible is fully supported in Safari 15.4+. However, iOS Safari shows a focus ring on tap for buttons and links which may conflict with custom focus styles.",
+      "workaround_css": "/* Use :focus-visible for keyboard-only focus indicators */\n.button:focus { outline: none; }         /* remove default */\n.button:focus-visible {\n  outline: 2px solid var(--ring);\n  outline-offset: 2px;\n}"
+    }
+  },
+  "testing_and_debugging": {
+    "real_device_requirement": "Safari Simulator and Xcode Simulator do NOT reproduce: address bar collapse behavior, safe-area insets, WKWebView in-app browser quirks, iOS rubber-band scroll specifics, or keyboard visualViewport bugs. Always test on physical devices.",
+    "safari_web_inspector": {
+      "setup": "1. On iPhone: Settings > Safari > Advanced > Web Inspector: ON\n2. Connect to Mac via USB\n3. Open Safari on Mac > Develop menu > [Your Device Name] > [Page URL]\n4. Full DevTools available including Console, Network, Elements, Timeline",
+      "remote_debugging_alternatives": "BrowserStack Real Devices — access real iPhones/iPads with Safari. Supports React DevTools via browser extension. Essential for CI compatibility testing."
+    },
+    "chrome_android_debugging": {
+      "setup": "1. Enable USB debugging on Android: Settings > Developer Options > USB Debugging\n2. Connect to computer via USB\n3. Open chrome://inspect in desktop Chrome\n4. Your device pages appear; click 'inspect' for DevTools"
+    },
+    "hydration_error_debugging": {
+      "description": "React 19 improved hydration error messages with exact diff output. Steps to isolate iOS-specific hydration issues:",
+      "steps": [
+        "1. Open the page in iOS Safari with Web Inspector connected",
+        "2. Check Console for 'Hydration failed' errors — React 19 shows the exact node diff",
+        "3. Disable browser extensions/content blockers temporarily",
+        "4. Add format-detection meta tag to eliminate iOS auto-linking",
+        "5. Check for suppressHydrationWarning on <html> and <body> if browser extensions are known to inject content",
+        "6. Use NEXT_PRIVATE_DEBUG_CACHE=1 in dev to verify cache boundaries are not causing stale HTML"
+      ]
+    },
+    "css_feature_detection": "// Runtime feature detection for progressive enhancement:\nconst supportsViewTransitions = 'startViewTransition' in document;\nconst supportsDvh = CSS.supports('height', '100dvh');\nconst supportsContainerQueries = CSS.supports('container-type', 'inline-size');\n\n// Safe area check:\nconst hasSafeArea = CSS.supports('padding-top', 'env(safe-area-inset-top)');\n\n// @supports in CSS:\n@supports (height: 100dvh) {\n  .full-height { height: 100dvh; }\n}"
+  },
+  "anti_patterns": {
+    "patterns": [
+      {
+        "name": "Using 100vh for full-screen layouts",
+        "wrong": ".hero { height: 100vh; }",
+        "correct": ".hero { height: 100dvh; /* with 100vh fallback above */ }",
+        "why": "100vh includes the browser chrome on iOS and causes overflow/clipping. 100dvh updates dynamically."
+      },
+      {
+        "name": "Missing format-detection meta tag",
+        "wrong": "// No format-detection meta — iOS auto-links phone numbers in rendered text",
+        "correct": "export const metadata = { other: { 'format-detection': 'telephone=no, date=no, address=no, email=no' } };",
+        "why": "iOS Safari wraps detected phone numbers/dates in <a> tags, causing hydration mismatches."
+      },
+      {
+        "name": "Nesting position:fixed inside CSS transform containers",
+        "wrong": ".parent { transform: translateX(0); }\n.child { position: fixed; } /* BROKEN — fixed relative to parent not viewport */",
+        "correct": "/* Move fixed elements to document root level */\n/* Never apply transform to ancestors of fixed-positioned elements */",
+        "why": "CSS transforms create a new containing block, breaking fixed positioning — silent on desktop, visible on mobile."
+      },
+      {
+        "name": "Calling event.preventDefault() in React synthetic event handlers for touchmove",
+        "wrong": "onTouchMove={(e) => e.preventDefault()} // Ignored by Chrome Android (passive by default)",
+        "correct": "// Use ref + addEventListener with { passive: false } for non-passive touch listeners",
+        "why": "React attaches touch events as passive by default in modern browsers. Passive listeners cannot call preventDefault."
+      },
+      {
+        "name": "Using overflow:hidden on body to lock scroll on iOS",
+        "wrong": "document.body.style.overflow = 'hidden'; // Ignored by iOS Safari",
+        "correct": "// Use body position:fixed + store scrollY + restore on close. Or use body-scroll-lock library.",
+        "why": "iOS Safari ignores overflow:hidden on body/html — WebKit Bugzilla #153852. The page remains scrollable."
+      },
+      {
+        "name": "Using filter-based dark mode on iOS 26 WKWebView",
+        "wrong": "html.dark { filter: invert(1) hue-rotate(180deg); } /* Broken in iOS 26.2 WKWebView */",
+        "correct": "@media (prefers-color-scheme: dark) { :root { --bg: #121212; } }",
+        "why": "CSS filter produces incorrect colors in iOS 26.2 WebView. Use prefers-color-scheme or a class-based theming approach."
+      },
+      {
+        "name": "Polyfilling View Transitions with JavaScript animation libraries",
+        "wrong": "// Detect no support -> fall back to Framer Motion transitions",
+        "correct": "// Let React 19.2 fall back to instant navigation on unsupported browsers. No polyfill.",
+        "why": "No true View Transitions polyfill exists — the API requires browser-level DOM snapshots. Framer Motion is a different abstraction, not a polyfill. Adding it as a fallback doubles your animation code surface."
+      },
+      {
+        "name": "Input font-size below 16px without zoom prevention",
+        "wrong": "input { font-size: 14px; } /* iOS Safari zooms in on focus */",
+        "correct": "input { font-size: 16px; } /* Prevents iOS auto-zoom */\n/* Or use font-size: max(16px, 1em) */",
+        "why": "iOS Safari zooms into any input with font-size < 16px on focus, breaking fixed-position layouts."
+      },
+      {
+        "name": "Assuming maximumScale:1 prevents zoom without accessibility cost",
+        "wrong": "export const viewport = { maximumScale: 1, userScalable: false };",
+        "correct": "// Remove maximumScale and userScalable — let users zoom\n// Design layouts that work at 200% zoom instead of blocking zoom",
+        "why": "Blocking user zoom is an accessibility violation (WCAG 1.4.4) and may cause App Store rejection for PWAs."
+      }
+    ]
+  },
+  "resources": {
+    "webkit_bugzilla": "https://bugs.webkit.org",
+    "interop_2026": "https://webkit.org/blog/interop-2026",
+    "safari_release_notes": "https://webkit.org/blog/",
+    "mdn_viewport_units": "https://developer.mozilla.org/en-US/docs/Web/CSS/length#viewport-percentage_lengths",
+    "next_viewport_api": "https://nextjs.org/docs/app/api-reference/functions/generate-viewport",
+    "view_transitions_caniuse": "https://caniuse.com/view-transitions",
+    "apple_dev_forum_css": "https://developer.apple.com/forums/tags/css",
+    "react_19_view_transitions_blog": "https://react.dev/blog/2025/04/23/react-labs-view-transitions-activity-and-more"
+  }
+}

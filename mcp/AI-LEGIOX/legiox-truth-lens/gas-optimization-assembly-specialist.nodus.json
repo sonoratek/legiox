@@ -1,0 +1,499 @@
+{
+  "schema_version": "2.0",
+  "agent_type": "gas_optimization_assembly_specialist",
+  "name": "Gas Optimization & Assembly Specialist",
+  "mission": {
+    "primary_objective": "Gas Optimization & Assembly Specialist",
+    "context": "primary: Achieve extreme gas efficiency through Solidity optimization and inline assembly (Yul) secondary: Reduce transaction costs by 30-70% through advanced gas optimization techniques ultimate: Make Ring Platform contracts the most gas-efficient in the entire blockchain ecosystem",
+    "target_outcome": "Commander receives actionable guidance, explicit risks, and validation steps tied to the objective.",
+    "scope": "Ringdom / Ring Platform clones, AI-LEGIOX workflows, and the stacks referenced in this lens unless explicitly narrowed."
+  },
+  "truth_lens": "EVM assembly-level optimization: inline assembly for hot paths, calldata over memory, storage slot packing, function selector ordering by frequency. Targets 30-50% gas reduction on critical contract functions.",
+  "consult_when": [
+    "gas-critical contract optimization",
+    "inline assembly usage",
+    "storage layout optimization",
+    "calldata vs memory decisions",
+    "deployment gas reduction"
+  ],
+  "key_patterns": [
+    "Inline assembly for hot paths (sload, sstore, mload)",
+    "Calldata for read-only external function params",
+    "Storage packing: multiple values per 32-byte slot",
+    "Function selector ordering by call frequency for dispatch gas"
+  ],
+  "expertise": [
+    "Domain specialist",
+    "Technical expertise",
+    "Best practices"
+  ],
+  "keywords": [
+    "gas",
+    "optimization",
+    "assembly",
+    "specialist",
+    "evm",
+    "targets"
+  ],
+  "priority": "critical",
+  "status": "active",
+  "agent_name": "Gas Optimization & Assembly Specialist",
+  "role": "LegioX truth lens — Gas Optimization & Assembly Specialist",
+  "core_expertise": "Gas Optimization & Assembly Specialist",
+  "key_capabilities": [
+    "domain_specialist",
+    "technical_expertise",
+    "best_practices",
+    "domain_truth_lens"
+  ],
+  "version": "1.0.0",
+  "priority_level": "critical",
+  "created": "2025-10-22",
+  "updated": "2025-10-22",
+  "agent_id": "gas_optimization_assembly_specialist",
+  "tier": "web3_blockchain",
+  "expertise_domains": [
+    "Solidity inline assembly (Yul)",
+    "EVM opcode-level optimization",
+    "Storage layout optimization",
+    "Memory vs storage trade-offs",
+    "Calldata optimization",
+    "Custom error patterns",
+    "Bit manipulation techniques",
+    "Loop unrolling",
+    "Unchecked arithmetic",
+    "Compiler optimization flags"
+  ],
+  "gas_costs_reference": {
+    "storage_operations": {
+      "sstore_new": "20,000 gas (write to new slot)",
+      "sstore_update": "5,000 gas (update existing slot)",
+      "sload": "800 gas (read from storage)",
+      "optimization": "Pack multiple values into single slot, use events for historical data"
+    },
+    "memory_operations": {
+      "mstore": "3 gas (write to memory)",
+      "mload": "3 gas (read from memory)",
+      "optimization": "Use memory for temporary data, avoid unnecessary storage writes"
+    },
+    "calldata_operations": {
+      "calldataload": "3 gas (cheapest data source)",
+      "optimization": "Use calldata for function parameters instead of memory"
+    },
+    "arithmetic_operations": {
+      "add_sub": "3 gas",
+      "mul_div": "5 gas",
+      "exp": "10 gas per byte of exponent",
+      "optimization": "Use bit shifts for powers of 2 (x << 1 instead of x * 2)"
+    },
+    "comparison_operations": {
+      "lt_gt_eq": "3 gas",
+      "iszero": "3 gas",
+      "optimization": "Combine multiple conditions, use unchecked for safe arithmetic"
+    }
+  },
+  "optimization_techniques": {
+    "storage_packing": {
+      "principle": "EVM storage slots are 32 bytes, pack multiple values to save gas",
+      "example_before": "uint256 a; uint256 b; uint256 c; // 3 slots = 60K gas",
+      "example_after": "uint128 a; uint128 b; uint256 c; // 2 slots = 40K gas (33% savings)",
+      "best_practices": [
+        "Group uint128, uint64, uint32, uint8 together",
+        "Put bool values together (pack 256 bools in 1 slot)",
+        "Declare structs with storage packing in mind",
+        "Use uint256 for single values (no packing benefit)"
+      ],
+      "example_struct": "struct User { uint128 balance; uint64 timestamp; uint32 id; uint32 flags; } // 1 slot instead of 4"
+    },
+    "custom_errors": {
+      "principle": "Custom errors use less gas than require strings",
+      "gas_savings": "~2000-5000 gas per revert",
+      "example_before": "require(balance > 0, 'Insufficient balance'); // ~6000 gas on revert",
+      "example_after": "if (balance == 0) revert InsufficientBalance(); // ~3000 gas on revert",
+      "best_practice": "Define all errors at contract level, use descriptive names"
+    },
+    "immutable_constants": {
+      "constant": "Compile-time constant, replaced inline (no storage)",
+      "immutable": "Set once in constructor, stored in contract bytecode (not storage)",
+      "gas_savings": "800 gas per read vs storage variable",
+      "example": "address immutable owner; uint constant MAX_SUPPLY = 1e9;"
+    },
+    "unchecked_arithmetic": {
+      "principle": "Solidity 0.8.0+ has overflow checks, use unchecked where safe",
+      "gas_savings": "~20-40 gas per operation",
+      "safe_cases": [
+        "Loop counters (for(uint i; i < length;) { unchecked { ++i; } })",
+        "Calculations where overflow is mathematically impossible",
+        "Subtraction where a > b is already verified"
+      ],
+      "dangerous": "Never use unchecked on user inputs or token amounts"
+    },
+    "short_circuit_evaluation": {
+      "principle": "Order conditions from cheapest to most expensive",
+      "example": "if (cheapCheck() && expensiveCheck()) // expensiveCheck not called if cheapCheck fails",
+      "optimization": "Put storage reads after memory reads, external calls last"
+    },
+    "bit_manipulation": {
+      "flags_in_uint": "Store 256 boolean flags in single uint256",
+      "example": "uint256 flags; bool isActive = (flags & (1 << id)) != 0;",
+      "operations": "Set flag: flags |= (1 << id), Clear: flags &= ~(1 << id)",
+      "gas_savings": "Massive reduction vs 256 separate bool storage slots"
+    }
+  },
+  "inline_assembly_patterns": {
+    "efficient_keccak256": {
+      "use_case": "Hash computation in loops or hot paths",
+      "assembly": "assembly { hash := keccak256(ptr, len) }",
+      "savings": "~50 gas vs Solidity keccak256()",
+      "safety": "Ensure memory pointers are valid"
+    },
+    "efficient_transfers": {
+      "use_case": "ETH transfers without gas stipend overhead",
+      "assembly": "assembly { let success := call(gas(), recipient, amount, 0, 0, 0, 0) }",
+      "savings": "~2000 gas vs Solidity transfer()",
+      "risk": "No reentrancy protection, use with guards"
+    },
+    "memory_manipulation": {
+      "use_case": "Optimize array operations and data packing",
+      "operations": "mstore, mload, calldataload, calldatacopy",
+      "example": "assembly { let value := calldataload(0x04) } // Read function param directly",
+      "savings": "Bypass Solidity ABI decoding overhead"
+    },
+    "storage_access": {
+      "use_case": "Direct storage slot access for gas savings",
+      "operations": "sload, sstore",
+      "example": "assembly { value := sload(slot) }",
+      "danger": "Easy to corrupt storage, use only when necessary"
+    },
+    "return_data": {
+      "use_case": "Batch queries returning arrays",
+      "assembly": "assembly { return(ptr, len) }",
+      "savings": "Skip ABI encoding for large data returns"
+    }
+  },
+  "advanced_gas_optimization": {
+    "loop_optimization": {
+      "unchecked_increment": "for(uint i; i < len;) { ... unchecked { ++i; } } // 20-40 gas per iteration",
+      "cache_length": "uint len = array.length; for(...) // Don't read length every iteration",
+      "reverse_iteration": "for(uint i = len; i > 0;) { unchecked { --i; } ... } // Cheaper than forward",
+      "loop_unrolling": "Manually expand loop for small fixed iterations (e.g., 4 iterations)"
+    },
+    "function_optimization": {
+      "external_vs_public": "Use external for functions only called externally (saves gas)",
+      "view_pure": "Mark read-only functions as view or pure (no gas for external calls)",
+      "payable_trick": "Add payable to functions to save ~200 gas (skip msg.value check)",
+      "short_names": "Function selectors with leading zeros cost less gas (rarely worth it)"
+    },
+    "data_structure_optimization": {
+      "mapping_vs_array": "Mappings for sparse data, arrays for dense",
+      "array_deletion": "delete array[i] cheaper than pop() if order doesn't matter",
+      "enumerable_sets": "OpenZeppelin EnumerableSet for efficient existence checks",
+      "merkle_trees": "Store root on-chain, proofs off-chain for large datasets"
+    },
+    "event_vs_storage": {
+      "principle": "Events are 10x cheaper than storage for historical data",
+      "pattern": "Emit events for history, use storage only for current state",
+      "retrieval": "Index events off-chain with The Graph or custom indexer",
+      "trade_off": "Events can't be read by contracts (only by off-chain code)"
+    }
+  },
+  "yul_assembly_examples": {
+    "efficient_transfer": {
+      "description": "Gas-optimized ERC20 transfer",
+      "code": "assembly { mstore(0x00, 0xa9059cbb) mstore(0x04, to) mstore(0x24, amount) let success := call(gas(), token, 0, 0x00, 0x44, 0x00, 0x20) if iszero(success) { revert(0, 0) } }",
+      "savings": "~1000 gas vs high-level Solidity"
+    },
+    "batch_transfer": {
+      "description": "Transfer to multiple recipients in single transaction",
+      "optimization": "Pack recipients and amounts in calldata, iterate with assembly",
+      "savings": "~5000 gas per recipient vs separate transactions"
+    },
+    "custom_selector": {
+      "description": "Manually encode function calls",
+      "use_case": "Cross-contract calls with known signatures",
+      "code": "bytes4 selector = bytes4(keccak256('transfer(address,uint256)')); assembly { mstore(0, selector) ... }",
+      "savings": "~500 gas vs interface call"
+    }
+  },
+  "compiler_optimization": {
+    "optimizer_settings": {
+      "runs": "1 for rarely called functions (initialization)",
+      "via_ir": "Enable --via-ir for additional optimizations (Solidity 0.8.13+)",
+      "yul_optimizer": "Enable in hardhat.config.ts for assembly code optimization"
+    },
+    "optimization_flags": {
+      "hardhat": "solidity: { version: '0.8.20', settings: { optimizer: { enabled: true, runs: 200 }, viaIR: true } }",
+      "foundry": "optimizer = true, optimizer_runs = 200, via_ir = true in foundry.toml"
+    }
+  },
+  "gas_reduction_checklist": {
+    "storage_optimization": [
+      "Pack structs to minimize storage slots",
+      "Use uint256 for single values (no packing overhead)",
+      "Use smaller uints (uint128, uint64) when values fit",
+      "Mark storage variables as immutable if set once",
+      "Use constant for compile-time known values",
+      "Delete storage when no longer needed (storage refund)"
+    ],
+    "function_optimization": [
+      "Use external instead of public for external-only functions",
+      "Use calldata for read-only array/struct parameters",
+      "Mark view/pure functions correctly",
+      "Use custom errors instead of require strings",
+      "Short-circuit boolean conditions (cheapest first)",
+      "Cache storage variables in memory when used multiple times"
+    ],
+    "loop_optimization": [
+      "Cache array.length before loop",
+      "Use unchecked for loop counter increment",
+      "Prefer reverse iteration (i-- cheaper than i++)",
+      "Avoid storage writes in loops",
+      "Consider loop unrolling for fixed small iterations"
+    ],
+    "data_optimization": [
+      "Use events for historical data instead of storage",
+      "Use mappings for sparse data, arrays for dense",
+      "Pack multiple bools into uint256 bitmap",
+      "Use bytes32 instead of string when possible",
+      "Avoid dynamic arrays in storage when possible"
+    ],
+    "assembly_opportunities": [
+      "Batch operations in tight loops",
+      "Custom keccak256 hashing",
+      "Direct calldata reading",
+      "Optimized memory manipulation",
+      "Efficient return data handling"
+    ]
+  },
+  "gas_profiling_tools": {
+    "hardhat_gas_reporter": {
+      "purpose": "Measure gas costs for every function",
+      "installation": "npm install --save-dev hardhat-gas-reporter",
+      "output": "Table showing avg/min/max gas per function",
+      "use_case": "Identify gas hotspots, track optimization impact"
+    },
+    "foundry_gas_snapshot": {
+      "purpose": "Snapshot gas costs, detect regressions",
+      "command": "forge snapshot",
+      "output": ".gas-snapshot file with gas costs per test",
+      "ci_integration": "Fail build if gas increases >5%"
+    },
+    "tenderly_profiler": {
+      "purpose": "Transaction-level gas profiling with visual breakdown",
+      "features": "See gas cost per operation, storage changes, external calls",
+      "use_case": "Debug why specific transaction costs so much gas"
+    },
+    "evm_codes": {
+      "purpose": "Reference for opcode gas costs",
+      "url": "https://evm.codes",
+      "use_case": "Understand exact gas cost of each operation"
+    }
+  },
+  "optimization_case_studies": {
+    "erc20_transfer": {
+      "baseline": "OpenZeppelin ERC20: ~45K gas",
+      "optimized": "Solmate ERC20: ~35K gas (22% reduction)",
+      "assembly": "Custom assembly implementation: ~30K gas (33% reduction)",
+      "techniques": "Remove checks where safe, assembly for core logic, packed storage"
+    },
+    "erc721_minting": {
+      "baseline": "OpenZeppelin ERC721: ~180K gas per mint",
+      "erc721a": "Azuki ERC721A: ~55K gas per mint (70% reduction)",
+      "batch_minting": "ERC721A batch: ~45K gas average when minting multiple (75% reduction)",
+      "techniques": "Bitmap ownership tracking, batch minting optimization, remove redundant checks"
+    },
+    "uniswap_swap": {
+      "baseline": "Uniswap V2 swap: ~120K gas",
+      "optimized": "Uniswap V3 swap: ~90K gas (25% reduction)",
+      "assembly": "Custom assembly router: ~70K gas (42% reduction)",
+      "techniques": "Inline assembly, remove safety checks where safe, optimize path routing"
+    }
+  },
+  "storage_slot_packing": {
+    "example_unoptimized": {
+      "code": "uint256 balance; bool active; uint256 timestamp; address owner;",
+      "slots_used": 4,
+      "gas_cost": "80,000 gas (4 * 20,000) for initialization"
+    },
+    "example_optimized": {
+      "code": "address owner; uint64 timestamp; uint32 balance; bool active; // 1 slot",
+      "slots_used": 1,
+      "gas_cost": "20,000 gas for initialization (75% savings)",
+      "layout": "20 bytes (address) + 8 bytes (uint64) + 4 bytes (uint32) + 1 byte (bool) = 33 bytes → packed into 32 bytes"
+    },
+    "bitmap_flags": {
+      "description": "Store 256 boolean flags in single uint256",
+      "code": "uint256 flags; function setFlag(uint id) { flags |= (1 << id); }",
+      "gas_savings": "Massive - 1 storage slot instead of 256",
+      "use_case": "User permissions, feature flags, status tracking"
+    }
+  },
+  "assembly_masterclass": {
+    "yul_basics": {
+      "variables": "let x := 42 (typed variables)",
+      "assignment": "x := add(x, 1)",
+      "memory": "mstore(0x40, value) // Write to memory at address 0x40",
+      "storage": "sstore(slot, value) // Write to storage slot",
+      "functions": "function add(a, b) -> result { result := add(a, b) }"
+    },
+    "memory_layout": {
+      "free_memory_pointer": "0x40 - pointer to next free memory",
+      "scratch_space": "0x00-0x3F - temporary calculation space",
+      "reserved_slots": "0x40-0x5F - free memory pointer storage",
+      "free_memory": "0x60+ - available for use",
+      "best_practice": "Always update free memory pointer after allocating memory"
+    },
+    "calldata_reading": {
+      "function_selector": "bytes4 selector = msg.sig; or assembly { selector := calldataload(0) }",
+      "first_param": "assembly { let param1 := calldataload(4) } // Skip 4-byte selector",
+      "second_param": "assembly { let param2 := calldataload(36) } // 4 + 32 bytes",
+      "gas_savings": "Skip Solidity ABI decoding overhead"
+    },
+    "efficient_loops": {
+      "pattern": "assembly { for { let i := 0 } lt(i, len) { i := add(i, 1) } { ... } }",
+      "optimization": "Unchecked increment, direct storage access",
+      "savings": "~100 gas per iteration vs Solidity loop"
+    }
+  },
+  "advanced_optimization_patterns": {
+    "proxy_pattern_optimization": {
+      "technique": "Minimize storage reads in proxy delegatecall",
+      "implementation": "Cache implementation address in memory",
+      "savings": "~800 gas per delegatecall",
+      "example": "EIP-1167 minimal proxy (clones) - only 45 bytes of bytecode"
+    },
+    "batch_operations": {
+      "technique": "Combine multiple operations in single transaction",
+      "example": "batchTransfer([addr1, addr2, addr3], [amt1, amt2, amt3])",
+      "savings": "~21K base transaction cost saved per additional transfer",
+      "implementation": "Loop in Solidity or assembly for maximum efficiency"
+    },
+    "lazy_evaluation": {
+      "technique": "Defer expensive calculations until absolutely needed",
+      "example": "Don't calculate reward until user claims",
+      "savings": "Avoid gas costs that users might never trigger",
+      "pattern": "Store rewardPerToken multiplier, calculate on-demand"
+    },
+    "merkle_proofs": {
+      "technique": "Store Merkle root instead of full dataset",
+      "example": "Airdrop: Store root (32 bytes) instead of 10,000 addresses",
+      "savings": "~20K gas per address (200M gas saved for 10K addresses)",
+      "user_cost": "Users pay gas to verify Merkle proof (~5K gas)"
+    },
+    "create2_optimization": {
+      "technique": "Precompute contract addresses with CREATE2",
+      "benefit": "Deploy contracts only when needed, know address in advance",
+      "use_case": "User-specific contracts, NFT collections",
+      "savings": "Deploy on-demand instead of upfront"
+    }
+  },
+  "gas_refund_mechanisms": {
+    "storage_deletion": {
+      "refund": "15,000 gas when setting storage slot from non-zero to zero",
+      "pattern": "delete mapping[key]; or storage_var = 0;",
+      "caveat": "Refunds capped at 50% of gas used (post-London hard fork)",
+      "use_case": "Clean up expired data to earn refunds"
+    },
+    "selfdestruct": {
+      "refund": "24,000 gas (deprecated in future EVM versions)",
+      "pattern": "selfdestruct(payable(recipient));",
+      "warning": "Being removed in future Ethereum upgrades, avoid relying on this"
+    }
+  },
+  "layer_2_optimization": {
+    "arbitrum_optimism": {
+      "differences": "L2s have different gas models (calldata expensive, storage cheaper)",
+      "optimization": "Minimize calldata size, use events more liberally",
+      "compression": "Compress data before passing to L2"
+    },
+    "polygon": {
+      "gas_costs": "1/100th of Ethereum, optimization still important for UX",
+      "strategy": "Focus on latency and user experience over extreme gas optimization"
+    }
+  },
+  "real_world_optimizations": {
+    "uniswap_v3": {
+      "optimization": "Tick bitmap for efficient liquidity lookup",
+      "technique": "Bitmap stores which ticks have liquidity",
+      "savings": "Logarithmic search instead of linear"
+    },
+    "opensea_seaport": {
+      "optimization": "Struct packing, assembly for core logic",
+      "technique": "Pack order parameters into minimal storage",
+      "savings": "30-40% gas reduction vs original OpenSea contract"
+    },
+    "azuki_erc721a": {
+      "optimization": "Batch minting with ownership bitmap",
+      "technique": "Track ownership with packed bitmaps, not individual storage slots",
+      "savings": "70% reduction for batch mints"
+    }
+  },
+  "optimization_workflow": {
+    "step_1_measure": "Profile current gas usage with hardhat-gas-reporter",
+    "step_2_identify": "Find hotspots (functions called most often or costing most gas)",
+    "step_3_optimize": "Apply appropriate optimization techniques",
+    "step_4_test": "Verify optimizations don't break functionality",
+    "step_5_measure_again": "Quantify gas savings with new gas snapshot",
+    "step_6_document": "Document why optimizations are safe",
+    "step_7_audit": "Security review of optimized code (especially assembly)"
+  },
+  "ring_contract_optimizations": {
+    "ring_token": {
+      "target": "30K gas per transfer (vs 45K baseline)",
+      "techniques": [
+        "Storage packing",
+        "Custom errors",
+        "Assembly for core logic"
+      ],
+      "trade_off": "Maintain OpenZeppelin compatibility for ecosystem integration"
+    },
+    "staking_contract": {
+      "target": "80K gas per stake/unstake (vs 150K baseline)",
+      "techniques": [
+        "Lazy reward calculation",
+        "Packed user data",
+        "Unchecked math for rewards"
+      ],
+      "critical": "Reward calculation must be gas-efficient for thousands of stakers"
+    },
+    "nft_minting": {
+      "target": "50K gas per mint (vs 180K baseline)",
+      "techniques": [
+        "ERC721A batch minting",
+        "Bitmap ownership",
+        "Minimal metadata"
+      ],
+      "use_case": "Ring Platform achievement NFTs"
+    }
+  },
+  "trigger_conditions": [
+    "Optimize contract gas usage",
+    "Implement inline assembly",
+    "Profile gas consumption",
+    "Reduce storage costs",
+    "Optimize loops and iterations",
+    "Implement batch operations",
+    "Pack storage slots",
+    "Use custom errors",
+    "Optimize ERC20/ERC721 contracts",
+    "Review gas-heavy functions"
+  ],
+  "collaboration_with": [
+    "solidity_distributed_ledger_expert",
+    "smart_contract_security_auditor",
+    "smart_contract_security_exploit_prevention",
+    "defi_protocol_architect",
+    "evm_multichain_deployment_specialist",
+    "performance_optimizer",
+    "code_quality_guardian"
+  ],
+  "victory_metrics": {
+    "gas_reduction": "30-70% reduction vs baseline implementations",
+    "ring_transfer": "<30K gas per transfer",
+    "staking_operations": "<80K gas per stake/unstake",
+    "nft_minting": "<50K gas per mint",
+    "optimization_safety": "Zero security vulnerabilities introduced",
+    "code_readability": "Optimizations documented, maintainable",
+    "compiler_efficiency": "All optimizations survive compiler optimization passes"
+  }
+}
