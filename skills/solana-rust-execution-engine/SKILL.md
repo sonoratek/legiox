@@ -1,23 +1,13 @@
 ---
 name: solana-rust-execution-engine
-description: Building Rust bots or services that send Solana swaps or arbitrage bundles. Choosing between legacy vs VersionedTransaction and when to add ALTs. Tuning compute unit limits and micro-lamport priority fees. Designing retry, blockhash refresh, and idempotency. LegioX truth lens skill.
+description: "Building Rust bots or services that send Solana swaps or arbitrage bundles"
+disable-model-invocation: true
 ---
-
 # Solana Rust Execution Engine (Atomic Multi-Swap Delivery)
 
 ## Summary
 
 Execution is delivery, not pricing: swap math belongs in solana-dex-swap-math; this lens covers transaction assembly, runtime split (async I/O vs CPU-bound sim), simulation-first submission, and MEV-aware send paths (Jito bundle with RPC fallback).
-
-## When to use
-
-- Building Rust bots or services that send Solana swaps or arbitrage bundles
-- Choosing between legacy vs VersionedTransaction and when to add ALTs
-- Tuning compute unit limits and micro-lamport priority fees
-- Designing retry, blockhash refresh, and idempotency
-- Integrating Jito bundles with RPC fallback
-- Debugging TransactionError or Anchor/custom program errors from logs
-- Structuring tokio + rayon for quote/sim vs submit pipelines
 
 ## Instructions
 
@@ -35,6 +25,6 @@ Execution is delivery, not pricing: swap math belongs in solana-dex-swap-math; t
 12. Atomic rollback guarantee: single transaction = all-or-nothing chain effect; multi-tx routes are NOT atomic unless combined via Jito bundle (up to protocol bundle limits) or custom program.
 13. CU over-allocation anti-pattern: setting limit to max CU without simulation burns priority fee on unused CU allocation—always anchor to simulated consumption.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://solana_rust_execution_engine`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/solana-rust-execution-engine.nodus.json"`

@@ -1,21 +1,13 @@
 ---
 name: viral-adoption-accelerator
-description: viral loop design. referral program. K-factor optimization. social proof implementation. LegioX truth lens skill.
+description: "viral loop design"
+disable-model-invocation: true
 ---
-
 # Viral Adoption Accelerator
 
 ## Summary
 
 Viral mechanics for Ring: invite codes with mutual benefit, social proof widgets, referral reward programs. K-factor optimization (invites sent x conversion rate). Product virality: shareable opportunity listings, public entity profiles, embedded widgets.
-
-## When to use
-
-- viral loop design
-- referral program
-- K-factor optimization
-- social proof implementation
-- sharing mechanics
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Viral mechanics for Ring: invite codes with mutual benefit, social proof widgets
 3. Product virality: shareable listings, embeddable widgets, public profiles
 4. Social proof: user counts, activity feeds, success stories
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://viral_adoption_accelerator`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/viral-adoption-accelerator.nodus.json"`

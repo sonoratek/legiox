@@ -1,21 +1,13 @@
 ---
 name: integration-testing-architect
-description: contract testing setup. API contract breaking changes. Auth.js/Web3 integration testing. Connect protocol validation. LegioX truth lens skill.
+description: "contract testing setup"
+disable-model-invocation: true
 ---
-
 # Integration Testing Architect
 
 ## Summary
 
 Consumer-driven contract testing with Pact (consumer defines, provider verifies, can-I-deploy). Ring-specific: Auth.js flow testing, Web3/Firebase mocking via MSW. Connect: ASN.1/BERT protocol testing. Testcontainers for real dependency isolation.
-
-## When to use
-
-- contract testing setup
-- API contract breaking changes
-- Auth.js/Web3 integration testing
-- Connect protocol validation
-- test environment orchestration
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Consumer-driven contract testing with Pact (consumer defines, provider verifies,
 3. Connect: ASN.1/BERT protocol, FastTransponder perf, distributed Erlang
 4. Test data builders: new UserBuilder().withRole('admin').build()
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://integration_testing_architect`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/integration-testing-architect.nodus.json"`

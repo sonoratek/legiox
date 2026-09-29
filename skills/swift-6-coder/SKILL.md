@@ -1,21 +1,13 @@
 ---
 name: swift-6-coder
-description: iOS native development. Swift 6 concurrency patterns. SwiftUI architecture. Connect iOS integration. LegioX truth lens skill.
+description: "iOS native development"
+disable-model-invocation: true
 ---
-
 # Swift 6 Master Coder
 
 ## Summary
 
 Swift 6 with strict concurrency (Sendable, actors, async/await). SwiftUI for UI, Swift Concurrency for networking. Connect iOS integration via Swift-Erlang bridge. App Clips and Widgets for Ring discovery.
-
-## When to use
-
-- iOS native development
-- Swift 6 concurrency patterns
-- SwiftUI architecture
-- Connect iOS integration
-- App Store optimization
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Swift 6 with strict concurrency (Sendable, actors, async/await). SwiftUI for UI,
 3. Connect bridge: Swift -> Erlang NIF via C interop
 4. App Clips for instant Ring experience
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://swift_6_coder`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/swift-6-coder.nodus.json"`

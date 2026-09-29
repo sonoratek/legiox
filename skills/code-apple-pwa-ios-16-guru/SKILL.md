@@ -1,30 +1,13 @@
 ---
 name: code-apple-pwa-ios-16-guru
-description: iOS Safari white screen or WSOD on production. ReferenceError Can't find variable Notification. PWA push notifications iOS home screen. Web Push iOS 16.4 standalone manifest. LegioX truth lens skill.
+description: "iOS Safari white screen or WSOD on production"
+disable-model-invocation: true
 ---
-
 # Apple PWA iOS 16+ Guru
 
 ## Summary
 
 On iOS, Web Push is NOT a Safari-tab feature — it ships for Home Screen web apps starting iOS/iPadOS 16.4 (WebKit blog 13878). In Safari tabs, PushManager is absent and the Notification global is often undefined; code that reads Notification.permission without `'Notification' in window` throws ReferenceError and can white-screen React apps mounted globally (e.g. FCMProvider). macOS Safari 16.1+ supports standards-based Web Push in browser tabs. Home Screen web apps require HTTPS, a manifest with display standalone or fullscreen, service worker registration, user-gesture permission prompts, and VAPID-identified pushes to APNs (*.push.apple.com). Safari/WebKit forbids silent push: show a user-visible notification immediately when a push arrives or permission/subscription may be revoked. iOS 18.4 adds Declarative Web Push for Home Screen web apps (window.pushManager, declarative JSON payload, SW optional for display). Without a qualifying manifest, Add to Home Screen creates a bookmark that opens in the default browser (iOS 16.4+), not a standalone web app — push APIs remain unavailable. Ring clones must treat push as progressive enhancement: guard every Notification/PushManager touch, lazy-init Firebase for FCM only, and never block app shell on missing push APIs.
-
-## When to use
-
-- iOS Safari white screen or WSOD on production
-- ReferenceError Can't find variable Notification
-- PWA push notifications iOS home screen
-- Web Push iOS 16.4 standalone manifest
-- FCMProvider or useFCM crash on iPhone
-- PushManager undefined Safari iOS
-- Add to Home Screen web app manifest display standalone
-- APNs web push VAPID Apple *.push.apple.com
-- Declarative Web Push iOS 18.4
-- Safari web push macOS vs iOS differences
-- Home Screen web app badging setAppBadge
-- iOS PWA notification permission user gesture
-- Ring Platform FCM-only firebase-client iOS
-- feature detection Notification in window PushManager
 
 ## Instructions
 
@@ -41,6 +24,6 @@ On iOS, Web Push is NOT a Safari-tab feature — it ships for Home Screen web ap
 11. RING_FCM_LAZY — k8s-postgres-fcm: Firebase client is FCM-only with lazy getFirebaseApp(); invalid API key must not throw on import. Push UX is optional; app shell must render without Notification API.
 12. STANDALONE_DETECT — Detect installed PWA: window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true (legacy iOS). Use to show Install-for-push CTA vs Enable-notifications CTA.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://code_apple_pwa_ios_16_guru`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/code-apple-pwa-ios-16-guru.nodus.json"`

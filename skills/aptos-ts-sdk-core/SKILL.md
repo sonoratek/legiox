@@ -1,20 +1,13 @@
 ---
 name: aptos-ts-sdk-core
-description: Bootstrapping Aptos client in ring-platform.org.. Debugging transaction simulation failures.. Implementing server-side fee payer signing service.. Reading on-chain FA balances and proposal state.. LegioX truth lens skill.
+description: "Bootstrapping Aptos client in ring-platform.org."
+disable-model-invocation: true
 ---
-
 # Aptos TypeScript SDK Core (Ring Client & Server)
 
 ## Summary
 
 The Aptos TS SDK replaces deprecated `aptos` npm package. Use Aptos + AptosConfig with explicit Network; prefer transaction.build.simple for entry functions; simulate.simple before production submit; view() for read-only Move calls without signing.
-
-## When to use
-
-- Bootstrapping Aptos client in ring-platform.org.
-- Debugging transaction simulation failures.
-- Implementing server-side fee payer signing service.
-- Reading on-chain FA balances and proposal state.
 
 ## Instructions
 
@@ -25,6 +18,6 @@ The Aptos TS SDK replaces deprecated `aptos` npm package. Use Aptos + AptosConfi
 5. aptos.view({ payload: { function, functionArguments } }).
 6. aptos.getAccountResources / getAccountCoinsData for FA discovery.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://aptos_ts_sdk_core`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/aptos-ts-sdk-core.nodus.json"`

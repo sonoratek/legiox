@@ -1,22 +1,13 @@
 ---
 name: ai-aws-sagemaker-specialist
-description: SageMaker AI Studio notebooks JupyterLab Code Editor idle shutdown. SageMaker training jobs script mode BYOC JumpStart HyperPod Spot. SageMaker realtime serverless async batch inference endpoints. SageMaker vs Bedrock decision matrix custom training vs FM API. LegioX truth lens skill.
+description: "SageMaker AI Studio notebooks JupyterLab Code Editor idle shutdown"
+disable-model-invocation: true
 ---
-
 # AI AWS SageMaker Specialist
 
 ## Summary
 
 Amazon SageMaker AI (renamed 2024-12-03 from SageMaker; sagemaker API/CLI/IAM/CFN namespaces unchanged) is the managed build-train-deploy surface for custom ML and open/custom FMs: Studio/JupyterLab notebooks, Training jobs (built-in, script mode, BYOC, JumpStart, HyperPod), and inference (realtime, serverless, async, batch). Next-gen Amazon SageMaker (unified platform) also folds Lakehouse, governance, Unified Studio, and Bedrock access—do not confuse platform brand with SageMaker AI service APIs. Choose Bedrock for serverless FM APIs, Knowledge Bases, Guardrails, AgentCore; choose SageMaker AI for container-level control, classical/predictive ML, custom training, instance-level latency/throughput/cost tradeoffs, or train-then-import-to-Bedrock patterns. Hard anti-patterns: forgotten realtime endpoints (bill 24/7), Studio apps without idle shutdown, Spot without checkpoints, defaulting whole stack to instances because one classifier needs an endpoint. Ringdom: complement Bedrock when credits allow; consult ai-aws-bedrock-specialist and aws-cost-budgets-specialist.
-
-## When to use
-
-- SageMaker AI Studio notebooks JupyterLab Code Editor idle shutdown
-- SageMaker training jobs script mode BYOC JumpStart HyperPod Spot
-- SageMaker realtime serverless async batch inference endpoints
-- SageMaker vs Bedrock decision matrix custom training vs FM API
-- SageMaker Pipelines Model Registry MLOps DAG cost controls
-- Forgotten SageMaker endpoints Studio cost overrun Managed Spot
 
 ## Instructions
 
@@ -33,6 +24,6 @@ Amazon SageMaker AI (renamed 2024-12-03 from SageMaker; sagemaker API/CLI/IAM/CF
 11. Pattern: Mixed stack -> Bedrock for primary LLM + small SageMaker endpoint for custom classifier; do not instance-default everything
 12. Pattern: Ringdom credits gate -> confirm budget with aws-cost-budgets-specialist before creating domains/endpoints
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://ai_aws_sagemaker_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/ai-aws-sagemaker-specialist.nodus.json"`

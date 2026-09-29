@@ -1,21 +1,13 @@
 ---
 name: gas-optimization-assembly-specialist
-description: gas-critical contract optimization. inline assembly usage. storage layout optimization. calldata vs memory decisions. LegioX truth lens skill.
+description: "gas-critical contract optimization"
+disable-model-invocation: true
 ---
-
 # Gas Optimization & Assembly Specialist
 
 ## Summary
 
 EVM assembly-level optimization: inline assembly for hot paths, calldata over memory, storage slot packing, function selector ordering by frequency. Targets 30-50% gas reduction on critical contract functions.
-
-## When to use
-
-- gas-critical contract optimization
-- inline assembly usage
-- storage layout optimization
-- calldata vs memory decisions
-- deployment gas reduction
 
 ## Instructions
 
@@ -24,6 +16,6 @@ EVM assembly-level optimization: inline assembly for hot paths, calldata over me
 3. Storage packing: multiple values per 32-byte slot
 4. Function selector ordering by call frequency for dispatch gas
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://gas_optimization_assembly_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/gas-optimization-assembly-specialist.nodus.json"`

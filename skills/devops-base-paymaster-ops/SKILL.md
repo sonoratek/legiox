@@ -1,21 +1,13 @@
 ---
 name: devops-base-paymaster-ops
-description: Launching Base gasless US rail Phase 1.5.. Applying for Base Gasless Campaign credits.. Tuning per-user sponsorship caps for abuse prevention.. Rotating CDP API keys and proxy hardening.. LegioX truth lens skill.
+description: "Launching Base gasless US rail Phase 1.5."
+disable-model-invocation: true
 ---
-
 # DevOps — Base CDP Paymaster Ops
 
 ## Summary
 
 CDP Paymaster ops is budget and policy management — contract allowlists per selector, global USD cap, per-user operation limits, and server proxy rate limits. CDP_PAYMASTER_URL and API keys are server-only secrets rotated on schedule. Alert when CDP returns paymaster limit exceeded or global budget threshold (e.g. 80% monthly cap). Base Gasless Campaign credits reduce early US launch cost but require application and compliance review.
-
-## When to use
-
-- Launching Base gasless US rail Phase 1.5.
-- Applying for Base Gasless Campaign credits.
-- Tuning per-user sponsorship caps for abuse prevention.
-- Rotating CDP API keys and proxy hardening.
-- Incident: sponsorship budget exhausted mid-campaign.
 
 ## Instructions
 
@@ -26,6 +18,6 @@ CDP Paymaster ops is budget and policy management — contract allowlists per se
 5. Pager: paymaster_limit_exceeded rate > threshold 5m.
 6. Runbook: tighten caps → pause allowlist → notify product.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://devops_base_paymaster_ops`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/devops-base-paymaster-ops.nodus.json"`

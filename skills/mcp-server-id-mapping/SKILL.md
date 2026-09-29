@@ -1,22 +1,13 @@
 ---
 name: mcp-server-id-mapping
-description: wire plugin mcp.json for legiox-free or legiox-pro. MCP server missing after install. choose bundled node path versus npx @ringdom/legiox-mcp. CallMcpTool server id does not match the mcp.json key. LegioX truth lens skill.
+description: "wire plugin mcp.json for legiox-free or legiox-pro"
+disable-model-invocation: true
 ---
-
 # MCP Server ID Mapping
 
 ## Summary
 
 Plugin mcp.json uses an mcpServers object. Cursor Plugins infer stdio from command and HTTP from url. Expand ${CURSOR_PLUGIN_ROOT} and ${CLAUDE_PLUGIN_ROOT} in command, args, env, and cwd. Cursor does not expand ${PLUGIN_ROOT} or ${PLUGIN_DATA}. Declare user tokens with the plugin.json variables JSON Schema and substitute ${VAR}; never commit secret values. Toggle servers in Customize; a disabled server does not load. Deeplink: cursor://anysphere.cursor-deeplink/mcp/install?name=$NAME&config=$BASE64_ENCODED_CONFIG. The mcp.json key legiox-mcp is not the CallMcpTool server id. A workspace registration is project-0-ringdom-legiox-mcp. A plugin install registers as plugin-<plugin-name>-legiox-mcp (the June install was plugin-legiox-premium-legiox-mcp). Read the tool descriptor before calling. Both free and pro ship the bundled server. npm @ringdom/legiox-mcp (1.0.3) is the MCP package only, invoked as npx -y @ringdom/legiox-mcp, and is not the skill plugin. reggie-mcp stays optional and local; it is not part of the public free listing.
-
-## When to use
-
-- wire plugin mcp.json for legiox-free or legiox-pro
-- MCP server missing after install
-- choose bundled node path versus npx @ringdom/legiox-mcp
-- CallMcpTool server id does not match the mcp.json key
-- generate an MCP install deeplink
-- keep secrets out of the plugin repo
 
 ## Instructions
 
@@ -29,6 +20,6 @@ Plugin mcp.json uses an mcpServers object. Cursor Plugins infer stdio from comma
 7. Pattern: free and pro both ship MCP; community-without-MCP is retired
 8. Pattern: beforeMCPExecution may audit tool names; do not exfiltrate file contents
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://cursor_mcp_plugin_integration_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/cursor-mcp-plugin-integration-specialist.nodus.json"`

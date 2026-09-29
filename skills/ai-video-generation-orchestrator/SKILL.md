@@ -1,28 +1,13 @@
 ---
 name: ai-video-generation-orchestrator
-description: Runway textToVideo imageToVideo task polling waitForTaskOutput. OpenAI Sora Videos API create poll GET content. Vertex AI Veo long running operation poll GCS URI. Replicate Kling prediction wait webhook. LegioX truth lens skill.
+description: "Runway textToVideo imageToVideo task polling waitForTaskOutput"
+disable-model-invocation: true
 ---
-
 # AI Video Generation Orchestrator (NODUS)
 
 ## Summary
 
 Treat RingdomVideoScriptBundle from the scriptwriter lens as immutable input: orchestration adds job_id, idempotency_key, provider payloads, and artifact URIs only. Route text_to_video to cinematic B-roll when diagram_type is none and negatives forbid UI text; never send long code listings to T2V—use diagram_type remotion_comp or screen_capture for jq, JSON schema, and terminal truth. Merge production_brief.brand.reference_image_uri with scene.reference_image_uri by preferring scene override then brief; concatenate b_roll_negative_prompt with brand.negative_prompt_global. Enforce cost caps per scene and per script via budget_usd_max on VideoGenerationJob; on overrun downgrade model (e.g. gen4.5→gen4_turbo) or shorten segment_seconds toward provider max. Idempotency: same idempotency_key must no-op duplicate charges where providers support it—else dedupe in your store. Poll or webhook until SUCCEEDED or terminal FAILED; persist attempts and last_error for LegioX dashboards. Concat with FFmpeg concat demuxer after normalizing fps and SAR; if TTS duration exceeds video, extend last frame or loop subtle B-roll rather than accelerating speech. Anti-patterns: redefining script_json_schema; trusting generative video for readable IDE fonts; skipping loudness pass on mixed voice+music; ignoring 429 backoff tables.
-
-## When to use
-
-- Runway textToVideo imageToVideo task polling waitForTaskOutput
-- OpenAI Sora Videos API create poll GET content
-- Vertex AI Veo long running operation poll GCS URI
-- Replicate Kling prediction wait webhook
-- fal.ai Pika queue subscribe output URL
-- scene router text_to_video vs image_to_video vs Remotion
-- idempotency key design for video jobs
-- 429 5xx content_policy retry fallback chain
-- FFmpeg audio longer than video pad atempo
-- cost cap downgrade gen4 turbo vs gen4.5
-- parallel worker semaphore provider QPS
-- quality gate 1080p Shorts 1080x1920 before YouTube
 
 ## Instructions
 
@@ -37,6 +22,6 @@ Treat RingdomVideoScriptBundle from the scriptwriter lens as immutable input: or
 9. Pattern: budget exceeded → shorten duration toward provider.min_seconds or swap model per cost_latency_budget_router.
 10. Pattern: Blender MCP only when scene metadata requests 3D explicit brief—never default for explainers.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://ai_video_generation_orchestrator`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/ai-video-generation-orchestrator.nodus.json"`

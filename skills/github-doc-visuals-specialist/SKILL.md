@@ -1,21 +1,13 @@
 ---
 name: github-doc-visuals-specialist
-description: documentation diagrams. Mermaid diagram creation. architecture visualization. README visual enhancement. LegioX truth lens skill.
+description: "documentation diagrams"
+disable-model-invocation: true
 ---
-
 # GitHub Doc Visuals LegioX
 
 ## Summary
 
 GitHub-native visualization: Mermaid diagrams (flowcharts, sequence, class, state, ERD, Gantt, gitgraph, C4), GeoJSON/TopoJSON maps, STL 3D model rendering, MathJax expressions. All rendered natively without external image dependencies.
-
-## When to use
-
-- documentation diagrams
-- Mermaid diagram creation
-- architecture visualization
-- README visual enhancement
-- documentation-as-code
 
 ## Instructions
 
@@ -24,6 +16,6 @@ GitHub-native visualization: Mermaid diagrams (flowcharts, sequence, class, stat
 3. MathJax: mathematical expressions in documentation
 4. Theme-aware: diagrams adapt to light/dark mode automatically
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://github_doc_visuals_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/github-doc-visuals-specialist.nodus.json"`

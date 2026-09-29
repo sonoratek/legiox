@@ -1,8 +1,8 @@
 ---
 name: nodus-schema-basics
-description: Validate and read LegioX truth lens NODUS JSON. Use when authoring or auditing .nodus.json files.
+description: "Validate and read LegioX truth lens NODUS JSON. Use when authoring or auditing .nodus.json files."
+disable-model-invocation: true
 ---
-
 # NODUS Schema Basics
 
 ## Required keys

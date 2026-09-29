@@ -1,30 +1,13 @@
 ---
 name: aws-ec2-lambda-s3-specialist
-description: launching or terminating Amazon EC2 instances under promotional credits. choosing EC2 stop vs terminate vs hibernate for cost control. selecting Lambda Functions vs Lambda MicroVMs for a workload. sizing Lambda memory/timeout against Always Free GB-seconds. LegioX truth lens skill.
+description: "launching or terminating Amazon EC2 instances under promotional credits"
+disable-model-invocation: true
 ---
-
 # AWS EC2 Lambda S3 Specialist
 
 ## Summary
 
 Ringdom AWS triad truth: EC2 bills while running (per-second, 1-minute minimum) and EBS/EIP keep billing after stop — terminate-after-use is mandatory for credit survival. Prefer Always Free Lambda (1M requests + 400K GB-seconds/month) and S3 Standard within Always Free (commonly cited ~5 GB + 20K GET + 2K PUT/month; verify live Free Tier page) before burning Free-plan credits (up to $200 / 6 months). Lambda Functions = event-driven ≤15 min; Lambda MicroVMs = developer-controlled sessions ≤8 h with suspend/resume state — do not confuse them. S3 buckets are private by default; leave Block Public Access enabled. Top credit burns: forgotten EC2, orphan EBS, unattached EIP, NAT Gateway, provisioned concurrency, Glacier early-delete fees, and public-bucket incident response. Pair with aws-console-cli-agent for auth/profile and aws-cost-budgets-specialist for spend guards; prefer Hetzner for cheap always-on VMs when AWS credits are not required.
-
-## When to use
-
-- launching or terminating Amazon EC2 instances under promotional credits
-- choosing EC2 stop vs terminate vs hibernate for cost control
-- selecting Lambda Functions vs Lambda MicroVMs for a workload
-- sizing Lambda memory/timeout against Always Free GB-seconds
-- choosing Amazon S3 storage classes (Standard, IA, Intelligent-Tiering, Glacier, Express One Zone)
-- enforcing S3 Block Public Access and private-by-default buckets
-- cleaning orphan EBS volumes, snapshots, or Elastic IPs after EC2 work
-- estimating Free plan credit burn for short-lived labs
-- writing AWS CLI recipes for create-run-terminate workflows
-- debugging unexpected AWS charges from idle compute or storage
-- comparing AWS EC2 cost vs Hetzner Cloud for always-on Ring servers
-- setting security groups and IAM roles for EC2/Lambda/S3 least privilege
-- deciding when S3 Lifecycle transitions save money vs early-delete penalties
-- Ringdom AI/RAG experiment needing ephemeral GPU/CPU plus object storage
 
 ## Instructions
 
@@ -41,6 +24,6 @@ Ringdom AWS triad truth: EC2 bills while running (per-second, 1-minute minimum) 
 11. Pattern: always-on Ring clone VM without AWS dependency -> prefer Hetzner (devops-hetzner-api-specialist) over EC2 -> preserve AWS credits for managed-service trials.
 12. Pattern: before upsizing instance or enabling provisioned concurrency -> check Budgets/Cost Explorer with aws-cost-budgets-specialist -> prevent silent multiplier burns.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://aws_ec2_lambda_s3_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/aws-ec2-lambda-s3-specialist.nodus.json"`

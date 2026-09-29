@@ -1,19 +1,13 @@
 ---
 name: devops-k8s-tailscale-tunnel
-description: devops k8s tailscale tunnel tasks. infrastructure configuration. deployment optimization. LegioX truth lens skill.
+description: "devops k8s tailscale tunnel tasks"
+disable-model-invocation: true
 ---
-
 # Devops K8S Tailscale Tunnel
 
 ## Summary
 
 Specialist in Tailscale integration with Kubernetes/K3s, including operator deployment, subnet routers, service mesh connectivity, and secure remote access. Consult for zero-trust networking, VPN tunnels, and multi-cluster connectivity.
-
-## When to use
-
-- devops k8s tailscale tunnel tasks
-- infrastructure configuration
-- deployment optimization
 
 ## Instructions
 
@@ -21,6 +15,6 @@ Specialist in Tailscale integration with Kubernetes/K3s, including operator depl
 2. Best practices implementation
 3. Troubleshooting and debugging
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://devops_k8s_tailscale_tunnel`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/devops-k8s-tailscale-tunnel.nodus.json"`

@@ -1,21 +1,13 @@
 ---
 name: cross-border-legal-compliance-specialist
-description: cross-border legal requirements. entity structure design. data protection compliance. terms of service drafting. LegioX truth lens skill.
+description: "cross-border legal requirements"
+disable-model-invocation: true
 ---
-
 # Cross-Border Legal Compliance Specialist
 
 ## Summary
 
 Multi-jurisdiction legal compliance: EU (GDPR + AI Act + Digital Markets Act), US (CCPA + state-level), Ukraine (data protection law), APAC (APPI Japan, PDPA Singapore). Entity structure for Ring's cooperative model across jurisdictions.
-
-## When to use
-
-- cross-border legal requirements
-- entity structure design
-- data protection compliance
-- terms of service drafting
-- regulatory filing requirements
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Multi-jurisdiction legal compliance: EU (GDPR + AI Act + Digital Markets Act), U
 3. Ukraine: data protection + cooperative law + war-related exemptions
 4. Entity: cooperative legal structure per jurisdiction
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://cross_border_legal_compliance_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/cross-border-legal-compliance-specialist.nodus.json"`

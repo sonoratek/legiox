@@ -1,20 +1,13 @@
 ---
 name: aptos-react-next-wallet-integration
-description: Adding Aptos wallet to ring-platform.org layout.. Fixing Module not found aptos in wallet adapter.. Integrating Connect SIWA with Ring auth.. Combining Auth.js session with useWallet account.. LegioX truth lens skill.
+description: "Adding Aptos wallet to ring-platform.org layout."
+disable-model-invocation: true
 ---
-
 # Aptos React & Next.js Wallet Integration
 
 ## Summary
 
 Wrap app with AptosWalletAdapterProvider in a 'use client' module; pass dappConfig network and aptosApiKeys; use useWallet for account, connected, signAndSubmitTransaction. JS-Pro layers AptosJSCoreProvider atop adapter for opinionated hooks. Next.js examples live in aptos-wallet-adapter monorepo.
-
-## When to use
-
-- Adding Aptos wallet to ring-platform.org layout.
-- Fixing Module not found aptos in wallet adapter.
-- Integrating Connect SIWA with Ring auth.
-- Combining Auth.js session with useWallet account.
 
 ## Instructions
 
@@ -24,6 +17,6 @@ Wrap app with AptosWalletAdapterProvider in a 'use client' module; pass dappConf
 4. AptosJSCoreProvider + useWalletAdapterCore for JS-Pro stack.
 5. signAndSubmitTransaction({ data, withFeePayer, pluginParams }) for gas station.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://aptos_react_next_wallet_integration`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/aptos-react-next-wallet-integration.nodus.json"`

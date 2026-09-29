@@ -1,21 +1,13 @@
 ---
 name: geopolitical-risk-analyst
-description: market entry risk assessment. regulatory change impact. sanctions compliance. data sovereignty requirements. LegioX truth lens skill.
+description: "market entry risk assessment"
+disable-model-invocation: true
 ---
-
 # Geopolitical Risk Analyst
 
 ## Summary
 
 Geopolitical risk assessment for Ring's global deployment: Ukraine conflict impact on development, EU digital sovereignty regulations, US-China tech decoupling effects, BRICS payment alternatives. Scenario planning for regulatory shifts per market.
-
-## When to use
-
-- market entry risk assessment
-- regulatory change impact
-- sanctions compliance
-- data sovereignty requirements
-- geopolitical scenario planning
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Geopolitical risk assessment for Ring's global deployment: Ukraine conflict impa
 3. Payment: WayForPay (UA), SEPA (EU), diverse providers per market
 4. Data sovereignty: per-country data residency requirements
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://geopolitical_risk_analyst`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/geopolitical-risk-analyst.nodus.json"`

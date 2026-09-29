@@ -1,24 +1,13 @@
 ---
 name: aws-eks-specialist
-description: Amazon EKS cluster mode choice (standard vs Auto Mode). EKS managed node groups vs Fargate vs Karpenter. IRSA or EKS Pod Identity for workload AWS access. VPC CNI IP exhaustion or prefix delegation on EKS. LegioX truth lens skill.
+description: "Amazon EKS cluster mode choice (standard vs Auto Mode)"
+disable-model-invocation: true
 ---
-
 # AWS EKS Specialist
 
 ## Summary
 
 Ringdom default is k3s on owned mesh (kctl mesh-first); treat EKS as credit-funded experiment or hybrid — never silent production migration. Prefer EKS Pod Identity over IRSA when EKS-only; keep IRSA for multi-distro/OIDC portability. Choose EKS standard + managed nodes/Karpenter when you need AMI/SSH/compliance control; choose Auto Mode when you accept Bottlerocket managed instances, no SSH/SSM, ~12% Auto Mode surcharge on EC2 On-Demand, and AWS-managed core add-ons. Fargate is per-pod vCPU/memory billing with DaemonSet/privileged limits — not a drop-in for node DaemonSets. Budget: $0.10/cluster/hr standard support (~$73/mo idle control plane) vs $0.60/hr extended; never leave clusters on expired versions. VPC CNI consumes real subnet IPs — plan prefix delegation before scale. Destroy or scale-to-zero labs nightly on credits; keep Ring apps on k3s unless a measured AWS dependency requires EKS.
-
-## When to use
-
-- Amazon EKS cluster mode choice (standard vs Auto Mode)
-- EKS managed node groups vs Fargate vs Karpenter
-- IRSA or EKS Pod Identity for workload AWS access
-- VPC CNI IP exhaustion or prefix delegation on EKS
-- AWS credit burn from idle EKS control planes
-- Comparing Ringdom k3s vs EKS for a workload
-- EKS extended support cost spike after version EOL
-- EKS Capabilities (Argo CD, ACK, kro) enablement cost
 
 ## Instructions
 
@@ -34,6 +23,6 @@ Ringdom default is k3s on owned mesh (kctl mesh-first); treat EKS as credit-fund
 10. Pattern: Scale lab node groups to zero or delete cluster after experiment -> expected outcome: stop EC2/Auto Mode/Fargate burn; keep only intentional spend.
 11. Pattern: Never put long-lived Ring production secrets only in EKS IRSA roles without k3s parity plan -> expected outcome: no single-cloud lock for empire rings.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://aws_eks_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/aws-eks-specialist.nodus.json"`

@@ -1,30 +1,13 @@
 ---
 name: openai-realtime-voice
-description: Adding OpenAI Realtime voice control to a React or Next.js application. Choosing between realtime-voice-component, raw Realtime API, and openai-agents-js. Designing app-owned voice tools with defineVoiceTool and Zod schemas. Building a secure /session endpoint for OpenAI Realtime WebRTC calls. LegioX truth lens skill.
+description: "Adding OpenAI Realtime voice control to a React or Next.js application"
+disable-model-invocation: true
 ---
-
 # OpenAI Realtime Voice Component Guru
 
 ## Summary
 
 OpenAI realtime-voice-component is an experimental, Apache-2.0, local-install React/browser reference implementation for tool-constrained UI control over OpenAI Realtime WebRTC. Treat it as a practical integration pattern, not a production-stable UI kit or generic agent framework. The app owns state, validation, permissions, and visible confirmation; the voice runtime only calls narrow Zod-backed tools through a controller. Use auth.sessionEndpoint with a server-proxied /session endpoint that forwards multipart SDP and serialized session config to POST https://api.openai.com/v1/realtime/calls; never expose a standard OpenAI API key in the browser. Prefer outputMode tool-only, server_vad, app-owned wrappers, stable tool definitions, explicit controller ownership, and state sync messages after visible changes. Use the packaged VoiceControlWidget only as a launcher; use the headless controller for custom capture, push-to-talk, richer transcript UI, shared sessions, or route-surviving voice surfaces.
-
-## When to use
-
-- Adding OpenAI Realtime voice control to a React or Next.js application
-- Choosing between realtime-voice-component, raw Realtime API, and openai-agents-js
-- Designing app-owned voice tools with defineVoiceTool and Zod schemas
-- Building a secure /session endpoint for OpenAI Realtime WebRTC calls
-- Debugging a VoiceControlWidget that stays idle or fails before /session
-- Choosing controller ownership for a single screen, route shell, or shared provider
-- Deciding when to use VoiceControlWidget versus a custom controller UI
-- Adding ghost cursor visual confirmation for voice-triggered UI changes
-- Retrofitting voice into an existing app without duplicating state logic
-- Using postToolResponse for multi-step form, wizard, or guided workflows
-- Sending current app state back into the Realtime session after visible changes
-- Hardening browser voice tools so sensitive policy remains server-side
-- Styling or positioning the packaged voice widget
-- Testing WebRTC, microphone permission, tool execution, and session proxy failures
 
 ## Instructions
 
@@ -39,6 +22,6 @@ OpenAI realtime-voice-component is an experimental, Apache-2.0, local-install Re
 9. Ghost cursor: wrap real app operations with useGhostCursor().run or runEach -> target real DOM elements -> cursor confirms the change but never performs the state mutation itself.
 10. Debug order: if idle never hits /session inspect controller ownership, mounting, hydration, media, and WebRTC first; if error before /session inspect client errors and permissions; if /session fails inspect backend proxy, auth, content type, and OpenAI response.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://openai_realtime_voice`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/openai-realtime-voice.nodus.json"`

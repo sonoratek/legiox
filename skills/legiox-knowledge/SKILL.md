@@ -1,8 +1,8 @@
 ---
 name: legiox-knowledge
-description: Machine-first operations over the LegioX knowledge ecosystem: search, CRUD, merge/append context-update, and cross-scans. Use for every knowledge interaction.
+description: "Machine-first operations over the LegioX knowledge ecosystem: search, CRUD, merge/append context-update, and cross-scans. Use for every knowledge interaction."
+disable-model-invocation: true
 ---
-
 # LegioX Knowledge Ecosystem
 
 ## Summary

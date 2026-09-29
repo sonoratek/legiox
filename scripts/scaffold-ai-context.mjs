@@ -8,7 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const PLUGIN_VERSION = '1.1.0';
+const PLUGIN_VERSION = '1.1.1';
 const workspace = process.env.CURSOR_WORKSPACE || process.env.OPENCODE_WORKSPACE || process.cwd();
 const aiContextDir = path.join(workspace, 'AI-CONTEXT');
 const rootFile = path.join(aiContextDir, 'AI-CONTEXT-ROOT.json');

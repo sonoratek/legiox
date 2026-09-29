@@ -1,26 +1,13 @@
 ---
 name: ai-avatar-presenter-specialist
-description: Need avatar presenter videos from script plus approved voice stems. Need lip-sync drift correction for pre-generated TTS audio. Need multilingual avatar outputs EN UK PL with term locks. Need same presenter identity across episode series. LegioX truth lens skill.
+description: "Need avatar presenter videos from script plus approved voice stems"
+disable-model-invocation: true
 ---
-
 # AI Avatar Presenter Specialist (NODUS)
 
 ## Summary
 
 Treat presenter generation as strict contract execution: script scenes define semantic intent, voice stems define timing truth, and avatar APIs only realize visual delivery. Never rewrite narrative text in this stage; normalize and align it. Build one idempotent avatar render job per scene-language pair, lock provider payload hashes, and require measurable drift outputs before acceptance. For technical explainers, prioritize stability, eye-contact continuity, and subtitle consistency over exaggerated gestures. Use same-avatar multilingual strategy by default for brand continuity, then escalate to per-language profile only when intelligibility, mouth-shape accuracy, or localization trust demands it. Preserve alpha-safe and chroma-safe outputs where available so postproduction can compose over demos. Apply policy-first identity governance: no clone generation without verifiable consent evidence and revocation path. On failures, classify 429, 5xx, policy blocks, and sync errors separately, retry with bounded backoff, and switch providers without breaking artifact schema. The presenter layer succeeds only when downstream postproduction receives deterministic clip paths, checksums, and confidence metrics with zero field-name ambiguity.
-
-## When to use
-
-- Need avatar presenter videos from script plus approved voice stems
-- Need lip-sync drift correction for pre-generated TTS audio
-- Need multilingual avatar outputs EN UK PL with term locks
-- Need same presenter identity across episode series
-- Need alpha-safe or chroma-safe presenter clip exports
-- Need fallback routing between HeyGen Synthesia D-ID Tavus
-- Need policy-compliant face and voice cloning workflows
-- Need per-scene presenter metadata for FFmpeg assembly
-- Need dual-speaker turn-taking with deterministic cuts
-- Need objective QC thresholds for trust-critical explainers
 
 ## Instructions
 
@@ -35,6 +22,6 @@ Treat presenter generation as strict contract execution: script scenes define se
 9. Pattern: on policy_block redact or transform only blocked segment -> preserves remaining scene timing and manifests.
 10. Pattern: cache reusable intro and outro presenter segments by checksum -> accelerates 12-video batch calendars without schema drift.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://ai_avatar_presenter_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/ai-avatar-presenter-specialist.nodus.json"`

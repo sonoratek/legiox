@@ -1,21 +1,13 @@
 ---
 name: react-server-components-architect
-description: server-client boundary decisions. hydration optimization. streaming SSR architecture. data fetching pattern selection. LegioX truth lens skill.
+description: "server-client boundary decisions"
+disable-model-invocation: true
 ---
-
 # React Server Components Architect
 
 ## Summary
 
 Server-client boundary is the primary design decision. Data fetching at component level (not route level). Hydration is selective via Suspense. Security by architecture: sensitive logic never reaches client bundle.
-
-## When to use
-
-- server-client boundary decisions
-- hydration optimization
-- streaming SSR architecture
-- data fetching pattern selection
-- migration from client-heavy to server-first
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Server-client boundary is the primary design decision. Data fetching at componen
 3. Data fetching at component level with React cache() dedup
 4. Composition: Server wraps Client, not vice versa
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://react_server_components_architect`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/react-server-components-architect.nodus.json"`

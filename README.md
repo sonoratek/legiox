@@ -2,7 +2,7 @@
 
 > Grow a searchable knowledge ecosystem: concepts, patterns & implementations with merge/append context (zero data loss). Auto-select the right skillset per task, generate new skillsets via `/legiox-create`, and rely on a built-in business advisor. **Freedom of Evolution for DIY founders.**
 
-LegioX Free 1.1.0 is a 147-skill Cursor plugin for **Cursor**, **OpenCode**, and **VS Code**: the 10 library skills below, plus 137 corpus skills in `skills/`. It installs `legiox-mcp` into your workspace — no database, no cloud, no account. Your knowledge stays in your repo as JSON. Plugin version 1.1.0 replaces the earlier skew (tag 1.0.2, previous `main` 1.0.1). The npm package `@ringdom/legiox-mcp` remains the MCP server only.
+LegioX Free 1.1.1 is a 147-skill Cursor plugin for **Cursor**, **OpenCode**, and **VS Code**: the 10 library skills below, plus 137 corpus skills in `skills/`. It installs `legiox-mcp` into your workspace — no database, no cloud, no account. Your knowledge stays in your repo as JSON. Only `legiox-agent-selector-workflow` is offered to the model on every turn. The other skills set `disable-model-invocation` and load when you type `/skill-name`. The npm package `@ringdom/legiox-mcp` remains the MCP server only.
 
 ## What you get
 
@@ -14,7 +14,7 @@ LegioX Free 1.1.0 is a 147-skill Cursor plugin for **Cursor**, **OpenCode**, and
 | 4 | `ring-platform-baseline` | Ring Platform stack baseline (Next.js 16 / React 19 / Auth.js v5 / PostgreSQL JSONB) |
 | 5 | `legiox-file-info-verify` | Verify paths exist before read/edit — zero path assumptions |
 | 6 | `legiox-knowledge` | **Knowledge ecosystem**: search, CRUD, merge/append context-update, cross-scans — machine-first JSON operating contract |
-| 7 | `legiox-agent-selector-workflow` | Route tasks to the best truth lens by term matching |
+| 7 | `legiox-agent-selector-workflow` | The one always-on router: selector, then `jq` on that one nodus file |
 | 8 | `mcp-server-id-mapping` | Correct MCP call envelope (`project-0-<workspace>-legiox-mcp`, not the mcp.json key) |
 | 9 | `legiox-create` | **Generate your own skillsets**: `/legiox-create` → research → NODUS draft → validate → store → reindex |
 | 10 | `legiox-business-intelligence` | AARRR growth model, KPIs, revenue forecasting, cohort analysis — a faithful business advisor for your project |
@@ -37,7 +37,7 @@ rm -rf ~/.cursor/plugins/local/legiox-free
 cp -R . ~/.cursor/plugins/local/legiox-free
 ```
 
-Then Developer: Reload Window. Approve **legiox-mcp** in Customize. The server cwd is `${CURSOR_PLUGIN_ROOT}`. Invoke a skill with `/skill-name`.
+Then Developer: Reload Window. Approve **legiox-mcp** in Customize. The server cwd is `${CURSOR_PLUGIN_ROOT}`. The router skill stays in context. Invoke any other skill with `/skill-name`.
 
 ### OpenCode
 

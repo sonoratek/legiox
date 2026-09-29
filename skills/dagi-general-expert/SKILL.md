@@ -1,22 +1,13 @@
 ---
 name: dagi-general-expert
-description: agricultural AI agent. DAGI system design. GreenFood vendor management. FSMA 204 compliance. LegioX truth lens skill.
+description: "agricultural AI agent"
+disable-model-invocation: true
 ---
-
 # DAGI General Expert
 
 ## Summary
 
 DAGI (DAARION Agricultural Intelligence): 3-tier AI agent system (Junior/Medium/Senior) for GreenFood.live vendors. FSMA 204 compliance, farm management, harvest scheduling, inventory management. Integrates with APRStaking (100/500/2000 DAARION) and Ring provisioning API.
-
-## When to use
-
-- agricultural AI agent
-- DAGI system design
-- GreenFood vendor management
-- FSMA 204 compliance
-- farm scheduling
-- DAARION staking integration
 
 ## Instructions
 
@@ -25,6 +16,6 @@ DAGI (DAARION Agricultural Intelligence): 3-tier AI agent system (Junior/Medium/
 3. APRStaking: 100 DAARION (basic), 500 (standard), 2000 (premium) agent tiers
 4. 6 support agents: Warehouse, Logistician, Accountant, Sales, Analyst, Community
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://dagi_general_expert`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/dagi-general-expert.nodus.json"`

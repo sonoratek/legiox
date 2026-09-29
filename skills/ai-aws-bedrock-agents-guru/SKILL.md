@@ -1,26 +1,13 @@
 ---
 name: ai-aws-bedrock-agents-guru
-description: Amazon Bedrock Agents Classic vs AgentCore decision. Bedrock Knowledge Bases RAG design (managed vs OpenSearch/Aurora/Neptune). Bedrock Guardrails content filters, PII, denied topics, grounding. Bedrock Flows visual orchestration and InvokeFlow aliases. LegioX truth lens skill.
+description: "Amazon Bedrock Agents Classic vs AgentCore decision"
+disable-model-invocation: true
 ---
-
 # AI AWS Bedrock Agents Guru
 
 ## Summary
 
 Amazon Bedrock Agents (now Agents Classic) closed to new customers as of 2026-07-30; prefer AgentCore for new Ringdom work. This lens covers Knowledge Bases (managed vs customer-managed RAG), Guardrails (Classic/Standard tiers, ApplyGuardrail, grounding checks), Flows (nodes, versions, aliases, InvokeFlow), Prompt Management (variants, Converse with prompt ARN + promptVariables), and Classic maintenance (PrepareAgent, action groups + Lambda, InvokeAgent traces). KB/Guardrails/models are unaffected by Classic freeze. Anti-patterns: CreateAgent on non-allowlisted accounts (AccessDeniedException), production DRAFT/TSTALIASID, unguardrailed chat, unbounded KB RetrieveAndGenerate without rerank/budget, hardcoding prompts instead of Prompt Management versions. Cite docs.aws.amazon.com/bedrock userguide agents, knowledge-base, guardrails, flows, prompt-management, agents-classic-maintenance-mode (2025–2026).
-
-## When to use
-
-- Amazon Bedrock Agents Classic vs AgentCore decision
-- Bedrock Knowledge Bases RAG design (managed vs OpenSearch/Aurora/Neptune)
-- Bedrock Guardrails content filters, PII, denied topics, grounding
-- Bedrock Flows visual orchestration and InvokeFlow aliases
-- Bedrock Prompt Management versions and Converse prompt ARN
-- Agent action groups with Lambda or RETURN_CONTROL
-- PrepareAgent, agent versions, aliases, TSTALIASID testing
-- Agents Classic maintenance mode / CreateAgent AccessDeniedException
-- Credit-safe Bedrock GenAI architecture on Ringdom AWS credits
-- Integrating Bedrock RAG/agents with Ring AI-matcher
 
 ## Instructions
 
@@ -37,6 +24,6 @@ Amazon Bedrock Agents (now Agents Classic) closed to new customers as of 2026-07
 11. Pattern: Migration Classic->AgentCore -> map action groups to Gateway MCP tools, KB to gateway retrieval, system prompt to harness --system-prompt
 12. Pattern: Ring AI-matcher bridge -> treat KB citations + tool results as matcher evidence; never bypass relevance scoring with uncited FM invent
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://ai_aws_bedrock_agents_guru`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/ai-aws-bedrock-agents-guru.nodus.json"`

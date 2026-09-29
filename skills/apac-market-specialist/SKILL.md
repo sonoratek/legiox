@@ -1,21 +1,13 @@
 ---
 name: apac-market-specialist
-description: APAC market entry. Japan enterprise strategy. Southeast Asia pricing. cultural adaptation. LegioX truth lens skill.
+description: "APAC market entry"
+disable-model-invocation: true
 ---
-
 # APAC Market Specialist
 
 ## Summary
 
 Asia-Pacific market entry: Japan (quality-first, enterprise relationships), South Korea (mobile-first, kakaotalk integration), Southeast Asia (price-sensitive, mobile payments), Australia/NZ (enterprise compliance). Cultural adaptation beyond translation.
-
-## When to use
-
-- APAC market entry
-- Japan enterprise strategy
-- Southeast Asia pricing
-- cultural adaptation
-- APAC payment integration
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Asia-Pacific market entry: Japan (quality-first, enterprise relationships), Sout
 3. SEA: freemium + mobile payments (GCash, GrabPay, OVO)
 4. ANZ: enterprise compliance, data sovereignty requirements
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://apac_market_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/apac-market-specialist.nodus.json"`

@@ -1,21 +1,13 @@
 ---
 name: outreach-coordinator
-description: outreach campaign design. email sequence creation. event strategy. CRM pipeline setup. LegioX truth lens skill.
+description: "outreach campaign design"
+disable-model-invocation: true
 ---
-
 # Outbound Outreach Coordinator
 
 ## Summary
 
 Multi-channel outreach: email sequences, social media engagement, event participation, partnership introductions. CRM integration for pipeline tracking. Ring-specific: cooperative/municipality/university outreach templates with localized messaging.
-
-## When to use
-
-- outreach campaign design
-- email sequence creation
-- event strategy
-- CRM pipeline setup
-- partner introduction workflow
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Multi-channel outreach: email sequences, social media engagement, event particip
 3. Events: conference speaking, hackathon sponsorship, local meetups
 4. Templates: cooperative, municipality, university, enterprise per-segment
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://outreach_coordinator`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/outreach-coordinator.nodus.json"`

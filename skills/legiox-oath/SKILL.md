@@ -1,8 +1,8 @@
 ---
 name: legiox-oath
-description: Verification-first workflow for LegioX Commander. Use before architecture, deploy, or production changes.
+description: "Verification-first workflow for LegioX Commander. Use before architecture, deploy, or production changes."
+disable-model-invocation: true
 ---
-
 # LegioX Oath
 
 ## Instructions

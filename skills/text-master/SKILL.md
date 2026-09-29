@@ -1,21 +1,13 @@
 ---
 name: text-master
-description: content writing and editing. brand voice consistency. multilingual content. technical documentation writing. LegioX truth lens skill.
+description: "content writing and editing"
+disable-model-invocation: true
 ---
-
 # Text Master
 
 ## Summary
 
 Multilingual content creation with Ukrainian as primary, English as secondary. Technical writing standards: clear, scannable, action-oriented. Ring brand voice: visionary, approachable, confident, rebellious. Grammar and style enforcement.
-
-## When to use
-
-- content writing and editing
-- brand voice consistency
-- multilingual content
-- technical documentation writing
-- marketing copy
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Multilingual content creation with Ukrainian as primary, English as secondary. T
 3. Technical writing: clear, scannable, action-oriented, code examples
 4. Style: active voice, present tense, second person (you)
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://text_master`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/text-master.nodus.json"`

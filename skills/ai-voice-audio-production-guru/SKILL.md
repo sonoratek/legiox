@@ -1,28 +1,13 @@
 ---
 name: ai-voice-audio-production-guru
-description: Need to choose AI voice provider for long-form technical narration quality and stability. Need authoritative technical or warm educational voice direction presets. Need anti-monotony narration strategy for explainers with dense terminology. Need sonic branding kit for Ringdom intros, transitions, and notification tones. LegioX truth lens skill.
+description: "Need to choose AI voice provider for long-form technical narration quality and stability"
+disable-model-invocation: true
 ---
-
 # AI Voice & Audio Production Guru (NODUS)
 
 ## Summary
 
 Treat audio as a contract-governed production system, not a decorative afterthought. Convert script intent into explicit narration direction presets, synthesize with provider-specific controls, normalize technical pronunciations, and package immutable stem artifacts before any destructive processing. Keep multilingual dubbing internals delegated to ai-voice-dubbing-orchestrator; this lens defines quality standards, performance direction constraints, rights governance, mastering profiles, and acceptance gates applied to primary and dubbed assets equally. Use two-pass loudness measurement, deterministic ducking, click-safe transitions, and platform-specific output specs to ensure intelligibility on mobile-first playback while preserving cinematic identity for long-form. Never ship without rights provenance, checksum integrity, and blocker-level QC pass. When costs or provider stability drift, route by declared strategy (high_quality, balanced, low_cost, low_latency) with auditable retry/fallback behavior and cache-safe stem reuse.
-
-## When to use
-
-- Need to choose AI voice provider for long-form technical narration quality and stability
-- Need authoritative technical or warm educational voice direction presets
-- Need anti-monotony narration strategy for explainers with dense terminology
-- Need sonic branding kit for Ringdom intros, transitions, and notification tones
-- Need licensing-safe music and SFX sourcing with rights audit trails
-- Need FFmpeg or SoX mastering chain for voice music FX stems
-- Need loudness compliance targets for YouTube Shorts LinkedIn X and podcast outputs
-- Need measurable speech intelligibility and clipping quality gates
-- Need deterministic stem artifact and metadata delivery contract for postproduction
-- Need cost-aware routing and fallback policy for TTS API failures
-- Need CI-grade automated audio QC before final publish packaging
-- Need contract-level integration map across scriptwriter dubbing generation and editor lenses
 
 ## Instructions
 
@@ -37,6 +22,6 @@ Treat audio as a contract-governed production system, not a decorative afterthou
 9. Pattern: reuse cached stems when script hash and voice profile unchanged -> lower spend and faster batch turnaround.
 10. Pattern: pass audio_profile_id mastering_profile_id rights_manifest_uri qc_report_uri to downstream -> frictionless final mux assembly.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://ai_voice_audio_production_guru`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/ai-voice-audio-production-guru.nodus.json"`

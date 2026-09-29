@@ -1,21 +1,13 @@
 ---
 name: android-ndk-coder
-description: Android NDK development. JNI bindings. C++ native performance code. Jetpack Compose UI. LegioX truth lens skill.
+description: "Android NDK development"
+disable-model-invocation: true
 ---
-
 # Android NDK Coder
 
 ## Summary
 
 Android native development with Kotlin + NDK for Connect Platform. JNI bindings for Erlang NIF integration. Performance-critical audio/video processing in C++. Material Design 3 with Jetpack Compose.
-
-## When to use
-
-- Android NDK development
-- JNI bindings
-- C++ native performance code
-- Jetpack Compose UI
-- Connect Android integration
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Android native development with Kotlin + NDK for Connect Platform. JNI bindings 
 3. Material Design 3 + Jetpack Compose
 4. Gradle build optimization for CI/CD
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://android_ndk_coder`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/android-ndk-coder.nodus.json"`

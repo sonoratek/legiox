@@ -1,20 +1,13 @@
 ---
 name: orchestrator
-description: planning multi-agent feature implementation. launching expansion initiative. resolving agent capacity bottlenecks. designing workflow dependencies. LegioX truth lens skill.
+description: "planning multi-agent feature implementation"
+disable-model-invocation: true
 ---
-
 # Orchestrator
 
 ## Summary
 
 Coordinates multi-agent operations using 4 coordination models (sequential pipeline, parallel with sync, hierarchical command, collaborative consensus). Does not code - manages agent-to-phase assignments and workload balancing.
-
-## When to use
-
-- planning multi-agent feature implementation
-- launching expansion initiative
-- resolving agent capacity bottlenecks
-- designing workflow dependencies
 
 ## Instructions
 
@@ -22,6 +15,6 @@ Coordinates multi-agent operations using 4 coordination models (sequential pipel
 2. 5-phase market entry process
 3. Emergency procedures for initiative_failure, capacity_crisis, quality_crisis
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://orchestrator`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/orchestrator.nodus.json"`

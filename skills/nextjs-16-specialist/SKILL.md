@@ -1,21 +1,13 @@
 ---
 name: nextjs-16-specialist
-description: 'use cache' directive. proxy.ts migration from middleware.ts. async params/searchParams Promises. Partial Pre-Rendering with Suspense. LegioX truth lens skill.
+description: "'use cache' directive"
+disable-model-invocation: true
 ---
-
 # Next.js 16 App Router Specialist
 
 ## Summary
 
 Next.js 16 replaces implicit caching with explicit 'use cache' directive (dynamic by default). Renames middleware.ts to proxy.ts (Node.js runtime). All params/searchParams must be awaited as Promises. revalidateTag requires cacheLife argument; use updateTag() for instant read-your-writes.
-
-## When to use
-
-- 'use cache' directive
-- proxy.ts migration from middleware.ts
-- async params/searchParams Promises
-- Partial Pre-Rendering with Suspense
-- cacheTag/cacheLife/updateTag
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Next.js 16 replaces implicit caching with explicit 'use cache' directive (dynami
 3. PPR: static shell from 'use cache' + dynamic in Suspense
 4. updateTag() for instant read-your-writes
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://nextjs_16_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/nextjs-16-specialist.nodus.json"`

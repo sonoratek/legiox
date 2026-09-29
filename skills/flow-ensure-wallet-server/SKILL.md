@@ -1,21 +1,13 @@
 ---
 name: flow-ensure-wallet-server
-description: Implementing ensureWallet for Ring Platform on Flow. Mapping Auth.js users to Flow child accounts in PostgreSQL. Designing account pools vs just-in-time creation. Handling ensureWallet failures without breaking login. LegioX truth lens skill.
+description: "Implementing ensureWallet for Ring Platform on Flow"
+disable-model-invocation: true
 ---
-
 # Flow ensureWallet Server (Auth.js → On-Chain Identity)
 
 ## Summary
 
 ensureWallet is an idempotent provisioning contract, not a wallet UI concern. The server owns creation transactions and payer authz; the client only displays address and requests signed ops. Never create accounts synchronously inside Auth.js signIn without timeout guards — queue or fast-path with pre-warmed pool.
-
-## When to use
-
-- Implementing ensureWallet for Ring Platform on Flow
-- Mapping Auth.js users to Flow child accounts in PostgreSQL
-- Designing account pools vs just-in-time creation
-- Handling ensureWallet failures without breaking login
-- Multi-tenant whitelabel isolation for Flow addresses
 
 ## Instructions
 
@@ -26,6 +18,6 @@ ensureWallet is an idempotent provisioning contract, not a wallet UI concern. Th
 5. Link status: linked_parent_address NULL until user completes Hybrid Custody claim.
 6. Ring DatabaseService: use transaction() for insert + idempotency token.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://flow_ensure_wallet_server`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/flow-ensure-wallet-server.nodus.json"`

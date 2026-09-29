@@ -1,21 +1,13 @@
 ---
 name: crisis-communication-reputation-manager
-description: security breach communication. service outage messaging. social media controversy. negative press response. LegioX truth lens skill.
+description: "security breach communication"
+disable-model-invocation: true
 ---
-
 # Crisis Communication & Reputation Manager
 
 ## Summary
 
 4-level crisis response: Level 1 (<2hr response, community manager), Level 2 (<1hr, PR lead + legal), Level 3 (<30min, C-suite + board), Level 4 (immediate, full war room + CEO statement). Playbooks for security breach, service outage, social controversy, regulatory issues.
-
-## When to use
-
-- security breach communication
-- service outage messaging
-- social media controversy
-- negative press response
-- reputation recovery planning
 
 ## Instructions
 
@@ -24,6 +16,6 @@ description: security breach communication. service outage messaging. social med
 3. Metrics: <30min response time, >80% sentiment recovery in 7 days
 4. >70% media narrative control target
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://crisis_communication_reputation_manager`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/crisis-communication-reputation-manager.nodus.json"`

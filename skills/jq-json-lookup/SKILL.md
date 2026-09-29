@@ -1,8 +1,8 @@
 ---
 name: jq-json-lookup
-description: Fast JSON recon with jq before opening large JSON files. Use for AI-CONTEXT and NODUS files.
+description: "Fast JSON recon with jq before opening large JSON files. Use for AI-CONTEXT and NODUS files."
+disable-model-invocation: true
 ---
-
 # jq JSON Lookup
 
 ## Instructions

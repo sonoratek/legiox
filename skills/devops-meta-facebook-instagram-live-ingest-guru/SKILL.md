@@ -1,26 +1,13 @@
 ---
 name: devops-meta-facebook-instagram-live-ingest-guru
-description: Facebook Live RTMPS encoder settings or rejection. Meta Business Help Center bitrate table for Facebook Live. Facebook Live 8 hour limit or reconnect strategy. Facebook Live Producer stream key and server URL copy/paste. LegioX truth lens skill.
+description: "Facebook Live RTMPS encoder settings or rejection"
+disable-model-invocation: true
 ---
-
 # DevOps Meta Facebook & Instagram Live Ingest Guru
 
 ## Summary
 
 Meta Facebook Live is contractually RTMPS with H.264 and AAC-LC only, CBR video, progressive 16:9 where possible, stereo AAC at 44.1 or 48 kHz and 128–256 kbps audio, H.264 level 4.1 up to 1080p30 and level 4.2 for 1080p60, two-to-four-second keyframe policy, and an eight-hour maximum live length per published business help; Live Producer streaming-software flows expose a stream key valid for the current stream and impose account age and follower gates (60-day account, 100 followers on Page or professional profile) with a documented multi-hour window to complete go-live after the encoder connects. Live Video API returns secure_stream_url values typically on rtmps://rtmp-api.facebook.com hosts and reports stream health including GOP size in milliseconds; ingest may be considered unhealthy after a few seconds without data—operators must not assume infinite silent gaps. Instagram Live via external encoders relies on desktop creator flows with per-session stream URL and key material that is not interchangeable with unattended 24/7 static nginx push without human or API rotation; never store keys in git, and for Ring tv.* style restreamers terminate RTMPS per devops_nginx_rtmp_restreaming_proxy_guru rather than duplicating full nginx directive tutorials here.
-
-## When to use
-
-- Facebook Live RTMPS encoder settings or rejection
-- Meta Business Help Center bitrate table for Facebook Live
-- Facebook Live 8 hour limit or reconnect strategy
-- Facebook Live Producer stream key and server URL copy/paste
-- Instagram Live stream URL or stream key for OBS or hardware encoder
-- Instagram unattended restream feasibility
-- HELO or AJA hardware encoder to Facebook Live
-- Graph API secure_stream_url vs stream_url for live ingest
-- Facebook account 60 days or 100 followers go-live eligibility error
-- Meta live music or community standards policy pointers for broadcasters
 
 ## Instructions
 
@@ -28,6 +15,6 @@ Meta Facebook Live is contractually RTMPS with H.264 and AAC-LC only, CBR video,
 2. Pattern: on Meta stream failure, read Live Video API errors field (when using API) or Live Producer troubleshooting help article before retuning bitrate; distinguish network drop from copyright or privacy blocks.
 3. Pattern: for Instagram third-party live, schedule human steps to refresh stream key each session; do not treat Instagram like Facebook static Page RTMP for unmanned 24/7 unless product explicitly supports it after verification.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://devops_meta_facebook_instagram_live_ingest_guru`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/devops-meta-facebook-instagram-live-ingest-guru.nodus.json"`

@@ -1,8 +1,8 @@
 ---
 name: legiox-file-info-verify
-description: Verify file paths exist before read or edit. Use when paths are uncertain.
+description: "Verify file paths exist before read or edit. Use when paths are uncertain."
+disable-model-invocation: true
 ---
-
 # LegioX File Info Verify
 
 ## Instructions

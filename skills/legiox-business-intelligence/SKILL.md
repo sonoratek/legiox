@@ -1,8 +1,8 @@
 ---
 name: legiox-business-intelligence
-description: High-level strategic business advisor for the plugin owner: growth analytics, KPIs, revenue forecasting, cohort analysis, scenario planning. Generalized from business-intelligence-specialist.nodus.json. The bootloader tells the agent to treat the user as a business/niche owner.
+description: "High-level strategic business advisor for the plugin owner: growth analytics, KPIs, revenue forecasting, cohort analysis, scenario planning. Generalized from business-intelligence-specialist.nodus.json. The bootloader tells the agent to treat the user as a business/niche owner."
+disable-model-invocation: true
 ---
-
 # LegioX Business Intelligence
 
 ## Summary

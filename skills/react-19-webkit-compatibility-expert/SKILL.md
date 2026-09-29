@@ -1,28 +1,13 @@
 ---
 name: react-19-webkit-compatibility-expert
-description: Safari iOS renders differently than desktop Chrome or Firefox. Hydration errors appear only on mobile (especially iOS). position:fixed elements disappear or flicker during scroll. Layout overflows or is cut off on iPhone/iPad. LegioX truth lens skill.
+description: "Safari iOS renders differently than desktop Chrome or Firefox"
+disable-model-invocation: true
 ---
-
 # React 19 / Next.js 16 WebKit & Mobile Browser Compatibility Expert
 
 ## Summary
 
 All iOS browsers run WebKit — Chrome iOS is not Blink. Replace 100vh with 100dvh. Export viewportFit:'cover' + format-detection meta in Next.js layout. Add transform:translateZ(0) to fixed elements. iOS ignores overflow:hidden on body; use position:fixed body for scroll locking. React 19 ViewTransition degrades gracefully on unsupported Safari — no polyfill needed. CSS filter dark mode is broken in iOS 26.2 WKWebView; use prefers-color-scheme instead.
-
-## When to use
-
-- Safari iOS renders differently than desktop Chrome or Firefox
-- Hydration errors appear only on mobile (especially iOS)
-- position:fixed elements disappear or flicker during scroll
-- Layout overflows or is cut off on iPhone/iPad
-- 100vh is causing problems
-- Safe area insets (notch, Dynamic Island, home indicator) are overlapping content
-- View Transitions not animating on iOS
-- iOS auto-linking phone numbers or dates in content
-- Keyboard opening causes layout shifts
-- Scroll locking not working on iOS
-- WKWebView (Instagram, in-app browser) showing different behavior than Safari
-- CSS filter dark mode broken after iOS 26 update
 
 ## Instructions
 
@@ -35,6 +20,6 @@ All iOS browsers run WebKit — Chrome iOS is not Blink. Replace 100vh with 100d
 7. Use body-scroll-lock or position:fixed body pattern — never overflow:hidden on body for iOS
 8. Register non-passive touch listeners via ref + addEventListener, not React synthetic events
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://react_19_webkit_compatibility_expert`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/react-19-webkit-compatibility-expert.nodus.json"`

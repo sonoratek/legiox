@@ -1,21 +1,13 @@
 ---
 name: flow-hybrid-custody-wallet
-description: Designing Ring ensureWallet with instant on-chain address before user installs Flow Wallet. Implementing account linking when user connects Flow Wallet post-signup. Scoping which NFT/FT capabilities parent wallet may borrow from child. Revoking or rotating child account access after abuse or account recovery. LegioX truth lens skill.
+description: "Designing Ring ensureWallet with instant on-chain address before user installs Flow Wallet"
+disable-model-invocation: true
 ---
-
 # Flow Hybrid Custody Wallet (Child Accounts & Account Linking)
 
 ## Summary
 
 Hybrid Custody is Flow's answer to walletless Web3: the app is not fully custodial nor fully non-custodial — it publishes capability-scoped child accounts to a parent Manager. Ring must treat linking as a security-sensitive transaction set; never grant unrestricted &Account to users when marketplace policy requires app-side gates.
-
-## When to use
-
-- Designing Ring ensureWallet with instant on-chain address before user installs Flow Wallet
-- Implementing account linking when user connects Flow Wallet post-signup
-- Scoping which NFT/FT capabilities parent wallet may borrow from child
-- Revoking or rotating child account access after abuse or account recovery
-- Choosing between OwnedAccount (broader) vs ChildAccount (filtered) delegation
 
 ## Instructions
 
@@ -26,6 +18,6 @@ Hybrid Custody is Flow's answer to walletless Web3: the app is not fully custodi
 5. Verify ownership: HybridCustody.isChildOf(parent, child) before UI displays linked state.
 6. flow dependencies install for HybridCustody contract imports via Flow CLI dependency manager.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://flow_hybrid_custody_wallet`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/flow-hybrid-custody-wallet.nodus.json"`

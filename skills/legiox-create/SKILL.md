@@ -1,8 +1,8 @@
 ---
 name: legiox-create
-description: Generate a new NODUS skillset (truth lens) for a task class: research, outline, schema-adherent draft, store, mini-descriptions, reindex. Trigger: /legiox-create or "create [a|this|the following] new skillset [skill|lens|truth lens]".
+description: "Generate a new NODUS skillset (truth lens) for a task class: research, outline, schema-adherent draft, store, mini-descriptions, reindex. Trigger: /legiox-create or \"create [a|this|the following] new skillset [skill|lens|truth lens]\"."
+disable-model-invocation: true
 ---
-
 # LegioX Create — Skillset Generation
 
 ## Trigger

@@ -1,20 +1,13 @@
 ---
 name: devops-aptos-gas-station-ops
-description: Enabling Geomi gas station for Ring testnet/mainnet.. Designing Move function allowlist for sponsor policy.. Investigating sponsor treasury drain or abuse.. Choosing Geomi vs self-hosted fee payer for a clone.. LegioX truth lens skill.
+description: "Enabling Geomi gas station for Ring testnet/mainnet."
+disable-model-invocation: true
 ---
-
 # Aptos Gas Station Operations (Geomi & Sponsor Treasury)
 
 ## Summary
 
 Gas stations subsidize APT gas for transactions matching contract rules. Users submit with withFeePayer; station signs as fee payer. Ring must allowlist only Ring FA transfers, voting, marketplace, and modest swap — block arbitrary contract calls to prevent treasury drain.
-
-## When to use
-
-- Enabling Geomi gas station for Ring testnet/mainnet.
-- Designing Move function allowlist for sponsor policy.
-- Investigating sponsor treasury drain or abuse.
-- Choosing Geomi vs self-hosted fee payer for a clone.
 
 ## Instructions
 
@@ -24,6 +17,6 @@ Gas stations subsidize APT gas for transactions matching contract rules. Users s
 4. Self-hosted: HSM or KMS-wrapped fee payer + aptos.transaction.signAsFeePayer service.
 5. Billing: monitor subsidized gas costs vs DAU.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://devops_aptos_gas_station_ops`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/devops-aptos-gas-station-ops.nodus.json"`

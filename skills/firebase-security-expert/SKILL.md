@@ -1,21 +1,13 @@
 ---
 name: firebase-security-expert
-description: Firestore security rules. Firebase injection attacks. Cloud Functions security. Firebase Auth hardening. LegioX truth lens skill.
+description: "Firestore security rules"
+disable-model-invocation: true
 ---
-
 # Firebase Security Expert
 
 ## Summary
 
 Firebase-specific attack surface security: Firestore rule bypasses, RTDB injection, Cloud Functions privilege escalation, Auth token manipulation. Security patterns must work across BackendSelector modes (firebase-full, k8s-postgres-fcm, supabase-fcm).
-
-## When to use
-
-- Firestore security rules
-- Firebase injection attacks
-- Cloud Functions security
-- Firebase Auth hardening
-- Firebase security during backend migration
 
 ## Instructions
 
@@ -23,6 +15,6 @@ Firebase-specific attack surface security: Firestore rule bypasses, RTDB injecti
 2. Firebase injection prevention: path sanitization, query parameter validation
 3. Cross-backend: rules translate to PostgreSQL RLS policies
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://firebase_security_expert`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/firebase-security-expert.nodus.json"`

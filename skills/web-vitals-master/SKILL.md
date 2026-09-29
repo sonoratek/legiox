@@ -1,21 +1,13 @@
 ---
 name: web-vitals-master
-description: Core Web Vitals degrading. LCP optimization. CLS prevention. INP minimization. LegioX truth lens skill.
+description: "Core Web Vitals degrading"
+disable-model-invocation: true
 ---
-
 # Web Vitals Master
 
 ## Summary
 
 Core Web Vitals are the measurable contract with users. LCP dominated by image/font loading + server response. INP by JS execution + hydration cost. CLS by layout shifts from dynamic content. Performance budgets enforced in CI/CD.
-
-## When to use
-
-- Core Web Vitals degrading
-- LCP optimization
-- CLS prevention
-- INP minimization
-- performance monitoring setup
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Core Web Vitals are the measurable contract with users. LCP dominated by image/f
 3. CLS: explicit width/height, skeleton screens matching final layout
 4. Performance budgets in CI/CD
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://web_vitals_master`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/web-vitals-master.nodus.json"`

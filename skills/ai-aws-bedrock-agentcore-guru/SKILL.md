@@ -1,28 +1,13 @@
 ---
 name: ai-aws-bedrock-agentcore-guru
-description: Amazon Bedrock AgentCore architecture or service selection. Agents Classic vs AgentCore decision or migration. AgentCore Runtime session isolation / 8-hour async agents. AgentCore Memory short-term vs long-term strategies. LegioX truth lens skill.
+description: "Amazon Bedrock AgentCore architecture or service selection"
+disable-model-invocation: true
 ---
-
 # AI AWS Bedrock AgentCore Guru
 
 ## Summary
 
 Amazon Bedrock AgentCore (GA 2025-10-13) is the enterprise agent platform for any framework/model/protocol: Runtime (microVM session isolation, up to 8h, MCP/A2A), Memory (short/long-term + self-managed strategies), Gateway (API/Lambda→MCP tools + existing MCP servers, IAM+OAuth), Identity (Cognito/Okta/Entra/Auth0, vaulted tokens, identity-aware authz), Observability (CloudWatch dashboards + OTEL to Datadog/Dynatrace/Langfuse/etc.), Browser and Code Interpreter built-ins, plus Harness (config-based managed loop), Policy (Cedar/NL on Gateway), Evaluations/Optimization/Registry/Payments as expanded GA surface. Agents Classic is maintenance-mode (new customers closed 2026-07-30; frozen model catalog; existing CreateAgent allowlisted accounts continue). Ringdom Amazon credits: AgentCore-first, VPC/PrivateLink/CloudFormation/tagging for enterprise, credit-safe caps on Browser/Code Interpreter/long sessions. Anti-patterns: new Classic agents, secrets in code, PUBLIC network mode for private data, Runtime session as durable store, skipping OTEL, unbounded tool fan-out.
-
-## When to use
-
-- Amazon Bedrock AgentCore architecture or service selection
-- Agents Classic vs AgentCore decision or migration
-- AgentCore Runtime session isolation / 8-hour async agents
-- AgentCore Memory short-term vs long-term strategies
-- AgentCore Gateway MCP tools from API Lambda or existing MCP servers
-- AgentCore Identity inbound outbound OAuth IAM Cognito Okta Entra
-- AgentCore Observability CloudWatch OTEL Langfuse Datadog
-- AgentCore Browser or Code Interpreter sandbox tooling
-- AgentCore VPC PrivateLink CloudFormation resource tagging
-- Harness vs code-defined Strands LangGraph CrewAI on Runtime
-- Ringdom AWS credit-safe agentic spend controls
-- AgentCore Policy Cedar Gateway tool authorization
 
 ## Instructions
 
@@ -39,6 +24,6 @@ Amazon Bedrock AgentCore (GA 2025-10-13) is the enterprise agent platform for an
 11. Pattern: import Classic via agent toolkit amazon-bedrock skill or AgentCore CLI import without mutating source agent -> expected outcome: parallel validation then cutover.
 12. Pattern: Marketplace/prebuilt agents via Runtime + Gateway discovery rather than custom glue -> expected outcome: faster workflows with compliance controls intact.
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://ai_aws_bedrock_agentcore_guru`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/ai-aws-bedrock-agentcore-guru.nodus.json"`

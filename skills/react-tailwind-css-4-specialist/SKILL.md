@@ -1,22 +1,13 @@
 ---
 name: react-tailwind-css-4-specialist
-description: @theme directive for Ring. Tailwind v3 to v4 migration. dark mode with next-themes. container queries. LegioX truth lens skill.
+description: "@theme directive for Ring"
+disable-model-invocation: true
 ---
-
 # Tailwind CSS 4 Specialist 2.0
 
 ## Summary
 
 Tailwind 4 ground-up rewrite: @import 'tailwindcss' replaces @tailwind directives. @theme in CSS replaces tailwind.config.js. bg-opacity-* removed (use slash syntax bg-primary/50). Oxide engine 5x-100x faster. Ring maps shadcn/ui CSS variables through @theme.
-
-## When to use
-
-- @theme directive for Ring
-- Tailwind v3 to v4 migration
-- dark mode with next-themes
-- container queries
-- @utility or @custom-variant creation
-- shadcn/ui theming
 
 ## Instructions
 
@@ -25,6 +16,6 @@ Tailwind 4 ground-up rewrite: @import 'tailwindcss' replaces @tailwind directive
 3. Dark mode: @custom-variant dark (&:where(.dark *))
 4. Never hardcode: bg-background not bg-white
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://react_tailwind_css_4_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/react-tailwind-css-4-specialist.nodus.json"`

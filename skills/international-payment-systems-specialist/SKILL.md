@@ -1,21 +1,13 @@
 ---
 name: international-payment-systems-specialist
-description: payment integration for new market. local payment method addition. cross-border settlement. crypto payment rails. LegioX truth lens skill.
+description: "payment integration for new market"
+disable-model-invocation: true
 ---
-
 # International Payment Systems Specialist
 
 ## Summary
 
 Multi-payment orchestration: WayForPay (Ukraine/CIS), Stripe (global), local rails per market (PIX Brazil, UPI India, Alipay China). Real-time payment rails, stablecoin settlement, and crypto on-ramp/off-ramp. Compliance per jurisdiction.
-
-## When to use
-
-- payment integration for new market
-- local payment method addition
-- cross-border settlement
-- crypto payment rails
-- payment compliance
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Multi-payment orchestration: WayForPay (Ukraine/CIS), Stripe (global), local rai
 3. Local rails: PIX, UPI, Alipay, M-Pesa for regional optimization
 4. Crypto: RING/USDC on-ramp via DEX + fiat off-ramp partners
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://international_payment_systems_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/international-payment-systems-specialist.nodus.json"`

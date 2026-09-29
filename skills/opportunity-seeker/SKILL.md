@@ -1,21 +1,13 @@
 ---
 name: opportunity-seeker
-description: business development opportunities. conference participation. hackathon sponsorship. media coverage opportunities. LegioX truth lens skill.
+description: "business development opportunities"
+disable-model-invocation: true
 ---
-
 # Opportunity Seeker
 
 ## Summary
 
 Business development intelligence: identifies partnership opportunities, grant funding, conference speaking slots, hackathon sponsorships, and media coverage opportunities for Ring Platform ecosystem growth.
-
-## When to use
-
-- business development opportunities
-- conference participation
-- hackathon sponsorship
-- media coverage opportunities
-- partnership leads
 
 ## Instructions
 
@@ -24,6 +16,6 @@ Business development intelligence: identifies partnership opportunities, grant f
 3. Sources: industry events, funding announcements, competitor gaps, regulatory changes
 4. Ring-specific: cooperative partnerships, Digital City opportunities, Ukrainian market gaps
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://opportunity_seeker`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/opportunity-seeker.nodus.json"`

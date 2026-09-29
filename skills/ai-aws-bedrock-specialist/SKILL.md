@@ -1,26 +1,13 @@
 ---
 name: ai-aws-bedrock-specialist
-description: Amazon Bedrock Converse or InvokeModel integration. Choosing Bedrock model IDs or inference profiles. bedrock vs bedrock-runtime client confusion. Bedrock AccessDeniedException or ValidationException. LegioX truth lens skill.
+description: "Amazon Bedrock Converse or InvokeModel integration"
+disable-model-invocation: true
 ---
-
 # AI AWS Bedrock Specialist
 
 ## Summary
 
 Amazon Bedrock is the AWS-managed foundation-model platform: call bedrock-runtime Converse for a unified messages/tools/guardrails surface across Anthropic Claude, Amazon Nova, OpenAI GPT-5.6 (Sol/Terra/Luna), Meta Llama, DeepSeek, and others; use InvokeModel only for provider-native bodies. Pass modelId as a base model ID/ARN or an inference profile ID/ARN (geo profiles like us.anthropic.* for cross-region; application profile ARNs for cost tags). Control-plane APIs (ListFoundationModels, CreateInferenceProfile) use the bedrock client — never confuse planes. Credit-safe Ringdom pattern: on-demand + Batch, cascade Nova/Haiku/Luna → Sonnet → Opus, application inference profiles for attribution, CloudWatch/Cost Explorer alarms, no idle Provisioned Throughput. IAM + SCP govern access after Model Access auto-enable; Anthropic may still require first-time use-case details. Prefer Converse toolConfig over ad-hoc JSON prompt tools. Verify Regional model cards before hardcoding IDs.
-
-## When to use
-
-- Amazon Bedrock Converse or InvokeModel integration
-- Choosing Bedrock model IDs or inference profiles
-- bedrock vs bedrock-runtime client confusion
-- Bedrock AccessDeniedException or ValidationException
-- Cross-region inference profile routing or data residency
-- Application inference profiles for cost attribution
-- AWS promotional credit / Bedrock cost governance
-- boto3 Bedrock streaming, tools, or guardrails
-- Claude / Nova / OpenAI models on Bedrock for Ringdom
-- Migrating OpenRouter or Anthropic API calls onto Bedrock
 
 ## Instructions
 
@@ -37,6 +24,6 @@ Amazon Bedrock is the AWS-managed foundation-model platform: call bedrock-runtim
 11. Pattern: compliance residency -> prefer In-Region or geo (US/EU) profiles over Global -> confirm destination Regions on model card
 12. Pattern: high steady paid traffic only -> evaluate Provisioned Throughput MU economics -> never buy PT while burning promotional credits
 
-## MCP
+## Deeper fields
 
-Premium: use `legiox-agent-selector` with task terms, or pick this lens from the **@** menu (MCP resource `legiox-lens://ai_aws_bedrock_specialist`).
+`jq -r '.mission, .expertise, .keywords' "mcp/AI-LEGIOX/legiox-truth-lens/ai-aws-bedrock-specialist.nodus.json"`
